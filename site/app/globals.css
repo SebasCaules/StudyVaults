@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+/* ============================================================
+   STUDYVAULTS · TOKENS — portados de DESIGN.md §12 / components.html
+   Estética "Premium Agency Portal — Technical Split".
+   Canvas editorial oscuro / superficies elevadas / coral de acento.
+   Las 6 hex base son la única fuente de verdad; todo neutro deriva
+   por color-mix. Los tokens de ROL se conmutan por [data-theme].
+   ============================================================ */
+
+:root {
+  /* ---- paleta base (6 hex) ---- */
+  --hex-brown: #241208; /* marrón casi negro: ancla dark / texto light */
+  --hex-zinc: #27272a; /* gris estructural (borde base) */
+  --hex-blue: #92cff2; /* azul: links, focos, acento secundario */
+  --hex-gray: #a1a1aa; /* gris medio */
+  --hex-coral: #f47c59; /* coral: acento (CTA, realces, objeto focal) */
+  --hex-white: #ffffff;
+
+  /* acentos de marca: estables en ambos temas */
+  --primary: var(--hex-blue);
+  --accent: var(--hex-coral);
+
+  /* ---- tipografía (next/font expone --font-newsreader / --font-jetbrains) ---- */
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo,
+    Consolas, monospace;
+
+  /* ---- espaciado (escala de 8) ---- */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --s-7: 80px;
+
+  /* ---- radios ---- */
+  --r-card: 8px;
+  --r-ctrl: 8px;
+  --r-pill: 9999px;
+
+  /* ---- motion ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 240ms;
+  --dur: 420ms;
+  --dur-slow: 680ms;
+
+  --nav-h: 68px;
+}
+
+/* ============================================================
+   TEMA OSCURO (default de marca) — canvas marrón suave
+   ============================================================ */
+[data-theme="dark"] {
+  --background: color-mix(in srgb, var(--hex-brown) 86%, var(--hex-white));
+  --surface: var(--hex-brown);
+  --secondary: var(--hex-brown);
+
+  --text-primary: var(--hex-white);
+  --text-secondary: var(--hex-gray);
+  --ink-strong: var(--hex-white);
+  --border: var(--hex-zinc);
+  --on-accent-ink: var(--hex-brown);
+
+  --surface-2: color-mix(in srgb, var(--hex-brown) 78%, var(--hex-white));
+  --surface-3: color-mix(in srgb, var(--hex-brown) 68%, var(--hex-white));
+  --nav-bg: color-mix(in srgb, var(--background) 86%, transparent);
+
+  --hairline: color-mix(in srgb, var(--hex-white) 10%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--hex-white) 18%, transparent);
+  --hover-tint: color-mix(in srgb, var(--hex-white) 30%, transparent);
+  --row-hover: color-mix(in srgb, var(--hex-white) 4%, transparent);
+
+  --primary-soft: color-mix(in srgb, var(--hex-blue) 14%, transparent);
+  --accent-soft: color-mix(in srgb, var(--hex-coral) 16%, transparent);
+  --primary-line: color-mix(in srgb, var(--hex-blue) 40%, transparent);
+  --accent-line: color-mix(in srgb, var(--hex-coral) 40%, transparent);
+  --accent-text: var(--hex-coral);
+  --link: var(--hex-blue);
+  --ring: var(--hex-blue);
+  --ring-soft: color-mix(in srgb, var(--hex-blue) 30%, transparent);
+
+  --shadow-sm: 0 2px 8px color-mix(in srgb, var(--hex-brown) 28%, transparent);
+  --shadow-md: 0 10px 30px color-mix(in srgb, var(--hex-brown) 42%, transparent);
+  --shadow-lg: 0 24px 60px color-mix(in srgb, var(--hex-brown) 52%, transparent);
+  --shadow-primary: 0 12px 28px color-mix(in srgb, var(--hex-blue) 40%, transparent);
+  --shadow-accent: 0 12px 28px color-mix(in srgb, var(--hex-coral) 45%, transparent);
+
+  --glow-coral: color-mix(in srgb, var(--hex-coral) 16%, transparent);
+  --glow-blue: color-mix(in srgb, var(--hex-blue) 16%, transparent);
+  --glow-blue-2: color-mix(in srgb, var(--hex-blue) 10%, transparent);
+  --particle-blue: color-mix(in srgb, var(--hex-blue) 55%, transparent);
+  --particle-coral: color-mix(in srgb, var(--hex-coral) 50%, transparent);
+  --particle-link: color-mix(in srgb, var(--hex-white) 14%, transparent);
+
+  color-scheme: dark;
+}
+
+/* ============================================================
+   TEMA CLARO — off-white cálido, paneles blancos elevados
+   ============================================================ */
+[data-theme="light"] {
+  --background: color-mix(in srgb, var(--hex-white) 96%, var(--hex-brown) 4%);
+  --surface: var(--hex-brown);
+  --secondary: var(--hex-brown);
+
+  --text-primary: var(--hex-brown);
+  --text-secondary: color-mix(in srgb, var(--hex-brown) 60%, var(--hex-white));
+  --ink-strong: var(--hex-brown);
+  --border: color-mix(in srgb, var(--hex-zinc) 14%, var(--hex-white));
+  --on-accent-ink: var(--hex-brown);
+
+  --surface-2: var(--hex-white);
+  --surface-3: color-mix(in srgb, var(--hex-white) 94%, var(--hex-brown) 6%);
+  --nav-bg: color-mix(in srgb, var(--hex-white) 82%, transparent);
+
+  --hairline: color-mix(in srgb, var(--hex-brown) 12%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--hex-brown) 20%, transparent);
+  --hover-tint: color-mix(in srgb, var(--hex-brown) 30%, transparent);
+  --row-hover: color-mix(in srgb, var(--hex-brown) 4%, transparent);
+
+  --primary-soft: color-mix(in srgb, var(--hex-blue) 22%, var(--hex-white));
+  --accent-soft: color-mix(in srgb, var(--hex-coral) 18%, var(--hex-white));
+  --primary-line: color-mix(in srgb, var(--hex-blue) 55%, var(--hex-brown));
+  --accent-line: color-mix(in srgb, var(--hex-coral) 50%, var(--hex-white));
+  --accent-text: color-mix(in srgb, var(--hex-coral) 62%, var(--hex-brown));
+  --link: color-mix(in srgb, var(--hex-blue) 55%, var(--hex-brown));
+  --ring: color-mix(in srgb, var(--hex-blue) 55%, var(--hex-brown));
+  --ring-soft: color-mix(in srgb, var(--hex-blue) 45%, transparent);
+
+  --shadow-sm: 0 2px 8px color-mix(in srgb, var(--hex-brown) 8%, transparent);
+  --shadow-md: 0 10px 30px color-mix(in srgb, var(--hex-brown) 12%, transparent);
+  --shadow-lg: 0 24px 60px color-mix(in srgb, var(--hex-brown) 16%, transparent);
+  --shadow-primary: 0 12px 28px color-mix(in srgb, var(--hex-blue) 30%, transparent);
+  --shadow-accent: 0 12px 28px color-mix(in srgb, var(--hex-coral) 35%, transparent);
+
+  --glow-coral: color-mix(in srgb, var(--hex-coral) 8%, transparent);
+  --glow-blue: color-mix(in srgb, var(--hex-blue) 9%, transparent);
+  --glow-blue-2: color-mix(in srgb, var(--hex-blue) 6%, transparent);
+  --particle-blue: color-mix(in srgb, var(--hex-blue) 38%, transparent);
+  --particle-coral: color-mix(in srgb, var(--hex-coral) 34%, transparent);
+  --particle-link: color-mix(in srgb, var(--hex-brown) 9%, transparent);
+
+  color-scheme: light;
+}
+
+/* Fallback: si el script anti-flash no corrió, asumir dark. */
+:root:not([data-theme]) {
+  color-scheme: dark;
+}
+
+/* ============================================================
+   Exponer tokens de ROL a las utilities de Tailwind v4.
+   `inline` → las utilities referencian var() en el use-site,
+   así el cambio de tema funciona sin recompilar.
+   ============================================================ */
+@theme inline {
+  --color-canvas: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink: var(--text-primary);
+  --color-ink-dim: var(--text-secondary);
+  --color-ink-strong: var(--ink-strong);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-primary: var(--primary);
+  --color-link: var(--link);
+  --color-line: var(--border);
+  --color-hairline: var(--hairline);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --radius-card: var(--r-card);
+  --radius-pill: var(--r-pill);
+
+  --ease-out: var(--ease);
+}
+
+/* ---- transición suave de tema (respeta reduced-motion) ---- */
+html {
+  transition: background-color var(--dur) var(--ease);
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text-primary);
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink-strong);
+}
+
+/* foco visible (azul por tema) para accesibilidad */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
