@@ -1055,3 +1055,84 @@ button {
   margin: 32px 0;
 }
 .prose-sv strong { color: var(--ink-strong); font-weight: 600; }
+
+/* ============================================================
+   HOME / PORTAL
+   ============================================================ */
+.home-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  padding-bottom: 64px;
+  max-width: 920px;
+}
+.home-hero__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(40px, 7vw, 66px);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  margin: 22px 0 0;
+  color: var(--text-primary);
+}
+.home-hero__title .accent {
+  color: var(--accent);
+  font-style: italic;
+}
+.home-sub {
+  margin: 26px 0 0;
+  max-width: 56ch;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.home-actions {
+  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.home-stats {
+  margin-top: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 40px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--hairline);
+  padding-top: 24px;
+}
+.home-stats b {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink-strong);
+  margin-right: 8px;
+}
+.section__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 10px 0 0;
+  color: var(--text-primary);
+}
+
+/* card de materia (link completo) */
+.vaultcard {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  height: 100%;
+}
+.vaultcard__meta {
+  margin-top: auto;
+  padding-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--link);
+}
+.vaultcard:hover .vaultcard__meta { color: var(--ink-strong); }

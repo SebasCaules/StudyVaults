@@ -5,11 +5,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { REPO_URL } from "@/lib/content/vaults";
+import { withBase } from "@/lib/content/slug";
 
-const LINKS: { label: string; href: string }[] = [
+// `raw` → la app de Electivas es un asset estático, no una ruta del app router.
+const LINKS: { label: string; href: string; raw?: boolean }[] = [
   { label: "Inicio", href: "/" },
   { label: "Materias", href: "/#materias" },
-  { label: "Electivas", href: "/electivas/" },
+  { label: "Electivas", href: "/electivas/", raw: true },
 ];
 
 const BrandMark = (
@@ -69,15 +71,21 @@ export default function Navbar() {
         </Link>
 
         <nav className="nav__links" aria-label="Principal">
-          {LINKS.map((l) => (
-            <Link
-              key={l.href}
-              className={`nav__link${isActive(l.href) ? " is-active" : ""}`}
-              href={l.href}
-            >
-              {l.label}
-            </Link>
-          ))}
+          {LINKS.map((l) =>
+            l.raw ? (
+              <a key={l.href} className="nav__link" href={withBase(l.href)}>
+                {l.label}
+              </a>
+            ) : (
+              <Link
+                key={l.href}
+                className={`nav__link${isActive(l.href) ? " is-active" : ""}`}
+                href={l.href}
+              >
+                {l.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <span className="nav__spacer" />
@@ -130,16 +138,27 @@ export default function Navbar() {
         className={`nav__mobile${open ? " is-open" : ""}`}
         id="mobileMenu"
       >
-        {LINKS.map((l) => (
-          <Link
-            key={l.href}
-            className="nav__link"
-            href={l.href}
-            onClick={() => setOpen(false)}
-          >
-            {l.label}
-          </Link>
-        ))}
+        {LINKS.map((l) =>
+          l.raw ? (
+            <a
+              key={l.href}
+              className="nav__link"
+              href={withBase(l.href)}
+              onClick={() => setOpen(false)}
+            >
+              {l.label}
+            </a>
+          ) : (
+            <Link
+              key={l.href}
+              className="nav__link"
+              href={l.href}
+              onClick={() => setOpen(false)}
+            >
+              {l.label}
+            </Link>
+          ),
+        )}
         <ThemeToggle variant="mobile" />
         <a
           className="btn btn--primary"

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { VAULTS, REPO_URL } from "@/lib/content/vaults";
+import { withBase } from "@/lib/content/slug";
 
 export default function Footer() {
   return (
@@ -52,7 +53,7 @@ export default function Footer() {
 
         <div className="footer__col">
           <h4>Recursos</h4>
-          <Link href="/electivas/">Planificador de electivas</Link>
+          <a href={withBase("/electivas/")}>Planificador de electivas</a>
           <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
             Repositorio en GitHub
           </a>
