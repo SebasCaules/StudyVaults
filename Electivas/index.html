@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plan de Estudios · Ingeniería en Informática · ITBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="planner.css?v=9">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <!-- ===================== TOP BAR ===================== -->
+  <header class="topbar">
+    <div class="brand">
+      <button class="sidetoggle" id="sideToggle" aria-label="Mostrar u ocultar el panel" title="Mostrar / ocultar panel">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9.5" y1="4" x2="9.5" y2="20"/></svg>
+      </button>
+      <div class="crest">ITBA</div>
+      <div class="brand__txt">
+        <h1>Plan de Estudios</h1>
+        <p>Ingeniería en Informática <span class="sep">·</span> S10&#8202;–&#8202;Rev&#8202;23 <span class="sep">·</span> <span class="mono">1C 2026</span></p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="stat__num" id="statCreditos">0</span><span class="stat__lbl">Créditos aprobados</span></div>
+      <div class="stat"><span class="stat__num"><span id="statElec">0</span><i>&#8202;/&#8202;27</i></span><span class="stat__lbl">Créditos electivos</span></div>
+      <div class="stat"><span class="stat__num" id="statDisp">0</span><span class="stat__lbl">Disponibles</span></div>
+      <div class="stat"><span class="stat__num" id="statRestan">0</span><span class="stat__lbl">Obligatorias restantes</span></div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="side">
+      <div class="field">
+        <svg class="field__ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search" type="text" placeholder="Buscar código o materia" autocomplete="off">
+      </div>
+
+      <nav class="views" id="views">
+        <button class="view is-active" data-view="cuatri">Plan por cuatrimestre</button>
+        <button class="view" data-view="elect">Electivas</button>
+        <button class="view" data-view="combo">Combinador de horarios</button>
+        <button class="view" data-view="plan">Plan de cursada</button>
+        <button class="view" data-view="grafo">Correlativas</button>
+        <button class="view" data-view="ref">Referencias</button>
+      </nav>
+
+      <section class="block">
+        <div class="block__h">Filtros</div>
+        <label class="chk"><input type="checkbox" id="fOblig" checked><span>Obligatorias</span></label>
+        <label class="chk"><input type="checkbox" id="fElec" checked><span>Electivas</span></label>
+        <label class="chk"><input type="checkbox" id="fDisp"><span>Solo disponibles</span></label>
+        <label class="chk"><input type="checkbox" id="fHor"><span>Solo con horario 1C&nbsp;2026</span></label>
+      </section>
+
+      <section class="block">
+        <div class="block__h">Áreas · Minors</div>
+        <div class="areas" id="areaList"></div>
+      </section>
+
+      <section class="block">
+        <div class="block__h">Progreso de minors</div>
+        <div class="minors" id="minorList"></div>
+      </section>
+
+      <section class="block">
+        <div class="block__h">Electivas <span class="hk">27 créditos</span></div>
+        <div class="bar"><div class="bar__fill" id="elecBar"></div></div>
+        <p class="muted" id="elecTxt">0 / 27</p>
+      </section>
+
+      <div class="seg" id="themeToggle"><button data-set="light">Claro</button><button data-set="dark">Oscuro</button></div>
+      <button class="reset" id="reset">Restablecer materias aprobadas</button>
+      <p class="foot">Horarios del SGA, 1.<sup>er</sup> cuatrimestre 2026. El progreso se guarda en este navegador.</p>
+    </aside>
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="main">
+
+      <!-- PLAN POR CUATRIMESTRE -->
+      <section class="view-panel" id="panel-cuatri">
+        <div class="panel-head">
+          <h2>Plan por cuatrimestre</h2>
+          <p>Materias obligatorias del plan, ordenadas por año. Marcá las aprobadas para ver tu avance y qué queda habilitado.</p>
+        </div>
+        <div id="cuatriBody" class="cuatri-grid"></div>
+      </section>
+
+      <!-- ELECTIVAS -->
+      <section class="view-panel hidden" id="panel-elect">
+        <div class="panel-head">
+          <h2>Materias electivas</h2>
+          <p>91 materias. Filtrá por área para orientar un minor. La marca <span class="hor-dot"></span> indica horario publicado este cuatrimestre.</p>
+        </div>
+        <div id="electBody" class="card-grid"></div>
+      </section>
+
+      <!-- COMBINADOR -->
+      <section class="view-panel hidden" id="panel-combo">
+        <div class="panel-head">
+          <h2>Combinador de horarios</h2>
+          <p>Seleccioná materias y obtené las cursadas posibles. Mostramos aula, sede, modalidad y, si corresponde, las superposiciones.</p>
+        </div>
+        <div class="combo-layout">
+          <div class="combo-pick">
+            <div class="pick-group">
+              <div class="pick-h"><span class="dot dot--ob"></span> Obligatorias <i id="cntOb">0</i></div>
+              <div id="pickOblig" class="pick-list"></div>
+            </div>
+            <div class="pick-group">
+              <div class="pick-h"><span class="dot dot--el"></span> Electivas <i id="cntEl">0</i></div>
+              <div id="pickElec" class="pick-list"></div>
+            </div>
+          </div>
+          <div class="combo-result">
+            <div class="combo-controls" id="comboControls">
+              <label class="ctl"><input type="checkbox" id="cAllowOverlap"><span>Permitir superposiciones</span></label>
+              <span class="ctl-sep"></span>
+              <span class="ctl-lbl">Modalidad</span>
+              <label class="ctl"><input type="checkbox" id="mPres" checked><span>Presencial</span></label>
+              <label class="ctl"><input type="checkbox" id="mVirt" checked><span>Virtual</span></label>
+              <label class="ctl"><input type="checkbox" id="mBlend" checked><span>Blended</span></label>
+            </div>
+            <div class="combo-bar">
+              <div class="combo-sel" id="comboSel">Sin materias seleccionadas.</div>
+              <div class="combo-actions">
+                <button id="comboClear" class="btn btn--ghost">Limpiar</button>
+                <button id="comboGen" class="btn btn--go" disabled>Generar cursadas</button>
+              </div>
+            </div>
+            <div id="comboStatus" class="combo-status"></div>
+            <div id="comboNav" class="combo-nav hidden"></div>
+            <div id="grid" class="grid"></div>
+            <div id="comboLegend" class="legend"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLAN DE CURSADA (multi-cuatrimestre) -->
+      <section class="view-panel hidden" id="panel-plan">
+        <div class="panel-head">
+          <h2>Plan de cursada</h2>
+          <p>Distribución óptima de las materias que te faltan a lo largo de los cuatrimestres, respetando correlativas, créditos requeridos y la paridad 1.º / 2.º cuatrimestre. Agregá electivas y fijá manualmente el cuatrimestre cuando quieras.</p>
+        </div>
+
+        <div class="plan-controls" id="planControls">
+          <div class="pc-field"><label>Inicio</label><select id="pcStart"></select></div>
+          <div class="pc-field"><label>Máx. créditos / cuatri</label><input type="number" id="pcMaxCred" value="18" min="3" max="40"></div>
+          <div class="pc-field"><label>Máx. materias / cuatri</label><input type="number" id="pcMaxMat" value="5" min="1" max="9"></div>
+          <label class="ctl"><input type="checkbox" id="pcAvoid" checked><span>Evitar superposiciones</span></label>
+          <div class="pc-grow"></div>
+          <button id="planReset" class="btn btn--ghost">Restablecer</button>
+          <button id="planDownload" class="btn btn--ghost">Descargar plan</button>
+          <button id="planOpt" class="btn btn--go">Optimizar</button>
+        </div>
+
+        <p class="plan-method" id="planMethod"></p>
+        <div class="plan-summary" id="planSummary"></div>
+        <div class="plan-board" id="planBoard"></div>
+        <div class="plan-warn" id="planWarn"></div>
+        <details class="plan-pool-wrap" id="planPoolWrap" open>
+          <summary>Materias del plan · agregar electivas y fijar cuatrimestre</summary>
+          <div class="plan-pool" id="planPool"></div>
+        </details>
+      </section>
+
+      <!-- CORRELATIVAS (grafo) -->
+      <section class="view-panel hidden" id="panel-grafo">
+        <div class="panel-head">
+          <h2>Mapa de correlativas</h2>
+          <p>Flujo de correlativas en orden cronológico. Tono pizarra: obligatorias. Tono latón: electivas.</p>
+        </div>
+        <div id="network" class="network"></div>
+      </section>
+
+      <!-- REFERENCIAS -->
+      <section class="view-panel hidden" id="panel-ref">
+        <div class="panel-head">
+          <h2>Referencias de materias</h2>
+          <p>Abreviaturas usadas en las grillas. Buscá por abreviatura, código o nombre.</p>
+        </div>
+        <div class="ref-search"><input id="refSearch" type="text" placeholder="Filtrar referencias…" autocomplete="off"></div>
+        <div id="refBody" class="ref-table"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- DETALLE (drawer) -->
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer__bg" id="drawerBg"></div>
+    <aside class="drawer__panel" id="drawerPanel"></aside>
+  </div>
+
+  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="data.js?v=4"></script>
+  <script src="planner.js?v=10"></script>
+</body>
+</html>
