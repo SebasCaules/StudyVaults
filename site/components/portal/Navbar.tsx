@@ -101,6 +101,26 @@ export default function Navbar() {
           GitHub
         </a>
 
+        <button
+          type="button"
+          className="theme-toggle theme-toggle--desktop"
+          aria-label="Buscar (⌘K)"
+          title="Buscar (⌘K)"
+          onClick={() => window.dispatchEvent(new Event("sv:search-open"))}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </button>
+
         <ThemeToggle variant="desktop" />
 
         <button
@@ -159,6 +179,17 @@ export default function Navbar() {
             </Link>
           ),
         )}
+        <button
+          type="button"
+          className="nav__link"
+          style={{ textAlign: "left", background: "none", border: "none" }}
+          onClick={() => {
+            setOpen(false);
+            window.dispatchEvent(new Event("sv:search-open"));
+          }}
+        >
+          Buscar
+        </button>
         <ThemeToggle variant="mobile" />
         <a
           className="btn btn--primary"

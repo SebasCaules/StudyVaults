@@ -70,25 +70,29 @@ export default async function NotePage({
       breadcrumbs={crumbs}
       toc={toc}
     >
-      <header className="wiki__head">
-        <p className="eyebrow">
-          {cfg.code} // {sectionLabel}
-        </p>
-        <h1 className="wiki__title">{note.title}</h1>
-        {(note.updated || note.tags.length > 0) && (
-          <div className="wiki__meta">
-            {note.updated && (
-              <span className="wiki__updated">act. {note.updated}</span>
-            )}
-            {note.tags.slice(0, 6).map((t) => (
-              <span className="tag" key={t}>
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
-      </header>
-      <Prose html={html} />
+      <div data-pagefind-body data-pagefind-filter={`materia:${cfg.short}`}>
+        <header className="wiki__head">
+          <p className="eyebrow">
+            {cfg.code} // {sectionLabel}
+          </p>
+          <h1 className="wiki__title" data-pagefind-meta="title">
+            {note.title}
+          </h1>
+          {(note.updated || note.tags.length > 0) && (
+            <div className="wiki__meta">
+              {note.updated && (
+                <span className="wiki__updated">act. {note.updated}</span>
+              )}
+              {note.tags.slice(0, 6).map((t) => (
+                <span className="tag" key={t}>
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+        <Prose html={html} />
+      </div>
     </WikiLayout>
   );
 }

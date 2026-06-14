@@ -4,6 +4,7 @@ import "./globals.css";
 import AmbientLayer from "@/components/portal/AmbientLayer";
 import Navbar from "@/components/portal/Navbar";
 import Footer from "@/components/portal/Footer";
+import SearchModal from "@/components/SearchModal";
 
 // Display/body serif + mono labels (self-hosted by next/font).
 const newsreader = Newsreader({
@@ -53,6 +54,7 @@ export default function RootLayout({
         </a>
         <AmbientLayer />
         <Navbar />
+        <SearchModal />
         <main id="main" className="page flex-1">
           {children}
         </main>
