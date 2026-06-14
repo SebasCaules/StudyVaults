@@ -1,9 +1,5 @@
-# === Obsidian (estado local del editor) ===
-.obsidian/workspace
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-.obsidian/cache
-.obsidian/*.json.bak
+# === Obsidian (config local del editor) — ignorado por completo ===
+.obsidian/
 .trash/
 
 # === macOS ===
