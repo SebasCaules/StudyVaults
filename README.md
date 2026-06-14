@@ -81,7 +81,24 @@ Todas las páginas siguen [`_estandar/DESIGN.md`](./_estandar/DESIGN.md). En res
 
 ## Generar páginas nuevas
 
-Las páginas nuevas se generan con la **skill `studyvault-page`** (se instala desde `.claude/skills/`). La skill toma material de una materia y produce una página `.md` que cumple el estándar de punta a punta: frontmatter correcto, jerarquía de headings, definiciones en blockquote, wikilinks, LaTeX según la materia, y la sección `## Ver también` al pie — además de listarla en `wiki/index.md` y registrar la operación en `wiki/log.md`. Así dos páginas generadas por separado, a partir del mismo material, salen idénticas en estructura.
+Las páginas nuevas se generan con la **skill [`studyvault-page`](./.claude/skills/studyvault-page/)** (para [Claude Code](https://claude.com/claude-code)). La skill toma material de una materia y produce una página `.md` que cumple el estándar de punta a punta: frontmatter correcto, jerarquía de headings, definiciones en blockquote, wikilinks, LaTeX según la materia, y la sección `## Ver también` al pie — además de listarla en `wiki/index.md` y registrar la operación en `wiki/log.md`. Así dos páginas generadas por separado, a partir del mismo material, salen idénticas en estructura.
+
+La skill es **autocontenida** (trae su propia copia del estándar en `assets/`, así funciona aunque la saques del repo). Tenés tres formas de usarla:
+
+- **Ya viene activa al abrir este repo** con Claude Code: invocá `/studyvault-page` o pedí *"creá una página nueva siguiendo el estándar StudyVaults"* parado dentro de una materia.
+- **Instalación global** (disponible en todos tus proyectos):
+
+  ```bash
+  cp -R .claude/skills/studyvault-page ~/.claude/skills/
+  ```
+
+- **Instalación por proyecto** (copiala al repo destino):
+
+  ```bash
+  cp -R .claude/skills/studyvault-page <otro-repo>/.claude/skills/
+  ```
+
+Detalle completo del procedimiento y las reglas en [`.claude/skills/studyvault-page/SKILL.md`](./.claude/skills/studyvault-page/SKILL.md).
 
 ---
 
