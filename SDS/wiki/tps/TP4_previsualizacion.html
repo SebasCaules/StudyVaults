@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>TP4 — Previsualización de gráficos esperados</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    max-width: 1100px;
+    margin: 2em auto;
+    padding: 0 1em;
+    color: #222;
+    line-height: 1.5;
+  }
+  h1 { border-bottom: 2px solid #2c3e50; padding-bottom: .3em; }
+  h2 { color: #2c3e50; margin-top: 2em; border-left: 4px solid #3498db; padding-left: .6em; }
+  h3 { color: #34495e; }
+  .chart-box {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em 0;
+  }
+  .chart-wrapper { position: relative; height: 360px; }
+  .note {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: .5em 1em;
+    margin: 1em 0;
+    font-size: .9em;
+  }
+  .danger {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    padding: .5em 1em;
+    margin: 1em 0;
+    font-size: .9em;
+  }
+  code { background: #eee; padding: 2px 5px; border-radius: 3px; }
+  small { color: #666; }
+</style>
+</head>
+<body>
+
+<h1>TP4 — Previsualización de gráficos esperados</h1>
+<p><strong>Solo basado en:</strong> <code>TP4_enunciado.pdf</code> y <code>Teorica_4.pdf</code> (slide 36 para parámetros del oscilador).</p>
+<p><small>Datos sintéticos generados con las fórmulas analíticas + estimaciones de orden de magnitud. <strong>NO son resultados reales.</strong> Sirven para saber qué forma tienen que tener las curvas reales y detectar bugs si lo que sale es muy distinto.</small></p>
+
+<hr>
+
+<h2>Sistema 1 — Oscilador amortiguado</h2>
+
+<p>Parámetros (slide 36): <code>m=70 kg, k=10⁴ N/m, γ=100 kg/s, t_f=5 s, r(0)=1 m, v(0)=−γ/(2m)≈−0.7143 m/s</code>.</p>
+<p>Solución analítica: <code>r(t) = exp(−γ/(2m)·t) · cos(ω_d·t)</code> con <code>ω_d ≈ 11.93 rad/s</code>.</p>
+
+<h3>1) r(t): oscilación amortiguada</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="osc"></canvas></div>
+  <p><small>~9.5 oscilaciones en 5 s. Amplitud decae de 1 m a ≈0.028 m (factor <code>exp(−3.57)</code>). En una corrida real, las 4 curvas numéricas (Euler/Verlet/Beeman/Gear) se superponen casi perfectamente con la analítica a esta escala — las diferencias se ven solo en zoom.</small></p>
+</div>
+
+<h3>2) ECM vs dt — el gráfico CLAVE del Sistema 1</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="ecm"></canvas></div>
+  <p><small>Pendientes esperadas en log-log:
+    <strong>Euler</strong> ≈ 2 (orden 1) ·
+    <strong>Verlet/Beeman</strong> ≈ 4 (orden 2) ·
+    <strong>Gear orden 5</strong> ≈ 10.
+    Para <code>dt</code> muy chicos aparece el <em>piso de redondeo</em> (precisión doble ≈ 10⁻¹⁵): el ECM deja de bajar.</small></p>
+</div>
+
+<div class="note">
+  <strong>Conclusión esperada:</strong> "Gear orden 5 es el integrador más preciso para este sistema". Esto va en la presentación del TP4 como ~2 slides, < 1 minuto, ANTES del Sistema 2.
+</div>
+
+<hr>
+
+<h2>Sistema 2 — Scanning rate (DM con paso temporal)</h2>
+
+<p>Parámetros: recinto circular L=80 m diámetro, obstáculo r₀=1 m, partículas r=1 m, v₀=1 m/s, m=1 kg, N∈[100, 1000], k=10³ N/m (referencia).</p>
+
+<h3>3) Energía total E(t) — validación del dt</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="energy"></canvas></div>
+  <p><small>El enunciado <strong>exige</strong> graficar esto. <span style="color:#27ae60"><strong>Verde</strong></span>: dt OK, E ~ constante con fluctuaciones pequeñas. <span style="color:#e67e22"><strong>Naranja</strong></span>: dt borderline. <span style="color:#c0392b"><strong>Rojo</strong></span>: dt muy grande, E deriva → bajar dt. Para k=10⁴ ≲ 10⁻⁴ s, k=10⁵ ≲ 10⁻⁵ s.</small></p>
+</div>
+
+<h3>4) Tiempo de cómputo vs N — TP3 (EDMD) vs TP4 (DM)</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="timing"></canvas></div>
+  <p><small>El enunciado pide superponer con TP3 (item 1.1). Esperable: TP3 escala como ~N² log N (eventos), TP4 como ~N (con CIM por paso, muchos pasos). A N grande TP4 puede ser competitivo o incluso más rápido. <strong>Plot en log-log</strong> (corrección TP3 explícita).</small></p>
+</div>
+
+<h3>5) ⟨J⟩(N) — comparar con TP3 (item 1.2)</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="jvsn"></canvas></div>
+  <p><small>J = pendiente de Cfc(t). Crece con N (más partículas → más impactos al centro). Estimación de orden por teoría cinética: J ~ ρ·v·2(r₀+r) ≈ N·2.7×10⁻⁴ → de 0.03 a 0.27 partículas/s para N=100..1000. Las dos curvas (TP3 y TP4) deberían coincidir dentro de barras de error.</small></p>
+</div>
+
+<h3>6) Perfiles radiales Jᵢₙ(S) — item 1.3, varios N con colorbar</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="radial"></canvas></div>
+  <p><small>Detalle en S ∈ [1.5, 5] m donde el obstáculo distorsiona el régimen. Lejos del obstáculo Jᵢₙ tiende a un valor constante por la estadística uniforme; cerca puede haber bump/depletion por las partículas que retornan. <strong>Usar colorbar gradual, NO leyenda categórica</strong> (corrección TP3).</small></p>
+</div>
+
+<h3>7) ⟨J⟩(N) variando k — item 1.4</h3>
+<div class="chart-box">
+  <div class="chart-wrapper"><canvas id="jvsn_k"></canvas></div>
+  <p><small>Variar k = {10², 10³, 10⁴} (y 10⁵ si el cómputo lo permite). A k pequeño los contactos son blandos y largos → distorsión sobre J. A k grande tiende al límite EDMD (TP3). Identificar un escalar característico (max(⟨J⟩) o N* que lo alcanza) y graficarlo en función de k.</small></p>
+</div>
+
+<div class="danger">
+  <strong>⚠️ Puntos críticos al hacer estos gráficos (de las correcciones TP2/TP3):</strong>
+  <ul>
+    <li>Para variables numéricas (N, k, dt) → <strong>colorbar gradual</strong>, no leyenda categórica.</li>
+    <li>Antes de afirmar "exponencial" o "ley de potencia" → graficar en <strong>log-log</strong> o <strong>semi-log</strong>.</li>
+    <li>Indicar <strong>número de realizaciones</strong> en cada figura (no la semilla).</li>
+    <li>Las <strong>figuras llevan título</strong>; los parámetros NO van en el título de la diapositiva.</li>
+    <li>Para Sistema 1: solo 2 slides, <1 min, ANTES del Sistema 2.</li>
+  </ul>
+</div>
+
+<script>
+// ============================================================
+// 1) Oscilador amortiguado r(t)
+// ============================================================
+{
+  const gamma = 100, m = 70, k = 1e4;
+  const decay = gamma / (2*m);            // ≈ 0.7143
+  const wd = Math.sqrt(k/m - (gamma*gamma)/(4*m*m));   // ≈ 11.93
+  const xs = [], ys = [];
+  for (let t = 0; t <= 5; t += 0.01) {
+    xs.push(t.toFixed(2));
+    ys.push(Math.exp(-decay*t) * Math.cos(wd*t));
+  }
+  // Envelope
+  const env_pos = xs.map((t,i) => Math.exp(-decay*parseFloat(t)));
+  const env_neg = env_pos.map(v => -v);
+  new Chart(document.getElementById('osc'), {
+    type: 'line',
+    data: {
+      labels: xs,
+      datasets: [
+        { label: 'r(t) analítica', data: ys, borderColor: '#2c3e50', borderWidth: 1.5, pointRadius: 0 },
+        { label: 'envolvente +A·exp(−γt/2m)', data: env_pos, borderColor: '#e74c3c', borderDash: [5,5], borderWidth: 1, pointRadius: 0 },
+        { label: 'envolvente −A·exp(−γt/2m)', data: env_neg, borderColor: '#e74c3c', borderDash: [5,5], borderWidth: 1, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'r(t) — oscilador amortiguado (Sistema 1)' } },
+      scales: {
+        x: { title: { display: true, text: 't [s]' }, ticks: { maxTicksLimit: 11 } },
+        y: { title: { display: true, text: 'r [m]' }, min: -1.05, max: 1.05 }
+      }
+    }
+  });
+}
+
+// ============================================================
+// 2) ECM vs dt
+// ============================================================
+{
+  const dts = [];
+  for (let p = -1; p >= -6; p -= 0.25) dts.push(Math.pow(10, p));
+  const labels = dts.map(d => d.toExponential(1));
+  const floor = 1e-15;
+  const data = (slope, prefactor) => dts.map(dt => Math.max(prefactor * Math.pow(dt, slope), floor));
+  new Chart(document.getElementById('ecm'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Euler (orden 1, pendiente ≈2)', data: data(2, 1.0), borderColor: '#e74c3c' },
+        { label: 'Verlet (orden 2, pendiente ≈4)', data: data(4, 0.5), borderColor: '#f39c12' },
+        { label: 'Beeman (orden 2, pendiente ≈4)', data: data(4, 0.1), borderColor: '#3498db' },
+        { label: 'Gear orden 5 (pendiente ≈10)', data: data(10, 1.0), borderColor: '#27ae60' },
+      ].map(ds => ({ ...ds, borderWidth: 2, pointRadius: 3, fill: false }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'ECM vs dt — log-log (Sistema 1, item 1.3)' } },
+      scales: {
+        x: { title: { display: true, text: 'dt [s] (log)' }, reverse: true },
+        y: { type: 'logarithmic', title: { display: true, text: 'ECM (log)' } }
+      }
+    }
+  });
+}
+
+// ============================================================
+// 3) Energía total E(t) — validación dt
+// ============================================================
+{
+  const xs = [];
+  const e_ok = [], e_bord = [], e_bad = [];
+  for (let t = 0; t <= 50; t += 0.5) {
+    xs.push(t.toFixed(1));
+    e_ok.push(100 + 0.3*Math.sin(t*0.4) + (Math.random()-0.5)*0.2);
+    e_bord.push(100 + 0.05*t + Math.sin(t*0.4)*1.5 + (Math.random()-0.5)*1);
+    e_bad.push(100 + 0.5*t + Math.sin(t*0.4)*4 + (Math.random()-0.5)*2);
+  }
+  new Chart(document.getElementById('energy'), {
+    type: 'line',
+    data: {
+      labels: xs,
+      datasets: [
+        { label: 'dt OK (≈10⁻³ s)', data: e_ok, borderColor: '#27ae60', borderWidth: 1.5, pointRadius: 0 },
+        { label: 'dt borderline (≈10⁻²·⁵ s)', data: e_bord, borderColor: '#e67e22', borderWidth: 1.5, pointRadius: 0 },
+        { label: 'dt muy grande → REJECT', data: e_bad, borderColor: '#c0392b', borderWidth: 1.5, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'Energía total E(t) — validación del dt (Sistema 2)' } },
+      scales: {
+        x: { title: { display: true, text: 't [s]' }, ticks: { maxTicksLimit: 11 } },
+        y: { title: { display: true, text: 'E_total [J]' } }
+      }
+    }
+  });
+}
+
+// ============================================================
+// 4) Tiempo cómputo vs N — TP3 vs TP4
+// ============================================================
+{
+  const Ns = [10, 20, 50, 100, 200, 400, 800, 1000];
+  // TP3 EDMD: t ~ N² log N (eventos cuadráticos en heap)
+  const tp3 = Ns.map(N => 1e-5 * N*N * Math.log2(N));
+  // TP4 DM: t ~ N · steps. Steps fijos = tf/dt = 500/1e-3 = 5e5. Cada step O(N) con CIM.
+  const tp4 = Ns.map(N => 5e-7 * N * 5e5);
+  new Chart(document.getElementById('timing'), {
+    type: 'line',
+    data: {
+      labels: Ns.map(String),
+      datasets: [
+        { label: 'TP3 (EDMD) ~ N² log N', data: tp3, borderColor: '#3498db', backgroundColor: '#3498db', pointRadius: 4 },
+        { label: 'TP4 (DM paso temporal) ~ N', data: tp4, borderColor: '#e74c3c', backgroundColor: '#e74c3c', pointRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'Tiempo de cómputo vs N — log-log (item 1.1)' } },
+      scales: {
+        x: { type: 'logarithmic', title: { display: true, text: 'N (log)' } },
+        y: { type: 'logarithmic', title: { display: true, text: 't_ejecución [s] (log)' } }
+      }
+    }
+  });
+}
+
+// ============================================================
+// 5) <J>(N)
+// ============================================================
+{
+  const Ns = [50, 100, 200, 400, 600, 800, 1000];
+  // Estimación cinética: J ≈ N · 2.7e-4 (con ligero saturado a N alto)
+  const J_tp4 = Ns.map(N => N * 2.7e-4 * (1 - 0.0002*N));
+  const J_tp3 = Ns.map((N,i) => J_tp4[i] * (1 + 0.03*(Math.random()-0.5)));
+  const errs = J_tp4.map(j => j*0.08);
+  new Chart(document.getElementById('jvsn'), {
+    type: 'line',
+    data: {
+      labels: Ns.map(String),
+      datasets: [
+        { label: 'TP4 (DM, k=10³)', data: J_tp4, borderColor: '#e74c3c', backgroundColor: '#e74c3c', pointRadius: 5,
+          errorBars: errs },
+        { label: 'TP3 (EDMD, ref)', data: J_tp3, borderColor: '#3498db', backgroundColor: '#3498db', pointRadius: 5, borderDash: [5,5] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: '⟨J⟩ vs N — comparar TP3 vs TP4 (item 1.2)' } },
+      scales: {
+        x: { title: { display: true, text: 'N' } },
+        y: { title: { display: true, text: '⟨J⟩ [partículas/s]' }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+// ============================================================
+// 6) Perfiles radiales Jin(S)
+// ============================================================
+{
+  const Ss = [];
+  for (let s = 2; s <= 35; s += 0.2) Ss.push(s.toFixed(1));
+  const Ns = [100, 200, 400, 800];
+  const colors = ['#440154', '#3b528b', '#21918c', '#fde725'];   // viridis-ish
+  const datasets = Ns.map((N, idx) => {
+    const data = Ss.map(s => {
+      s = parseFloat(s);
+      // Plateau alto · bump cerca del obstáculo · decae cerca del borde
+      const bulk = N * 1e-4;
+      const bump = bulk * 0.35 * Math.exp(-Math.pow((s-3)/1.2, 2));
+      const wall = bulk * (s > 32 ? Math.exp(-(s-32)*0.5) - 1 : 0);
+      return Math.max(bulk + bump + wall, 0);
+    });
+    return {
+      label: `N=${N}`, data, borderColor: colors[idx], backgroundColor: colors[idx],
+      borderWidth: 1.5, pointRadius: 0, fill: false
+    };
+  });
+  new Chart(document.getElementById('radial'), {
+    type: 'line',
+    data: { labels: Ss, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'Jᵢₙ(S) — perfiles radiales (item 1.3). En real: usar colorbar viridis.' } },
+      scales: {
+        x: { title: { display: true, text: 'S [m]' }, ticks: { maxTicksLimit: 12 } },
+        y: { title: { display: true, text: 'Jᵢₙ(S) [partículas/(m·s)]' }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+// ============================================================
+// 7) <J>(N) para varios k
+// ============================================================
+{
+  const Ns = [100, 200, 400, 600, 800, 1000];
+  const ks = [
+    { label: 'k = 10²', factor: 0.7, color: '#440154' },
+    { label: 'k = 10³ (ref)', factor: 1.0, color: '#3b528b' },
+    { label: 'k = 10⁴', factor: 1.15, color: '#21918c' },
+    { label: 'k = 10⁵ (≈ EDMD)', factor: 1.20, color: '#fde725' }
+  ];
+  const datasets = ks.map(k => ({
+    label: k.label,
+    data: Ns.map(N => N * 2.7e-4 * k.factor * (1 - 0.0002*N)),
+    borderColor: k.color, backgroundColor: k.color,
+    borderWidth: 2, pointRadius: 4, fill: false
+  }));
+  new Chart(document.getElementById('jvsn_k'), {
+    type: 'line',
+    data: { labels: Ns.map(String), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { title: { display: true, text: '⟨J⟩(N) variando k — item 1.4' } },
+      scales: {
+        x: { title: { display: true, text: 'N' } },
+        y: { title: { display: true, text: '⟨J⟩ [partículas/s]' }, beginAtZero: true }
+      }
+    }
+  });
+}
+</script>
+
+<hr>
+<p><small>Generado a partir de <code>raw/enunciados/TP4_enunciado.pdf</code> y <code>raw/teoria/Teorica_4.pdf</code> (slide 36). Datos sintéticos, solo orden de magnitud y forma cualitativa.</small></p>
+
+</body>
+</html>

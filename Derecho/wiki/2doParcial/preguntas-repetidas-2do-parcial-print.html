@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preguntas repetidas — 2.º Parcial</title>
+<style>
+  :root{
+    --ink:#171513;        /* títulos y preguntas */
+    --read:#37332c;       /* cuerpo de respuestas (oscuro = legible) */
+    --muted:#615c54;
+    --faint:#948e85;
+    --accent:#6a1f2b;
+    --warn:#9a2c17;       /* trampas */
+    --rule:#ded8cd;
+    --rule-soft:#ebe5da;
+    --paper:#fcfbf8;
+    --u:#6a1f2b;          /* color de unidad (lo sobreescribe cada sección) */
+    --sans:"Inter",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  }
+  /* colores por unidad */
+  .u6{--u:#9a6a16}  /* sociedades — ocre */
+  .u7{--u:#6a2a63}  /* contratos — ciruela */
+  .u8{--u:#1f4e79}  /* consumidor — azul */
+  .u9{--u:#2f6b3a}  /* laboral — verde */
+  .uo{--u:#4a4f57}  /* repaso — pizarra */
+
+  *{box-sizing:border-box}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  body{
+    font-family:var(--serif);
+    color:var(--read); background:var(--paper); margin:0;
+    font-size:13.5px; line-height:1.5;
+  }
+  .sheet{max-width:990px; margin:0 auto; padding:40px 34px;}
+
+  /* ---- cabecera ---- */
+  header.top{text-align:center; margin-bottom:24px;}
+  .eyebrow{
+    font-family:var(--sans); font-size:10px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:11px; font-weight:600;
+  }
+  header.top h1{
+    font-family:var(--serif); font-size:27px; font-weight:600; margin:0; letter-spacing:.01em; color:var(--ink);
+  }
+  header.top .sub{
+    font-size:12.5px; color:var(--muted); margin-top:8px; font-style:italic;
+  }
+  .rule{height:1px; background:var(--rule); border:0; margin:16px auto 0; max-width:150px;}
+  .rule.wide{max-width:none; margin:6px 0 20px;}
+
+  .controls{text-align:center; margin:16px 0 4px;}
+  .controls button{
+    font-family:var(--sans); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:600;
+    padding:8px 22px; border:1px solid var(--ink); background:transparent; color:var(--ink);
+    cursor:pointer; transition:.15s; border-radius:3px;
+  }
+  .controls button:hover{background:var(--ink); color:var(--paper);}
+  .key{font-family:var(--sans); font-size:10px; color:var(--muted); margin-top:13px; letter-spacing:.01em;}
+  .key b{color:var(--ink); font-weight:700;}
+  .key .trap{font-variant:small-caps; letter-spacing:.06em; font-weight:700; color:var(--warn);}
+
+  /* ---- destacados / tablas ---- */
+  .feature{margin:0 0 18px; break-inside:avoid;}
+  .feature h3{
+    font-family:var(--sans); font-size:12.5px; font-weight:700; margin:0 0 9px; color:var(--u);
+    letter-spacing:.01em; border-left:4px solid var(--u); padding-left:9px; line-height:1.3;
+  }
+  .feature h3 .n{font-family:var(--serif); color:var(--faint); font-weight:400; font-style:italic; font-size:11px; letter-spacing:0;}
+  table{width:100%; border-collapse:collapse; font-size:11.5px; break-inside:avoid;}
+  thead th{
+    font-family:var(--sans); text-align:left; font-weight:700; font-size:9px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--u);
+    background:color-mix(in srgb, var(--u) 12%, #fff);
+    border-bottom:1.5px solid var(--u); padding:6px 9px;
+  }
+  tbody td{border-bottom:1px solid var(--rule-soft); padding:6px 9px; vertical-align:top; color:var(--read);}
+  tbody tr:nth-child(even) td{background:color-mix(in srgb, var(--u) 6%, #fff);}
+  tbody tr:last-child td{border-bottom:1.5px solid var(--u);}
+  td .res{color:var(--u); font-weight:700;}
+  caption{caption-side:bottom; text-align:left; font-size:10px; color:var(--faint); font-style:italic; padding-top:6px;}
+
+  /* ---- cuerpo en dos columnas ---- */
+  .cols{column-count:2; column-gap:30px; margin-top:6px;}
+  @media (max-width:740px){ .cols{column-count:1;} }
+
+  section{break-inside:avoid;}
+  h2.unit{
+    font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--ink); margin:20px 0 11px; padding:2px 0 2px 11px;
+    border-left:5px solid var(--u); break-after:avoid;
+  }
+  section:first-child h2.unit, .unitblock:first-of-type h2.unit{margin-top:0;}
+
+  .qa{break-inside:avoid; margin:0 0 13px; padding-left:13px; border-left:2px solid var(--u);}
+  .qa .q{display:block; font-weight:600; color:var(--ink); margin-bottom:3px; line-height:1.4;}
+  .qa .a{display:block; color:var(--read);}
+  .qa .a .res{color:var(--u); font-weight:700;}
+  .qa .freq{font-style:italic; font-weight:400; color:var(--faint); font-size:11px;}
+  .qa .trap{
+    font-family:var(--sans); font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:700;
+    color:#fff; background:var(--warn); padding:1px 6px; border-radius:9px; vertical-align:1px;
+  }
+  .qa .note{display:block; margin-top:3px; font-size:10.5px; color:var(--muted); font-style:italic;}
+
+  footer{margin-top:26px; padding-top:12px; border-top:1px solid var(--rule);
+    text-align:center; color:var(--faint); font-size:10px; font-style:italic; font-family:var(--sans);}
+
+  /* ---- resumen integral (segunda parte) ---- */
+  .parthead{text-align:center; margin:4px 0 24px;}
+  .parthead h2{font-family:var(--serif); font-size:22px; font-weight:600; margin:7px 0 0; letter-spacing:.01em; color:var(--ink);}
+  .parthead .note2{font-size:12.5px; color:var(--muted); font-style:italic; margin-top:8px;}
+  .unitblock{margin:0 0 24px;}
+  p.lead{margin:0 0 9px; color:var(--read);}
+  ul.pts{column-count:2; column-gap:28px; margin:8px 0 12px; padding-left:18px;}
+  ul.pts li{break-inside:avoid; margin:0 0 6px; padding-left:3px; color:var(--read);}
+  ul.pts li::marker{color:var(--u);}
+  ul.pts li b{color:var(--ink);}
+
+  .meta-line{
+    font-size:11.5px; margin:9px 0 0; color:var(--read); line-height:1.5;
+    background:color-mix(in srgb, var(--u) 7%, #fff);
+    border-left:3px solid var(--u); border-radius:0 4px 4px 0; padding:7px 11px;
+  }
+  .meta-line .lbl{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--u); font-weight:700; margin-right:5px;}
+  .meta-line.warn{background:color-mix(in srgb, var(--warn) 8%, #fff); border-left-color:var(--warn);}
+  .meta-line.warn .lbl{color:var(--warn);}
+  @media (max-width:740px){ ul.pts{column-count:1;} }
+
+  @page{ size:A4; margin:14mm 13mm; }
+  @media print{
+    body{background:#fff; font-size:10.4px; line-height:1.4;}
+    .sheet{max-width:none; padding:0;}
+    .controls{display:none;}
+    header.top{margin-bottom:16px;}
+    header.top h1{font-size:22px;}
+    .cols{column-gap:22px;}
+    .qa{margin-bottom:9px;}
+    h2.unit{margin:14px 0 9px;}
+    table{font-size:9.6px;}
+    .meta-line{padding:6px 9px;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header class="top">
+  <div class="eyebrow">Derecho para Ingenieros · ITBA · Unidades 6 a 9</div>
+  <h1>Preguntas recurrentes del 2.º Parcial</h1>
+  <div class="sub">Cruce de nueve parciales anteriores (2020 – 2.º cuat. 2025) con respuesta y fundamento</div>
+  <hr class="rule">
+  <div class="controls">
+    <button onclick="window.print()">Imprimir o guardar en PDF</button>
+    <div class="key"><b>frecuencia</b> entre paréntesis (veces que apareció) · la etiqueta <span class="trap">trampa</span> señala distractores o enunciados invertidos</div>
+  </div>
+</header>
+
+<!-- DESTACADOS -->
+<div class="feature u9">
+  <h3>La pregunta variable — «Hoy es 21 de diciembre… ¿qué modalidad de contratación?» <span class="n">(7 apariciones)</span></h3>
+  <table>
+    <thead><tr><th style="width:34%">Escenario</th><th style="width:38%">Fundamento</th><th>Respuesta</th></tr></thead>
+    <tbody>
+      <tr><td>Se accidenta o enferma; retorno incierto (operación de rodilla)</td><td>Ausencia temporaria de plazo incierto; el contrato eventual la cubre y no exige preaviso</td><td><span class="res">Eventual, jornada completa</span></td></tr>
+      <tr><td>Toma licencia anual; plazo cierto y conocido (viaje de esquí, 36 años de antigüedad)</td><td>Reemplazo por un período determinado y previsible</td><td><span class="res">Plazo fijo, jornada completa</span></td></tr>
+      <tr><td>Renuncia o «año sabático»; sólo tres horas, lunes-miércoles-viernes</td><td>Renuncia = vacante permanente → indeterminado; menos de 2/3 de jornada → parcial</td><td><span class="res">Indeterminado, tiempo parcial</span></td></tr>
+      <tr><td>La secretaria se jubila; tareas habituales de jornada completa</td><td>Jubilación = vacante permanente → indeterminado; jornada completa</td><td><span class="res">Indeterminado, jornada completa</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="feature u8">
+  <h3>Garantía legal (Ley 24.240) — el tema de consumidor más evaluado <span class="n">(en varias formas)</span></h3>
+  <table>
+    <thead><tr><th style="width:42%">Variante del enunciado</th><th>Respuesta</th></tr></thead>
+    <tbody>
+      <tr><td>Plazo de garantía de un producto nuevo / usado</td><td><span class="res">Seis meses / tres meses</span> (art. 11) — mínimo, sólo ampliable, irrenunciable</td></tr>
+      <tr><td>Firmé una garantía menor y el producto falló después: ¿puedo reclamar?</td><td><span class="res">Sí, si es nuevo</span>: la cláusula que reduce la garantía es nula</td></tr>
+      <tr><td>Una librería compra una computadora que falla a los tres meses</td><td><span class="res">Sí si es nueva</span> (6 m); no si es usada (3 m cumplidos). La librería es consumidor final</td></tr>
+      <tr><td>¿Quién costea el traslado a fábrica o taller habilitado?</td><td><span class="res">El responsable de la garantía</span> (flete y seguro)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="feature u6">
+  <h3>Sociedades — «invente un emprendimiento y compare al menos tres tipos» <span class="n">(la de desarrollo más repetida, 8 apariciones)</span></h3>
+  <table>
+    <thead><tr><th></th><th>S.A.S. (Ley 27.349)</th><th>S.R.L. (arts. 146-162)</th><th>S.A. (arts. 163 y ss.)</th></tr></thead>
+    <tbody>
+      <tr><td>Socios</td><td>uno o más</td><td>de dos a cincuenta</td><td>dos o más (uno = S.A.U.)</td></tr>
+      <tr><td>Capital en</td><td>acciones</td><td>cuotas ($10)</td><td>acciones</td></tr>
+      <tr><td>Capital mínimo</td><td>2 SMVyM</td><td>no fijado por ley</td><td>lo fija el P.E.N.</td></tr>
+      <tr><td>Responsabilidad</td><td>limitada</td><td>limitada</td><td>limitada</td></tr>
+      <tr><td>Administración</td><td>administrador/es</td><td>gerencia</td><td>directorio (mín. 3 si art. 299)</td></tr>
+      <tr><td>Inscripción</td><td>digital, 24 horas</td><td>contrato ante el Registro</td><td>estatuto ante el Registro</td></tr>
+    </tbody>
+    <caption>Debe aplicarse a un ejemplo concreto (capital, socios, administración, duración, inscripción). La comparación abstracta no suma puntos: es taxativo en la corrección.</caption>
+  </table>
+</div>
+
+<hr class="rule wide">
+
+<div class="cols">
+
+  <section class="u8">
+    <h2 class="unit">Unidad 8 — Derechos del consumidor</h2>
+
+    <div class="qa"><span class="q">La ley permite cláusulas abusivas si el consumidor las consiente. <span class="freq">(5×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Falso.</span> Los derechos del consumidor son de orden público (art. 65) e irrenunciables; las abusivas se tienen por no convenidas (art. 37) aunque medie conformidad.</span></div>
+
+    <div class="qa"><span class="q">¿A quiénes define como usuarios? <span class="freq">(4×)</span> <span class="trap">trampa</span></span><span class="a">Persona <span class="res">física o jurídica</span>, como <span class="res">destinatario final</span>, en beneficio propio o de su grupo familiar o social (art. 1).<span class="note">Distractores: omiten «destinatario final» o restringen a sólo física / sólo jurídica.</span></span></div>
+
+    <div class="qa"><span class="q">Defina consumidor. <span class="freq">(3×)</span></span><span class="a">Persona física o jurídica que adquiere o usa bienes o servicios, a título oneroso o gratuito, como destinatario final.<span class="note">No agregar «expuesto en la relación de consumo»: derogado en 2015.</span></span></div>
+
+    <div class="qa"><span class="q">Las presunciones de la ley operan a favor del… <span class="freq">(3×)</span></span><span class="a"><span class="res">consumidor</span>, por ser la parte débil.</span></div>
+
+    <div class="qa"><span class="q">El contador olvida la declaración jurada y la AFIP multa: ¿se reclama por la Ley 24.240? <span class="freq">(3×)</span></span><span class="a"><span class="res">No.</span> El profesional liberal con título y matrícula está excluido (art. 2); sólo alcanza su publicidad.</span></div>
+
+    <div class="qa"><span class="q">¿Quién costea el traslado a fábrica o taller habilitado? <span class="freq">(3×)</span></span><span class="a">El <span class="res">responsable de la garantía</span> (art. 11).</span></div>
+
+    <div class="qa"><span class="q">Se tendrán por no convenidas las cláusulas que… (art. 37) <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a">Desnaturalicen o limiten la responsabilidad por daños; importen renuncia de derechos del consumidor o amplíen los de la otra parte; inviertan la carga de la prueba.<span class="note">«Cláusulas confusas» es distractor.</span></span></div>
+
+    <div class="qa"><span class="q">¿Quién responde por el daño derivado del vicio o riesgo? (art. 40) <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a">Solidariamente: productor, fabricante, importador, distribuidor, proveedor, vendedor y quien colocó su marca.<span class="note">«El empleado del comercio» es distractor.</span></span></div>
+
+    <div class="qa"><span class="q">La ley protege solamente a los nacionales. <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: no distingue nacionales de extranjeros.</span></div>
+
+    <div class="qa"><span class="q">Los profesionales liberales con título y matrícula están protegidos por la ley. <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: excluidos (art. 2); sólo su publicidad.</span></div>
+
+    <div class="qa"><span class="q">La responsabilidad es solidaria entre consumidor y proveedor. <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: la solidaridad recae sobre la cadena de proveedores (art. 40).</span></div>
+
+    <div class="qa"><span class="q">Tengo un comercio y los insumos vienen fallados: ¿reclamo por la ley?</span><span class="a"><span class="res">No</span>: no soy destinatario final (compro para producir o revender).</span></div>
+  </section>
+
+  <section class="u7">
+    <h2 class="unit">Unidad 7 — Contratos</h2>
+
+    <div class="qa"><span class="q">¿Hasta cuándo puede retractarse la aceptación? <span class="freq">(4×)</span></span><span class="a">Antes de que <span class="res">llegue al destinatario</span> (teoría de la recepción, arts. 975 y 981).</span></div>
+
+    <div class="qa"><span class="q">Clasifique los contratos conmutativos y aleatorios. <span class="freq">(3×)</span></span><span class="a"><span class="res">Conmutativo</span>: prestaciones ciertas y equivalentes desde el inicio. <span class="res">Aleatorio</span>: la prestación depende de un hecho futuro e incierto (sin tutela por desequilibrio).</span></div>
+
+    <div class="qa"><span class="q">Complete: dos o más partes ___ para crear relaciones patrimoniales. <span class="freq">(2×)</span></span><span class="a"><span class="res">manifiestan su consentimiento</span> (art. 957).</span></div>
+
+    <div class="qa"><span class="q">El contrato es un «acto jurídico»: ¿qué significa? <span class="freq">(2×)</span></span><span class="a">Es un acto voluntario lícito cuyo fin inmediato es producir efectos jurídicos patrimoniales entre las partes.</span></div>
+
+    <div class="qa"><span class="q">¿Cuál es el modo natural de extinción de los contratos? <span class="freq">(2×)</span></span><span class="a">El <span class="res">cumplimiento</span> (pago) de las obligaciones.</span></div>
+
+    <div class="qa"><span class="q">Onerosos y gratuitos: diferencia y consecuencia. <span class="freq">(2×)</span></span><span class="a">Oneroso: obligaciones económicas para ambas partes; gratuito: sólo una. Los onerosos gozan de mayor protección (las cláusulas dudosas se interpretan para reequilibrar).</span></div>
+
+    <div class="qa"><span class="q">Unilateral y bilateral. <span class="trap">trampa</span></span><span class="a">Unilateral: se obliga una parte; bilateral: ambas (doble ejemplar, excepción de incumplimiento, pacto comisorio).<span class="note">El seguro es bilateral pero aleatorio.</span></span></div>
+
+    <div class="qa"><span class="q">¿Cómo se expresa el consentimiento? <span class="freq">(4×)</span></span><span class="a"><span class="res">Expreso</span> (verbal, escrito o signos inequívocos) o <span class="res">tácito</span> (hechos que lo presuponen).</span></div>
+
+    <div class="qa"><span class="q">¿Qué transfiere la cesión de derechos? <span class="freq">(3×)</span></span><span class="a">Un <span class="res">derecho</span>; rigen las reglas de compraventa, permuta o donación según la contraprestación. Oponible al deudor desde la notificación (art. 1620).</span></div>
+
+    <div class="qa"><span class="q">¿Qué se transmite en la locación de cosa? <span class="freq">(3×)</span></span><span class="a">El locador entrega el uso y goce temporario de una cosa; el locatario paga un precio en dinero.</span></div>
+
+    <div class="qa"><span class="q">Ejemplos de contratos prohibidos. <span class="freq">(3×)</span></span><span class="a">Entre cónyuges; abogados o jueces sobre bienes litigiosos en que intervienen; mandatario sobre el bien del mandato; objeto imposible; objeto ilícito.</span></div>
+
+    <div class="qa"><span class="q">El objeto del contrato. <span class="freq">(3×)</span></span><span class="a">La prestación (dar, hacer o no hacer): determinada, posible, lícita y conforme a la moral (arts. 1003-1004).</span></div>
+
+    <div class="qa"><span class="q">Invente un contrato y analice sus elementos esenciales. <span class="freq">(3×)</span></span><span class="a">Aplicar a un caso: capacidad, consentimiento, objeto, causa y forma. La mera enunciación no suma.</span></div>
+
+    <div class="qa"><span class="q">Dos ejemplos de rescisión y dos de resolución. <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Rescisión</span>: acuerdo de partes, hacia el futuro. <span class="res">Resolución</span>: incumplimiento o hecho sobreviniente, con efecto retroactivo.<span class="note">Ninguna es revocación.</span></span></div>
+
+    <div class="qa"><span class="q">Un principio para interpretar los contratos. <span class="freq">(3×)</span></span><span class="a">Buena fe, usos y costumbres (el contrato como unidad); condiciones al contratar; conducta de las partes; finalidad.</span></div>
+
+    <div class="qa"><span class="q">Oferta, contraoferta y aceptación con cinco intercambios. <span class="freq">(3×)</span></span><span class="a">Narrar cinco idas y vueltas y el acuerdo final (p. ej. kiosco y proveedor: contrato formal, exclusividad y heladera en comodato).</span></div>
+
+    <div class="qa"><span class="q">¿Para qué se utiliza el mandato? <span class="freq">(2×)</span></span><span class="a">Encargar la ejecución de actos jurídicos por cuenta de otro, con o sin representación; se presume oneroso (art. 1319).</span></div>
+
+    <div class="qa"><span class="q">Vicio de lesión: ¿qué dos condiciones exige? <span class="freq">(3×)</span></span><span class="a">Aprovechamiento de la necesidad, ligereza o inexperiencia, y desproporción patrimonial notable. Habilita la nulidad o el reajuste (art. 332).</span></div>
+
+    <div class="qa"><span class="q">¿Un menor de 18 años puede adquirir una propiedad? <span class="freq">(3×)</span></span><span class="a"><span class="res">No por sí mismo</span>: por medio de sus representantes o si está emancipado. Con título habilitante administra lo que gana.</span></div>
+
+    <div class="qa"><span class="q">¿Qué es el contrato por adhesión? <span class="freq">(2×)</span></span><span class="a">Una parte no negocia las cláusulas predispuestas: sólo se adhiere. Las dudosas se interpretan contra el predisponente; las abusivas, por no escritas (arts. 987-988).</span></div>
+
+    <div class="qa"><span class="q">¿Filial o sucursal?</span><span class="a"><span class="res">Sucursal</span>: sin personalidad propia, responde la casa matriz. <span class="res">Filial</span>: persona jurídica independiente, responde con su propio patrimonio.</span></div>
+  </section>
+
+  <section class="u9">
+    <h2 class="unit">Unidad 9 — Derecho laboral</h2>
+
+    <div class="qa"><span class="q">Planos de subordinación del vínculo laboral. <span class="freq">(5×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Económico, técnico y jurídico</span> (art. 23).<span class="note">Distractores: moral, dolo, culpa, sancionatorio, organizacional, regulatorio.</span></span></div>
+
+    <div class="qa"><span class="q">Deberes del empleador. <span class="freq">(4×)</span> <span class="trap">trampa</span></span><span class="a">Pago, seguridad, ocupación, diligencia, obligaciones sindicales y de la seguridad social con entrega del certificado, no discriminar, llevar libros, formación profesional.<span class="note">No concurrencia, custodia y colaboración corresponden al trabajador; sancionar es poder disciplinario.</span></span></div>
+
+    <div class="qa"><span class="q">Principio protectorio: sus tres reglas. <span class="freq">(3×)</span></span><span class="a"><span class="res">In dubio pro operario; norma más favorable; condición más beneficiosa</span> (art. 9).</span></div>
+
+    <div class="qa"><span class="q">Empleador y empleado pactan libremente, sin límite alguno. <span class="freq">(4×)</span></span><span class="a"><span class="res">Falso</span>: rigen pisos mínimos irrenunciables (LCT, convenios, art. 14 bis).</span></div>
+
+    <div class="qa"><span class="q">Causas de extinción de la relación laboral. <span class="freq">(3×)</span> <span class="trap">trampa</span></span><span class="a">Renuncia, despido (directo o indirecto, con o sin causa), mutuo acuerdo, jubilación, muerte del trabajador, muerte o quiebra del empleador, incapacidad total, abandono, fuerza mayor.<span class="note">No la muerte del accionista mayoritario ni el «factor de atribución».</span></span></div>
+
+    <div class="qa"><span class="q">La irrenunciabilidad impide renunciar al empleo. <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: prohíbe renunciar a los derechos (art. 12); al empleo se puede renunciar (art. 240).</span></div>
+
+    <div class="qa"><span class="q">La primacía de la realidad prioriza lo ocurrido sobre las formas. <span class="freq">(2×)</span></span><span class="a"><span class="res">Verdadero</span> (art. 14).</span></div>
+
+    <div class="qa"><span class="q">El art. 14 regula jornada limitada, vacaciones pagas y salario mínimo. <span class="freq">(2×)</span> <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: eso es el art. 14 bis; el art. 14 enuncia derechos civiles (trabajar, comerciar, navegar).</span></div>
+
+    <div class="qa"><span class="q">Por el principio de continuidad, en el plazo fijo no se puede despedir antes del vencimiento. <span class="freq">(2×)</span></span><span class="a"><span class="res">Falso</span>: se puede, con indemnización y daños. La continuidad favorece la subsistencia del vínculo (art. 10).</span></div>
+
+    <div class="qa"><span class="q">Avisa por teléfono que no podrá concurrir por enfermedad: ¿qué puede hacer el empleador? <span class="trap">trampa</span></span><span class="a">Enviar el servicio médico y pedir certificado; si lo presenta, abonar normalmente.<span class="note">No descontar vacaciones ni sueldo, ni suspender, ni usarlo como antecedente. Con el aviso alcanza.</span></span></div>
+
+    <div class="qa"><span class="q">Poder disciplinario del empleador.</span><span class="a">Amonestar, suspender (hasta treinta días por año) y despedir por incumplimiento; proporcional y acumulativo.</span></div>
+  </section>
+
+  <section class="u6">
+    <h2 class="unit">Unidad 6 — Sociedades</h2>
+
+    <div class="qa"><span class="q">Una S.R.L. carece de capital para sus deudas: ¿responde el patrimonio de los socios?</span><span class="a"><span class="res">No</span>: responsabilidad limitada al aporte; la sociedad va a concurso o quiebra.</span></div>
+
+    <div class="qa"><span class="q">Una sociedad de hecho sin capital: ¿qué responsabilidad? <span class="trap">trampa</span></span><span class="a">Según el libro, <span class="res">solidaria e ilimitada</span> (patrimonio personal).<span class="note">Reforma de 2015: la Sección IV responde de manera mancomunada y por partes iguales (art. 24).</span></span></div>
+
+    <div class="qa"><span class="q">¿Qué elementos incorporar al estatuto?</span><span class="a">Denominación, duración, objeto, domicilio, inicio de operaciones, capital, acciones o cuotas, órganos de gobierno y reglas de acuerdos (art. 11).</span></div>
+  </section>
+
+  <section class="uo">
+    <h2 class="unit">Repaso — Procesal y civil</h2>
+
+    <div class="qa"><span class="q">La prueba confesional reconoce la ___ de un hecho.</span><span class="a"><span class="res">verdad</span>.</span></div>
+    <div class="qa"><span class="q">Cualquier persona humana puede ser testigo. <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: debe ser capaz, mayor de 14 años, no consanguíneo ni cónyuge (salvo reconocimiento de firmas).</span></div>
+    <div class="qa"><span class="q">El instrumento público no hace plena prueba de lo que contiene. <span class="trap">trampa</span></span><span class="a"><span class="res">Falso</span>: hace plena fe por sí mismo.</span></div>
+    <div class="qa"><span class="q">El derecho procesal es el conjunto de ___ y principios jurídicos.</span><span class="a"><span class="res">normas</span>.</span></div>
+    <div class="qa"><span class="q">Facultad de promover la actividad del órgano jurisdiccional.</span><span class="a">La <span class="res">acción</span>.</span></div>
+    <div class="qa"><span class="q">Resolución dictada por un árbitro.</span><span class="a">El <span class="res">laudo</span> arbitral.</span></div>
+  </section>
+
+</div>
+
+<hr class="rule wide">
+
+<div class="parthead">
+  <div class="eyebrow">Segunda parte</div>
+  <h2>Resumen integral — lo esencial de cada unidad</h2>
+  <div class="note2">Conceptos, datos para tener a mano y las trampas más frecuentes, sin enredarse con la numeración de los artículos</div>
+</div>
+
+<div class="unitblock u6">
+  <h2 class="unit">Unidad 6 — Sociedades</h2>
+  <p class="lead">Hay sociedad cuando una o más personas se organizan bajo un tipo legal y aportan bienes o trabajo para producir o intercambiar, repartiendo ganancias y soportando pérdidas. La sociedad es una persona distinta de sus socios: tiene patrimonio propio, y por eso en la mayoría de los tipos los socios sólo arriesgan lo que aportaron. El ánimo de colaborar en pie de igualdad es la <em>affectio societatis</em>.</p>
+  <ul class="pts">
+    <li><b>Capital.</b> En la S.R.L. se divide en <em>cuotas</em>; en la S.A. y la S.A.S., en <em>acciones</em>.</li>
+    <li><b>Responsabilidad.</b> Limitada al aporte en S.R.L., S.A. y S.A.S.; personal e ilimitada en la sociedad de hecho y en la colectiva.</li>
+    <li><b>Una sola persona.</b> Sólo la S.A. unipersonal y la S.A.S. admiten un único socio.</li>
+    <li><b>Órganos.</b> Gobierno (reunión de socios o asamblea), administración (gerencia en la S.R.L., directorio en la S.A.) y fiscalización (la sindicatura es opcional en la S.R.L. y la S.A.S.).</li>
+    <li><b>Tipicidad.</b> Hay que adoptar uno de los tipos previstos; no se inventan formas nuevas.</li>
+    <li><b>Inscripción.</b> La S.A.S. se constituye digitalmente y en el día; la S.R.L. y la S.A., por contrato o estatuto ante el Registro.</li>
+  </ul>
+  <p class="meta-line"><span class="lbl">Respuesta tipo.</span> Para «invente un emprendimiento y compare tres tipos», usar el cuadro comparativo del comienzo y aplicar cada elemento (capital, socios, administración, inscripción, responsabilidad) <em>al ejemplo</em>: la comparación abstracta no puntúa.</p>
+  <p class="meta-line warn"><span class="lbl">Trampas.</span> confundir cuotas (S.R.L.) con acciones (S.A. y S.A.S.) · creer que cualquier sociedad puede ser unipersonal · la sociedad de hecho, según el libro, responde solidaria e ilimitadamente, pero la reforma de 2015 la volvió mancomunada y por partes iguales.</p>
+</div>
+
+<div class="unitblock u7">
+  <h2 class="unit">Unidad 7 — Contratos</h2>
+  <p class="lead">El contrato es el acuerdo de voluntades de dos o más <em>partes</em> que crea, regula, modifica, transfiere o extingue relaciones jurídicas de contenido económico; es la principal fuente de obligaciones. «Parte» no es lo mismo que «persona»: una parte puede estar integrada por varias personas.</p>
+  <ul class="pts">
+    <li><b>Cinco elementos.</b> Capacidad, consentimiento, objeto, causa y forma.</li>
+    <li><b>Consentimiento.</b> Se forma con oferta y aceptación; puede ser expreso o tácito. La aceptación se puede retractar mientras no haya llegado al destinatario.</li>
+    <li><b>Objeto.</b> La prestación (dar, hacer o no hacer): determinada, posible, lícita y conforme a la moral.</li>
+    <li><b>Causa.</b> El fin inmediato del acto, no el motivo personal de cada parte.</li>
+    <li><b>Forma.</b> Rige la libertad de formas; sólo es formal cuando la ley lo exige (por ejemplo, la donación de un inmueble necesita escritura).</li>
+    <li><b>Capacidad e inhabilidades.</b> Todos pueden contratar salvo incapacidad o inhabilidad (cónyuges entre sí, abogados o jueces sobre bienes litigiosos, el mandatario sobre el bien del mandato).</li>
+  </ul>
+
+  <div class="feature" style="margin-top:6px">
+    <h3>Cómo se clasifican los contratos</h3>
+    <table>
+      <thead><tr><th style="width:32%">Par</th><th>Distinción</th></tr></thead>
+      <tbody>
+        <tr><td>Unilateral / bilateral</td><td>se obliga una sola parte / se obligan ambas (de ahí el doble ejemplar y la excepción de incumplimiento)</td></tr>
+        <tr><td>Oneroso / gratuito</td><td>ventaja económica para ambas partes / sólo para una; los onerosos tienen más protección</td></tr>
+        <tr><td>Conmutativo / aleatorio</td><td>prestaciones ciertas desde el inicio / dependen de un hecho futuro e incierto</td></tr>
+        <tr><td>Por adhesión</td><td>una parte no negocia las cláusulas: las dudosas se leen en su contra y las abusivas se tienen por no escritas</td></tr>
+        <tr><td>Nominado / innominado</td><td>tiene o no una regulación propia con nombre en la ley</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="feature">
+    <h3>Contratos típicos — la idea central de cada uno</h3>
+    <table>
+      <thead><tr><th style="width:30%">Contrato</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td>Compraventa</td><td>transferir la propiedad de una cosa a cambio de un precio en dinero</td></tr>
+        <tr><td>Permuta</td><td>intercambiar una cosa por otra, sin dinero</td></tr>
+        <tr><td>Locación de cosa</td><td>ceder el uso y goce temporario de una cosa por un precio</td></tr>
+        <tr><td>Obra / servicios</td><td>en la obra se compromete un <em>resultado</em>; en los servicios, los <em>medios</em></td></tr>
+        <tr><td>Mandato</td><td>encargar la realización de actos jurídicos por cuenta de otro</td></tr>
+        <tr><td>Cesión de derechos</td><td>transferir un derecho; es oponible al deudor desde que se lo notifica</td></tr>
+        <tr><td>Donación</td><td>transferir algo de manera gratuita</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="pts">
+    <li><b>Extinción natural.</b> El cumplimiento de las obligaciones.</li>
+    <li><b>Rescisión.</b> Las partes deshacen el contrato de común acuerdo o por una facultad pactada; efecto hacia el futuro.</li>
+    <li><b>Resolución.</b> Se cae por incumplimiento o un hecho sobreviniente; vuelve las cosas al estado anterior.</li>
+    <li><b>Revocación.</b> Una parte lo deja sin efecto por una causa que la ley autoriza.</li>
+    <li><b>Vicio de lesión.</b> Aprovechar la necesidad o inexperiencia del otro con desproporción notable; permite anular o reajustar.</li>
+  </ul>
+  <p class="meta-line"><span class="lbl">Respuestas tipo.</span> «Invente un contrato y analice sus elementos» y «describa cinco intercambios de oferta y contraoferta» se resuelven aplicando todo a un caso concreto, no enumerando.</p>
+  <p class="meta-line warn"><span class="lbl">Trampas.</span> obra = resultado y servicios = medios (suele venir invertido) · «parte» no es «persona» · escribir un contrato no siempre cumple la forma exigida · no confundir rescisión, resolución y revocación · un seguro es bilateral pero aleatorio.</p>
+</div>
+
+<div class="unitblock u8">
+  <h2 class="unit">Unidad 8 — Derechos del consumidor</h2>
+  <p class="lead">El régimen protege a la parte débil de la relación de consumo. Ante la duda se interpreta a favor del consumidor, y sus derechos son de orden público: no se pueden renunciar, ni siquiera con su conformidad.</p>
+  <ul class="pts">
+    <li><b>Consumidor.</b> Persona física o jurídica que adquiere o usa un bien o servicio como destinatario final, para sí o su grupo familiar o social.</li>
+    <li><b>Proveedor.</b> Quien lo ofrece de manera profesional. Quedan afuera los profesionales liberales con título y matrícula; sólo entra su publicidad.</li>
+    <li><b>Información y trato digno.</b> La información debe ser cierta, clara y gratuita; está prohibido el trato vejatorio.</li>
+    <li><b>La oferta y la publicidad obligan</b> e integran el contrato.</li>
+    <li><b>Cláusulas abusivas.</b> Se tienen por no convenidas y el juez integra el contrato.</li>
+    <li><b>Responsabilidad solidaria</b> de toda la cadena (fabricante, importador, distribuidor, vendedor, marca) frente al daño.</li>
+    <li><b>Posición dominante.</b> Tenerla no es ilegal; lo ilegal es abusar de ella.</li>
+  </ul>
+
+  <div class="feature">
+    <h3>Datos de consumidor para tener a mano</h3>
+    <table>
+      <thead><tr><th style="width:34%">Tema</th><th>Dato</th></tr></thead>
+      <tbody>
+        <tr><td>Garantía legal</td><td>seis meses si es nuevo, tres si es usado; es un mínimo, sólo ampliable e irrenunciable</td></tr>
+        <tr><td>Traslado para la reparación</td><td>a cargo del responsable de la garantía</td></tr>
+        <tr><td>Revocación o arrepentimiento</td><td>diez días corridos en ventas fuera del local o electrónicas; irrenunciable</td></tr>
+        <tr><td>Daño directo</td><td>lo fija la autoridad administrativa, a favor del consumidor</td></tr>
+        <tr><td>Daño punitivo</td><td>lo fija el juez, a pedido del damnificado y a su favor, como sanción disuasiva</td></tr>
+        <tr><td>Publicidad engañosa</td><td>basta que sea apta para inducir a error, aunque no haya daño concreto</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta-line warn"><span class="lbl">Trampas.</span> el «consumidor expuesto» se eliminó en 2015 · los profesionales liberales están excluidos · la garantía es 6 nuevo / 3 usado (no al revés) · la conformidad no valida una cláusula abusiva · la solidaridad es de la cadena de proveedores, no entre consumidor y proveedor · la revocación se cuenta en días corridos.</p>
+</div>
+
+<div class="unitblock u9">
+  <h2 class="unit">Unidad 9 — Derecho laboral</h2>
+  <p class="lead">Regula el trabajo en relación de dependencia. Como el trabajador es la parte más débil, todo gira alrededor del principio protectorio. La dependencia se reconoce por tres planos de subordinación —económica, técnica y jurídica— y la sola prestación de tareas hace presumir que hay contrato de trabajo.</p>
+  <ul class="pts">
+    <li><b>Protectorio.</b> Tres reglas: en la duda a favor del trabajador, norma más favorable y condición más beneficiosa.</li>
+    <li><b>Irrenunciabilidad.</b> No se puede renunciar a los derechos; al empleo sí se puede renunciar.</li>
+    <li><b>Primacía de la realidad.</b> Vale lo que ocurrió en los hechos por encima de los papeles.</li>
+    <li><b>Continuidad.</b> Ante la duda se favorece la subsistencia del vínculo.</li>
+    <li><b>Deberes del empleador.</b> Pagar, dar seguridad y ocupación, no discriminar, llevar libros y entregar el certificado, capacitar.</li>
+    <li><b>Deberes del trabajador.</b> Diligencia y colaboración, fidelidad, obediencia, custodia y no concurrencia.</li>
+    <li><b>Facultades del empleador.</b> Dirigir y organizar, modificar de modo razonable las condiciones (ius variandi) y sancionar.</li>
+  </ul>
+
+  <div class="feature">
+    <h3>Laboral — datos para tener a mano</h3>
+    <table>
+      <thead><tr><th style="width:34%">Tema</th><th>Dato</th></tr></thead>
+      <tbody>
+        <tr><td>Jornada diurna</td><td>hasta 8 horas por día / 48 por semana</td></tr>
+        <tr><td>Jornada nocturna</td><td>hasta 7 horas / 42 semanales</td></tr>
+        <tr><td>Jornada insalubre</td><td>hasta 6 horas / 36 semanales</td></tr>
+        <tr><td>Vacaciones según antigüedad</td><td>14, 21, 28 o 35 días corridos (a más años, más días)</td></tr>
+        <tr><td>Suspensión disciplinaria</td><td>tope de 30 días por año</td></tr>
+        <tr><td>Tiempo parcial</td><td>cuando la jornada es menor a 2/3 de la habitual</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="feature">
+    <h3>Modalidades de contratación — cuándo corresponde cada una</h3>
+    <table>
+      <thead><tr><th style="width:30%">Modalidad</th><th>Cuándo se usa</th></tr></thead>
+      <tbody>
+        <tr><td>Tiempo indeterminado</td><td>regla general; el puesto es permanente</td></tr>
+        <tr><td>Plazo fijo</td><td>necesidad con un término cierto y conocido, por escrito; no sirve para reemplazar de modo estable a un permanente</td></tr>
+        <tr><td>Eventual</td><td>necesidad extraordinaria y transitoria, o cubrir una ausencia de plazo incierto</td></tr>
+        <tr><td>Temporada</td><td>actividades que se repiten en ciertas épocas del año</td></tr>
+        <tr><td>Tiempo parcial</td><td>cuando la jornada es menor a 2/3 de la habitual</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="pts">
+    <li><b>Caso «21 de diciembre».</b> Ver el cuadro del comienzo: la clave es si la vacante es permanente o transitoria y si el retorno es cierto o incierto.</li>
+    <li><b>Extinción.</b> Renuncia, despido (con o sin causa, directo o indirecto), mutuo acuerdo, jubilación, muerte del trabajador, muerte o quiebra del empleador, incapacidad total, abandono y fuerza mayor.</li>
+    <li><b>Constitución.</b> El art. 14 enuncia derechos civiles; el 14 bis, los derechos laborales y sociales (jornada limitada, vacaciones pagas, salario mínimo, protección contra el despido arbitrario).</li>
+  </ul>
+  <p class="meta-line warn"><span class="lbl">Trampas.</span> art. 14 frente a 14 bis · la subordinación es económica, técnica y jurídica (no moral, dolo ni culpa) · no se renuncia a los derechos, pero sí al empleo · deberes del empleador frente a los del trabajador · la jornada insalubre es 6/36, no 8/48 · no se puede pactar «sin límite»: rigen pisos mínimos.</p>
+</div>
+
+<footer>
+  Fuentes: parciales del 2.º cuatrimestre, años 2020 a 2025 · Derecho para Ingenieros, ITBA · versión completa con citas en preguntas-repetidas-2do-parcial.md
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# === Obsidian (estado local del editor) ===
+.obsidian/workspace
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/*.json.bak
+.trash/
+
+# === macOS ===
+.DS_Store
+**/.DS_Store
+.AppleDouble
+Icon?
+
+# === Build / dependencias / artefactos (no se publican) ===
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyi
+_build/
+*.app/
+*.command
+
+# Nota: el material auxiliar (raw/, study/, estudio/, prompts/, *.m4a) se excluye
+# en TIEMPO DE COPIA (ver _estandar/AUDIT.md), no por .gitignore. La única carpeta
+# raw/ presente es PAW/raw/assets/notion-paw-images/ (imágenes referenciadas por la
+# wiki de PAW), que SÍ debe versionarse — por eso no se ignora `raw/` acá.

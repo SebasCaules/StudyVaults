@@ -1,0 +1,192 @@
+\documentclass[10pt, a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=1.8cm, bottom=1.8cm, left=2cm, right=2cm}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{multicol}
+\setlength{\headheight}{15pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+% Colores
+\definecolor{azul}{RGB}{25, 85, 155}
+\definecolor{rojo}{RGB}{185, 30, 40}
+\definecolor{verde}{RGB}{25, 120, 55}
+\definecolor{naranja}{RGB}{195, 95, 15}
+\definecolor{grisclaro}{RGB}{247, 247, 247}
+
+% Secciones
+\titleformat{\section}[block]{\normalsize\bfseries\color{white}\filcenter}{}{0em}{\colorbox{azul}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\centering #1}}}
+\titlespacing{\section}{0pt}{7pt}{3pt}
+
+% Cajas
+\newmdenv[backgroundcolor=grisclaro, linecolor=azul, linewidth=1.2pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=7pt, innerrightmargin=5pt, innertopmargin=3pt, innerbottommargin=3pt,
+  skipabove=2pt, skipbelow=2pt]{cajaClave}
+
+\newmdenv[backgroundcolor=red!7, linecolor=rojo, linewidth=1.2pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=7pt, innerrightmargin=5pt, innertopmargin=3pt, innerbottommargin=3pt,
+  skipabove=2pt, skipbelow=2pt]{cajaError}
+
+\newmdenv[backgroundcolor=green!7, linecolor=verde, linewidth=1.2pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=7pt, innerrightmargin=5pt, innertopmargin=3pt, innerbottommargin=3pt,
+  skipabove=2pt, skipbelow=2pt]{cajaBien}
+
+\setlist[itemize]{noitemsep, topsep=1pt, leftmargin=1.2em}
+\setlist[enumerate]{noitemsep, topsep=1pt, leftmargin=1.5em}
+
+\newcommand{\D}[2]{\textbf{\color{azul}#1:} #2\\[1pt]}
+\newcommand{\mal}[1]{\textbf{\color{rojo}#1}}
+\newcommand{\alerta}[1]{\textbf{\color{naranja}#1}}
+\newcommand{\bien}[1]{\textbf{\color{verde}#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{azul}\textbf{Derecho para Ingenieros --- 1er Parcial}}
+\rhead{\small\color{azul}Resumen de Conceptos Clave}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+  {\large\bfseries\color{azul} Resumen Ejecutivo --- 1er Parcial Derecho para Ingenieros}\\[2pt]
+  {\small ITBA $\cdot$ Abril 2026 $\cdot$ Promedio sesion: \textbf{7.29/10} sobre 70 preguntas}
+\end{center}
+\vspace{2pt}\hrule\vspace{5pt}
+
+% ===========================
+\section*{UNIDAD 1 --- Introduccion al Derecho}
+
+\begin{cajaClave}
+\D{Derecho}{Conjunto de normas de conducta \textbf{obligatorias}, impuestas por el Estado y orientadas a la justicia (def. Borda). Ciencia del \textbf{deber ser} (no del ser como la ingenieria).}
+\D{Norma juridica}{Regla de conducta con caracter obligatorio. Debe tener \textbf{validez} (creada conforme al procedimiento) y \textbf{vigencia} (se aplica actualmente). Una ley derogada es valida pero no vigente.}
+\D{Piramide de Kelsen}{CN $>$ Tratados con jerarquia constitucional $>$ Tratados sin jerarquia $>$ Leyes $>$ Decretos $>$ Reglamentos $>$ Contratos.}
+\D{Fuentes del derecho}{Ley (primaria), Costumbre (subsidiaria: solo si no contradice la ley), Jurisprudencia (orientativa), Doctrina (auxiliar). \textbf{Orden: Ley $>$ Costumbre $>$ Jurisprudencia $>$ Doctrina.}}
+\D{Interpretacion de la ley}{Metodos: literal (texto), logico (intencion), historico (antecedentes), analogico (caso similar). La \textbf{analogia} llena lagunas del derecho: si no hay ley para el caso, se aplica la norma del caso mas similar.}
+\D{Derecho publico vs privado}{Publico: relaciones con el Estado (constitucional, penal, administrativo). Privado: entre particulares (civil, comercial).}
+\D{Common Law vs Codificado}{Common Law (EE.UU./UK): precedentes \textbf{vinculantes}, stare decisis. Codificado (Argentina): codigos escritos, precedentes \textbf{orientativos} solo.}
+\D{Derecho Natural vs Positivo}{Natural: principios universales e inmutables anteriores al Estado. Positivo: normas vigentes dictadas por el Estado.}
+\end{cajaClave}
+
+% ===========================
+\section*{UNIDAD 2 --- Organizacion del Estado}
+
+\begin{cajaClave}
+\D{Constitucion Nacional}{Ley suprema. Ultima reforma: \textbf{1994}. Sistema representativo, republicano y federal (art. 1 CN). Supremacia constitucional: ninguna norma puede contradecirla.}
+\D{Art. 75 inc. 22 CN}{\alerta{CRITICO.} Otorga \textbf{jerarquia constitucional} a tratados de DD.HH.: Pacto San Jose de Costa Rica, Pacto de Derechos Civiles y Politicos, CEDAW, CAT, CDPD, entre otros. Desde 1994 son iguales a la CN, superiores a las leyes ordinarias.}
+\D{Division de poderes}{PE: ejecuta leyes y administra el Estado. PL (Congreso bicameral): sanciona leyes, aprueba presupuesto, ratifica tratados. PJ: administra justicia, controla constitucionalidad de normas.}
+\D{Mandatos}{Presidente: 4 anos (reeleccion: solo 1 vez consecutiva). Senadores: 6 anos (se renuevan 1/3 cada 2 anos). Diputados: 4 anos (se renuevan la mitad cada 2 anos). Vicepresidente: preside el Senado, vota en caso de empate.}
+\D{Derechos y Garantias}{Derechos = facultades reconocidas (propiedad, libertad). Garantias = mecanismos de proteccion: \textbf{Habeas corpus} (libertad fisica), \textbf{Amparo} (derechos constitucionales), \textbf{Habeas data} (datos personales).}
+\D{Federalismo}{Facultades \textbf{delegadas}: solo Nacion (relaciones exteriores, defensa, aduanas). Facultades \textbf{concurrentes}: Nacion + Provincias (educacion, salud, obras publicas). Facultades \textbf{reservadas}: solo Provincias (policia local, justicia local).}
+\D{Control de constitucionalidad}{El PJ puede declarar inconstitucional una ley o acto que viole la CN. Recurso extraordinario ante la Corte Suprema.}
+\D{Tratados internacionales}{Con jerarquia constitucional (art. 75 inc. 22) = iguales a CN. Sin jerarquia: igual nivel que leyes. Antes de 1994 todos eran inferiores a leyes.}
+\end{cajaClave}
+
+\begin{cajaError}
+\mal{Errores cometidos:} Tratados = menor jerarquia que leyes (FALSO desde 1994). Art. 75 inc. 22 respondido como autonomia de provincias (FALSO, es jerarquia de tratados de DD.HH.).
+\end{cajaError}
+
+% ===========================
+\section*{UNIDAD 3 --- Derecho Civil}
+
+\begin{cajaClave}
+\D{Persona humana}{Todo ser humano es persona desde el \textbf{nacimiento con vida}. Si nace sin vida, se considera que nunca existio.}
+\D{Persona juridica}{Ente al que el ordenamiento le reconoce aptitud para adquirir derechos: publica (Estado, Iglesia Catolica) o privada (SA, SRL, asociaciones, fundaciones).}
+\D{Capacidad de derecho}{Aptitud para \textbf{ser titular} de derechos y obligaciones (art. 22 CCyCN). Nace con el nacimiento. No puede ser privada absolutamente.}
+\D{Capacidad de ejercicio}{Aptitud para \textbf{ejercer por si mismo} esos derechos (art. 23 CCyCN). Se adquiere a los \textbf{18 anos}. Los menores actuan por representantes.}
+\D{Patrimonio}{Conjunto de bienes y deudas de una persona. Es la garantia comun de los acreedores. Toda persona tiene un unico patrimonio (indivisible, inalienable).}
+\D{Obligacion}{Vinculo juridico acreedor-deudor. Elementos \textbf{esenciales}: Sujetos (acreedor y deudor), Objeto (prestacion: dar, hacer, no hacer), Causa. Elementos accidentales: plazo, lugar, modo.}
+\D{Extincion de obligaciones}{Pago (principal modo), novacion, compensacion, confusion, remision, imposibilidad de cumplimiento, prescripcion.}
+\D{Plazo vs Condicion}{\alerta{TRAMPA FRECUENTE.} Plazo = hecho futuro \textbf{cierto} (ocurrira). Condicion = hecho futuro \textbf{incierto} (puede no ocurrir). Ej: plazo = ``en 30 dias''; condicion = ``si llueve manana''.}
+\D{Contrato}{Acto juridico bilateral que crea, modifica o extingue relaciones juridicas patrimoniales. Elementos: consentimiento, objeto licito, causa, forma. Rescision (acuerdo mutuo) vs Resolucion (incumplimiento) vs Revocacion (voluntad unilateral).}
+\D{Dolo vs Culpa}{Dolo = intencion de danar. Culpa = negligencia, imprudencia o impericia sin intencion. Ambos generan responsabilidad civil.}
+\D{Responsabilidad civil}{Funciones: Preventiva (evitar), Punitiva (sancionar con dano punitivo), Resarcitoria (reparar). Presupuestos: \textbf{Autoria, Antijuridicidad, Factor de atribucion, Dano, Relacion de causalidad.} La intencion dolosa NO es presupuesto obligatorio.}
+\D{Dano resarcible}{Debe ser cierto, personal, subsistente. Rubros: \textbf{Dano emergente} (perdida efectiva sufrida), \textbf{Lucro cesante} (ganancia frustrada), \textbf{Dano moral} (afectacion espiritual). La responsabilidad civil es subsidiaria, resarcitoria y \textbf{preventiva}.}
+\D{Resp. indirecta}{El principal responde por los danos causados por sus dependientes en ejercicio de sus funciones (art. 1765 CCyCN). Ej: empleador por empleado.}
+\end{cajaClave}
+
+% ===========================
+\section*{UNIDAD 4 --- Derecho Comercial}
+
+\begin{cajaClave}
+\D{Fondo de comercio}{Conjunto \textbf{estatico} de elementos de un negocio: clientela, nombre comercial, marcas, patentes, inventario, instalaciones. \textbf{No incluye el inmueble.} Regulado por \alerta{Ley 11.867.}}
+\D{Empresa vs Fondo}{Empresa = concepto \textbf{dinamico} (la actividad economica organizada). Fondo = concepto \textbf{estatico} (los bienes).}
+\D{Transferencia fondo (Ley 11.867)}{Requiere publicacion de \textbf{edictos} para proteger acreedores. Sin edictos, el comprador igual responde ante acreedores del vendedor hasta el valor del fondo.}
+\D{Titulos de credito}{Cheque (Ley 24.452), Letra de cambio, Pagare (Dec. 5965/63), Obligaciones negociables (Ley 23.576). Son literales, autonomos y cartulares.}
+\D{Cheque}{No a la orden = \textbf{intransferible}, solo cobra el destinatario. Cruzado = \textbf{solo deposito bancario} (rayas diagonales en angulo superior izquierdo). Posdatado = no se cobra antes de la fecha indicada.}
+\D{Pagare}{Promesa incondicional de pago firmada por el deudor. A diferencia del cheque, no requiere cuenta bancaria.}
+\D{Seguro (Ley 17.418)}{Contrato \textbf{bilateral} (obligaciones para ambas partes), \textbf{aleatorio} (resultado incierto), requiere pago de \textbf{prima}. Denuncia de siniestro: \textbf{72 horas}. Falta de pago de prima no produce caducidad inmediata automatica.}
+\D{Cesacion de pagos}{Estado de impotencia patrimonial para cumplir obligaciones. Habilita concurso o quiebra.}
+\D{Concurso preventivo vs Quiebra}{Concurso = \textbf{reorganizacion}: acuerdo con acreedores, empresa continua. Quiebra = \textbf{liquidacion}: venta de bienes, empresa cesa. La quiebra puede ser voluntaria o forzada.}
+\end{cajaClave}
+
+\begin{cajaError}
+\mal{Errores cometidos:} Ley 11.867 confundida con Ley 14.486 (MEMORIZAR: \textbf{11.867 = Fondo de Comercio}). Cheque cruzado no respondido. Seguro: faltaron ``bilateral'' y ``aleatorio''.
+\end{cajaError}
+
+% ===========================
+\section*{UNIDAD 5 --- Propiedad Intelectual}
+
+\begin{cajaClave}
+\D{Marco constitucional}{Art. 17 CN: ``Todo autor o inventor es propietario exclusivo de su obra, invento o descubrimiento por el termino que le acuerde la ley.'' Jerarquia: CN $>$ Tratados (OMPI, ADPIC/TRIPS, Convenio de Paris) $>$ Leyes especiales (11.723, 24.481, 22.362).}
+\D{Patentes (Ley 24.481)}{Duracion: \alerta{20 anos improrrogables}. Requisitos: \textbf{Novedad} (no en estado de la tecnica), \textbf{Actividad inventiva} (no obvia para expertos), \textbf{Aplicacion industrial} (fabricable/usable en industria). Organismo: \textbf{INPI}.}
+\D{Estado de la tecnica}{Todo conocimiento publico anterior a la solicitud (patentes previas, papers, publicaciones, usos publicos). Si la invencion ya esta en el estado de la tecnica, NO es patentable.}
+\D{Licencia obligatoria}{El Estado puede obligar al titular de una patente a licenciarla a terceros por razones de interes publico (ej: medicamentos esenciales). El titular conserva la propiedad pero pierde exclusividad.}
+\D{Derecho de autor (Ley 11.723)}{Duracion: \alerta{vida del autor + 70 anos}. Protege la \textbf{EXPRESION} de las ideas, NO las ideas en si. El software es protegido como \textbf{obra literaria} desde 1992. Organismo: \textbf{DNRPA} (Direccion Nacional del Derecho de Autor).}
+\D{Software en relacion de dependencia}{Si el empleado crea software en horario laboral con recursos de la empresa, los \textbf{derechos patrimoniales} pertenecen a la empresa. El empleado retiene derechos morales (paternidad).}
+\D{Marcas (Ley 22.362)}{Duracion: 10 anos, \textbf{renovable indefinidamente}. Tipos: producto, servicio, colectivas, garantia, tridimensionales. Organismo: \textbf{INPI}. Principio de especialidad: la proteccion es por clase de producto/servicio.}
+\D{Marca notoria}{Goza de proteccion especial por su amplio reconocimiento publico, incluso en clases o paises donde no esta registrada. Ej: Coca-Cola, Apple.}
+\D{Disenos industriales}{Formas ornamentales nuevas. Duracion: 5 anos, renovable hasta 15. Protege la \textbf{apariencia}, no la funcion (eso es patente).}
+\D{Sistema internacional}{Convenio de Paris: prioridad entre paises miembros. ADPIC/TRIPS: estandares minimos de PI en la OMC. OMPI: organismo internacional. Sistema de Madrid: registro de marcas en multiples paises con una sola solicitud.}
+\D{Por que plazo limitado}{Equilibrio entre incentivo privado (monopolio temporal = recuperar inversion) e interes publico (dominio publico al vencer = libre uso del conocimiento).}
+\end{cajaClave}
+
+\begin{cajaError}
+\mal{Errores cometidos:} Patentes = 15 anos (FALSO: \textbf{20 anos}). Derecho de autor protege ideas (FALSO: protege la \textbf{expresion}). Omitio ``aplicacion industrial'' como requisito. Software protegido por confidencialidad (FALSO: por \textbf{derecho de autor}).
+\end{cajaError}
+
+% ===========================
+\section*{ERRORES CRITICOS Y CHECKLIST FINAL}
+
+\begin{cajaError}
+\mal{1. Art. 75 inc. 22 CN [PREGUNTA SEGURA]:} Jerarquia constitucional a tratados de DD.HH. desde la reforma de 1994. Son iguales a la CN y superiores a leyes ordinarias.\\
+\mal{2. Orden de fuentes [INVERTIDO EN SESION]:} Ley $>$ Costumbre $>$ Jurisprudencia $>$ Doctrina. La costumbre solo aplica si no hay ley.\\
+\mal{3. Jerarquia de tratados:} Desde 1994: Tratados DD.HH. $=$ CN $>$ Leyes. Antes de 1994 eran menores a las leyes.\\
+\mal{4. Duraciones PI:} Patentes \textbf{20 anos}. Autor \textbf{vida + 70 anos}. Marcas \textbf{10 anos renovable}. Disenos \textbf{5 a 15 anos}.\\
+\mal{5. Ley 11.867:} Fondo de Comercio (NO 14.486).
+\end{cajaError}
+
+\begin{cajaBien}
+\textbf{Checklist pre-parcial:}
+\begin{multicols}{2}
+\begin{itemize}
+  \item[$\square$] Art. 75 inc. 22 = jerarquia DD.HH.
+  \item[$\square$] Patentes = 20 anos improrrogables
+  \item[$\square$] Autor = vida + 70 anos (Ley 11.723)
+  \item[$\square$] Ley 11.867 = Fondo de Comercio
+  \item[$\square$] Plazo = cierto / Condicion = incierto
+  \item[$\square$] Fuentes: Ley $>$ Costumbre $>$ Jurisprudencia
+  \item[$\square$] Derecho de autor protege EXPRESION
+  \item[$\square$] Requisito patente: aplicacion industrial
+  \item[$\square$] Seguro: bilateral + aleatorio + prima
+  \item[$\square$] Resp. civil: 5 presupuestos (NO requiere dolo)
+  \item[$\square$] Resp. indirecta: empleador por empleado
+  \item[$\square$] Cheque cruzado = solo deposito bancario
+\end{itemize}
+\end{multicols}
+\end{cajaBien}
+
+\vspace{3pt}\hrule\vspace{3pt}
+\begin{center}
+\small\color{gray} U1: 7.5 $|$ U2: 8.0 $|$ U3: 7.5 $|$ U4: 7.0 $|$ U5: 6.5 $|$ Mixtas: 6.75 $|$ \textbf{Promedio: 7.29/10}
+\end{center}
+
+\end{document}

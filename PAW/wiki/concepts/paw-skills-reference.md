@@ -1,0 +1,543 @@
+---
+title: PAW Skills & Tools Reference
+type: concept
+created: 2026-04-14
+updated: 2026-04-14
+tags: [tools, workflows, optimization, automation]
+---
+
+# PAW Skills & Tools Reference
+
+Specialized Claude Code skills designed for the PAW project. Each skill is a remote agent optimized for a specific task, with precise model selection and effort levels.
+
+---
+
+## Skill Directory
+
+### 1. **good-practice** — Code Quality Audit
+Reviews all modified files against PAW best practices and standards.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/good-practice` or `/gp` |
+| **Model** | Claude Opus 4.6 |
+| **Effort** | Medium |
+| **Use when** | After making changes, before committing |
+| **Input** | (none — analyzes conversation diff) |
+| **Output** | Violation report with severity levels |
+
+**What it does:**
+- Scans every file modified in the current conversation
+- Compares against [[Pre-Delivery Checklist]], [[Errores Comunes TP1]] and [[Spring Configuration]]
+- Checks for violations:
+  - Maven structure (contracts/implementations separation)
+  - Dependency injection patterns (constructor > field injection)
+  - Naming conventions (camelCase, PascalCase, interfaces)
+  - JSP/view location and structure
+  - Test setup (@Transactional, @Rollback, JUnit 5)
+  - Bean Validation (@Valid, JSR-303)
+  - JDBC patterns (JdbcTemplate, SimpleJdbcInsert)
+  - Enum usage for vocabularies
+  - Model immutability
+
+**Output format:**
+```
+VIOLATIONS FOUND: 2
+[CRITICAL] src/main/java/.../UserService.java:42
+  ❌ Field injection detected (@Autowired on field)
+  ✅ Fix: Use constructor injection instead
+
+[WARNING] src/main/webapp/WEB-INF/views/users.jsp:15
+  ❌ Scriptlet code detected
+  ✅ Fix: Move logic to tag or expression language
+```
+
+**Example usage:**
+```
+/good-practice
+> Analyzing 5 modified files...
+> ✅ All patterns compliant!
+```
+
+---
+
+### 2. **enhancer** — UI/UX Aesthetic Improvements
+Improves visual presentation of JSP views and CSS without changing functionality.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/enhancer` or `/enhance` |
+| **Model** | Claude Haiku 4.5 |
+| **Effort** | Low |
+| **Use when** | Design/appearance tweaks needed |
+| **Input** | Description of area to improve |
+| **Output** | Modified CSS/JSP files |
+
+**What it does:**
+- Focuses ONLY on visual/aesthetic changes:
+  - Spacing, padding, margins (CSS grid/flexbox)
+  - Colors, contrast, shadows
+  - Typography, font sizes, weights
+  - Responsive design breakpoints
+  - Icon integration
+  - Subtle animations/transitions
+  - Accessibility (ARIA, color contrast)
+- Never changes logic, functionality, or structure
+- Respects existing taglibs and component system
+- Maintains full compatibility with current markup
+
+**Constraints:**
+- ❌ No JavaScript changes
+- ❌ No structural changes to views
+- ❌ No business logic modifications
+- ✅ CSS-only or minimal markup adjustment
+
+**Example usage:**
+```
+/enhance improve the product card spacing and make it more responsive
+
+> Improving card component...
+> Modified: src/main/webapp/WEB-INF/tags/productCard.tag
+> Modified: src/main/webapp/resources/css/cards.css
+> Changes: Better mobile spacing, added flex layout, improved shadow depth
+```
+
+---
+
+### 3. **planning** — Feature Implementation Architecture
+Creates a detailed, phase-by-phase implementation plan for new features or architectural changes.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/planning` or `/plan` |
+| **Model** | Claude Opus 4.6 |
+| **Effort** | High |
+| **Use when** | Starting a new feature |
+| **Input** | Feature description and requirements |
+| **Output** | Structured implementation plan |
+
+**What it does:**
+- Analyzes the current project state (modules, dependencies, patterns)
+- Designs implementation following [[Pre-Delivery Checklist]]:
+  - New contracts (interfaces) needed
+  - Implementation classes required
+  - Schema changes (new tables, columns)
+  - Controllers, services, DAOs to create/modify
+  - Models and enums to add
+  - Test requirements
+- Structures plan in phases:
+  1. Models and contracts (entity definitions)
+  2. Persistence layer (DAOs, schema)
+  3. Service layer (business logic)
+  4. Controller layer (endpoints, views)
+  5. Tests (persistence + service)
+
+**Each step includes:**
+- Affected file/module
+- Specific changes with code snippets
+- Tests to implement
+- Dependencies and risks
+
+**Example usage:**
+```
+/planning Add user favorites feature
+
+> Analyzing current architecture...
+> ✅ Plan generated: 5 phases, 12 files affected
+
+PHASE 1: Models & Contracts
+  • Add Favorite enum to models/
+  • Create IFavoriteDao in persistence-contracts/
+  • Add findUserFavorites(), addFavorite(), removeFavorite()
+
+PHASE 2: Persistence
+  • Add favorites table to schema.sql
+  • Implement FavoriteJdbcDao in persistence/
+  • Create persistence tests...
+[detailed breakdown continues]
+```
+
+---
+
+### 4. **implementation** — Execute Feature Plan
+Implements a feature plan (generated by `/planning` or provided) from start to finish.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/implementation` or `/impl` |
+| **Model** | Claude Sonnet 4.6 |
+| **Effort** | Medium |
+| **Use when** | After planning is approved |
+| **Input** | Plan (can paste or reference) |
+| **Output** | All files created/modified, ready to test |
+
+**What it does:**
+- Executes the plan phase-by-phase
+- For each file:
+  - Reads existing code (if present)
+  - Creates or modifies following conventions
+  - Maintains indentation, style, naming
+- Updates dependencies:
+  - Modifies pom.xml if new libraries needed
+  - Updates schema.sql for database changes
+- Writes comprehensive tests:
+  - Persistence tests with HSQLDB
+  - Service tests with Mockito
+- Validates completeness:
+  - Correct dependency injection
+  - Valid imports
+  - Tests pass
+  - Code compiles
+
+**Output includes:**
+- Summary of all changes
+- Testing instructions
+- Recommended git commits
+
+**Example usage:**
+```
+/implementation [paste the plan from /planning]
+
+> Phase 1/5: Models & Contracts
+> ✅ Created models/Favorite.java
+> ✅ Created persistence-contracts/IFavoriteDao.java
+
+> Phase 2/5: Persistence
+> ✅ Modified schema.sql (added favorites table)
+> ✅ Created FavoriteJdbcDao.java
+> ✅ Created FavoriteJdbcDaoTest.java
+> ✅ Tests passing: 8/8
+
+[continues through all phases]
+```
+
+---
+
+### 5. **testing** — Generate Comprehensive Tests
+Creates JUnit 5 tests (persistence + service layers) for existing components.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/testing` or `/test` |
+| **Model** | Claude Sonnet 4.6 |
+| **Effort** | Medium |
+| **Use when** | Component lacks test coverage |
+| **Input** | Class/component name or description |
+| **Output** | Complete test file(s) |
+
+**What it does:**
+- Reads the target source code
+- Generates tests following PAW conventions:
+  - **Persistence tests:** @Transactional, @Rollback, HSQLDB
+  - **Service tests:** Mockito @ExtendWith, @Mock, @InjectMocks
+  - **Controller tests:** MockMvc (if applicable)
+- Covers scenarios:
+  - Happy path (normal operation)
+  - Edge cases (empty, null, boundaries)
+  - Error handling (exceptions, validation)
+  - State verification (DB assertions)
+- Naming: `testXxxWhenYyy` pattern
+- Structure: Arrange-Act-Assert
+
+**Test placement:**
+- Persistence: `persistence/src/test/java/.../XxxJdbcDaoTest.java`
+- Service: `services/src/test/java/.../XxxServiceTest.java`
+
+**Example usage:**
+```
+/testing RentService
+
+> Reading RentService.java...
+> Generating tests for 6 public methods
+
+> Created: services/src/test/java/.../RentServiceTest.java
+> Coverage: 8 happy path, 5 edge cases, 3 error scenarios
+> Total: 16 test methods
+```
+
+---
+
+### 6. **refactor** — Safe Code Improvements
+Refactors code to improve quality without changing behavior.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/refactor` |
+| **Model** | Claude Sonnet 4.6 |
+| **Effort** | Medium |
+| **Use when** | Code quality/maintainability issues |
+| **Input** | File path or description of refactor goal |
+| **Output** | Refactored file(s) + no-regression tests |
+
+**Allowed refactorings:**
+- ✅ Extract duplicated methods
+- ✅ Improve variable/parameter names
+- ✅ Simplify conditional logic
+- ✅ Apply design patterns (Factory, Strategy, Builder)
+- ✅ Reduce cyclomatic complexity
+- ✅ Remove dead code
+
+**Forbidden changes:**
+- ❌ Change behavior or output
+- ❌ Modify public contracts/signatures
+- ❌ Break existing tests
+- ❌ Add new features
+
+**Output:**
+- Refactored code
+- Explanation of each change
+- Regression tests to verify behavior unchanged
+
+**Example usage:**
+```
+/refactor ProductController has nested if statements, too complex
+
+> Analyzing ProductController...
+> Complexity: 12 branches detected
+
+> Refactoring strategy:
+>   1. Extract condition logic to private methods
+>   2. Use early returns to flatten nesting
+>   3. Result: Cyclomatic complexity 12 → 6
+
+> ✅ Refactored: ProductController.java
+> ✅ Tests pass (no behavior change)
+```
+
+---
+
+### 7. **debug** — Root Cause Analysis
+Diagnoses bugs systematically, identifying root cause and proposing fixes.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/debug` |
+| **Model** | Claude Opus 4.6 |
+| **Effort** | High |
+| **Use when** | Bug encountered, needs diagnosis |
+| **Input** | Bug description, error message, logs |
+| **Output** | Root cause, fix strategy, tests |
+
+**Process:**
+1. Reads error message / stack trace
+2. Identifies affected components (which layer)
+3. Simulates execution flow
+4. Pinpoints exact failure point
+5. Identifies root cause:
+   - Configuration issue?
+   - Logic bug?
+   - Data state problem?
+   - Boundary condition?
+6. Proposes fix strategy
+7. Provides test case to reproduce
+8. Suggests fix code
+9. Verifies no regressions
+
+**Example usage:**
+```
+/debug Getting NPE in ProductService.search() when category is null
+
+> Reading ProductService.java...
+> Analyzing search() method with null category input
+> Reading schema.sql for Product table...
+
+ROOT CAUSE:
+  ProductJdbcDao.search() calls buildWhereClause(null)
+  → buildWhereClause() doesn't null-check category
+  → generatesSql.contains(null) throws NPE
+
+FIX:
+  Add null-check: if (category == null) use default or skip clause
+  
+TEST:
+  Write test: testSearchWhenCategoryNullReturnsAllProducts()
+  
+CHANGES:
+  Modified: ProductJdbcDao.java:45-50 (add null check)
+  Created: ProductJdbcDaoTest.java (new test)
+```
+
+---
+
+### 8. **schema-migrate** — Database Migrations
+Plans and executes safe database schema changes with rollback strategy.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/schema-migrate` or `/migrate` |
+| **Model** | Claude Sonnet 4.6 |
+| **Effort** | Medium |
+| **Use when** | Need to modify database schema |
+| **Input** | Description of schema change |
+| **Output** | Updated schema.sql + migration tests |
+
+**What it does:**
+- Reads current schema.sql
+- Plans migration:
+  - SQL statements needed
+  - Execution order
+  - Rollback strategy (if needed)
+  - Data migration steps (if applicable)
+- Generates:
+  - Safe SQL (no breaking changes if possible)
+  - Updated schema.sql
+  - Tests for DAOs affected by schema change
+- Validates:
+  - PostgreSQL + HSQLDB compatibility
+  - No constraint violations
+  - Indexes appropriate
+  - Documentation for oncall
+
+**Migration patterns supported:**
+- Adding columns (with defaults)
+- Adding tables
+- Renaming columns
+- Adding constraints
+- Creating indexes
+- Data transformations
+
+**Example usage:**
+```
+/migrate Add status field to products table
+
+> Reading current schema.sql...
+> Analyzing Product DAO and related services...
+
+MIGRATION PLAN:
+  Step 1: ALTER TABLE products ADD COLUMN status VARCHAR(20) DEFAULT 'ACTIVE'
+  Step 2: Update ProductJdbcDao to use new column
+  Step 3: Create ProductStatusEnum in models/
+  Step 4: Update ProductService tests for new field
+
+ROLLBACK:
+  If needed: ALTER TABLE products DROP COLUMN status
+
+COMPATIBILITY CHECK:
+  ✅ PostgreSQL syntax valid
+  ✅ HSQLDB compatible
+  ✅ No existing constraints broken
+
+TESTS:
+  Created: ProductJdbcDaoTest.java (test new status field)
+  Modified: ProductServiceTest.java (mock new field)
+```
+
+---
+
+### 9. **performance** — Performance Analysis & Optimization
+Identifies performance bottlenecks and proposes optimizations.
+
+| Attribute | Value |
+|-----------|-------|
+| **Trigger** | `/performance` or `/perf` |
+| **Model** | Claude Sonnet 4.6 |
+| **Effort** | High |
+| **Use when** | Slow queries, N+1 problems, memory issues |
+| **Input** | Component/method name or performance concern |
+| **Output** | Analysis + optimization proposals |
+
+**Analysis areas:**
+- Database queries (N+1, missing indexes, inefficient JDBC)
+- Collection operations (unnecessary iterations, sorting)
+- String operations (concatenation in loops)
+- Cache opportunities
+- Lazy loading vs eager loading
+- JSP rendering performance
+- Memory leaks or large object creation
+
+**Output includes:**
+- Bottleneck identification
+- Root cause analysis
+- Optimization strategy with code
+- Estimated improvement
+- Test strategy
+- Trade-offs
+
+**Example usage:**
+```
+/performance ProductController.search() is slow with 10K products
+
+> Analyzing ProductJdbcDao.search()...
+> Current: Full table scan + filter in Java
+> Identified: N+1 problem: loading products then images one-by-one
+
+BOTTLENECK:
+  ProductJdbcDao.search() loads all products, then:
+  for (Product p : products) {
+    p.images = imageDao.findByProductId(p.id)  // N+1!
+  }
+
+OPTIMIZATION:
+  Use JOIN in SQL: SELECT p.*, i.* FROM products p LEFT JOIN images i
+  Hydrate both in single query with custom RowMapper
+
+IMPACT:
+  Before: 10s for 10K products (1 query + 10K image queries)
+  After: 200ms (1 query with JOIN)
+
+TRADE-OFF:
+  Slightly more complex RowMapper, more memory per row
+  ✅ Worth it: 50x speedup
+```
+
+---
+
+## Usage Patterns
+
+### Workflow 1: Feature Development (Start to Finish)
+```
+/plan Add new notification system
+→ Review plan with user
+/impl [paste approved plan]
+→ Code generated and tested
+/good-practice
+→ Validate all patterns
+```
+
+### Workflow 2: Bug Fix Sprint
+```
+/debug Getting error on checkout page
+→ Root cause identified
+/good-practice
+→ Verify fix follows standards
+/testing [fix component]
+→ Create regression tests
+```
+
+### Workflow 3: Optimization Pass
+```
+/perf Dashboard page loading slow
+→ Bottleneck identified
+/refactor [affected component]
+→ Extract reusable queries
+/testing [updated component]
+→ Ensure behavior unchanged
+```
+
+### Workflow 4: Aesthetic Update
+```
+/enhance Product cards look cramped on mobile
+→ CSS improved, spacing adjusted
+/good-practice
+→ Validate no functional changes
+```
+
+---
+
+## Model Selection Guide
+
+| Complexity | Speed | Choose |
+|-----------|-------|--------|
+| Simple review/audit | Fast | **Haiku 4.5** (enhancer) |
+| Moderate task | Balanced | **Sonnet 4.6** (implementation, testing, refactor, debug) |
+| Complex architecture | Thorough | **Opus 4.6** (planning, good-practice, schema-migrate, performance) |
+
+---
+
+## See Also
+
+- [[Pre-Delivery Checklist]] — Detailed rules each skill enforces
+- [[Errores Comunes TP1]] — Anti-patterns skills detect
+- [[Spring Configuration]] — Configuration patterns
+- [[Testing Practices]] — Test conventions
+- [[Maven Module Structure]] — Dependency structure skills verify
