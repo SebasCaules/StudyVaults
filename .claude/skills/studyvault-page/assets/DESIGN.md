@@ -289,4 +289,156 @@ Antes de dar por terminada una página, verificar **todos** estos puntos:
 
 ---
 
+## 12. Estética web — capa de presentación (portal StudyVaults)
+
+> **ALCANCE — LEER PRIMERO.** Esta sección **NO aplica a las notas `.md` del wiki.** Rige **únicamente** la presentación web / portal / sitio de StudyVaults: landing, showcase de componentes y el futuro sitio. Al **generar páginas del vault**, la skill `studyvault-page` debe **IGNORAR esta sección por completo**: no es input, no es referencia, no existe para ese flujo. Las notas siguen siendo **Markdown vanilla** según el **Principio 0** (sección 0): cero callouts, cero Dataview, **cero HTML/CSS** salvo comentarios `<!-- -->`. Ni un `<div>`, ni un `style=`, ni un token de color entra jamás en una nota. Si estás escribiendo una nota y dudás, esta sección **no te concierne** — saltala. El CSS que aparece más abajo está permitido **solo** porque vive en la capa web (HTML/CSS real), nunca en `.md`.
+
+Estética visual derivada del template Neuform **"Premium Agency Portal — Technical Split"** (autor: Meng To / @mengto). El sistema tiene **dos temas conmutables por toggle — dark (por defecto) y light** (ver 12.9). La **firma** es invariante en ambos: el coral `#F47C59` es siempre **acento** (nunca el canvas), display serif Newsreader y metadata mono. El canvas dark es un oscuro **sobrio y aclarado** (no negro puro); el light, un off-white cálido. Los paneles se elevan sobre el canvas y los neutros se derivan de la paleta.
+
+### 12.1 Tokens de color
+
+| Token | Hex | Rol |
+|---|---|---|
+| `--primary` | `#92CFF2` | Azul claro: links, focos, acentos secundarios, detalles |
+| `--accent` | `#F47C59` | Coral: CTA principal, énfasis |
+| `--background` | `#F47C59` | Coral: **acento de realce** (CTA, foco visual). El canvas de página **no** es coral — es `--surface` |
+| `--surface` | `#241208` | Marrón casi negro: **canvas de página (sobrio)** + base de paneles/navbar/footer |
+| `--secondary` | `#241208` | Marrón oscuro (rol estructural) |
+| `--text-primary` | `#FFFFFF` | Texto principal (sobre surface o coral) |
+| `--text-secondary` | `#A1A1AA` | Texto secundario / metadata atenuada |
+| `--border` | `#27272A` | Bordes de cards, controls, divisores |
+
+**Roles.** Los tokens de **rol de color se conmutan por tema** (ver 12.9). En **dark** el canvas es un oscuro sobrio **aclarado** (`color-mix(in srgb, var(--surface) 86%, #FFFFFF)` ≈ `#43332B`, más suave que `#241208`); en **light**, un off-white cálido. Los paneles/cards se elevan sobre el canvas con un derivado `--surface-2` + borde 1px `--border`. El **coral `#F47C59` es acento** —CTA, palabra de realce del hero, objeto focal, dots de estado—; el azul `#92CFF2` es acento secundario y focos (oscurecido en light para contraste). **No se inventan colores nuevos**: los neutros de cada tema se derivan vía `color-mix` de las 6 hex base.
+
+### 12.2 Tipografía
+
+Google Fonts: **Newsreader** (display + body) y **JetBrains Mono** (label/mono), con fallbacks de sistema.
+
+| Rol | Familia | Tamaño | Line-height | Weight | Extra |
+|---|---|---|---|---|---|
+| Display / Hero | Newsreader, serif | 64px | 1.04 | 500 | letter-spacing 0 |
+| H2 | Newsreader, serif | 40px | 1.1 | 500 | escala del hero |
+| H3 | Newsreader, serif | 28px | 1.2 | 500 | escala del hero |
+| Body | Newsreader, serif | 16px | 1.6 | 400 | — |
+| Label / Mono | JetBrains Mono, monospace | 12px | 1.2 | 600 | metadata técnica, eyebrows, badges, coords |
+
+El estilo mono se usa para señal técnica tipo `SYS.01 // Topo_Eval Coords: 34.05N`: eyebrows, IDs de sección, coordenadas, badges. Display y body en Newsreader; el contraste serif/mono es parte de la identidad.
+
+### 12.3 Espaciado y radios
+
+Escala de **8**:
+
+| Token | Valor | Uso |
+|---|---|---|
+| `--space-base` | 8px | unidad base |
+| `--space-gap` | 16px | gap entre elementos |
+| `--space-card` | 24px | padding interno de cards/paneles |
+| `--space-section` | 80px | padding vertical de secciones |
+
+Radios:
+
+| Token | Valor | Uso |
+|---|---|---|
+| `--radius-card` | 8px | cards, paneles |
+| `--radius-control` | 8px | botones, inputs, code blocks |
+| `--radius-pill` | 9999px | badges/pills, nav pills |
+
+### 12.4 Componentes
+
+Lenguaje común: mismo radio (8px en cards/controls, full en pills), borde `--border` de 1px, paneles elevados (`--surface-2` derivado) sobre el canvas oscuro `--surface`, texto blanco.
+
+- **Cards.** panel elevado `--surface-2` (derivado de `--surface` vía `color-mix` con `#FFFFFF`) sobre el canvas oscuro, `--radius-card` 8px, borde 1px `--border`, padding `--space-card` 24px. Hover: **lift** (`translateY(-4px)` + sombra). No se aplanan a un grid genérico — se preserva densidad, jerarquía y el objeto focal.
+- **Buttons.** `--radius-control` 8px. **Primario (CTA):** fondo `--accent` coral, texto `surface`/blanco. **Secundario:** outline 1px `--border` sobre `surface`, texto blanco. Hover: lift `translateY(-4px)` + sombra; transición suave. Mismo radio/borde que cards y badges.
+- **Badges / Pills.** `--radius-pill` (full). Mono 12px/600. Variante outline (`--border`) o acento (azul `--primary` / coral). Para eyebrows y metadata técnica.
+- **Nav.** Navbar en `surface`, sticky; ítems en mono o body chico; pills full-radius para el estado activo; acento azul `--primary` en hover/focus.
+- **Code.** Bloques sobre `surface` (o un tono apenas distinto), borde `--border`, `--radius-control` 8px, JetBrains Mono. Inline code en mono con leve fondo.
+- **Table.** Cabecera en mono/atenuada (`--text-secondary`), filas separadas por borde `--border` de 1px (sin zebra pesado), texto body blanco.
+- **Forms.** Inputs `surface`, borde 1px `--border`, `--radius-control` 8px, texto blanco, placeholder `--text-secondary`. **Focus:** anillo/borde azul `--primary` (`#92CFF2`).
+
+### 12.5 Motion
+
+Suave y contenido. Easing `cubic-bezier(0.22, 1, 0.36, 1)`, duración **300–700ms**.
+
+- **Masked reveal** en headings y secciones (`clip-path` / `translateY` + `mask`).
+- **Staggered entrance**: las cards entran escalonadas (delay incremental).
+- **Hover lift**: `translateY(-4px)` + sombra en cards y botones.
+- **Scroll-triggered**: `IntersectionObserver` agrega la clase `.in-view` al entrar al viewport.
+- **Ambient movement**: capa de gradiente/canvas detrás del contenido, lenta, performante, secundaria.
+
+Toda animación respeta `prefers-reduced-motion`: si está activo, se desactivan reveals, stagger, lift y ambient (estado final inmediato).
+
+### 12.6 WebGL / efectos ambient
+
+Una **única** capa ambient (gradiente animado o canvas liviano) **detrás** del contenido, **nunca encima**. Requisitos: performante (sin jank, idealmente `requestAnimationFrame` con cap), responsive, y consciente de `prefers-reduced-motion` (se congela o desactiva). Es decorativa y secundaria: jamás compite con el texto ni reduce el contraste del contenido sobre `surface`.
+
+### 12.7 Guardrails
+
+Del spec Neuform — **no negociables**:
+
+- **No aplanar** a un grid genérico de cards: se preserva la composición, la densidad y el objeto focal.
+- **No cambiar la firma**: el coral (`--accent`) es siempre **acento**, nunca el canvas. El toggle light/dark conmuta los **neutros** (canvas + paneles + texto) pero mantiene la firma (coral de acento, serif display, mono técnico). El canvas nunca es coral.
+- **Preservar la señal del primer viewport**: el hero mantiene jerarquía display + mono y su objeto focal.
+- **Lenguaje consistente**: botones, cards y badges comparten radio y borde.
+- **El ambient va detrás**, siempre; el contenido manda.
+- **Accesibilidad**: contraste alto (blanco sobre `surface`), focos visibles en azul `--primary`, `prefers-reduced-motion` respetado.
+- **Recordatorio de límite**: nada de esto toca las notas `.md` (sección 0 / 12.0).
+
+### 12.8 Implementación y archivos
+
+Tokens como CSS copy-paste (capa web — permitido aquí, **nunca** en `.md`). El `:root` de abajo lista la **paleta base**; los tokens de **rol de color** (canvas, superficies, texto, bordes) se conmutan por tema en bloques `[data-theme="dark"]` / `[data-theme="light"]` — ver 12.9. En el showcase real `--background` es el **canvas** (no el coral).
+
+```css
+:root {
+  /* Color */
+  --primary:        #92CFF2;
+  --accent:         #F47C59;
+  --background:     #F47C59;
+  --surface:        #241208;
+  --secondary:      #241208;
+  --text-primary:   #FFFFFF;
+  --text-secondary: #A1A1AA;
+  --border:         #27272A;
+  --surface-2:      color-mix(in srgb, var(--surface) 90%, #FFFFFF); /* panel elevado sobre el canvas oscuro */
+
+  /* Tipografía */
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-body:    "Newsreader", Georgia, serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Espaciado (escala de 8) */
+  --space-base:    8px;
+  --space-gap:     16px;
+  --space-card:    24px;
+  --space-section: 80px;
+
+  /* Radios */
+  --radius-card:    8px;
+  --radius-control: 8px;
+  --radius-pill:    9999px;
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast:    300ms;
+  --dur-slow:    700ms;
+}
+```
+
+Archivos de referencia:
+
+- **`_estandar/web/components.html`** — showcase de referencia: implementa cards, buttons, badges, nav, code, table y forms con estos tokens. Es la fuente de verdad visual de la capa web.
+- **`_estandar/web/COMPONENT_LIBRARIES.md`** — librerías y dependencias (fuentes, helpers de motion / IntersectionObserver, capa ambient WebGL/canvas) usadas por el portal.
+
+### 12.9 Temas (light / dark)
+
+La capa web tiene **dos temas** conmutables; el **dark es el default**. La firma (coral de acento, serif display, mono técnico) es idéntica en ambos: solo cambian los **neutros** (canvas, superficies, texto, bordes) y el azul de links/focos.
+
+- **Mecánica.** Atributo `data-theme="dark"|"light"` en `<html>`. La elección persiste en `localStorage` (clave `sv-theme`) y se aplica en un `<script>` al inicio del `<head>` **antes de pintar** (sin flash). Toggle sol/luna en navbar + menú mobile (`aria-label`, `aria-pressed`). Transición suave, guardada por `prefers-reduced-motion`. Primera visita sin elección → **dark**.
+- **Tokens por tema.** Las 6 hex base viven en `:root`; los tokens de **rol** (`--background`, `--surface`, `--surface-2/3`, `--text-*`, `--border`, hairlines, sombras, glows, ring de focus) se definen dentro de `[data-theme="dark"]` y `[data-theme="light"]`, **derivados 100%** por `color-mix`/alpha de esas 6 bases. No se introduce ningún hex de color nuevo.
+- **Dark (default).** Canvas oscuro **aclarado**: `--background = color-mix(in srgb, var(--surface) 86%, #FFFFFF)` (≈ `#43332B`), más suave que `#241208` para que no fatigue la vista. Superficies por encima: `--surface-2` (cards/navbar/footer) y `--surface-3` (heads/inputs) un paso más claras. Texto blanco; acentos coral/azul; sombras a negro.
+- **Light.** Canvas off-white cálido (`color-mix(in srgb, #FFFFFF 96%, var(--surface) 4%)`); paneles blancos con borde claro derivado y sombras grises suaves. Texto `--text-primary = #241208`, secundario gris cálido derivado. El coral se mantiene; el **azul `#92CFF2` se oscurece** para links/focos/código (`color-mix` con `#241208`) por contraste sobre claro.
+- **Accesibilidad.** Contraste **AA** medido en ambos temas; el ring de focus tiene color por tema para que sea siempre visible. La capa ambient adapta su alpha por tema (sutil en light).
+- **Foundations.** Los swatches del style guide muestran las **6 hex base** en cualquier tema.
+
+---
+
 *Fin de DESIGN.md*
