@@ -4,6 +4,7 @@ import type { TocItem } from "@/lib/content/render";
 import Sidebar from "./Sidebar";
 import Breadcrumbs, { type Crumb } from "./Breadcrumbs";
 import TableOfContents from "./TableOfContents";
+import MermaidRunner from "./MermaidRunner";
 
 export default function WikiLayout({
   vault,
@@ -39,6 +40,7 @@ export default function WikiLayout({
       <div className="wiki__toc">
         <TableOfContents items={toc} />
       </div>
+      <MermaidRunner />
     </div>
   );
 }

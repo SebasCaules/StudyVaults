@@ -4,6 +4,9 @@ import type { VaultConfig } from "./vaults";
 export const BASE_PATH =
   process.env.NODE_ENV === "production" ? "/StudyVaults" : "";
 
+// URL pública completa (para sitemap, robots y metadata OG).
+export const SITE_URL = "https://sebascaules.github.io/StudyVaults";
+
 // Prefija basePath para assets/URLs referenciados a mano (iframe, pagefind,
 // imágenes del wiki). next/link y next/image lo aplican solos — no usar acá.
 export function withBase(path: string): string {

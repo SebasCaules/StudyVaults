@@ -5,6 +5,7 @@ import AmbientLayer from "@/components/portal/AmbientLayer";
 import Navbar from "@/components/portal/Navbar";
 import Footer from "@/components/portal/Footer";
 import SearchModal from "@/components/SearchModal";
+import { SITE_URL } from "@/lib/content/slug";
 
 // Display/body serif + mono labels (self-hosted by next/font).
 const newsreader = Newsreader({
@@ -23,12 +24,21 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(`${SITE_URL}/`),
   title: {
     default: "StudyVaults ITBA",
     template: "%s · StudyVaults ITBA",
   },
   description:
     "Bases de conocimiento de materias del ITBA: teoría, guías y parciales destilados en un wiki navegable. Más un planificador de electivas.",
+  openGraph: {
+    type: "website",
+    siteName: "StudyVaults ITBA",
+    locale: "es_AR",
+    title: "StudyVaults ITBA",
+    description:
+      "Siete materias del ITBA como wiki navegable: teoría, guías y parciales. Más un planificador de electivas.",
+  },
 };
 
 // Anti-flash: fija data-theme antes de pintar (default dark de marca;
