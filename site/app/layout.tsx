@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import AmbientLayer from "@/components/portal/AmbientLayer";
+import Navbar from "@/components/portal/Navbar";
+import Footer from "@/components/portal/Footer";
 
 // Display/body serif + mono labels (self-hosted by next/font).
 const newsreader = Newsreader({
@@ -45,7 +48,15 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
-        {children}
+        <a className="skip-link" href="#main">
+          Saltar al contenido
+        </a>
+        <AmbientLayer />
+        <Navbar />
+        <main id="main" className="page flex-1">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

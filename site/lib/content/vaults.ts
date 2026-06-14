@@ -1,0 +1,128 @@
+// Registro de los 7 vaults + metadata de presentación y config del pipeline.
+// Única fuente de verdad para nav, portal, sidebar y rendering por-materia.
+
+export type VaultId =
+  | "mna"
+  | "derecho"
+  | "economia"
+  | "proba"
+  | "paw"
+  | "sds"
+  | "inge2";
+
+export interface VaultConfig {
+  id: VaultId;
+  dir: string; // carpeta en la raíz del repo
+  name: string; // nombre completo de la materia
+  short: string; // etiqueta corta (nav/cards)
+  blurb: string; // descripción de una línea
+  code: string; // código mono tipo "SYS.01"
+  indexPath: string; // ruta del index.md relativa a dir
+  contentRoot: string; // subcarpeta donde viven las notas ("wiki" o "")
+  math: boolean; // ¿$...$ es LaTeX? (PAW: false → es código EL/JSP)
+  lang: "es" | "en";
+}
+
+export const VAULTS: VaultConfig[] = [
+  {
+    id: "mna",
+    dir: "MNA",
+    name: "Métodos Numéricos Avanzados",
+    short: "MNA",
+    blurb:
+      "Álgebra lineal numérica: complejos, espacios vectoriales, factorizaciones LU/QR/SVD y Fourier. Teoría, clases, guías y 30 modelos de parcial resueltos.",
+    code: "SYS.01",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "derecho",
+    dir: "Derecho",
+    name: "Derecho para Ingenieros",
+    short: "Derecho",
+    blurb:
+      "Las 9 unidades del programa: del concepto de derecho a sociedades, contratos, propiedad intelectual y laboral. Con parciales, TPE y referencias jurídicas.",
+    code: "SYS.02",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false,
+    lang: "es",
+  },
+  {
+    id: "economia",
+    dir: "Economia",
+    name: "Economía para Ingenieros",
+    short: "Economía",
+    blurb:
+      "Micro y macro con gráficos vectoriales embebidos y fuerte formulación en LaTeX: oferta y demanda, elasticidades, competencia, mercados.",
+    code: "SYS.03",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "proba",
+    dir: "Proba",
+    name: "Probabilidad y Estadística",
+    short: "Proba",
+    blurb:
+      "Conceptos, distribuciones, teoremas y técnicas, con formularios y fuentes documentadas: variables aleatorias, TCL, estimación, inferencia.",
+    code: "SYS.04",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "paw",
+    dir: "PAW",
+    name: "Programación de Aplicaciones Web",
+    short: "PAW",
+    blurb:
+      "Entidades, conceptos y análisis del stack web (Spring MVC + JSP) del proyecto Rent The Slopes. Incluye imágenes de las teóricas. En inglés.",
+    code: "SYS.05",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false, // $...$ es Expression Language / JSP, no matemática
+    lang: "en",
+  },
+  {
+    id: "sds",
+    dir: "SDS",
+    name: "Simulación de Sistemas",
+    short: "SDS",
+    blurb:
+      "Teoría de simulación, TPs y notas: Vicsek, cell index method, integradores (Verlet, Beeman), observables. Naming en snake_case por convención.",
+    code: "SYS.06",
+    indexPath: "index.md", // SDS tiene el index en la raíz, no en wiki/
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "inge2",
+    dir: "Inge2",
+    name: "Ingeniería del Software II",
+    short: "Inge2",
+    blurb:
+      "Conceptos, clases, casos de estudio y ejercicios de ISW II: arquitectura, seguridad, katas y decisiones de diseño. En inglés.",
+    code: "SYS.07",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false,
+    lang: "en",
+  },
+];
+
+export const VAULTS_BY_ID: Record<VaultId, VaultConfig> = Object.fromEntries(
+  VAULTS.map((v) => [v.id, v]),
+) as Record<VaultId, VaultConfig>;
+
+export function getVault(id: string): VaultConfig | undefined {
+  return VAULTS_BY_ID[id as VaultId];
+}
+
+export const REPO_URL = "https://github.com/SebasCaules/StudyVaults";
