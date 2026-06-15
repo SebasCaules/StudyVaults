@@ -46,3 +46,6 @@ next-env.d.ts
 /public/vault-assets/
 
 /public/pagefind/
+
+# generado por build-planner-data.mjs
+lib/planner/data.json

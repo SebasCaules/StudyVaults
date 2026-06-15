@@ -3,7 +3,7 @@ import { Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AmbientLayer from "@/components/portal/AmbientLayer";
 import Navbar from "@/components/portal/Navbar";
-import Footer from "@/components/portal/Footer";
+import ConditionalFooter from "@/components/portal/ConditionalFooter";
 import SearchModal from "@/components/SearchModal";
 import { SITE_URL } from "@/lib/content/slug";
 
@@ -68,7 +68,7 @@ export default function RootLayout({
         <main id="main" className="page flex-1">
           {children}
         </main>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );

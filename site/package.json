@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-assets.mjs && node scripts/copy-electivas.mjs && node scripts/copy-vault-apps.mjs",
+    "predev": "node scripts/copy-assets.mjs && node scripts/build-planner-data.mjs && node scripts/copy-vault-apps.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/copy-assets.mjs && node scripts/copy-electivas.mjs && node scripts/copy-vault-apps.mjs",
+    "prebuild": "node scripts/copy-assets.mjs && node scripts/build-planner-data.mjs && node scripts/copy-vault-apps.mjs",
     "build": "next build && pagefind --site out",
     "start": "next start"
   },
@@ -14,6 +14,7 @@
     "fast-glob": "^3.3.3",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
+    "html2canvas": "^1.4.1",
     "katex": "^0.17.0",
     "mermaid": "^11.15.0",
     "next": "16.2.9",

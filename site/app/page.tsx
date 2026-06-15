@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getManifest } from "@/lib/content/manifest";
 import { VAULTS, REPO_URL } from "@/lib/content/vaults";
-import { withBase } from "@/lib/content/slug";
 import Reveal from "@/components/Reveal";
 import GraphExplorer from "@/components/portal/GraphExplorer";
 import { BANNERS } from "@/components/portal/VaultBanners";
@@ -130,7 +129,7 @@ export default async function Home() {
             </Reveal>
           ))}
           <Reveal as="div" delay={VAULTS.length * 50}>
-            <a href={withBase("/electivas/")} className="card vaultcard">
+            <Link href="/electivas/" className="card vaultcard">
               <div className="vaultcard__bannerwrap vaultcard__bannerwrap--tool">
                 <div className="card__ico blue">PL</div>
               </div>
@@ -140,7 +139,7 @@ export default async function Home() {
                 minors, créditos y armado de horario cuatrimestral.
               </p>
               <span className="vaultcard__meta">Abrir planner →</span>
-            </a>
+            </Link>
           </Reveal>
         </div>
       </section>
@@ -230,9 +229,9 @@ export default async function Home() {
               para decidir qué cursar y cuándo.
             </p>
           </div>
-          <a className="btn btn--primary btn--lg" href={withBase("/electivas/")}>
+          <Link className="btn btn--primary btn--lg" href="/electivas/">
             Abrir el planificador →
-          </a>
+          </Link>
         </Reveal>
       </section>
 

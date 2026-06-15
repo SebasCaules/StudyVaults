@@ -8,11 +8,10 @@ import BrandMark from "./BrandMark";
 import { REPO_URL } from "@/lib/content/vaults";
 import { withBase } from "@/lib/content/slug";
 
-// `raw` → la app de Electivas es un asset estático, no una ruta del app router.
 const LINKS: { label: string; href: string; raw?: boolean }[] = [
   { label: "Inicio", href: "/" },
   { label: "Materias", href: "/#materias" },
-  { label: "Electivas", href: "/electivas/", raw: true },
+  { label: "Electivas", href: "/electivas/" },
 ];
 
 export default function Navbar() {

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { VAULTS, REPO_URL } from "@/lib/content/vaults";
-import { withBase } from "@/lib/content/slug";
 import BrandMark from "./BrandMark";
 
 export default function Footer() {
@@ -31,7 +30,7 @@ export default function Footer() {
 
         <div className="footer__col">
           <h4>Recursos</h4>
-          <a href={withBase("/electivas/")}>Planificador de electivas</a>
+          <Link href="/electivas/">Planificador de electivas</Link>
           <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
             Repositorio en GitHub
           </a>

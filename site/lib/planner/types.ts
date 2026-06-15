@@ -1,0 +1,135 @@
+// Tipos del planner de Electivas. Reflejan la forma de Electivas/data.js
+// (window.PLAN), convertida a lib/planner/data.json por build-planner-data.mjs.
+
+export interface Slot {
+  dia: string; // "Lunes" … "Sábado"
+  desde: string; // "HH:MM"
+  hasta: string; // "HH:MM"
+  aula?: string;
+  sala?: string;
+  sede?: string;
+  modalidad?: string; // "Presencial" | "Virtual" | "Blended" | …
+  async?: boolean;
+}
+
+export interface Comision {
+  comision: string;
+  slots: Slot[];
+  profesores?: string;
+  cupo?: string;
+}
+
+export interface Horario {
+  periodo?: string;
+  anio?: string;
+  comienzo?: string;
+  fin?: string;
+  depto?: string;
+  comisiones: Comision[];
+}
+
+export type Tipo = "obligatoria" | "electiva";
+
+export interface Materia {
+  codigo: string;
+  nombre: string;
+  abbr: string;
+  creditos: number;
+  creditosReq: number;
+  correlativas: string[];
+  ciclo?: string;
+  seccion?: string;
+  anio?: number;
+  cuatri?: number;
+  parity: number | null; // 1 = 1.º cuat, 2 = 2.º cuat, null = sin restricción
+  tipo: Tipo;
+  areas?: string[]; // solo electivas
+}
+
+/** Materia con su horario resuelto (lo que vive en el map byId). */
+export type MateriaM = Materia & { horario: Horario | null };
+
+export interface Edge {
+  from: string;
+  to: string;
+}
+
+export interface Plan {
+  areas: string[];
+  obligatorias: Materia[];
+  electivas: Materia[];
+  horarios: Record<string, Horario>;
+  edges: Edge[];
+  aprobadasDefault: string[];
+  creditosElectivasReq?: number;
+  tituloAnalista?: unknown;
+  generado?: string;
+}
+
+// ---- estado del planner (espejo del `state` de planner.js) ----
+
+export type ViewKey = "cuatri" | "elect" | "combo" | "plan" | "grafo" | "ref";
+
+export interface ComboParams {
+  allowOverlap: boolean;
+  modal: { Presencial: boolean; Virtual: boolean; Blended: boolean };
+}
+
+export interface PlanStart {
+  parity: number;
+  year: number;
+}
+
+/** Una materia ubicada en un cuatrimestre del plan, con su comisión elegida. */
+export interface PlacedMateria {
+  m: MateriaM;
+  com: Comision | null;
+}
+
+export interface PlanResult {
+  items: PlacedMateria[][]; // por índice de cuatrimestre
+  unplaced: MateriaM[];
+  accBefore: number[];
+  moved: number;
+}
+
+export interface PlanState {
+  pool: Set<string>;
+  fixed: Map<string, number>;
+  start: PlanStart;
+  maxCred: number;
+  maxMat: number;
+  avoid: boolean;
+  result: PlanResult | null;
+}
+
+export interface PlannerState {
+  view: ViewKey;
+  approved: Set<string>;
+  combo: Set<string>;
+  fixedCom: Map<string, string>;
+  areasOn: Set<string>;
+  search: string;
+  fDisp: boolean;
+  fHor: boolean;
+  comboParams: ComboParams;
+  combos: PlacedMateria[][];
+  comboIdx: number;
+  plan: PlanState;
+  sideCollapsed: boolean;
+  drawerCode: string | null;
+  hydrated: boolean;
+}
+
+/** Bloque renderizable en la grilla semanal. */
+export interface WeekBlock {
+  dia: string;
+  desde: string;
+  hasta: string;
+  abbr: string;
+  nombre?: string;
+  sala?: string;
+  modalidad?: string;
+  color: string;
+  conf?: boolean;
+}
