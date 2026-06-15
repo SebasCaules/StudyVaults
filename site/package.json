@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-assets.mjs && node scripts/copy-electivas.mjs",
+    "predev": "node scripts/copy-assets.mjs && node scripts/copy-electivas.mjs && node scripts/copy-vault-apps.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/copy-assets.mjs && node scripts/copy-electivas.mjs",
+    "prebuild": "node scripts/copy-assets.mjs && node scripts/copy-electivas.mjs && node scripts/copy-vault-apps.mjs",
     "build": "next build && pagefind --site out",
     "start": "next start"
   },

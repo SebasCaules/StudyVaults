@@ -86,10 +86,10 @@ const salaLabel = s => s.sala || (isAsync(s) ? "asincr." : (s.modalidad === "Vir
    INIT
    ========================================================================= */
 function applyTheme(t) {
-  if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
-  else document.documentElement.removeAttribute("data-theme");
+  t = t === "light" ? "light" : "dark"; // default dark (marca StudyVaults)
+  document.documentElement.setAttribute("data-theme", t);
   document.querySelectorAll("#themeToggle button").forEach(b => b.classList.toggle("on", b.dataset.set === t));
-  localStorage.setItem("plan_theme", t);
+  localStorage.setItem("sv-theme", t); // sincroniza con el portal
   if (net) { try { net.destroy(); } catch (e) {} net = null; if (state.view === "grafo") renderGraph(); }
 }
 
@@ -112,7 +112,7 @@ function applySidebar(collapsed) {
 function init() {
   buildModel(); load();
   renderAreas(); renderMinorSkeleton(); buildStartOptions(); bindUI();
-  applyTheme(localStorage.getItem("plan_theme") || "light");
+  applyTheme(localStorage.getItem("sv-theme") || localStorage.getItem("plan_theme") || "dark");
   applySidebar(localStorage.getItem("plan_sidebar") === "1");
   setView("cuatri"); renderAll();
 }

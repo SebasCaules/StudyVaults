@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { NavSection } from "@/lib/content/nav-tree";
 import { getVault } from "@/lib/content/vaults";
+import { withBase } from "@/lib/content/slug";
 
 // Sidebar de la materia: índice tipo libro con secciones colapsables, numeradas
 // y con contador. Solo la sección activa abre por defecto; el usuario puede
@@ -61,6 +62,36 @@ export default function Sidebar({
       >
         {cfg?.short ?? vault} · índice
       </Link>
+
+      {(cfg?.toolkit || (cfg?.apps?.length ?? 0) > 0) && (
+        <div className="wikinav__tools">
+          <span className="wikinav__toolslabel">
+            {cfg?.lang === "en" ? "Tools" : "Herramientas"}
+          </span>
+          {cfg?.toolkit && (
+            <Link
+              href={`/${vault}/herramientas`}
+              className={`wikinav__toollink${
+                currentHref === `/${vault}/herramientas` ? " is-active" : ""
+              }`}
+            >
+              {cfg.lang === "en" ? "Study toolkit" : "Toolkit de estudio"}
+            </Link>
+          )}
+          {cfg?.apps?.map((app) => (
+            <a
+              key={app.href}
+              href={withBase(app.href)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="wikinav__toollink"
+            >
+              {app.label} <span aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      )}
+
       <ol className="wikinav__secs">
         {sections.map((s, i) => (
           <li key={s.key}>

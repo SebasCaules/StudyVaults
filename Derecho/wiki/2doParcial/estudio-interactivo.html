@@ -4,34 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Estudio 2do Parcial — Derecho para Ingenieros</title>
+<script>
+  /* anti-flash: aplica el tema (default DARK) antes del primer paint.
+     Sincronizado con el portal StudyVaults vía localStorage "sv-theme". */
+  (function(){try{var t=localStorage.getItem("sv-theme");if(t!=="light"&&t!=="dark")t="dark";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* ============================================================
+     StudyVaults · paleta §12 "Premium Agency Portal — Technical Split".
+     6 hex base como única fuente de verdad; los tokens de rol derivan
+     por color-mix. Default DARK (canvas marrón cálido casi negro).
+     ============================================================ */
   :root {
-    --bg:#F5F4ED; --bg-card:#FAF9F5; --bg-elev:#FFFFFF; --bg-soft:#EEEBE0;
-    --border:#E5E2D6; --border-strong:#C8C3B0;
-    --text:#1F1F1E; --text-muted:#6B6862; --text-faint:#9E9A8E;
-    --accent:#CC785C; --accent-hover:#B7522B; --accent-soft:#F0DDD2;
+    /* ---- paleta base (6 hex) ---- */
+    --hex-brown:#241208; --hex-zinc:#27272a; --hex-blue:#92cff2;
+    --hex-gray:#a1a1aa; --hex-coral:#f47c59; --hex-white:#ffffff;
+
+    /* ---- TEMA CLARO (off-white cálido, paneles blancos) ---- */
+    --bg:color-mix(in srgb, var(--hex-white) 96%, var(--hex-brown) 4%);
+    --bg-card:var(--hex-white);
+    --bg-elev:var(--hex-white);
+    --bg-soft:color-mix(in srgb, var(--hex-white) 94%, var(--hex-brown) 6%);
+    --border:color-mix(in srgb, var(--hex-zinc) 14%, var(--hex-white));
+    --border-strong:color-mix(in srgb, var(--hex-zinc) 28%, var(--hex-white));
+    --text:var(--hex-brown);
+    --text-muted:color-mix(in srgb, var(--hex-brown) 60%, var(--hex-white));
+    --text-faint:color-mix(in srgb, var(--hex-brown) 42%, var(--hex-white));
+    /* acento = coral (links/foco = azul vía --link) */
+    --accent:color-mix(in srgb, var(--hex-coral) 88%, var(--hex-brown));
+    --accent-hover:color-mix(in srgb, var(--hex-coral) 62%, var(--hex-brown));
+    --accent-soft:color-mix(in srgb, var(--hex-coral) 18%, var(--hex-white));
+    --on-accent-ink:var(--hex-brown);
+    --link:color-mix(in srgb, var(--hex-blue) 55%, var(--hex-brown));
     --success:#5C8A4D; --success-soft:#E5EDDC;
     --error:#C45052; --error-soft:#F0DBDB;
-    --warning:#C99756; --warning-soft:#F5E5D0;
-    --u6:#7A6A9B; --u7:#5C8A4D; --u8:#C99756; --u9:#C45052; --u0:#6B6862;
-    --shadow-sm:0 1px 2px rgba(0,0,0,.04),0 1px 1px rgba(0,0,0,.03);
-    --shadow-md:0 4px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
-    --shadow-lg:0 12px 32px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.05);
-    --radius-sm:6px; --radius:10px; --radius-lg:14px;
-    --serif:'Iowan Old Style','Charter','Georgia','Times New Roman',serif;
-    --sans:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
-    --mono:'SF Mono','JetBrains Mono','Berkeley Mono',monospace;
+    --warning:color-mix(in srgb, var(--hex-coral) 70%, var(--hex-brown)); --warning-soft:color-mix(in srgb, var(--hex-coral) 16%, var(--hex-white));
+    --u6:color-mix(in srgb, var(--hex-blue) 50%, var(--hex-brown)); --u7:#5C8A4D; --u8:color-mix(in srgb, var(--hex-coral) 66%, var(--hex-brown)); --u9:#C45052; --u0:color-mix(in srgb, var(--hex-brown) 58%, var(--hex-white));
+    --shadow-sm:0 2px 8px color-mix(in srgb, var(--hex-brown) 8%, transparent);
+    --shadow-md:0 10px 30px color-mix(in srgb, var(--hex-brown) 12%, transparent);
+    --shadow-lg:0 24px 60px color-mix(in srgb, var(--hex-brown) 16%, transparent);
+    --radius-sm:8px; --radius:8px; --radius-lg:8px;
+    --serif:'Newsreader','Georgia','Times New Roman',serif;
+    --sans:'Newsreader','Georgia','Times New Roman',serif;
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono','Berkeley Mono',monospace;
     --tr:180ms cubic-bezier(.25,.46,.45,.94);
+    color-scheme:light;
   }
-  [data-theme="dark"]{
-    --bg:#1B1A17; --bg-card:#25231F; --bg-elev:#2F2D28; --bg-soft:#3A3832;
-    --border:#3A3832; --border-strong:#4D4A42;
-    --text:#F0EEE6; --text-muted:#B3AFA4; --text-faint:#807C72;
-    --accent:#E8A87C; --accent-hover:#F0BD96; --accent-soft:#3A2C25;
+  /* ============================================================
+     TEMA OSCURO (default de marca) — canvas marrón suave casi negro
+     ============================================================ */
+  :root[data-theme="dark"]{
+    --bg:color-mix(in srgb, var(--hex-brown) 86%, var(--hex-white));
+    --bg-card:color-mix(in srgb, var(--hex-brown) 78%, var(--hex-white));
+    --bg-elev:color-mix(in srgb, var(--hex-brown) 68%, var(--hex-white));
+    --bg-soft:color-mix(in srgb, var(--hex-brown) 72%, var(--hex-white));
+    --border:var(--hex-zinc);
+    --border-strong:color-mix(in srgb, var(--hex-white) 18%, var(--hex-zinc));
+    --text:var(--hex-white);
+    --text-muted:var(--hex-gray);
+    --text-faint:color-mix(in srgb, var(--hex-gray) 66%, var(--hex-brown));
+    --accent:var(--hex-coral);
+    --accent-hover:color-mix(in srgb, var(--hex-coral) 78%, var(--hex-white));
+    --accent-soft:color-mix(in srgb, var(--hex-coral) 16%, var(--hex-brown));
+    --on-accent-ink:var(--hex-brown);
+    --link:var(--hex-blue);
     --success:#8FB87C; --success-soft:#2A3326;
     --error:#E08486; --error-soft:#3A2828;
-    --warning:#E0B884; --warning-soft:#3A3024;
-    --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow-md:0 4px 12px rgba(0,0,0,.4); --shadow-lg:0 12px 32px rgba(0,0,0,.5);
+    --warning:color-mix(in srgb, var(--hex-coral) 80%, var(--hex-white)); --warning-soft:color-mix(in srgb, var(--hex-coral) 18%, var(--hex-brown));
+    --u6:var(--hex-blue); --u7:#8FB87C; --u8:var(--hex-coral); --u9:#E08486; --u0:var(--hex-gray);
+    --shadow-sm:0 2px 8px color-mix(in srgb, var(--hex-brown) 28%, transparent);
+    --shadow-md:0 10px 30px color-mix(in srgb, var(--hex-brown) 42%, transparent);
+    --shadow-lg:0 24px 60px color-mix(in srgb, var(--hex-brown) 52%, transparent);
+    color-scheme:dark;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background var(--tr),color var(--tr);}
@@ -43,6 +90,8 @@
   @media(max-width:860px){.app{grid-template-columns:1fr;} .sidebar{position:static!important;height:auto!important;border-right:none;border-bottom:1px solid var(--border);}}
   .sidebar{background:var(--bg-card);border-right:1px solid var(--border);padding:22px 18px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;}
   .sidebar .subtitle{font-size:.8rem;color:var(--text-muted);line-height:1.35;}
+  .sv-back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;margin-bottom:12px;transition:color var(--tr);}
+  .sv-back:hover{color:var(--text);}
   .main{padding:30px 38px;overflow:hidden;}
   @media(max-width:860px){.main{padding:20px;}}
 
@@ -53,7 +102,7 @@
 
   .streak{display:flex;align-items:center;gap:12px;padding:12px 14px;background:linear-gradient(135deg,var(--accent-soft),transparent);border:1px solid var(--accent-soft);border-radius:var(--radius);}
   .streak-num{font-size:1.5rem;font-weight:700;color:var(--accent-hover);font-family:var(--serif);line-height:1;}
-  .streak-label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+  .streak-label{font-family:var(--mono);font-size:.66rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
 
   .stat-block{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;}
   .stat-row{display:flex;justify-content:space-between;align-items:baseline;font-size:.84rem;padding:3px 0;}
@@ -94,7 +143,7 @@
   .mode-desc{font-size:.84rem;color:var(--text-muted);line-height:1.4;margin-bottom:11px;}
   .mode-meta{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:var(--text-faint);padding-top:9px;border-top:1px solid var(--border);}
   .mode-meta .acc{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums;}
-  .group-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);margin:22px 0 10px;font-weight:600;}
+  .group-label{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin:22px 0 10px;font-weight:600;}
 
   .help{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;font-size:.84rem;color:var(--text-muted);}
   kbd{background:var(--bg-soft);border:1px solid var(--border-strong);border-bottom-width:2px;padding:1px 6px;border-radius:4px;font-size:.75em;font-family:var(--mono);color:var(--text-muted);margin:0 2px;}
@@ -122,7 +171,7 @@
   .option.disabled{cursor:default;} .option.disabled:hover{transform:none;}
   .option.selected{border-color:var(--accent);background:var(--accent-soft);}
   .option-letter{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;background:var(--bg-soft);color:var(--text-muted);font-size:.8rem;font-weight:600;flex-shrink:0;transition:all var(--tr);}
-  .option.selected .option-letter{background:var(--accent);color:#fff;}
+  .option.selected .option-letter{background:var(--accent);color:var(--on-accent-ink);}
   .option-text{flex:1;}
   .option.correct{border-color:var(--success);background:var(--success-soft);} .option.correct .option-letter{background:var(--success);color:#fff;}
   .option.incorrect{border-color:var(--error);background:var(--error-soft);} .option.incorrect .option-letter{background:var(--error);color:#fff;}
@@ -154,7 +203,7 @@
   .btn{background:var(--bg-card);color:var(--text);border:1px solid var(--border-strong);padding:10px 20px;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all var(--tr);font-size:.92rem;display:inline-flex;align-items:center;gap:6px;}
   .btn:hover:not(:disabled){background:var(--bg-soft);transform:translateY(-1px);}
   .btn:disabled{opacity:.5;cursor:not-allowed;}
-  .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
+  .btn-primary{background:var(--accent);color:var(--on-accent-ink);border-color:var(--accent);font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-size:.78rem;}
   .btn-primary:hover:not(:disabled){background:var(--accent-hover);border-color:var(--accent-hover);transform:translateY(-1px);}
   .btn-ghost{background:transparent;border-color:var(--border);}
 
@@ -188,7 +237,7 @@
   .teoria-search{width:100%;max-width:420px;padding:10px 14px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--bg-elev);color:var(--text);margin-bottom:18px;}
   .teoria-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
   .chip{padding:5px 12px;border-radius:100px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);cursor:pointer;font-size:.82rem;transition:all var(--tr);}
-  .chip:hover{border-color:var(--border-strong);} .chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .chip:hover{border-color:var(--border-strong);} .chip.active{background:var(--accent);color:var(--on-accent-ink);border-color:var(--accent);}
   .teoria-grid{columns:2;column-gap:16px;}
   @media(max-width:760px){.teoria-grid{columns:1;}}
   .teoria-card{break-inside:avoid;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
@@ -235,6 +284,7 @@
 <div class="app">
   <aside class="sidebar">
     <div>
+      <a class="sv-back" href="../../derecho/">&larr; StudyVaults</a>
       <h1>Derecho — 2do Parcial</h1>
       <div class="subtitle">Instituto Tecnologico de Buenos Aires<br>Unidades VI a IX &middot; 2026-1C</div>
     </div>
@@ -3970,10 +4020,22 @@ const TEORIA = [
 // ============================================================
 const SK = "derecho_2do_parcial_v3";
 const defaults = { stats:{}, wrong:[], bookmarks:[], streakCurrent:0, streakBest:0,
-  settings:{dark:false,autoAdv:false,hint:true,shuffle:false}, totalAnswered:0, totalCorrect:0 };
+  settings:{dark:true,autoAdv:false,hint:true,shuffle:false}, totalAnswered:0, totalCorrect:0 };
 function load(){ try{const s=JSON.parse(localStorage.getItem(SK));return s?Object.assign({},defaults,s,{settings:Object.assign({},defaults.settings,s.settings||{})}):Object.assign({},defaults);}catch{return Object.assign({},defaults);} }
 function save(){ localStorage.setItem(SK, JSON.stringify(state)); }
 let state = load();
+
+// ---- sync de tema con el portal StudyVaults ----
+// La fuente de verdad es localStorage "sv-theme" ('light'|'dark', default dark).
+// Si existe, manda sobre el flag interno; si no, el flag interno lo inicializa.
+const THEME_KEY = "sv-theme";
+(function syncThemeFromPortal(){
+  try{
+    const t = localStorage.getItem(THEME_KEY);
+    if(t==="light"||t==="dark") state.settings.dark = (t==="dark");
+    else localStorage.setItem(THEME_KEY, state.settings.dark?"dark":"light");
+  }catch{}
+})();
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const TRAP_IDS = new Set(BANK.filter(q=>q.trap).map(q=>q.id));
@@ -4332,7 +4394,7 @@ function exportWrong(){
 // ============================================================
 // SETTINGS
 // ============================================================
-function applySettings(){document.documentElement.dataset.theme=state.settings.dark?"dark":"light";[["tglDark","dark"],["tglAuto","autoAdv"],["tglHint","hint"],["tglShuffle","shuffle"]].forEach(([id,k])=>document.getElementById(id).classList.toggle("on",!!state.settings[k]));}
+function applySettings(){const theme=state.settings.dark?"dark":"light";document.documentElement.setAttribute("data-theme",theme);try{localStorage.setItem(THEME_KEY,theme);}catch{}[["tglDark","dark"],["tglAuto","autoAdv"],["tglHint","hint"],["tglShuffle","shuffle"]].forEach(([id,k])=>document.getElementById(id).classList.toggle("on",!!state.settings[k]));}
 
 // ============================================================
 // EVENTS

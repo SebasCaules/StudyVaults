@@ -7,6 +7,7 @@ import { buildNav } from "@/lib/content/nav-tree";
 import { VAULTS, getVault } from "@/lib/content/vaults";
 import WikiLayout from "@/components/wiki/WikiLayout";
 import Prose from "@/components/wiki/Prose";
+import VaultToolLaunchers from "@/components/wiki/VaultToolLaunchers";
 
 export const dynamicParams = false;
 
@@ -77,6 +78,7 @@ export default async function VaultPage({
           <span className="badge badge--status">{count} páginas</span>
         </div>
       </header>
+      <VaultToolLaunchers cfg={cfg} />
       {html ? (
         <Prose html={html} />
       ) : (

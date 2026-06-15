@@ -2,47 +2,234 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TP4 — Previsualización de gráficos esperados</title>
+<script>
+  // anti-flash: aplica el tema guardado (default dark) antes de pintar
+  (function () {
+    try {
+      var t = localStorage.getItem('sv-theme');
+      if (t !== 'light' && t !== 'dark') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    max-width: 1100px;
-    margin: 2em auto;
-    padding: 0 1em;
-    color: #222;
-    line-height: 1.5;
+  :root {
+    /* ---- paleta base §12 (6 hex) ---- */
+    --hex-brown: #241208;
+    --hex-zinc: #27272a;
+    --hex-blue: #92cff2;
+    --hex-gray: #a1a1aa;
+    --hex-coral: #f47c59;
+    --hex-white: #ffffff;
+
+    /* acentos de marca, estables en ambos temas */
+    --primary: var(--hex-blue);   /* azul: links / focos / serie secundaria */
+    --accent: var(--hex-coral);   /* coral: acento / serie primaria */
+
+    /* tipografía */
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Newsreader", Georgia, "Times New Roman", serif; /* portal serif-bodied */
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    /* radios */
+    --r-card: 8px;
+    --r-ctrl: 8px;
+
+    /* tokens de serie para los charts (coral, azul, ámbar, verde) */
+    --series-coral: var(--hex-coral);
+    --series-blue: var(--hex-blue);
+    --series-amber: #f0b357;
+    --series-green: #5fc28a;
+    --series-red: #e06a52;
   }
-  h1 { border-bottom: 2px solid #2c3e50; padding-bottom: .3em; }
-  h2 { color: #2c3e50; margin-top: 2em; border-left: 4px solid #3498db; padding-left: .6em; }
-  h3 { color: #34495e; }
+
+  /* ---- tema oscuro (default de marca) — canvas marrón suave ---- */
+  :root[data-theme="dark"] {
+    --bg: color-mix(in srgb, var(--hex-brown) 86%, var(--hex-white));
+    --panel: var(--hex-brown);
+    --panel-2: color-mix(in srgb, var(--hex-brown) 78%, var(--hex-white));
+    --ink: var(--hex-white);
+    --ink-dim: var(--hex-gray);
+    --border: var(--hex-zinc);
+    --hairline: color-mix(in srgb, var(--hex-white) 10%, transparent);
+    --hairline-strong: color-mix(in srgb, var(--hex-white) 18%, transparent);
+    --on-accent-ink: var(--hex-brown);
+    --link: var(--hex-blue);
+    --accent-text: var(--hex-coral);
+    --accent-line: color-mix(in srgb, var(--hex-coral) 40%, transparent);
+    --primary-soft: color-mix(in srgb, var(--hex-blue) 14%, transparent);
+    --accent-soft: color-mix(in srgb, var(--hex-coral) 16%, transparent);
+    --note-bg: color-mix(in srgb, var(--hex-coral) 12%, var(--panel));
+    --danger: var(--series-red);
+    --danger-bg: color-mix(in srgb, var(--series-red) 14%, var(--panel));
+    --code-bg: color-mix(in srgb, var(--hex-brown) 68%, var(--hex-white));
+    --grid-line: color-mix(in srgb, var(--hex-white) 12%, transparent);
+    --shadow-sm: 0 2px 8px color-mix(in srgb, var(--hex-brown) 28%, transparent);
+    color-scheme: dark;
+  }
+
+  /* ---- tema claro — off-white cálido, paneles blancos ---- */
+  :root[data-theme="light"] {
+    --bg: color-mix(in srgb, var(--hex-white) 96%, var(--hex-brown) 4%);
+    --panel: var(--hex-white);
+    --panel-2: color-mix(in srgb, var(--hex-white) 94%, var(--hex-brown) 6%);
+    --ink: var(--hex-brown);
+    --ink-dim: color-mix(in srgb, var(--hex-brown) 60%, var(--hex-white));
+    --border: color-mix(in srgb, var(--hex-zinc) 14%, var(--hex-white));
+    --hairline: color-mix(in srgb, var(--hex-brown) 12%, transparent);
+    --hairline-strong: color-mix(in srgb, var(--hex-brown) 20%, transparent);
+    --on-accent-ink: var(--hex-brown);
+    --link: color-mix(in srgb, var(--hex-blue) 55%, var(--hex-brown));
+    --accent-text: color-mix(in srgb, var(--hex-coral) 62%, var(--hex-brown));
+    --accent-line: color-mix(in srgb, var(--hex-coral) 50%, var(--hex-white));
+    --primary-soft: color-mix(in srgb, var(--hex-blue) 22%, var(--hex-white));
+    --accent-soft: color-mix(in srgb, var(--hex-coral) 18%, var(--hex-white));
+    --note-bg: color-mix(in srgb, var(--hex-coral) 10%, var(--hex-white));
+    --danger: color-mix(in srgb, var(--series-red) 70%, var(--hex-brown));
+    --danger-bg: color-mix(in srgb, var(--series-red) 12%, var(--hex-white));
+    --code-bg: color-mix(in srgb, var(--hex-white) 92%, var(--hex-brown) 8%);
+    --grid-line: color-mix(in srgb, var(--hex-brown) 12%, transparent);
+    --shadow-sm: 0 2px 8px color-mix(in srgb, var(--hex-brown) 8%, transparent);
+    color-scheme: light;
+  }
+
+  /* fallback: si el anti-flash no corrió, asumir dark */
+  :root:not([data-theme]) { color-scheme: dark; }
+
+  html {
+    background: var(--bg);
+    transition: background-color .42s cubic-bezier(.22,1,.36,1);
+  }
+  body {
+    font-family: var(--sans);
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2em 1.25em 3em;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ---- back link al portal ---- */
+  .sv-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 1.6em;
+    transition: color .24s cubic-bezier(.22,1,.36,1);
+  }
+  .sv-back:hover { color: var(--ink); }
+
+  h1, h2, h3 {
+    font-family: var(--serif);
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 42px);
+    border-bottom: 1px solid var(--hairline-strong);
+    padding-bottom: .35em;
+  }
+  h2 {
+    font-size: 27px;
+    margin-top: 2em;
+    border-left: 3px solid var(--accent);
+    padding-left: .6em;
+  }
+  h3 { font-size: 21px; font-weight: 600; color: var(--ink); margin-top: 1.6em; }
+
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
   .chart-box {
-    background: #fafafa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1em;
-    margin: 1em 0;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 1.1em;
+    margin: 1.1em 0;
+    box-shadow: var(--shadow-sm);
   }
   .chart-wrapper { position: relative; height: 360px; }
   .note {
-    background: #fff3cd;
-    border-left: 4px solid #ffc107;
-    padding: .5em 1em;
-    margin: 1em 0;
-    font-size: .9em;
+    background: var(--note-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--r-card) var(--r-card) 0;
+    padding: .7em 1.1em;
+    margin: 1.1em 0;
+    font-size: .92em;
+    color: var(--ink);
   }
   .danger {
-    background: #f8d7da;
-    border-left: 4px solid #dc3545;
-    padding: .5em 1em;
-    margin: 1em 0;
-    font-size: .9em;
+    background: var(--danger-bg);
+    border-left: 3px solid var(--danger);
+    border-radius: 0 var(--r-card) var(--r-card) 0;
+    padding: .7em 1.1em;
+    margin: 1.1em 0;
+    font-size: .92em;
+    color: var(--ink);
   }
-  code { background: #eee; padding: 2px 5px; border-radius: 3px; }
-  small { color: #666; }
+  .note strong:first-child,
+  .danger strong:first-child { color: var(--accent-text); }
+  code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--code-bg);
+    border: 1px solid var(--hairline);
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: var(--ink);
+  }
+  small { color: var(--ink-dim); }
+  strong { color: var(--ink); font-weight: 600; }
+  hr { border: none; border-top: 1px solid var(--hairline); margin: 2em 0; }
+
+  /* eyebrow/meta en mono uppercase, color secundario */
+  .sv-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    margin: 0 0 .4em;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 4px; }
+
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--hairline-strong);
+    border-radius: 9999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-dim); background-clip: padding-box; }
+  ::-webkit-scrollbar-track { background: transparent; }
 </style>
 </head>
 <body>
+
+<a class="sv-back" href="../../sds/">← StudyVaults</a>
 
 <h1>TP4 — Previsualización de gráficos esperados</h1>
 <p><strong>Solo basado en:</strong> <code>TP4_enunciado.pdf</code> y <code>Teorica_4.pdf</code> (slide 36 para parámetros del oscilador).</p>
@@ -84,7 +271,7 @@
 <h3>3) Energía total E(t) — validación del dt</h3>
 <div class="chart-box">
   <div class="chart-wrapper"><canvas id="energy"></canvas></div>
-  <p><small>El enunciado <strong>exige</strong> graficar esto. <span style="color:#27ae60"><strong>Verde</strong></span>: dt OK, E ~ constante con fluctuaciones pequeñas. <span style="color:#e67e22"><strong>Naranja</strong></span>: dt borderline. <span style="color:#c0392b"><strong>Rojo</strong></span>: dt muy grande, E deriva → bajar dt. Para k=10⁴ ≲ 10⁻⁴ s, k=10⁵ ≲ 10⁻⁵ s.</small></p>
+  <p><small>El enunciado <strong>exige</strong> graficar esto. <span style="color:var(--series-green)"><strong>Verde</strong></span>: dt OK, E ~ constante con fluctuaciones pequeñas. <span style="color:var(--series-amber)"><strong>Naranja</strong></span>: dt borderline. <span style="color:var(--series-red)"><strong>Rojo</strong></span>: dt muy grande, E deriva → bajar dt. Para k=10⁴ ≲ 10⁻⁴ s, k=10⁵ ≲ 10⁻⁵ s.</small></p>
 </div>
 
 <h3>4) Tiempo de cómputo vs N — TP3 (EDMD) vs TP4 (DM)</h3>
@@ -124,6 +311,46 @@
 
 <script>
 // ============================================================
+// Tema §12 para Chart.js — colores leídos de los tokens CSS
+// ============================================================
+const SV = (() => {
+  const cs = getComputedStyle(document.documentElement);
+  const v = (name, fallback) => (cs.getPropertyValue(name).trim() || fallback);
+  return {
+    ink:    v('--ink', '#ffffff'),
+    inkDim: v('--ink-dim', '#a1a1aa'),
+    grid:   v('--grid-line', 'rgba(255,255,255,0.12)'),
+    panel:  v('--panel-2', '#241208'),
+    coral:  v('--series-coral', '#f47c59'),
+    blue:   v('--series-blue', '#92cff2'),
+    amber:  v('--series-amber', '#f0b357'),
+    green:  v('--series-green', '#5fc28a'),
+    red:    v('--series-red', '#e06a52'),
+    mono:   '"JetBrains Mono", ui-monospace, monospace',
+    serif:  '"Newsreader", Georgia, serif'
+  };
+})();
+// secuencia viridis-ish reusando tokens §12 (azul→coral) para series numéricas N/k
+const SV_SEQ = [SV.blue, '#6fa9c9', SV.coral, SV.amber];
+
+Chart.defaults.color = SV.inkDim;
+Chart.defaults.borderColor = SV.grid;
+Chart.defaults.font.family = SV.mono;
+Chart.defaults.font.size = 11;
+Chart.defaults.plugins.legend.labels.color = SV.ink;
+Chart.defaults.plugins.title.color = SV.ink;
+Chart.defaults.plugins.title.font = { family: SV.serif, size: 15, weight: '500' };
+Chart.defaults.plugins.tooltip.titleFont = { family: SV.mono };
+Chart.defaults.plugins.tooltip.bodyFont = { family: SV.mono };
+Chart.defaults.plugins.tooltip.backgroundColor = SV.panel;
+Chart.defaults.plugins.tooltip.borderColor = SV.grid;
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.scale.grid.color = SV.grid;
+Chart.defaults.scale.ticks.color = SV.inkDim;
+Chart.defaults.scale.title.color = SV.inkDim;
+Chart.defaults.scale.title.font = { family: SV.mono, size: 11 };
+
+// ============================================================
 // 1) Oscilador amortiguado r(t)
 // ============================================================
 {
@@ -143,9 +370,9 @@
     data: {
       labels: xs,
       datasets: [
-        { label: 'r(t) analítica', data: ys, borderColor: '#2c3e50', borderWidth: 1.5, pointRadius: 0 },
-        { label: 'envolvente +A·exp(−γt/2m)', data: env_pos, borderColor: '#e74c3c', borderDash: [5,5], borderWidth: 1, pointRadius: 0 },
-        { label: 'envolvente −A·exp(−γt/2m)', data: env_neg, borderColor: '#e74c3c', borderDash: [5,5], borderWidth: 1, pointRadius: 0 }
+        { label: 'r(t) analítica', data: ys, borderColor: SV.ink, borderWidth: 1.5, pointRadius: 0 },
+        { label: 'envolvente +A·exp(−γt/2m)', data: env_pos, borderColor: SV.coral, borderDash: [5,5], borderWidth: 1, pointRadius: 0 },
+        { label: 'envolvente −A·exp(−γt/2m)', data: env_neg, borderColor: SV.coral, borderDash: [5,5], borderWidth: 1, pointRadius: 0 }
       ]
     },
     options: {
@@ -173,10 +400,10 @@
     data: {
       labels,
       datasets: [
-        { label: 'Euler (orden 1, pendiente ≈2)', data: data(2, 1.0), borderColor: '#e74c3c' },
-        { label: 'Verlet (orden 2, pendiente ≈4)', data: data(4, 0.5), borderColor: '#f39c12' },
-        { label: 'Beeman (orden 2, pendiente ≈4)', data: data(4, 0.1), borderColor: '#3498db' },
-        { label: 'Gear orden 5 (pendiente ≈10)', data: data(10, 1.0), borderColor: '#27ae60' },
+        { label: 'Euler (orden 1, pendiente ≈2)', data: data(2, 1.0), borderColor: SV.coral },
+        { label: 'Verlet (orden 2, pendiente ≈4)', data: data(4, 0.5), borderColor: SV.amber },
+        { label: 'Beeman (orden 2, pendiente ≈4)', data: data(4, 0.1), borderColor: SV.blue },
+        { label: 'Gear orden 5 (pendiente ≈10)', data: data(10, 1.0), borderColor: SV.green },
       ].map(ds => ({ ...ds, borderWidth: 2, pointRadius: 3, fill: false }))
     },
     options: {
@@ -207,9 +434,9 @@
     data: {
       labels: xs,
       datasets: [
-        { label: 'dt OK (≈10⁻³ s)', data: e_ok, borderColor: '#27ae60', borderWidth: 1.5, pointRadius: 0 },
-        { label: 'dt borderline (≈10⁻²·⁵ s)', data: e_bord, borderColor: '#e67e22', borderWidth: 1.5, pointRadius: 0 },
-        { label: 'dt muy grande → REJECT', data: e_bad, borderColor: '#c0392b', borderWidth: 1.5, pointRadius: 0 }
+        { label: 'dt OK (≈10⁻³ s)', data: e_ok, borderColor: SV.green, borderWidth: 1.5, pointRadius: 0 },
+        { label: 'dt borderline (≈10⁻²·⁵ s)', data: e_bord, borderColor: SV.amber, borderWidth: 1.5, pointRadius: 0 },
+        { label: 'dt muy grande → REJECT', data: e_bad, borderColor: SV.red, borderWidth: 1.5, pointRadius: 0 }
       ]
     },
     options: {
@@ -237,8 +464,8 @@
     data: {
       labels: Ns.map(String),
       datasets: [
-        { label: 'TP3 (EDMD) ~ N² log N', data: tp3, borderColor: '#3498db', backgroundColor: '#3498db', pointRadius: 4 },
-        { label: 'TP4 (DM paso temporal) ~ N', data: tp4, borderColor: '#e74c3c', backgroundColor: '#e74c3c', pointRadius: 4 }
+        { label: 'TP3 (EDMD) ~ N² log N', data: tp3, borderColor: SV.blue, backgroundColor: SV.blue, pointRadius: 4 },
+        { label: 'TP4 (DM paso temporal) ~ N', data: tp4, borderColor: SV.coral, backgroundColor: SV.coral, pointRadius: 4 }
       ]
     },
     options: {
@@ -266,9 +493,9 @@
     data: {
       labels: Ns.map(String),
       datasets: [
-        { label: 'TP4 (DM, k=10³)', data: J_tp4, borderColor: '#e74c3c', backgroundColor: '#e74c3c', pointRadius: 5,
+        { label: 'TP4 (DM, k=10³)', data: J_tp4, borderColor: SV.coral, backgroundColor: SV.coral, pointRadius: 5,
           errorBars: errs },
-        { label: 'TP3 (EDMD, ref)', data: J_tp3, borderColor: '#3498db', backgroundColor: '#3498db', pointRadius: 5, borderDash: [5,5] }
+        { label: 'TP3 (EDMD, ref)', data: J_tp3, borderColor: SV.blue, backgroundColor: SV.blue, pointRadius: 5, borderDash: [5,5] }
       ]
     },
     options: {
@@ -289,7 +516,7 @@
   const Ss = [];
   for (let s = 2; s <= 35; s += 0.2) Ss.push(s.toFixed(1));
   const Ns = [100, 200, 400, 800];
-  const colors = ['#440154', '#3b528b', '#21918c', '#fde725'];   // viridis-ish
+  const colors = SV_SEQ;   // rampa §12 (azul→coral) para variable numérica N
   const datasets = Ns.map((N, idx) => {
     const data = Ss.map(s => {
       s = parseFloat(s);
@@ -324,10 +551,10 @@
 {
   const Ns = [100, 200, 400, 600, 800, 1000];
   const ks = [
-    { label: 'k = 10²', factor: 0.7, color: '#440154' },
-    { label: 'k = 10³ (ref)', factor: 1.0, color: '#3b528b' },
-    { label: 'k = 10⁴', factor: 1.15, color: '#21918c' },
-    { label: 'k = 10⁵ (≈ EDMD)', factor: 1.20, color: '#fde725' }
+    { label: 'k = 10²', factor: 0.7, color: SV_SEQ[0] },
+    { label: 'k = 10³ (ref)', factor: 1.0, color: SV_SEQ[1] },
+    { label: 'k = 10⁴', factor: 1.15, color: SV_SEQ[2] },
+    { label: 'k = 10⁵ (≈ EDMD)', factor: 1.20, color: SV_SEQ[3] }
   ];
   const datasets = ks.map(k => ({
     label: k.label,

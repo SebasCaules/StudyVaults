@@ -41,6 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # generados en prebuild (copias de contenido — no se versionan)
+/public/apps/
 /public/electivas/
 /public/vault-assets/
 

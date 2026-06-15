@@ -13,6 +13,7 @@ export default function WikiLayout({
   currentHref,
   breadcrumbs,
   toc,
+  wide = false,
   children,
 }: {
   vault: string;
@@ -20,11 +21,17 @@ export default function WikiLayout({
   currentHref: string;
   breadcrumbs: Crumb[];
   toc: TocItem[];
+  wide?: boolean;
   children: ReactNode;
 }) {
   const hasToc = toc.length > 0;
   return (
-    <div className="wiki" data-vault={vault} data-toc={hasToc ? "1" : "0"}>
+    <div
+      className="wiki"
+      data-vault={vault}
+      data-toc={hasToc ? "1" : "0"}
+      data-wide={wide ? "1" : undefined}
+    >
       <WikiRail side="left" storageKey="sv-rail-l" label="Navegación">
         <Sidebar vault={vault} sections={sections} currentHref={currentHref} />
       </WikiRail>

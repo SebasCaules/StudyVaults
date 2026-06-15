@@ -10,6 +10,13 @@ export type VaultId =
   | "sds"
   | "inge2";
 
+/** App estática propia de una materia (HTML servido bajo /apps/<vault>/). */
+export interface VaultApp {
+  label: string; // título de la card-lanzador
+  href: string; // ruta SIN basePath (envolver con withBase al renderizar)
+  desc: string; // descripción de una línea
+}
+
 export interface VaultConfig {
   id: VaultId;
   dir: string; // carpeta en la raíz del repo
@@ -21,6 +28,10 @@ export interface VaultConfig {
   contentRoot: string; // subcarpeta donde viven las notas ("wiki" o "")
   math: boolean; // ¿$...$ es LaTeX? (PAW: false → es código EL/JSP)
   lang: "es" | "en";
+  // ¿tiene página /[vault]/herramientas? (toolkit interactivo por materia)
+  toolkit?: boolean;
+  // apps estáticas propias (HTML restilizado, servido bajo /apps/<vault>/)
+  apps?: VaultApp[];
 }
 
 export const VAULTS: VaultConfig[] = [
@@ -36,6 +47,7 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: true,
     lang: "es",
+    toolkit: true,
   },
   {
     id: "derecho",
@@ -49,6 +61,23 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: false,
     lang: "es",
+    apps: [
+      {
+        label: "Estudio interactivo",
+        href: "/apps/derecho/estudio-interactivo.html",
+        desc: "App de repaso del 2.º parcial: tarjetas, casos y conceptos navegables por unidad.",
+      },
+      {
+        label: "Quiz · 2.º parcial",
+        href: "/apps/derecho/quiz-2do-parcial.html",
+        desc: "Autoevaluación con preguntas de opción múltiple y corrección al instante.",
+      },
+      {
+        label: "Preguntas repetidas",
+        href: "/apps/derecho/preguntas-repetidas-2do-parcial-print.html",
+        desc: "Hoja imprimible con las preguntas que más se repiten en el 2.º parcial.",
+      },
+    ],
   },
   {
     id: "economia",
@@ -62,6 +91,7 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: true,
     lang: "es",
+    toolkit: true,
   },
   {
     id: "proba",
@@ -75,6 +105,7 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: true,
     lang: "es",
+    toolkit: true,
   },
   {
     id: "paw",
@@ -88,6 +119,7 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: false, // $...$ es Expression Language / JSP, no matemática
     lang: "en",
+    toolkit: true,
   },
   {
     id: "sds",
@@ -101,6 +133,13 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: true,
     lang: "es",
+    apps: [
+      {
+        label: "TP4 · Previsualización",
+        href: "/apps/sds/TP4_previsualizacion.html",
+        desc: "Gráficos esperados del TP4: observables y curvas de referencia para comparar.",
+      },
+    ],
   },
   {
     id: "inge2",
@@ -114,6 +153,7 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: false,
     lang: "en",
+    toolkit: true,
   },
 ];
 
