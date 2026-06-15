@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 // Capa ambient: gradiente animado (CSS) + campo de partículas liviano (canvas 2D).
 // Portado de _estandar/web/components.html. Va detrás de todo el contenido.
@@ -8,8 +9,11 @@ import { useEffect, useRef } from "react";
 // y relee los colores por tema al evento sv:themechange.
 export default function AmbientLayer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
 
   useEffect(() => {
+    if (onHome) return; // en el home el grafo es el objeto focal; sin ambient
     const canvas = canvasRef.current;
     if (!canvas) return;
     const reduce =
@@ -125,8 +129,13 @@ export default function AmbientLayer() {
       rt = setTimeout(start, 180);
     };
     const onVisibility = () => {
-      if (document.hidden) cancelAnimationFrame(raf);
-      else raf = requestAnimationFrame(step);
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      } else if (!raf) {
+        last = 0;
+        raf = requestAnimationFrame(step);
+      }
     };
     window.addEventListener("resize", onResize);
     window.addEventListener("sv:themechange", readColors);
@@ -139,7 +148,9 @@ export default function AmbientLayer() {
       window.removeEventListener("sv:themechange", readColors);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [onHome]);
+
+  if (onHome) return null;
 
   return (
     <div className="ambient" aria-hidden="true">

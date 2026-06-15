@@ -1,0 +1,161 @@
+import {
+  forceSimulation,
+  forceManyBody,
+  forceLink,
+  forceX,
+  forceY,
+  forceCollide,
+  type SimulationNodeDatum,
+} from "d3-force";
+import { getManifest } from "@/lib/content/manifest";
+import { resolveTarget } from "@/lib/content/resolve-link";
+import { VAULTS, type VaultId } from "@/lib/content/vaults";
+
+export const dynamic = "force-static";
+
+// Grafo de las páginas del wiki: nodos = notas, aristas = wikilinks resueltos
+// (intra-vault). El layout force se precomputa acá en build → el cliente solo
+// dibuja y anima suave. Se emite a out/graph.json.
+
+interface SimNode extends SimulationNodeDatum {
+  id: string;
+  v: VaultId;
+  t: string;
+  s: string;
+  deg: number;
+}
+
+const WIKILINK_RE = /(!?)\[\[([^\]|\n]+?)(?:\|([^\]\n]+?))?\]\]/g;
+function dirOf(relPath: string): string {
+  const i = relPath.lastIndexOf("/");
+  return i === -1 ? "" : relPath.slice(0, i);
+}
+
+export async function GET() {
+  const m = await getManifest();
+  const notes = m.notes.filter(
+    (n) => !n.isIndex && !/^(readme|audit_report|log)$/i.test(n.basename),
+  );
+
+  const nodes: SimNode[] = notes.map((n) => ({
+    id: n.href,
+    v: n.vault,
+    t: n.title,
+    s: n.slug.length > 1 ? n.slug[0] : "general",
+    deg: 0,
+  }));
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+
+  // aristas
+  const seen = new Set<string>();
+  const links: { source: string; target: string }[] = [];
+  for (const note of notes) {
+    const dir = dirOf(note.relPath);
+    let mm: RegExpExecArray | null;
+    WIKILINK_RE.lastIndex = 0;
+    while ((mm = WIKILINK_RE.exec(note.body))) {
+      const target = mm[2].trim();
+      const res = resolveTarget(m, note.vault, dir, target);
+      if (!res || res.kind !== "note") continue;
+      const to = res.note.href;
+      if (to === note.href) continue;
+      const key = note.href < to ? `${note.href}|${to}` : `${to}|${note.href}`;
+      if (seen.has(key)) continue;
+      if (!byId.has(to)) continue;
+      seen.add(key);
+      links.push({ source: note.href, target: to });
+      byId.get(note.href)!.deg++;
+      byId.get(to)!.deg++;
+    }
+  }
+
+  // anclas por materia (en círculo) para clusterizar
+  const anchors: Record<string, { x: number; y: number }> = {};
+  VAULTS.forEach((vlt, i) => {
+    const a = (i / VAULTS.length) * Math.PI * 2 - Math.PI / 2;
+    anchors[vlt.id] = { x: Math.cos(a) * 320, y: Math.sin(a) * 320 };
+  });
+  nodes.forEach((n) => {
+    const an = anchors[n.v];
+    n.x = an.x + (Math.random() - 0.5) * 60;
+    n.y = an.y + (Math.random() - 0.5) * 60;
+  });
+
+  const sim = forceSimulation(nodes)
+    .force("charge", forceManyBody().strength(-26))
+    .force(
+      "link",
+      forceLink<SimNode, { source: string; target: string }>(links)
+        .id((d) => d.id)
+        .distance(26)
+        .strength(0.35),
+    )
+    .force("x", forceX<SimNode>((n) => anchors[n.v].x).strength(0.07))
+    .force("y", forceY<SimNode>((n) => anchors[n.v].y).strength(0.07))
+    .force("collide", forceCollide(3.2))
+    .stop();
+  for (let i = 0; i < 320; i++) sim.tick();
+
+  // normalizar a un viewBox 0..1000 (cuadrado), preservando aspecto
+  const xs = nodes.map((n) => n.x!);
+  const ys = nodes.map((n) => n.y!);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const span = Math.max(maxX - minX, maxY - minY) || 1;
+  const pad = 40;
+  const scale = (1000 - pad * 2) / span;
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+
+  // color por nodo, resuelto en build y POR TEMA (AA en dark y light).
+  // base = tint de materia (mismas mezclas que --vt-* de globals.css);
+  // cDark = aclarado hacia blanco (visible sobre canvas oscuro);
+  // cLight = oscurecido hacia marrón (visible sobre off-white).
+  const HEX = { brown: "#241208", blue: "#92cff2", gray: "#a1a1aa", coral: "#f47c59", white: "#ffffff" };
+  function mix(a: string, b: string, pa: number): string {
+    const h = (x: string) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16));
+    const A = h(a), B = h(b), p = pa / 100;
+    return (
+      "#" +
+      A.map((v, i) =>
+        Math.round(v * p + B[i] * (1 - p))
+          .toString(16)
+          .padStart(2, "0"),
+      ).join("")
+    );
+  }
+  const BASE: Record<string, string> = {
+    mna: HEX.blue,
+    derecho: mix(HEX.coral, HEX.brown, 72),
+    economia: mix(HEX.coral, HEX.blue, 58),
+    proba: mix(HEX.blue, HEX.gray, 60),
+    paw: mix(HEX.blue, HEX.gray, 52),
+    sds: mix(HEX.coral, HEX.gray, 50),
+    inge2: mix(HEX.gray, HEX.blue, 68),
+  };
+  const cDark = (v: string) => mix(BASE[v] ?? HEX.blue, HEX.white, 68);
+  const cLight = (v: string) => mix(BASE[v] ?? HEX.blue, HEX.brown, 48);
+
+  const idx = new Map(nodes.map((n, i) => [n.id, i]));
+  const outNodes = nodes.map((n) => ({
+    v: n.v,
+    t: n.t,
+    u: n.id, // href
+    s: n.s,
+    cDark: cDark(n.v),
+    cLight: cLight(n.v),
+    x: Math.round((n.x! - cx) * scale + 500),
+    y: Math.round((n.y! - cy) * scale + 500),
+    r: Math.round((1.6 + Math.sqrt(n.deg) * 0.9) * 10) / 10,
+  }));
+  const outLinks = links.map((l) => [
+    idx.get(typeof l.source === "string" ? l.source : (l.source as SimNode).id)!,
+    idx.get(typeof l.target === "string" ? l.target : (l.target as SimNode).id)!,
+  ]);
+
+  return Response.json({
+    nodes: outNodes,
+    links: outLinks,
+    vaults: VAULTS.map((v) => ({ id: v.id, short: v.short })),
+  });
+}

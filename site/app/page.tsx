@@ -3,19 +3,20 @@ import { getManifest } from "@/lib/content/manifest";
 import { VAULTS, REPO_URL } from "@/lib/content/vaults";
 import { withBase } from "@/lib/content/slug";
 import Reveal from "@/components/Reveal";
+import HeroGraph from "@/components/portal/HeroGraph";
+import { BANNERS } from "@/components/portal/VaultBanners";
 
 export default async function Home() {
   const m = await getManifest();
   const counts: Record<string, number> = {};
   for (const v of VAULTS) {
-    counts[v.id] = m.notes.filter(
-      (n) => n.vault === v.id && !n.isIndex,
-    ).length;
+    counts[v.id] = m.notes.filter((n) => n.vault === v.id && !n.isIndex).length;
   }
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
     <>
+      {/* 1 · HERO */}
       <section className="home-hero container">
         <Reveal as="div" className="home-hero__grid">
           <div className="home-hero__copy">
@@ -41,9 +42,11 @@ export default async function Home() {
               </span>
             </h1>
             <p className="home-sub">
-              Siete materias del ITBA convertidas en bases de conocimiento:
-              teoría, clases, guías y parciales como notas atómicas, enlazadas y
-              buscables. Más un planificador de electivas.
+              StudyVaults convierte los apuntes de siete materias de Ingeniería
+              Informática del ITBA en wikis navegables: cada tema es una nota
+              atómica, enlazada a las demás. Lo que ves a la derecha es el grafo
+              real de esas notas — cada punto es una página, cada línea un enlace
+              entre ideas.
             </p>
             <div className="home-actions">
               <a className="btn btn--primary btn--lg" href="#materias">
@@ -60,45 +63,15 @@ export default async function Home() {
             </div>
           </div>
 
-          <aside className="home-panel" aria-label="Resumen del sistema">
+          <aside className="home-panel" aria-label="Grafo del wiki">
             <div className="home-panel__head">
-              <span>SYS.00 // STUDYVAULTS</span>
+              <span>SYS.00 // GRAFO</span>
               <span className="live">
                 <span className="live-dot" />
-                LIVE
+                {total} NOTAS
               </span>
             </div>
-            <div
-              className="focal"
-              role="img"
-              aria-label="Anillos técnicos concéntricos"
-            >
-              <svg viewBox="0 0 240 240" fill="none" style={{ color: "var(--ink-strong)" }}>
-                <defs>
-                  <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stopColor="#F47C59" />
-                    <stop offset="1" stopColor="#92CFF2" />
-                  </linearGradient>
-                </defs>
-                <circle cx="120" cy="120" r="112" stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
-                <g className="ring ring--slow">
-                  <circle cx="120" cy="120" r="96" stroke="rgba(146,207,242,0.35)" strokeWidth="1" strokeDasharray="2 8" />
-                  <circle cx="120" cy="24" r="3.2" fill="#92CFF2" />
-                </g>
-                <g className="ring ring--rev">
-                  <circle cx="120" cy="120" r="74" stroke="url(#grad1)" strokeWidth="1.5" strokeDasharray="60 18 8 18" />
-                  <circle cx="46" cy="120" r="3" fill="#F47C59" />
-                </g>
-                <g className="ring ring--fast">
-                  <circle cx="120" cy="120" r="52" stroke="rgba(244,124,89,0.5)" strokeWidth="1" strokeDasharray="3 6" />
-                  <circle cx="120" cy="68" r="2.4" fill="currentColor" />
-                </g>
-                <circle cx="120" cy="120" r="30" stroke="currentColor" strokeOpacity="0.18" strokeWidth="1" />
-                <path d="M120 100v40M100 120h40" stroke="rgba(146,207,242,0.6)" strokeWidth="1" />
-                <circle cx="120" cy="120" r="6" fill="#F47C59" />
-                <circle cx="120" cy="120" r="6" stroke="#92CFF2" strokeWidth="1.2" />
-              </svg>
-            </div>
+            <HeroGraph />
             <div className="home-panel__meta">
               <div className="kv">
                 <span className="k">Vaults</span>
@@ -109,8 +82,8 @@ export default async function Home() {
                 <span className="v acc">{total}</span>
               </div>
               <div className="kv">
-                <span className="k">Planificador</span>
-                <span className="v">electivas</span>
+                <span className="k">Enlaces</span>
+                <span className="v">~8.000</span>
               </div>
               <div className="kv">
                 <span className="k">Integridad</span>
@@ -121,27 +94,121 @@ export default async function Home() {
         </Reveal>
       </section>
 
-      <section id="materias" className="section container">
+      {/* 2 · QUÉ ES */}
+      <section className="section container home-prose">
         <Reveal>
-          <p className="eyebrow">Índice de vaults</p>
-          <h2 className="section__title">Una materia, un vault.</h2>
+          <p className="eyebrow">SYS // qué es</p>
+          <h2 className="section__title">
+            Un archivo de la carrera, no un drive de PDFs.
+          </h2>
+          <p className="home-lead">
+            Tomar apuntes no es lo mismo que entender. StudyVaults toma las
+            carpetas sueltas de cada materia —teóricas, prácticas, parciales
+            viejos— y las pasa por un mismo proceso: partir el contenido en
+            notas chicas y autocontenidas, conectarlas entre sí y publicarlas
+            como un sitio que se puede leer, buscar y recorrer. El resultado son
+            siete vaults: uno por materia, todos con la misma estructura.
+          </p>
+        </Reveal>
+      </section>
+
+      {/* 3 · MÉTODO */}
+      <section className="section container">
+        <Reveal>
+          <p className="eyebrow">SYS // método</p>
+          <h2 className="section__title">Destilado con IA, curado a mano.</h2>
         </Reveal>
         <div className="cards" style={{ marginTop: "32px" }}>
+          {[
+            {
+              k: "Capturar",
+              d: "El material crudo de la cursada —PDFs, fotos del pizarrón, guías, resoluciones— se junta en un vault de Obsidian por materia.",
+            },
+            {
+              k: "Destilar",
+              d: "Cada tema se reescribe como una nota atómica con un formato consistente: definición, desarrollo, ejemplos y enlaces. Un modelo de lenguaje asiste el reescrito; el criterio y la verificación son humanos.",
+            },
+            {
+              k: "Enlazar",
+              d: "Las notas se cruzan con wikilinks. Eso teje el grafo: estudiar un tema te lleva naturalmente a los que dependen de él.",
+            },
+          ].map((c, i) => (
+            <Reveal as="div" delay={i * 60} key={c.k}>
+              <div className="card">
+                <div className="card__ico">{String(i + 1).padStart(2, "0")}</div>
+                <h3>{c.k}</h3>
+                <p>{c.d}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal>
+          <p className="home-foot">
+            No es material oficial de las cátedras. Son apuntes de un estudiante,
+            abiertos por si le sirven a alguien más.
+          </p>
+        </Reveal>
+      </section>
+
+      {/* 4 · CÓMO SE USA */}
+      <section className="section container">
+        <Reveal>
+          <p className="eyebrow">SYS // cómo se usa</p>
+          <h2 className="section__title">Tres formas de entrar.</h2>
+        </Reveal>
+        <div className="cards" style={{ marginTop: "32px" }}>
+          {[
+            {
+              k: "Por materia",
+              d: "Elegí un vault en el índice de abajo. Cada uno abre con la estructura completa de unidades y temas en el riel lateral. Plegá lo que no necesites.",
+            },
+            {
+              k: "Por búsqueda",
+              d: "Apretá ⌘K y buscá cualquier término en las 782 páginas. Es instantáneo y funciona sin conexión.",
+            },
+            {
+              k: "Por enlaces",
+              d: "Seguí los wikilinks dentro de cada nota para saltar de un concepto al siguiente, o usá el grafo del inicio como mapa.",
+            },
+          ].map((c, i) => (
+            <Reveal as="div" delay={i * 60} key={c.k}>
+              <div className="card">
+                <div className="card__ico blue">{String(i + 1).padStart(2, "0")}</div>
+                <h3>{c.k}</h3>
+                <p>{c.d}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* 5 · MATERIAS */}
+      <section id="materias" className="section container">
+        <Reveal>
+          <p className="eyebrow">SYS // índice de vaults</p>
+          <h2 className="section__title">Una materia, un vault.</h2>
+          <p className="home-lead">
+            Siete materias de Ingeniería Informática del ITBA, cada una como una
+            base de conocimiento independiente. El número junto a cada materia es
+            la cantidad de páginas que contiene.
+          </p>
+        </Reveal>
+        <div className="cards cards--vaults" style={{ marginTop: "32px" }}>
           {VAULTS.map((v, i) => (
-            <Reveal as="div" delay={i * 55} key={v.id}>
-              <Link href={`/${v.id}/`} className="card vaultcard">
-                <div className="card__ico">{v.code.replace("SYS.", "")}</div>
+            <Reveal as="div" delay={i * 50} key={v.id}>
+              <Link href={`/${v.id}/`} className="card vaultcard" data-vault={v.id}>
+                <div className="vaultcard__bannerwrap">{BANNERS[v.id]}</div>
                 <h3>{v.name}</h3>
                 <p>{v.blurb}</p>
-                <span className="vaultcard__meta">
-                  {counts[v.id]} páginas →
-                </span>
+                <span className="vaultcard__meta">{counts[v.id]} páginas →</span>
               </Link>
             </Reveal>
           ))}
-          <Reveal as="div" delay={VAULTS.length * 55}>
+          <Reveal as="div" delay={VAULTS.length * 50}>
             <a href={withBase("/electivas/")} className="card vaultcard">
-              <div className="card__ico blue">PL</div>
+              <div className="vaultcard__bannerwrap vaultcard__bannerwrap--tool">
+                <div className="card__ico blue">PL</div>
+              </div>
               <h3>Planificador de electivas</h3>
               <p>
                 App para planificar la carrera: mapa de correlativas, áreas y
@@ -151,6 +218,71 @@ export default async function Home() {
             </a>
           </Reveal>
         </div>
+      </section>
+
+      {/* 6 · ELECTIVAS */}
+      <section className="section container">
+        <Reveal as="div" className="home-band">
+          <div>
+            <p className="eyebrow">SYS // herramientas</p>
+            <h2 className="section__title">
+              Planificá la carrera, no solo la cursada.
+            </h2>
+            <p className="home-lead" style={{ marginBottom: 0 }}>
+              Además de los apuntes, StudyVaults incluye un planificador de
+              electivas: un mapa interactivo de correlativas, áreas y minors,
+              cómputo de créditos y armado del horario cuatrimestral. Pensado
+              para decidir qué cursar y cuándo.
+            </p>
+          </div>
+          <a className="btn btn--primary btn--lg" href={withBase("/electivas/")}>
+            Abrir el planificador →
+          </a>
+        </Reveal>
+      </section>
+
+      {/* 7 · CIERRE / STATS */}
+      <section className="section container">
+        <Reveal as="div" className="home-stats">
+          <span>
+            <b>{total}</b> páginas
+          </span>
+          <span>
+            <b>{VAULTS.length}</b> vaults
+          </span>
+          <span>
+            <b>~8.000</b> enlaces internos
+          </span>
+          <span>
+            <b>1</b> planificador
+          </span>
+        </Reveal>
+        <Reveal>
+          <div className="home-actions" style={{ marginTop: "28px" }}>
+            <a className="btn btn--primary btn--lg" href="#materias">
+              Explorar materias
+            </a>
+            <a
+              className="btn btn--ghost btn--lg"
+              href={REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ver en GitHub
+            </a>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* 8 · LETRA CHICA */}
+      <section className="section container">
+        <p className="eyebrow">SYS // letra chica</p>
+        <p className="home-note">
+          Material de estudio de un estudiante, con fines académicos. No es
+          contenido oficial de ninguna cátedra del ITBA. Los vaults originales de
+          Obsidian son la fuente de verdad; este sitio es una vista estática
+          publicada de ese contenido.
+        </p>
       </section>
     </>
   );

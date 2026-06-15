@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import Breadcrumbs, { type Crumb } from "./Breadcrumbs";
 import TableOfContents from "./TableOfContents";
 import MermaidRunner from "./MermaidRunner";
+import WikiRail from "./WikiRail";
 
 export default function WikiLayout({
   vault,
@@ -21,25 +22,26 @@ export default function WikiLayout({
   toc: TocItem[];
   children: ReactNode;
 }) {
+  const hasToc = toc.length > 0;
   return (
-    <div className="wiki container">
-      <details className="wiki__side" open>
-        <summary className="wiki__side-toggle">Navegar la materia</summary>
-        <Sidebar
-          vault={vault}
-          sections={sections}
-          currentHref={currentHref}
-        />
-      </details>
+    <div className="wiki" data-vault={vault} data-toc={hasToc ? "1" : "0"}>
+      <WikiRail side="left" storageKey="sv-rail-l" label="Navegación">
+        <Sidebar vault={vault} sections={sections} currentHref={currentHref} />
+      </WikiRail>
 
       <div className="wiki__main">
-        <Breadcrumbs items={breadcrumbs} />
-        {children}
+        <div className="wiki__inner">
+          <Breadcrumbs items={breadcrumbs} />
+          {children}
+        </div>
       </div>
 
-      <div className="wiki__toc">
-        <TableOfContents items={toc} />
-      </div>
+      {hasToc && (
+        <WikiRail side="right" storageKey="sv-rail-r" label="En esta página">
+          <TableOfContents items={toc} />
+        </WikiRail>
+      )}
+
       <MermaidRunner />
     </div>
   );

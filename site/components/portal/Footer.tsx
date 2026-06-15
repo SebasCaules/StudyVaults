@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { VAULTS, REPO_URL } from "@/lib/content/vaults";
 import { withBase } from "@/lib/content/slug";
+import BrandMark from "./BrandMark";
 
 export default function Footer() {
   return (
@@ -8,30 +9,7 @@ export default function Footer() {
       <div className="container footer__top">
         <div className="footer__brand">
           <Link className="brand" href="/" aria-label="StudyVaults — inicio">
-            <svg
-              className="brand__mark"
-              viewBox="0 0 32 32"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                x="1.25"
-                y="1.25"
-                width="29.5"
-                height="29.5"
-                rx="7"
-                stroke="#F47C59"
-                strokeWidth="1.5"
-              />
-              <path
-                d="M8 22V10l8 5 8-5v12"
-                stroke="#92CFF2"
-                strokeWidth="1.8"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-              <circle cx="16" cy="15" r="2.1" fill="#F47C59" />
-            </svg>
+            <BrandMark />
             <span className="brand__name">
               Study<b>Vaults</b>
             </span>

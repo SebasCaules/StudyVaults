@@ -151,6 +151,28 @@
   color-scheme: dark;
 }
 
+/* ===== tint por materia — derivado de las 6 hex base (vale en dark y light) =====
+   Se usa SOLO como fondo a baja opacidad, borde o relleno de SVG/nodo (umbral 3:1).
+   Nunca como texto sobre superficie (ahí van --link / --ink-strong, que pasan AA).
+   Los valores deben coincidir con VTINT en app/graph.json/route.ts. */
+:root {
+  --vt-mna: var(--hex-blue);
+  --vt-derecho: color-mix(in srgb, var(--hex-coral) 72%, var(--hex-brown));
+  --vt-economia: color-mix(in srgb, var(--hex-coral) 58%, var(--hex-blue));
+  --vt-proba: color-mix(in srgb, var(--hex-blue) 60%, var(--hex-gray));
+  --vt-paw: color-mix(in srgb, var(--hex-blue) 52%, var(--hex-gray));
+  --vt-sds: color-mix(in srgb, var(--hex-coral) 50%, var(--hex-gray));
+  --vt-inge2: color-mix(in srgb, var(--hex-gray) 68%, var(--hex-blue));
+  --vault-tint: var(--accent);
+}
+[data-vault="mna"] { --vault-tint: var(--vt-mna); }
+[data-vault="derecho"] { --vault-tint: var(--vt-derecho); }
+[data-vault="economia"] { --vault-tint: var(--vt-economia); }
+[data-vault="proba"] { --vault-tint: var(--vt-proba); }
+[data-vault="paw"] { --vault-tint: var(--vt-paw); }
+[data-vault="sds"] { --vault-tint: var(--vt-sds); }
+[data-vault="inge2"] { --vault-tint: var(--vt-inge2); }
+
 /* ============================================================
    Exponer tokens de ROL a las utilities de Tailwind v4.
    `inline` → las utilities referencian var() en el use-site,
@@ -701,33 +723,66 @@ button {
    ============================================================ */
 .wiki {
   display: grid;
-  grid-template-columns: 264px minmax(0, 1fr) 220px;
-  gap: 40px;
+  grid-template-columns: var(--rail-l, 296px) minmax(0, 1fr) var(--rail-r, 244px);
   align-items: start;
-  padding-top: calc(var(--nav-h) + 32px);
-  padding-bottom: var(--s-7);
+  padding-top: var(--nav-h);
+  min-height: 100vh;
+  min-height: 100dvh;
 }
-.wiki__side {
+.wiki:has(.rail--left.is-collapsed) { --rail-l: 48px; }
+.wiki:has(.rail--right.is-collapsed) { --rail-r: 48px; }
+.wiki[data-toc="0"] { grid-template-columns: var(--rail-l, 296px) minmax(0, 1fr); }
+
+/* rieles pegados a los bordes, colapsables */
+.rail {
   position: sticky;
-  top: calc(var(--nav-h) + 24px);
-  max-height: calc(100vh - var(--nav-h) - 48px);
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  height: calc(100dvh - var(--nav-h));
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.rail__scrim { display: none; }
+.rail--right {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+.rail__scroll {
   overflow-y: auto;
+  padding: 22px 18px;
+  flex: 1;
   font-size: 14px;
 }
-.wiki__side-toggle {
-  display: none;
+.rail.is-collapsed .rail__scroll { display: none; }
+.rail__toggle {
+  position: absolute;
+  top: 14px;
+  z-index: 3;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-ctrl);
+  background: var(--surface-3);
+  border: 1px solid var(--hairline-strong);
+  color: var(--text-secondary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
-.wiki__main {
-  min-width: 0;
-}
-.wiki__toc {
-  position: sticky;
-  top: calc(var(--nav-h) + 24px);
-  max-height: calc(100vh - var(--nav-h) - 48px);
-  overflow-y: auto;
-}
+.rail__toggle--left { right: -13px; }
+.rail__toggle--right { left: -13px; }
+.rail__toggle:hover { color: var(--ink-strong); border-color: var(--ring); }
+.rail__toggle svg { transition: transform var(--dur-fast) var(--ease); }
+.rail--left.is-collapsed .rail__toggle--left svg { transform: rotate(180deg); }
+.rail--right.is-collapsed .rail__toggle--right svg { transform: rotate(180deg); }
+.rail__toggle-label { display: none; }
 
-/* sidebar nav */
+.wiki__main { min-width: 0; padding: 32px 0 var(--s-7); }
+.wiki__inner { max-width: 760px; margin: 0 auto; padding: 0 40px; }
+
+/* sidebar: índice de libro, alto contraste, secciones colapsables */
 .wikinav__home {
   display: block;
   font-family: var(--font-mono);
@@ -736,36 +791,80 @@ button {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent-text);
-  padding: 6px 0 14px;
-  border-bottom: 1px solid var(--hairline);
-  margin-bottom: 14px;
+  padding: 6px 8px 14px;
+  border-bottom: 1px solid var(--hairline-strong);
+  margin-bottom: 10px;
 }
-.wikinav__home.is-active { color: var(--accent-text); }
-.wikinav__sec { margin-bottom: 20px; }
+.wikinav__secs { list-style: none; margin: 0; padding: 0; }
+.wikinav__secs > li { margin: 0; }
+.wikinav__sec { margin: 0 0 2px; border-radius: 6px; }
+.wikinav__sec[open] {
+  background: color-mix(in srgb, var(--vault-tint) 7%, transparent);
+  padding-bottom: 4px;
+}
 .wikinav__sectitle {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  margin: 0 0 8px;
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  user-select: none;
 }
-.wikinav ul { list-style: none; margin: 0; padding: 0; }
+.wikinav__sectitle::-webkit-details-marker { display: none; }
+.wikinav__sectitle:hover { background: var(--hairline); }
+.wikinav__sec[open] > .wikinav__sectitle { color: var(--ink-strong); }
+.wikinav__sec--active > .wikinav__sectitle { color: var(--accent-text); }
+.wikinav__num { font-size: 10px; color: var(--accent-text); font-weight: 700; }
+.wikinav__caret {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--dur-fast) var(--ease);
+}
+.wikinav__sec[open] .wikinav__caret { transform: rotate(45deg); }
+.wikinav__count {
+  font-size: 10px;
+  color: var(--text-secondary);
+  background: var(--surface-3);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  padding: 0 7px;
+  min-width: 20px;
+  text-align: center;
+}
+.wikinav ul {
+  list-style: none;
+  margin: 2px 0 8px 16px;
+  padding: 0 0 0 8px;
+  border-left: 1px solid var(--hairline);
+}
 .wikinav li { margin: 0; }
 .wikinav__link {
   display: block;
   color: var(--text-secondary);
-  padding: 4px 10px;
-  margin: 1px 0;
-  border-radius: 6px;
+  padding: 5px 10px;
+  margin: 1px 0 1px -1px;
   border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
   line-height: 1.35;
+  font-size: 13.5px;
   transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
 }
 .wikinav__link:hover { color: var(--ink-strong); background: var(--hairline); }
 .wikinav__link.is-active {
   color: var(--link);
+  font-weight: 600;
   background: var(--primary-soft);
   border-left-color: var(--primary);
 }
@@ -842,30 +941,52 @@ button {
 .toc__item--sub a { padding-left: 24px; font-size: 12.5px; }
 
 @media (max-width: 1100px) {
-  .wiki { grid-template-columns: 240px minmax(0, 1fr); }
-  .wiki__toc { display: none; }
+  .wiki { grid-template-columns: var(--rail-l, 296px) minmax(0, 1fr); }
+  .rail--right { display: none; }
 }
 @media (max-width: 860px) {
-  .wiki { grid-template-columns: 1fr; gap: 20px; }
-  .wiki__side {
-    position: static;
-    max-height: none;
-    border: 1px solid var(--border);
-    border-radius: var(--r-card);
+  .wiki { grid-template-columns: minmax(0, 1fr); }
+  .rail--left {
+    position: fixed;
+    left: 0;
+    top: var(--nav-h);
+    width: min(86vw, 340px);
+    height: calc(100vh - var(--nav-h));
+    height: calc(100dvh - var(--nav-h));
+    z-index: 950;
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-100%);
+    transition: transform var(--dur) var(--ease);
+  }
+  /* abre solo tras montar (evita el flash del drawer abierto en SSR) */
+  .rail--left[data-mounted]:not(.is-collapsed) { transform: none; }
+  /* toggle siempre visible: pegado al borde derecho del drawer
+     (cae sobre el borde de pantalla cuando el drawer está cerrado) */
+  .rail--left .rail__toggle--left {
+    right: auto;
+    left: 100%;
+    top: 8px;
+    width: 38px;
+    height: 44px;
+    border-radius: 0 var(--r-ctrl) var(--r-ctrl) 0;
     background: var(--surface-2);
-    padding: 10px 16px;
   }
-  .wiki__side-toggle {
+  .rail__scrim {
     display: block;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-strong);
-    cursor: pointer;
-    padding: 6px 0;
+    position: fixed;
+    inset: var(--nav-h) 0 0 0;
+    background: color-mix(in srgb, var(--hex-brown) 55%, transparent);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    z-index: 945;
   }
+  .wiki__inner { padding: 0 22px; }
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) {
+  .rail--left { transition: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wikinav__caret { transition: none; }
 }
 
 /* ============================================================
@@ -1083,6 +1204,12 @@ button {
 @media (max-width: 940px) {
   .home-hero__grid { grid-template-columns: 1fr; gap: 40px; }
 }
+@media (max-width: 560px) {
+  .hero-graph { aspect-ratio: auto; height: 56vh; max-height: 380px; }
+}
+@media (max-width: 380px) {
+  .home-hero__title { font-size: clamp(30px, 9vw, 40px); }
+}
 .home-hero__topmeta {
   display: flex;
   flex-wrap: wrap;
@@ -1113,7 +1240,7 @@ button {
   color: var(--text-primary);
   font-size: clamp(40px, 6.4vw, 62px);
 }
-.home-hero__title .accent { font-style: italic; color: var(--accent); }
+.home-hero__title .accent { font-style: italic; color: var(--accent-text); }
 
 /* masked reveal de líneas del titular */
 .mask-line { display: block; overflow: hidden; }
@@ -1168,20 +1295,6 @@ button {
   100% { transform: scale(1.8); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .live-dot::after { animation: none; } }
-.focal {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  display: grid;
-  place-items: center;
-  margin: 4px 0 18px;
-}
-.focal svg { width: 100%; height: 100%; }
-.focal .ring { transform-origin: 50% 50%; }
-.focal .ring--slow { animation: spin 38s linear infinite; }
-.focal .ring--rev { animation: spin 26s linear infinite reverse; }
-.focal .ring--fast { animation: spin 16s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .focal .ring { animation: none !important; } }
 .home-panel__meta { display: grid; gap: 2px; }
 .kv {
   display: grid;
@@ -1257,6 +1370,101 @@ button {
   color: var(--link);
 }
 .vaultcard:hover .vaultcard__meta { color: var(--ink-strong); }
+
+/* ----- hero: grafo de páginas (reemplaza el objeto focal) ----- */
+.hero-graph {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  margin: 4px 0 18px;
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    color-mix(in srgb, var(--surface-3) 60%, transparent),
+    transparent 70%
+  );
+}
+.hero-graph canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: default;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-graph canvas { cursor: default; }
+}
+
+/* ----- banners de materia en las cards ----- */
+.cards--vaults {
+  grid-template-columns: repeat(auto-fit, minmax(284px, 1fr));
+}
+.vaultcard__bannerwrap {
+  margin: calc(-1 * var(--s-3)) calc(-1 * var(--s-3)) 18px;
+  height: 104px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--hairline);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--vault-tint) 10%, transparent), transparent 75%),
+    var(--surface-3);
+}
+.vaultcard__banner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--vault-tint);
+}
+.vaultcard:hover .vaultcard__bannerwrap {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--vault-tint) 18%, transparent), transparent 75%),
+    var(--surface-3);
+}
+.vaultcard__bannerwrap--tool {
+  display: grid;
+  place-items: center;
+}
+.vaultcard__bannerwrap--tool .card__ico { margin-bottom: 0; }
+
+/* ----- secciones descriptivas de la landing ----- */
+.home-prose { max-width: 880px; }
+.home-lead {
+  margin: 16px 0 0;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 70ch;
+}
+.home-foot {
+  margin: 28px 0 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--accent-line);
+  padding-left: 14px;
+}
+.home-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+}
+.home-band .section__title { margin-top: 8px; }
+.home-band .home-lead { max-width: 60ch; }
+.home-note {
+  max-width: 70ch;
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
 
 /* ============================================================
    SEARCH MODAL
