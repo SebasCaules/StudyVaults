@@ -15,6 +15,7 @@ import {
 import { comModalidad, isAsync, slotsConflict, toMin } from "@/lib/planner/time";
 import { CAP, generateCombos } from "@/lib/planner/combos";
 import { Legend } from "@/components/planner/WeekGrid";
+import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import type { LegendEntry } from "@/components/planner/WeekGrid";
 import type { Materia, MateriaM, Slot, WeekBlock } from "@/lib/planner/types";
 
@@ -31,109 +32,6 @@ const norm = (s: string) =>
     .replace(/[̀-ͯ]/g, "");
 const hhmm = (m: number) =>
   `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-
-/**
- * Timetable de la cursada: calendario semanal diseñado (no la grilla utilitaria).
- * Bloques con el color de la materia, días libres marcados, ensamblado escalonado.
- */
-function CursadaCalendar({
-  blocks,
-  days,
-}: {
-  blocks: WeekBlock[];
-  days: string[];
-}) {
-  const PX = 0.82;
-  let minM = 8 * 60;
-  let maxM = 22 * 60;
-  blocks.forEach((b) => {
-    minM = Math.min(minM, toMin(b.desde));
-    maxM = Math.max(maxM, toMin(b.hasta));
-  });
-  minM = Math.floor(minM / 60) * 60;
-  maxM = Math.ceil(maxM / 60) * 60;
-  const hours: number[] = [];
-  for (let t = minM; t < maxM; t += 60) hours.push(t);
-  const bodyH = (maxM - minM) * PX;
-  const cols = `46px repeat(${days.length}, minmax(0, 1fr))`;
-  let order = 0;
-
-  return (
-    <div className="cmbcal">
-      <div className="cmbcal__head" style={{ gridTemplateColumns: cols }}>
-        <span className="cmbcal__corner" />
-        {days.map((d) => {
-          const n = blocks.filter((b) => b.dia === d).length;
-          return (
-            <div
-              className={"cmbcal__day" + (n === 0 ? " is-free" : "")}
-              key={d}
-            >
-              {d.slice(0, 3)}
-              {n > 0 && <i>{n}</i>}
-            </div>
-          );
-        })}
-      </div>
-      <div
-        className="cmbcal__body"
-        style={{ gridTemplateColumns: cols, height: bodyH }}
-      >
-        <div className="cmbcal__gutter">
-          {hours.map((t) => (
-            <div className="cmbcal__hour" style={{ height: 60 * PX }} key={t}>
-              <span>{String(t / 60).padStart(2, "0")}:00</span>
-            </div>
-          ))}
-        </div>
-        {days.map((d) => {
-          const dayBlocks = blocks.filter((b) => b.dia === d);
-          return (
-            <div
-              className={"cmbcal__col" + (dayBlocks.length === 0 ? " is-free" : "")}
-              key={d}
-            >
-              {hours.map((t) => (
-                <div className="cmbcal__cell" style={{ height: 60 * PX }} key={t} />
-              ))}
-              {dayBlocks.length === 0 && (
-                <span className="cmbcal__freelbl">libre</span>
-              )}
-              {dayBlocks.map((b, i) => {
-                const top = (toMin(b.desde) - minM) * PX;
-                const h = (toMin(b.hasta) - toMin(b.desde)) * PX;
-                const idx = order++;
-                return (
-                  <div
-                    key={i}
-                    className={"cmbcal-blk" + (b.conf ? " is-conf" : "")}
-                    style={
-                      {
-                        top,
-                        height: h,
-                        "--blk": b.color,
-                        "--i": idx,
-                      } as React.CSSProperties
-                    }
-                    title={`${b.nombre}${b.sala ? " · " + b.sala : ""}${b.modalidad ? " · " + b.modalidad : ""}`}
-                  >
-                    <span className="cmbcal-blk__abbr">{b.abbr}</span>
-                    <span className="cmbcal-blk__time">
-                      {b.desde}–{b.hasta}
-                    </span>
-                    {b.sala && h > 38 && (
-                      <span className="cmbcal-blk__room">{b.sala}</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 /**
  * Armá tu cuatrimestre — combinador guiado en 3 pasos, calendario-first.

@@ -129,6 +129,7 @@ export interface WeekBlock {
   abbr: string;
   nombre?: string;
   sala?: string;
+  sede?: string;
   modalidad?: string;
   color: string;
   conf?: boolean;

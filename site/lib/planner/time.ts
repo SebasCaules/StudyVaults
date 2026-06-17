@@ -20,12 +20,30 @@ export function comModalidad(com: Comision): string {
   return Object.keys(c).sort((a, b) => c[b] - c[a])[0];
 }
 
+// Sede física de un slot, o null si no ata a un campus (asincrónico o virtual,
+// que no requieren traslado). Slots sin sede declarada tampoco atan.
+const physSede = (s: Slot): string | null => {
+  if (isAsync(s)) return null;
+  if (s.modalidad === "Virtual") return null;
+  return s.sede ? s.sede : null;
+};
+
 export function slotsConflict(a: Slot, b: Slot): boolean {
-  return (
-    a.dia === b.dia &&
-    toMin(a.desde) < toMin(b.hasta) &&
-    toMin(b.desde) < toMin(a.hasta)
-  );
+  if (a.dia !== b.dia) return false;
+  const aD = toMin(a.desde),
+    aH = toMin(a.hasta),
+    bD = toMin(b.desde),
+    bH = toMin(b.hasta);
+  // superposición temporal directa
+  if (aD < bH && bD < aH) return true;
+  // back-to-back en sedes distintas: una termina justo cuando arranca la otra,
+  // sin tiempo para trasladarse entre campus → cuenta como superposición.
+  if (aH === bD || bH === aD) {
+    const sa = physSede(a),
+      sb = physSede(b);
+    if (sa && sb && sa !== sb) return true;
+  }
+  return false;
 }
 
 export function comConflict(ca: Comision, cb: Comision): boolean {

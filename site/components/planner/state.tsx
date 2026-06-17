@@ -15,6 +15,9 @@ import type {
   ViewKey,
 } from "@/lib/planner/types";
 
+const clampInt = (n: number, min: number, max: number) =>
+  Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : min;
+
 /** Estado inicial determinístico (igual en SSR y primer render del cliente). */
 export function initialState(): PlannerState {
   const approved = new Set<string>(PLAN.aprobadasDefault);
@@ -91,8 +94,10 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
           pool: p.pool ? new Set(p.pool) : new Set(remainingOblig(approved)),
           fixed: p.fixed ? new Map(p.fixed) : s.plan.fixed,
           start: p.planOpts?.start ?? s.plan.start,
-          maxCred: p.planOpts?.maxCred ?? s.plan.maxCred,
-          maxMat: p.planOpts?.maxMat ?? s.plan.maxMat,
+          // clamp defensivo: valores persistidos fuera de rango (de versiones
+          // previas con el input roto) no deben romper el plan
+          maxCred: clampInt(p.planOpts?.maxCred ?? s.plan.maxCred, 3, 40),
+          maxMat: clampInt(p.planOpts?.maxMat ?? s.plan.maxMat, 1, 9),
           avoid: p.planOpts?.avoid ?? s.plan.avoid,
         },
         sideCollapsed: p.sideCollapsed,
@@ -154,9 +159,9 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
     case "SET_PLAN_START":
       return { ...s, plan: { ...s.plan, start: a.start } };
     case "SET_PLAN_MAXCRED":
-      return { ...s, plan: { ...s.plan, maxCred: a.value } };
+      return { ...s, plan: { ...s.plan, maxCred: clampInt(a.value, 3, 40) } };
     case "SET_PLAN_MAXMAT":
-      return { ...s, plan: { ...s.plan, maxMat: a.value } };
+      return { ...s, plan: { ...s.plan, maxMat: clampInt(a.value, 1, 9) } };
     case "SET_PLAN_AVOID":
       return { ...s, plan: { ...s.plan, avoid: a.value } };
     case "PLAN_POOL_ADD": {
