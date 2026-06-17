@@ -5,7 +5,7 @@ aliases: [VTD, valor del dinero en el tiempo, matemática financiera, time value
 
 ## Definición
 
-**Valor tiempo del dinero (VTD):** $1 millón hoy vale **más** que $1 millón dentro de un año. Ese "algo" de diferencia es el valor del dinero en el tiempo, y se mide con la **tasa de interés**.
+**Valor tiempo del dinero (VTD):** \$1 millón hoy vale **más** que \$1 millón dentro de un año. Ese "algo" de diferencia es el valor del dinero en el tiempo, y se mide con la **tasa de interés**.
 
 **Razones (las 4 de la cátedra):**
 1. **Inflación** — los pesos futuros compran menos.
@@ -37,11 +37,11 @@ De ahí salen los cuatro despejes ($F$, $P$, $i$, $n$), las [[anualidades]], las
 
 ## Ejemplo
 
-¿Cuánto pagar hoy por recibir $300 dentro de un año, si la mejor alternativa rinde 2%? (slides, "Paul Shorter")
+¿Cuánto pagar hoy por recibir \$300 dentro de un año, si la mejor alternativa rinde 2%? (slides, "Paul Shorter")
 
 $$VP = \frac{300}{1{,}02} = 294{,}12$$
 
-Pagar más de $294,12 es aceptar un rendimiento menor al costo de oportunidad; pagar menos es ganarle.
+Pagar más de \$294,12 es aceptar un rendimiento menor al costo de oportunidad; pagar menos es ganarle.
 
 ## Intuición / Por qué importa
 
@@ -51,7 +51,7 @@ Pagar más de $294,12 es aceptar un rendimiento menor al costo de oportunidad; p
 
 ## Errores comunes / Distinciones
 
-- **Sumar plata de fechas distintas "porque son los mismos pesos".** $5.000 de cuotas no son comparables con $5.000 hoy.
+- **Sumar plata de fechas distintas "porque son los mismos pesos".** \$5.000 de cuotas no son comparables con \$5.000 hoy.
 - **Confundir equivalente con igual.** La equivalencia depende de la tasa: si cambia $i$, cambia qué monto futuro equivale a 100 de hoy.
 - **Olvidar que los costos ya incurridos no entran** en la comparación hacia adelante: son [[conceptos/costo-hundido|costo hundido]] (pregunta típica de parcial).
 

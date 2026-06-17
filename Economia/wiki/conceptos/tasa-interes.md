@@ -48,11 +48,11 @@ Donde:
 
 ## Ejemplo
 
-VP = $100, $i = 5\%$ anual, $n = 10$ años.
+VP = \$100, $i = 5\%$ anual, $n = 10$ años.
 - Simple: $VF = 100 \cdot (1 + 0,05 \cdot 10) = 150$.
 - Compuesto: $VF = 100 \cdot 1,05^{10} = 162,89$.
 
-Diferencia: $12,89 — la "magia" del interés compuesto.
+Diferencia: \$12,89 — la "magia" del interés compuesto.
 
 ## Profundización U7 — Componentes de la tasa de interés
 

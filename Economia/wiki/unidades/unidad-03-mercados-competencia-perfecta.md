@@ -1,7 +1,7 @@
 ---
 unit: 03
 module: Microeconomía
-title: Mercados — Competencia Perfecta
+title: Unidad 3 — Mercados — Competencia Perfecta
 parcial: 1
 sources: [Clase004eco2021.pdf, GP3_ePI_2026.pdf, GUIA 3.pdf]
 last_updated: 2026-04-26

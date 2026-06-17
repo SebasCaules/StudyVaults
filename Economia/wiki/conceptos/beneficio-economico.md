@@ -49,16 +49,16 @@ Si $rK > 0$ (siempre que el dueño tenga capital propio), entonces $\pi_{econ} <
 
 ## Ejemplo
 
-Emprendedor pone $\$100.000$ propios. Costo de oportunidad: $r = 10\% \Rightarrow rK = 10.000/año$.
-- Ingresos: $\$70.000$
-- Salarios pagados: $\$50.000$
+Emprendedor pone \$100.000 propios. Costo de oportunidad: $r = 10\% \Rightarrow rK = 10.000/año$.
+- Ingresos: \$70.000
+- Salarios pagados: \$50.000
 
 $$\pi_{cont} = 70.000 - 50.000 = 20.000$$
 $$\pi_{econ} = 70.000 - 50.000 - 10.000 = 10.000$$
 
-La empresa rinde $\$10.000/año$ por encima de la mejor alternativa.
+La empresa rinde \$10.000/año por encima de la mejor alternativa.
 
-Si en cambio los ingresos fueran $\$58.000$: $\pi_{cont} = 8.000 > 0$ pero $\pi_{econ} = -2.000$ → conviene cerrar y poner el capital en plazo fijo.
+Si en cambio los ingresos fueran \$58.000: $\pi_{cont} = 8.000 > 0$ pero $\pi_{econ} = -2.000$ → conviene cerrar y poner el capital en plazo fijo.
 
 ## Errores comunes / Distinciones
 

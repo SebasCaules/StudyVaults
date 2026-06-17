@@ -15,7 +15,7 @@ last_updated: 2026-04-28
 
 **Enunciado.** Calcular el precio real de la nafta súper para Jul-11 y Jul-13 expresado en pesos de Jul-99.
 
-| Fecha  | $P_{nom}$ ($/l) | IPC    |
+| Fecha  | $P_{nom}$ (\$/l) | IPC    |
 |--------|-----------------|--------|
 | Jul-99 | 1,044           | 99,86  |
 | Jul-11 | 6,520           | 425,32 |

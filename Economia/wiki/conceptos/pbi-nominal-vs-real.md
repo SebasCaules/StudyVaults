@@ -27,7 +27,7 @@ Si el PBI nominal sube 30% en un año pero los precios subieron 28%, el crecimie
 
 ## Ejemplo
 
-Año base 2020. En 2024: $PBI_{nom} = \$1.000$, $PBI_{real} = \$400$ (a precios 2020). Entonces el deflactor es $1000/400 \times 100 = 250$ → los precios subieron 150% acumulado desde 2020.
+Año base 2020. En 2024: $PBI_{nom} =$ \$1.000, $PBI_{real} =$ \$400 (a precios 2020). Entonces el deflactor es $1000/400 \times 100 = 250$ → los precios subieron 150% acumulado desde 2020.
 
 ## Errores comunes / Distinciones
 

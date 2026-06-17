@@ -20,20 +20,20 @@ Familia Sioli, demanda discreta por horas de tenis: $(24,1)(17,2)(8,3)(2,4)(0,4)
 
 **Resultados:**
 - a) Máximo a pagar por 1/2/3/4 h: **24, 41, 49, 51**
-- b) EC si $P = \$20, \$15, \$7$: **4, 11, 28**
-- c) Máxima tarifa fija semanal (tenis libre): **$\$51$**
+- b) EC si $P =$ \$20, \$15, \$7: **4, 11, 28**
+- c) Máxima tarifa fija semanal (tenis libre): **\$51**
 
 ### P3 — Elasticidad precio de la demanda
 **Resultados:** $\eta = -0{,}82$; $-1$; $-1{,}22$. Decisión: **bajar precio hasta 10**. Ingreso máximo = 7500 ctvos (donde $\eta = -1$).
 
 ### P4 — Subsidio al productor vs al consumidor (incidencia)
-$P = 100 - x$; $P = 10 + 9x$. Subsidio $\$5$.
+$P = 100 - x$; $P = 10 + 9x$. Subsidio \$5.
 
 **Resultados:**
 - Equilibrio inicial: $P = 91$, $Q = 9$
 - Plan A (subsidio productor) y Plan B (subsidio consumidor): **equivalentes**
 - Resultado: $P_c = 90{,}5$, $P_v = 95{,}5$, $Q = 9{,}5$
-- **Traslado:** consumidor absorbe 10% ($\$0{,}5$), vendedor 90% ($\$4{,}5$) — la oferta es mucho más inelástica
+- **Traslado:** consumidor absorbe 10% (\$0,5), vendedor 90% (\$4,5) — la oferta es mucho más inelástica
 
 ### P5 — Comercio internacional (pequeña economía abierta)
 $D(p^d) = 280 - 6p^d$; $S(p^o) = 4p^o$; oferta internacional perfectamente elástica a $p_i = 10$.

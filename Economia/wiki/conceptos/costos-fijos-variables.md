@@ -41,8 +41,8 @@ Donde:
 ## Ejemplo
 
 Una panadería:
-- **CF/mes:** $\$20.000$ (alquiler) + $\$10.000$ (sueldo del dueño) = $\$30.000$
-- **CV/pan:** $\$1$ harina + $\$0.5$ otros insumos = $\$1.5$
+- **CF/mes:** \$20.000 (alquiler) + \$10.000 (sueldo del dueño) = \$30.000
+- **CV/pan:** \$1 harina + \$0.5 otros insumos = \$1.5
 - Si produce $Q = 5.000$ panes: $CV = 7.500$, $CT = 37.500$, $CTMe = 7.5$ por pan.
 - Si produce $Q = 10.000$: $CV = 15.000$, $CT = 45.000$, $CTMe = 4.5$ por pan ($CFMe$ se diluyó).
 

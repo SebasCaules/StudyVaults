@@ -129,7 +129,7 @@ $$k_T = -\frac{PMC}{1 - PMC} \quad \text{(negativo: subir T contrae Y)}$$
 
 Es **menor en módulo** que $k_G$: el primer peso de transferencia/impuesto pasa por el filtro del consumo (solo $PMC$ se gasta), mientras que el primer peso de gasto público es directamente demanda.
 
-**Ejemplo (clase):** $PMC = 0{,}5$, $\Delta G = \$50\text{MM}$ → $\Delta Y = \$100\text{MM}$ ($k_G=2$). Misma transferencia $\Delta TR = \$50\text{MM}$ → $\Delta Y = \$50\text{MM}$ ($k_{TR}=1$).
+**Ejemplo (clase):** $PMC = 0{,}5$, $\Delta G =$ \$50MM → $\Delta Y =$ \$100MM ($k_G=2$). Misma transferencia $\Delta TR =$ \$50MM → $\Delta Y =$ \$50MM ($k_{TR}=1$).
 
 **Multiplicador balanced-budget (presupuesto equilibrado):** si $\Delta G = \Delta T$, entonces $\Delta Y = \Delta G$ exactamente (multiplicador = 1).
 

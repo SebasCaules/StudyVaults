@@ -25,7 +25,7 @@ Los gastos de administración y ventas (GAV) saltean toda la cadena: devengado �
 ## Ejemplo
 
 Una fábrica termina 1.000 unidades en diciembre con costo de producto de \$50 c/u y vende 600:
-- Al cuadro de resultados van $600 \times 50 = \$30.000$ (CMV).
+- Al cuadro de resultados van $600 \times 50 =$ \$30.000 (CMV).
 - Los otros \$20.000 quedan **activados** en el balance como Producto Terminado — serán gasto el año que se vendan.
 - Los \$8.000 de publicidad de diciembre son costo del período: gasto completo este año, se hayan vendido las unidades o no.
 

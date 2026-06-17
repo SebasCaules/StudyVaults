@@ -40,7 +40,7 @@ Modela una **economía cerrada y simplificada** donde todo lo que las empresas p
 
 ## Ejemplo
 
-Una empresa paga $1000 en salarios. Las familias usan ese ingreso para comprar bienes por $1000. Esos $1000 vuelven a las empresas como ingreso. El círculo se cierra.
+Una empresa paga \$1000 en salarios. Las familias usan ese ingreso para comprar bienes por \$1000. Esos \$1000 vuelven a las empresas como ingreso. El círculo se cierra.
 
 Si se introduce **Estado**: agrega impuestos (familias y empresas pagan) y gasto público (vuelve a familias y empresas).
 

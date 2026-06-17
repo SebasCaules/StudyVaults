@@ -16,9 +16,9 @@ last_updated: 2026-04-28
 ## Ej 1 — Decisión de producción en CP
 
 **Datos.**
-- En $Q = 200$ u/mes: $CMg = CTMe = \$10$, $CF = \$500$.
-- En $Q = 150$ u/mes: $CMg = CVMe = \$6$.
-- Precio de mercado: $P = \$8$.
+- En $Q = 200$ u/mes: $CMg = CTMe =$ \$10, $CF =$ \$500.
+- En $Q = 150$ u/mes: $CMg = CVMe =$ \$6.
+- Precio de mercado: $P =$ \$8.
 
 **Identificar referencias clave.**
 
@@ -27,7 +27,7 @@ last_updated: 2026-04-28
 
 **Análisis del precio.** $P_{cierre} = 6 < P = 8 < P_{UR} = 10$.
 
-→ La empresa **debe seguir produciendo** (P cubre el CVMe), pero con **pérdida** (P < CTMe). Cerrar implicaría perder los $\$500$ de CF; producir implica perder algo menor.
+→ La empresa **debe seguir produciendo** (P cubre el CVMe), pero con **pérdida** (P < CTMe). Cerrar implicaría perder los \$500 de CF; producir implica perder algo menor.
 
 **¿Cuánto producir?** En CP, la regla óptima es $CMg = P$. Asumiendo $CMg$ lineal entre los puntos conocidos:
 $$CMg(Q) = 6 + \frac{10-6}{200-150}(Q - 150) = 6 + 0{,}08(Q - 150)$$
@@ -63,7 +63,7 @@ $$Q_M(P) = \begin{cases} 0 & \text{si } P < 15 \\ 5 \cdot (P/5) = P & \text{si }
 
 ## Ej 3 — Impuesto por unidad en CP (LP)
 
-**Datos.** $C(q) = 300 + 5q + 3q^2$. $CMg = 5 + 6q$. $CTMe_{min} = 65$ en $q = 10$. Impuesto $t = \$15/u$.
+**Datos.** $C(q) = 300 + 5q + 3q^2$. $CMg = 5 + 6q$. $CTMe_{min} = 65$ en $q = 10$. Impuesto $t =$ \$15/u.
 
 **Verificación inicial.** $CTMe(10) = 300/10 + 5 + 3(10) = 30 + 5 + 30 = 65$ ✓. $CMg(10) = 5 + 60 = 65$ ✓ (intersección en mínimo de CTMe).
 
@@ -73,7 +73,7 @@ El impuesto por unidad se suma al CT: $C_{new}(q) = C(q) + t \cdot q = 300 + (5+
 
 $$\boxed{CMg_{new}(q) = 20 + 6q}$$
 
-(La curva $CMg$ se desplaza verticalmente hacia arriba en $\$15$.)
+(La curva $CMg$ se desplaza verticalmente hacia arriba en \$15.)
 
 ### b) Nuevo $CTMe_{min}$
 
@@ -90,7 +90,7 @@ El nivel óptimo $q = 10$ no cambia (porque el impuesto unitario es equivalente 
 - **Original:** $P = CMg \Rightarrow q = (P - 5)/6$, válida para $P \geq 65$.
 - **Con impuesto:** $q = (P - 20)/6$, válida para $P \geq 80$.
 
-La nueva oferta está desplazada **verticalmente hacia arriba en $\$15$** (igual al impuesto). Ver [[conceptos/incidencia-impuestos]].
+La nueva oferta está desplazada **verticalmente hacia arriba en \$15** (igual al impuesto). Ver [[conceptos/incidencia-impuestos]].
 
 ---
 
@@ -257,18 +257,18 @@ $$\boxed{Q_{reg} = 120, \; P_{reg} = 100 - 60 = \$40}$$
 
 ## Ej 8 — Mercado de guantes: CP vs. Monopolio + impuesto
 
-**Datos.** $Q = 1400 - 50P$, $CTMe_{LP} = \$8$ (constante).
+**Datos.** $Q = 1400 - 50P$, $CTMe_{LP} =$ \$8 (constante).
 
 > $CTMe$ constante $\Rightarrow CMg = CTMe = 8$. Industria de costos constantes.
 
 ### a) CP sin impuesto
 
-En LP con costos constantes: $P = CTMe = \boxed{\$8}$.
+En LP con costos constantes: $P = CTMe =$ **\$8**.
 $Q = 1400 - 400 = \boxed{1000}$.
 
-### b) CP con impuesto $\$12/u$
+### b) CP con impuesto \$12/u
 
-La oferta horizontal en $CTMe$ se traduce en oferta horizontal en $CTMe + t = \$20$. El consumidor paga todo el impuesto (porque la oferta es perfectamente elástica).
+La oferta horizontal en $CTMe$ se traduce en oferta horizontal en $CTMe + t =$ \$20. El consumidor paga todo el impuesto (porque la oferta es perfectamente elástica).
 
 $P_v = 8$ (recibe el productor), $P_d = 20$ (paga el consumidor).
 $Q = 1400 - 50(20) = \boxed{400}$.
@@ -281,7 +281,7 @@ $CMg = 8$.
 
 $$IMg = CMg \;\Rightarrow\; 28 - \frac{Q}{25} = 8 \;\Rightarrow\; \boxed{Q_M = 500, \; P_M = 18}$$
 
-### d) Monopolio con impuesto $\$12/u$
+### d) Monopolio con impuesto \$12/u
 
 Nuevo $CMg = 8 + 12 = 20$.
 $$28 - \frac{Q}{25} = 20 \;\Rightarrow\; Q = 200, \; P = 28 - 8 = \boxed{24}$$

@@ -31,7 +31,7 @@ Resultado por venta de un bien de uso: $Resultado = Precio\ de\ venta - V.L.$
 
 ## Ejemplo
 
-Maquinaria: $V.O. = \$1.000.000$, $V.U. = 10$ años, $V.R. = 10\% = \$100.000$:
+Maquinaria: $V.O. =$ \$1.000.000, $V.U. = 10$ años, $V.R. = 10\% =$ \$100.000:
 
 $$Am = \frac{1.000.000 - 100.000}{10} = \$90.000/año$$
 

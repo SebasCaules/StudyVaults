@@ -1,7 +1,7 @@
 ---
 unit: 07
 module: Empresa
-title: Cálculo Financiero / Valor Tiempo del Dinero
+title: Unidad 7 — Cálculo Financiero / Valor Tiempo del Dinero
 parcial: 2
 sources: [raw/modulo-3-empresa/unidad-07-calculo-financiero/3_Valor Tiempo del Dinero_GF2020.pdf, raw/modulo-3-empresa/unidad-07-calculo-financiero/12-05-07 GUIA_DE_EJERCICIOS__Economia_para_Ingenieros (rev.1).pdf, raw/modulo-3-empresa/unidad-07-calculo-financiero/Respuestas a algunas preguntas frecuentes.pdf, raw/modulo-3-empresa/unidad-07-calculo-financiero/Archivo VTD.xls]
 last_updated: 2026-06-12

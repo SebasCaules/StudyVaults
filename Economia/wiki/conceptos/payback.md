@@ -33,7 +33,7 @@ $$PR = 2{,}25 \text{ años}$$
 
 ## Máxima exposición
 
-Subproducto útil del mismo cuadro acumulado: la **máxima exposición** es el saldo acumulado más negativo — lo máximo que el inversor llega a tener "enterrado" en el proyecto. En el ejemplo integral del PDF (flujos $-236; +16{,}7; +110; +110; +110; +166{,}8; +90$): acumulado $-236; -219{,}3; -109{,}3; +0{,}7; \ldots$ → $PR = 3$ años y máxima exposición $= \$236$.
+Subproducto útil del mismo cuadro acumulado: la **máxima exposición** es el saldo acumulado más negativo — lo máximo que el inversor llega a tener "enterrado" en el proyecto. En el ejemplo integral del PDF (flujos $-236; +16{,}7; +110; +110; +110; +166{,}8; +90$): acumulado $-236; -219{,}3; -109{,}3; +0{,}7; \ldots$ → $PR = 3$ años y máxima exposición $=$ \$236.
 
 ## Por qué se usa (a pesar de sus defectos)
 

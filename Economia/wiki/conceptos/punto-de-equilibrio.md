@@ -44,7 +44,7 @@ Lectura gerencial: eliminar un producto en zona B **empeora** el resultado globa
 
 ## Ejemplo
 
-$CF = 8.000$, $p = 10$, $cv = 6$: $q^* = 8.000/4 = 2.000$ u (o $V^* = 8.000/0{,}4 = \$20.000$). Vendiendo 2.500 u: $\pi = 4 \times 500 = \$2.000$.
+$CF = 8.000$, $p = 10$, $cv = 6$: $q^* = 8.000/4 = 2.000$ u (o $V^* = 8.000/0{,}4 =$ \$20.000). Vendiendo 2.500 u: $\pi = 4 \times 500 =$ \$2.000.
 
 ## Errores comunes / Distinciones
 

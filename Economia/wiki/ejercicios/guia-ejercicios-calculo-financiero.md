@@ -42,7 +42,7 @@ b) Cuota francesa $C = VP/a_{24,i}$ con la TEM de cada banco:
 - A: $a = \frac{1-(1{,}01167)^{-24}}{0{,}01167} = 20{,}828$ → $C_A = 5.000/20{,}828 = 240{,}07$.
 - B: $a = \frac{1-(1{,}01478)^{-24}}{0{,}01478} = 20{,}082$ → $C_B = 5.000/20{,}082 = 248{,}98$.
 
-**Resultado.** a) El **Banco B** tiene mayor costo efectivo mensual (1,478% > 1,167%) y anual (19,25% > 14,93%) — aunque "18 contra 14" parezca solo 4 puntos, la frecuencia importa. b) $C_A \approx \$240{,}1$; $C_B \approx \$249{,}0$.
+**Resultado.** a) El **Banco B** tiene mayor costo efectivo mensual (1,478% > 1,167%) y anual (19,25% > 14,93%) — aunque "18 contra 14" parezca solo 4 puntos, la frecuencia importa. b) $C_A \approx$ \$240,1; $C_B \approx$ \$249,0.
 
 ---
 
@@ -108,7 +108,7 @@ $$200 = C\,a_{8;3\%} + \frac{2C}{1{,}03^4} + \frac{2C}{1{,}03^8}$$
 
 **Cuentas.** $a_{8;3\%} = 7{,}0197$; $2/1{,}03^4 = 1{,}7770$; $2/1{,}03^8 = 1{,}5788$. Suma de factores $= 10{,}3755$ → $C = 200/10{,}3755 = 19{,}28$.
 
-**Resultado.** En el 4º trimestre se paga cuota + refuerzo $= 3C = \mathbf{\$57{,}83}$.
+**Resultado.** En el 4º trimestre se paga cuota + refuerzo $= 3C =$ **\$57,83**.
 
 ---
 
@@ -125,7 +125,7 @@ $$200 = C\,a_{8;3\%} + \frac{2C}{1{,}03^4} + \frac{2C}{1{,}03^8}$$
 - Total pagado: $12\times10.000 + 54.138 + 18\times5.000 = 264.138$ → intereses $= 264.138 - 137.648 = \mathbf{126.490}$.
 - Sin pago extra: $30\times10.000 - 137.648 = 162.352$ de intereses.
 
-**Resultado.** Intereses pagados: **\$126.490**. Economía de intereses: $162.352-126.490 = \mathbf{\$35.862}$. Cancelar capital temprano ahorra todos los intereses futuros sobre ese capital.
+**Resultado.** Intereses pagados: **\$126.490**. Economía de intereses: $162.352-126.490 =$ **\$35.862**. Cancelar capital temprano ahorra todos los intereses futuros sobre ese capital.
 
 ---
 
@@ -192,7 +192,7 @@ $$D = 50\,a_{17;0{,}5\%} + 80\sum_{t\in\{3,6,9,12,15\}} \frac{1}{1{,}005^{t}} + 
 
 **Cuentas.** $50 \times 16{,}2586 = 812{,}93$; $80 \times 4{,}7816 = 382{,}53$; $95{,}25 \times 0{,}91414 = 87{,}07$.
 
-**Resultado.** $D = \mathbf{\$1.282{,}53}$ — la FAQ de la cátedra confirma este valor (faltaba en la hoja de resultados oficial).
+**Resultado.** $D =$ **\$1.282,53** — la FAQ de la cátedra confirma este valor (faltaba en la hoja de resultados oficial).
 
 ---
 

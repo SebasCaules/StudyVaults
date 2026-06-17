@@ -35,7 +35,7 @@ Ventas \$1.000.000, gastos en efectivo \$500.000, amortizaciones \$100.000, $t =
 | Ingresos después de IG | $(1-0{,}35) \cdot 1.000.000$ | $+650.000$ |
 | Egresos después de IG | $(1-0{,}35) \cdot 500.000$ | $-325.000$ |
 | **Ahorro IG (gastos no en efectivo)** | $0{,}35 \cdot 100.000$ | $+35.000$ |
-| **FEO** | | $\$360.000$ |
+| **FEO** | | **\$360.000** |
 
 Verificación por el método directo: $UAI = 1.000.000 - 600.000 = 400.000$; $IG = 140.000$; $UN = 260.000$; $FEO = UN + Am = 260.000 + 100.000 = 360.000$ ✓.
 

@@ -34,10 +34,10 @@ $$M = m \cdot BM$$
 
 ## Mecanismo intuitivo
 
-$100 de BM, encaje $r = 10\%$, sin preferencia por efectivo ($e = 0$):
-- Banco 1 recibe $100, encaja $10, presta $90 → vuelve como depósito.
-- Banco 2 encaja $9, presta $81 → vuelve.
-- Banco 3 encaja $8,1, presta $72,9 → ...
+\$100 de BM, encaje $r = 10\%$, sin preferencia por efectivo ($e = 0$):
+- Banco 1 recibe \$100, encaja \$10, presta \$90 → vuelve como depósito.
+- Banco 2 encaja \$9, presta \$81 → vuelve.
+- Banco 3 encaja \$8,1, presta \$72,9 → ...
 
 Suma geométrica:
 $$M = 100 + 90 + 81 + \ldots = \frac{100}{1 - 0,9} = 1000$$

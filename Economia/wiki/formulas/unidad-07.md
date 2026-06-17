@@ -11,7 +11,7 @@ title: Fórmulas — Unidad 7 (Cálculo Financiero / Valor Tiempo del Dinero)
 |---|---|
 | $P$ (o $C$, $VP$) | Valor presente / capital inicial |
 | $F$ (o $M$, $VF$) | Valor futuro / monto final |
-| $I$ | Intereses (en $) |
+| $I$ | Intereses (en \$) |
 | $i$ | Tasa de interés del período |
 | $n$ | Cantidad de períodos |
 | $k$ | Frecuencia de capitalización (veces por año) |
@@ -237,7 +237,7 @@ Adelantar el cobro de un documento de valor nominal $C$ que vence en $n$ períod
 $$DC = C \cdot d \cdot n \qquad \boxed{VA = C\,(1 - d\cdot n)}$$
 
 **Donde:**
-- $DC$: descuento comercial (en $)
+- $DC$: descuento comercial (en \$)
 - $VA$: valor actual cobrado hoy
 
 **Tasa de interés equivalente** (el descuento se aplica sobre el nominal; el interés, sobre el valor actual — para $n=1$):

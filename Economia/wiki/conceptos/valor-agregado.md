@@ -29,7 +29,7 @@ Permite calcular el PBI **evitando la doble contabilización** de bienes interme
 ## Ejemplo
 
 Cadena trigo → harina → pan:
-- Productor agropecuario vende trigo a $100. VAB = 100 (suponiendo cero insumos).
+- Productor agropecuario vende trigo a \$100. VAB = 100 (suponiendo cero insumos).
 - Molinero compra trigo a 100, vende harina a 180. VAB = 80.
 - Panadero compra harina a 180, vende pan a 300. VAB = 120.
 - **PBI por valor agregado = 100 + 80 + 120 = 300** ✓ (igual al precio del bien final).

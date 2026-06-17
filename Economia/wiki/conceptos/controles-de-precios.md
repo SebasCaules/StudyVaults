@@ -8,7 +8,7 @@ Fijado **por debajo** del precio de equilibrio.
 
 **Efecto:** $Q_d > Q_s$ → **escasez / carestía**.
 
-**Ejemplo:** control de alquileres con tope $400 cuando el equilibrio es $600 → faltan departamentos.
+**Ejemplo:** control de alquileres con tope \$400 cuando el equilibrio es \$600 → faltan departamentos.
 
 **Consecuencias:**
 - Mercado negro

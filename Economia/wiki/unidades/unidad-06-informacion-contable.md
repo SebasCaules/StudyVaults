@@ -1,7 +1,7 @@
 ---
 unit: 06
 module: Empresa
-title: La Información Contable y Análisis de Costos
+title: Unidad 6 — La Información Contable y Análisis de Costos
 parcial: 2
 sources: [raw/modulo-3-empresa/unidad-06-informacion-contable/epi09_contavs_09.pdf, raw/modulo-3-empresa/unidad-06-informacion-contable/epi09_costos_09.pdf, raw/modulo-3-empresa/unidad-06-informacion-contable/GP5_ePI_0209 (1).doc]
 last_updated: 2026-06-12
@@ -125,7 +125,7 @@ $$Am = \frac{V.O. - V.R.}{V.U.} \qquad V.L. = V.O. - A.A.$$
 - $V.L.$: valor de libros (valor contable neto)
 - $A.A.$: amortizaciones acumuladas desde el alta
 
-**Ejemplo:** maquinaria de \$1.000.000, $V.U.$ 10 años, $V.R.$ 10% → $Am = (1.000.000 - 100.000)/10 = \$90.000$/año. A los 5 años: $V.L. = 1.000.000 - 450.000 = \$550.000$.
+**Ejemplo:** maquinaria de \$1.000.000, $V.U.$ 10 años, $V.R.$ 10% → $Am = (1.000.000 - 100.000)/10 =$ \$90.000/año. A los 5 años: $V.L. = 1.000.000 - 450.000 =$ \$550.000.
 
 Reglas: los **terrenos no se amortizan**; las **mejoras** que extienden vida útil o rendimiento se **activan** y se amortizan en la vida útil restante; la amortización es un gasto **que no eroga caja** (en el flujo de fondos se suma de vuelta). Al vender un bien de uso, el resultado es $Precio - V.L.$ (GP5 Ej. 2). La diferencia entre amortización contable e impositiva genera el [[conceptos/escudo-fiscal]] (GP5 Ej. 3).
 

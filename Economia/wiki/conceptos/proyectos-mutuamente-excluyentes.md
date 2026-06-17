@@ -33,7 +33,7 @@ Ejemplo del PDF (tasa requerida 10%):
 | 1 | $0$ | $6.000$ |
 | 2 | $13.924$ | $7.200$ |
 | **TIR** | $18\%$ | $\mathbf{20\%}$ |
-| **VAN** | $\mathbf{\$1.501}$ | $\$1.401$ |
+| **VAN** | **\$1.501** | **\$1.401** |
 
 **¡Conflicto!** La TIR recomienda B; el VAN recomienda A. Resolución por valor terminal: A entrega $13.924$ en el año 2. B, reinvirtiendo los $6.000$ del año 1 al costo del capital real (10%): $7.200 + 1{,}1 \cdot 6.000 = 13.800 < 13.924$. **A provee la mayor riqueza** — tal como recomendó el VAN. La TIR de B asumía que los $6.000$ se reinvertían al 20%, cuando en realidad se reinvierten al 10%.
 

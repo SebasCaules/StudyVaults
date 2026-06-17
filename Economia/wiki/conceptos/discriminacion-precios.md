@@ -11,7 +11,7 @@ tags: [unit-04, micro]
 | Grado | Mecanismo | Ejemplo |
 |---|---|---|
 | **1er grado (perfecta)** | Cobrar a cada consumidor exactamente su precio de reserva | Negociación uno-a-uno, subastas personalizadas, médicos privados con tarifa según paciente |
-| **2do grado** | Precio depende de la **cantidad comprada** o del paquete | Descuentos por volumen ("1 botella $6, 2 por $10"), tarifas en bloques (luz, gas) |
+| **2do grado** | Precio depende de la **cantidad comprada** o del paquete | Descuentos por volumen ("1 botella \$6, 2 por \$10"), tarifas en bloques (luz, gas) |
 | **3er grado** | Segmentar mercados con elasticidades distintas, cobrar precio diferente a cada segmento | Tarifas estudiantes/jubilados, precio por geografía, cines matiné, software académico |
 
 ## Condiciones para que sea factible

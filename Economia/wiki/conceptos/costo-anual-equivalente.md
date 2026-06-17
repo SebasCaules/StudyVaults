@@ -23,8 +23,8 @@ $$a(n;i) = \frac{1 - (1+i)^{-n}}{i}$$
 
 ## Ejemplos
 
-- $VAN = 2.872$ a 2 años, 12%: $VA = 2.872 / 1{,}690 = \$1.699{,}6$ por año.
-- Ejemplo integral del PDF: $VAN = 118{,}7$ a 6 años, 15%: $VA = 118{,}7/3{,}784 = \$31{,}4$ anuales (calculado a 5 años: $35{,}4$).
+- $VAN = 2.872$ a 2 años, 12%: $VA = 2.872 / 1{,}690 =$ \$1.699{,}6 por año.
+- Ejemplo integral del PDF: $VAN = 118{,}7$ a 6 años, 15%: $VA = 118{,}7/3{,}784 =$ \$31{,}4 anuales (calculado a 5 años: $35{,}4$).
 
 ## Uso principal: alternativas con vidas distintas
 
@@ -42,12 +42,12 @@ Convertir cada VAN en su VA y comparar las anualidades. Se asume que cada proyec
 |---|---|---|
 | Inversión | \$10 | \$10 |
 | Ingresos | \$3,75/año × 5 años | \$2,5/año × 10 años |
-| VAN a su propia vida | $3{,}75 \cdot a(5) - 10 = \$3{,}518$ | $2{,}5 \cdot a(10) - 10 = \$4{,}123$ |
+| VAN a su propia vida | $3{,}75 \cdot a(5) - 10 =$ \$3{,}518 | $2{,}5 \cdot a(10) - 10 =$ \$4{,}123 |
 
 Comparar 3,518 contra 4,123 es **trampa** (horizontes distintos). 
 
-- *Cadena de reemplazo:* repito A en el año 5: $VAN_A^{10} = 3{,}75 \cdot a(10) - 10 \cdot (1{,}12)^{-5} - 10 = 21{,}188 - 5{,}674 - 10 = \$5{,}514 > 4{,}123$ → **A**.
-- *Anualidad equivalente:* $VA_A = 3{,}518/3{,}6048 = \$0{,}9759$; $VA_B = 4{,}123/5{,}6502 = \$0{,}7297$ → **A**. Mismo resultado, menos cuentas.
+- *Cadena de reemplazo:* repito A en el año 5: $VAN_A^{10} = 3{,}75 \cdot a(10) - 10 \cdot (1{,}12)^{-5} - 10 = 21{,}188 - 5{,}674 - 10 =$ \$5{,}514 $> 4{,}123$ → **A**.
+- *Anualidad equivalente:* $VA_A = 3{,}518/3{,}6048 =$ \$0{,}9759; $VA_B = 4{,}123/5{,}6502 =$ \$0{,}7297 → **A**. Mismo resultado, menos cuentas.
 
 ## Conceptos auxiliares (PDF)
 

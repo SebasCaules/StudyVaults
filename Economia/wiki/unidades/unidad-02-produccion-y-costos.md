@@ -1,7 +1,7 @@
 ---
 unit: 02
 module: Microeconomía
-title: Producción y Costos
+title: Unidad 2 — Producción y Costos
 parcial: 1
 sources: [Clase003eco2023.pdf, GP2_ePI_2024.pdf, GUIA 2.pdf]
 last_updated: 2026-04-26

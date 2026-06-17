@@ -33,7 +33,7 @@ $$Q_M(P) = \begin{cases} 0 & \text{si } P > 10 \\ 20 - 2P & \text{si } 3 < P \le
 
 ## Ej 2 — EC y tarifa de dos partes (Sioli, tenis)
 
-| $P$ ($/h) | $Q$ (h/sem) |
+| $P$ (\$/h) | $Q$ (h/sem) |
 |-----------|-------------|
 | 24 | 1 |
 | 17 | 2 |
@@ -96,7 +96,7 @@ Verifico: $I(P) = P(2000 - 100P) = 2000P - 100P^2$. $dI/dP = 2000 - 200P = 0 \Ri
 
 A $P = 11$ la demanda es **elástica** ($|\eta| > 1$): bajar el precio incrementa el ingreso. **Aconsejo bajar el precio hasta $P = 10$** (donde $\eta = -1$ e $I$ es máximo).
 
-Ingreso máximo = $10 \times 1000 = 10000$ ctvos = $\$100$.
+Ingreso máximo = $10 \times 1000 = 10000$ ctvos = \$100.
 
 ### c) EC con tarifa escalonada (5 ctvos primeros 500 kWh, 10 ctvos siguientes)
 
@@ -130,7 +130,7 @@ $$\boxed{EC_{total} = 6250 + 1250 = 7500 \text{ ctvos} = \$75}$$
 
 $100 - x = 10 + 9x \Rightarrow 90 = 10x \Rightarrow \boxed{x^* = 9, \; P^* = 91}$
 
-### b) Plan A: subsidio $\$5$ al productor
+### b) Plan A: subsidio \$5 al productor
 
 El precio que recibe el vendedor es $P_v = P_c + s$, donde $P_c$ es lo que paga el consumidor. La oferta efectiva (ofrecida al precio que paga el consumidor) baja en $s$:
 $$P_c = (10 - 5) + 9x = 5 + 9x$$
@@ -140,7 +140,7 @@ Equilibrio: $100 - x = 5 + 9x \Rightarrow 95 = 10x \Rightarrow x = 9{,}5$.
 - $P_c = 100 - 9{,}5 = 90{,}5$ → consumidor paga **menos** ($-0{,}5$ vs. 91)
 - $P_v = P_c + s = 95{,}5$ → productor recibe **más** ($+4{,}5$ vs. 91)
 
-### c) Plan B: subsidio $\$5$ al consumidor
+### c) Plan B: subsidio \$5 al consumidor
 
 Ahora el consumidor recibe $s$ por cada unidad. Su demanda en función del precio que paga al vendedor sube en $s$:
 $$x = 100 - (P_v - s) = 105 - P_v$$
@@ -162,8 +162,8 @@ Equilibrio: $105 - P_v = (P_v - 10)/9 \Rightarrow 9(105 - P_v) = P_v - 10 \Right
 Ambos planes son **idénticos** en sus efectos reales. La incidencia depende sólo de las **elasticidades relativas**, no de a quién se entregue formalmente el subsidio.
 
 **Reparto del subsidio:**
-- Consumidor absorbe $\$0{,}5$ (10% del subsidio)
-- Productor absorbe $\$4{,}5$ (90% del subsidio)
+- Consumidor absorbe \$0,5 (10% del subsidio)
+- Productor absorbe \$4,5 (90% del subsidio)
 
 Como la oferta es mucho más inelástica que la demanda (pendientes 9 vs. 1 → la oferta es 9× menos elástica), el productor se queda con la mayor parte. Ver [[conceptos/incidencia-impuestos]] (la lógica es simétrica para subsidios).
 
@@ -188,17 +188,17 @@ Buscamos $s$ tal que en el nuevo equilibrio $Q = 700$.
 
 $$\boxed{s = p_o - p_d = 60 - 30 = \$30 \text{ por ejemplar}}$$
 
-Costo fiscal total: $s \times Q = 30 \times 700 = \$21.000$.
+Costo fiscal total: $s \times Q = 30 \times 700 =$ \$21.000.
 
-### c) Precio máximo de $\$30$
+### c) Precio máximo de \$30
 
-Como $\$30 < p^* = 50$, el tope **es efectivo**. Cantidades a $P = 30$:
+Como \$30 $< p^* = 50$, el tope **es efectivo**. Cantidades a $P = 30$:
 
 - $Q_d(30) = 1000 - 300 = 700$
 - $Q_s(30) = -500 + 600 = 100$
 - **Escasez:** $700 - 100 = 600$ ejemplares insatisfechos
 
-**Efecto sobre la piratería.** El precio máximo **agrava el problema**: hay 600 alumnos que demandan el libro a $\$30$ pero no lo encuentran. Estos alumnos terminan recurriendo aún más a la fotocopia. La regulación logra el efecto **opuesto** al deseado.
+**Efecto sobre la piratería.** El precio máximo **agrava el problema**: hay 600 alumnos que demandan el libro a \$30 pero no lo encuentran. Estos alumnos terminan recurriendo aún más a la fotocopia. La regulación logra el efecto **opuesto** al deseado.
 
 **Comparación.** La subvención (b) es más efectiva: ataca el problema de raíz (precio efectivo bajo + cantidad alta). El precio máximo (c) crea escasez y empuja a los alumnos al mercado paralelo. Ver [[conceptos/controles-de-precios]].
 

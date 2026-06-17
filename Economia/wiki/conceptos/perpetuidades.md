@@ -53,7 +53,7 @@ $$VA_0 = \frac{C}{i} \cdot \frac{1}{(1+i)^t}$$
 - **Olvidar descontar la perpetuidad diferida**: $C/i$ NO es un valor de hoy si el flujo no arranca el período que viene.
 - **Usar Gordon con $g \geq i$**: el VP diverge; la fórmula exige $i > g$.
 - **Usar $C_0$ en lugar de $C_1$** en la creciente: va el flujo del próximo período.
-- **Confundir el momento del primer flujo**: "rinde $100.000 al final del año 11" ⇒ primer flujo en $t=11$, VP en $t=10$.
+- **Confundir el momento del primer flujo**: "rinde \$100.000 al final del año 11" ⇒ primer flujo en $t=11$, VP en $t=10$.
 
 ## Relacionado con
 - [[anualidades]] — anualidad = resta de dos perpetuidades

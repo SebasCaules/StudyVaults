@@ -41,7 +41,7 @@ A la TIR, el proyecto devuelve exactamente la inversión más intereses sobre el
 | 1 | $-22.000$ | $10.000$ | $4.564$ | $5.436$ | $-16.564$ |
 | 2 | $-16.564$ | $20.000$ | $3.436$ | $16.564$ | $0$ |
 
-Valor presente del remanente $= \$0$ → eso *es* $VAN = 0$ a la TIR.
+Valor presente del remanente $=$ \$0 → eso *es* $VAN = 0$ a la TIR.
 
 ## Propiedades (contraste con el VAN)
 

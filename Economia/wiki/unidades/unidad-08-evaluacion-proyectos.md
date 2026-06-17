@@ -1,7 +1,7 @@
 ---
 unit: 08
 module: Empresa
-title: Evaluación de Proyectos / Presupuesto de Capital
+title: Unidad 8 — Evaluación de Proyectos / Presupuesto de Capital
 parcial: 2
 sources: [raw/modulo-3-empresa/unidad-08-evaluacion-proyectos/epi09_pc 2.pdf]
 last_updated: 2026-06-12
@@ -70,7 +70,7 @@ $$FEO = UN + Am = (V - C)(1-t) + t \cdot Am = EBIT(1-t) + Am$$
 - $t$: alícuota del impuesto a las ganancias
 - $EBIT$: utilidad operativa antes de impuestos e intereses
 
-**Mini ejemplo (del PDF):** Ventas \$1.000.000, gastos operativos \$600.000 de los cuales \$100.000 son amortizaciones, $t = 35\%$. Utilidad antes de IG $= 400.000$; IG $= 140.000$; $UN = 260.000$. Entonces $FEO = 260.000 + 100.000 = \$360.000$. Verificación por descomposición: $(1.000.000 - 500.000)(0{,}65) + 0{,}35 \cdot 100.000 = 325.000 + 35.000 = 360.000$ ✓.
+**Mini ejemplo (del PDF):** Ventas \$1.000.000, gastos operativos \$600.000 de los cuales \$100.000 son amortizaciones, $t = 35\%$. Utilidad antes de IG $= 400.000$; IG $= 140.000$; $UN = 260.000$. Entonces $FEO = 260.000 + 100.000 =$ \$360.000. Verificación por descomposición: $(1.000.000 - 500.000)(0{,}65) + 0{,}35 \cdot 100.000 = 325.000 + 35.000 = 360.000$ ✓.
 
 La amortización **se resta para calcular el impuesto y se vuelve a sumar** porque no es salida de caja. Su único efecto real sobre el flujo es el [[escudo-fiscal]]: $t \cdot Am$ de impuesto que no se paga. De ahí la pregunta teórica clásica: *si la amortización contable se alarga (10 → 15 años), ¿el VAN sube o baja?* → **Baja**: el escudo total nominal es el mismo, pero se cobra más tarde y su valor presente es menor.
 

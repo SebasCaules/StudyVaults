@@ -1,7 +1,7 @@
 ---
 unit: 04
 module: Microeconomía
-title: Monopolio, Competencia Monopolística y Oligopolio
+title: Unidad 4 — Monopolio, Competencia Monopolística y Oligopolio
 parcial: 1
 sources: [Clase005eco2021.pdf]
 last_updated: 2026-04-26
@@ -156,7 +156,7 @@ Una herramienta del monopolista (y firmas con poder de mercado en general) para 
 | Grado | Mecanismo | Ejemplo |
 |---|---|---|
 | **1er grado (perfecta)** | Cobrar a cada consumidor exactamente su precio de reserva | Negociación uno-a-uno, subastas personalizadas |
-| **2do grado** | Precio depende de la cantidad comprada (descuentos por volumen, tarifas en bloques) | "1 botella $6, 2 por $10", combos de fast-food |
+| **2do grado** | Precio depende de la cantidad comprada (descuentos por volumen, tarifas en bloques) | "1 botella \$6, 2 por \$10", combos de fast-food |
 | **3er grado** | Segmentar mercados con elasticidades distintas, cobrar precio diferente a cada segmento | Tarifas estudiantes/jubilados, precio diferencial por género o edad, geografía |
 
 **Regla de la discriminación de 3er grado:** $IMg_1 = IMg_2 = CMg$ implica que **el mercado más inelástico paga más caro**. Es una aplicación directa del Índice de Lerner por segmento.

@@ -1,7 +1,7 @@
 ---
 unit: 05
 module: Macroeconomía
-title: PBI, Ciclos, Inflación, Empleo, ODA, Política Fiscal, Dinero y Política Monetaria
+title: Unidad 5 — PBI, Ciclos, Inflación, Empleo, ODA, Política Fiscal, Dinero y Política Monetaria
 parcial: 1
 sources: [Clase 1.pdf, Clase 2.pdf, Clase 3.pdf]
 last_updated: 2026-04-27
@@ -125,7 +125,7 @@ Donde:
 2. **Costos de menú:** las firmas deben actualizar listas de precios constantemente.
 3. **Pérdida de la unidad de cuenta:** la moneda deja de ser un medidor confiable; se "dolariza" mentalmente la economía.
 4. **Redistribución arbitraria:** perdedores son los acreedores nominales y los que tienen ingresos fijos; ganadores son los deudores nominales.
-5. **Distorsión de incentivos:** se invierte en cobertura ($) en lugar de en producción.
+5. **Distorsión de incentivos:** se invierte en cobertura (\$) en lugar de en producción.
 
 **Hiperinflación:** ritmos > 50% mensual (criterio Cagan). Argentina la sufrió en 1989-90.
 
@@ -224,7 +224,7 @@ Lógica: el primer gasto se transforma en ingreso de alguien que consume una fra
 
 Es **menor en módulo** que el del gasto: una transferencia de \$1 termina aumentando el consumo solo en $PMC \cdot 1$ peso (la fracción restante se ahorra). En cambio, el primer peso de gasto público va directo a demanda.
 
-**Ejemplo (clase):** $PMC = 0{,}5$, $\Delta G = \$50$M → $\Delta Y = \$100$M (k=2). Misma transferencia $\Delta TR = \$50$M → $\Delta Y = \$50$M (k=1).
+**Ejemplo (clase):** $PMC = 0{,}5$, $\Delta G =$ \$50M → $\Delta Y =$ \$100M (k=2). Misma transferencia $\Delta TR =$ \$50M → $\Delta Y =$ \$50M (k=1).
 
 **Multiplicador de presupuesto equilibrado:** $\Delta G = \Delta T \Rightarrow \Delta Y = \Delta G$ (multiplicador exactamente igual a 1).
 
@@ -265,7 +265,7 @@ La macroeconomía moderna requiere herramientas financieras básicas. Dos concep
 
 **Interés simple vs compuesto:**
 - **Simple (TNA):** sin reinversión de pagos intermedios.
-- **Compuesto (TEA):** se reinvierten/capitalizan los pagos. La mayoría de las variables macro (crecimiento, inflación, dinero) deben pensarse en términos compuestos. Diferencia importante a largo plazo: a 50 años, 1,5% anual lleva $100 a $210; 2% anual lleva $100 a $269 — diferencia 28%.
+- **Compuesto (TEA):** se reinvierten/capitalizan los pagos. La mayoría de las variables macro (crecimiento, inflación, dinero) deben pensarse en términos compuestos. Diferencia importante a largo plazo: a 50 años, 1,5% anual lleva \$100 a \$210; 2% anual lleva \$100 a \$269 — diferencia 28%.
 
 #### Tasa de interés real — corrección por inflación
 
@@ -359,7 +359,7 @@ donde $D$ es el dividendo proyectado e $i$ la tasa de descuento relevante.
 
 El BC controla la base monetaria, pero **la oferta monetaria total es mayor** porque los bancos comerciales crean "dinero secundario" prestando una fracción de los depósitos.
 
-**Ejemplo intuitivo:** $100 de BM con encaje 10% → primer banco presta $90, ese $90 vuelve como depósito → presta $81 → etc. Suma geométrica: $100/0,1 = $1000 de oferta monetaria potencial.
+**Ejemplo intuitivo:** \$100 de BM con encaje 10% → primer banco presta \$90, ese \$90 vuelve como depósito → presta \$81 → etc. Suma geométrica: \$100/0,1 = \$1000 de oferta monetaria potencial.
 
 ![[multiplicador-dinero-cascada.svg]]
 

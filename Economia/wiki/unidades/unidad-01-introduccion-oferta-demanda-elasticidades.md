@@ -1,7 +1,7 @@
 ---
 unit: 01
 module: Microeconomía
-title: Introducción a la Economía. Oferta y Demanda. Elasticidades
+title: Unidad 1 — Introducción a la Economía. Oferta y Demanda. Elasticidades
 parcial: 1
 sources: [Clase 001eco2023.pdf, Clase002eco2023.pdf, GP1_ePI_24.pdf]
 last_updated: 2026-04-26

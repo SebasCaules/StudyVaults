@@ -43,15 +43,15 @@ Esta distinción es **crítica en parciales** y conecta directamente con el conc
 
 ## Ejemplo
 
-Un emprendedor pone $100.000$ propios en un negocio. Si ese capital invertido en un plazo fijo le daría $r = 10\%$ → $rK = 10.000/año$.
+Un emprendedor pone \$100.000 propios en un negocio. Si ese capital invertido en un plazo fijo le daría $r = 10\%$ → $rK = 10.000/año$.
 
-- Ingresos del año: $50.000$
-- Salarios pagados (no incluye propio): $35.000$
+- Ingresos del año: \$50.000
+- Salarios pagados (no incluye propio): \$35.000
 
 $$\pi_{cont} = 50.000 - 35.000 = 15.000$$
 $$\pi_{econ} = 50.000 - 35.000 - 10.000 = 5.000$$
 
-**Interpretación:** la empresa "rinde" más que la alternativa por $5.000$. Si $\pi_{econ}$ fuera negativo, conviene cerrar y poner el capital en plazo fijo.
+**Interpretación:** la empresa "rinde" más que la alternativa por \$5.000. Si $\pi_{econ}$ fuera negativo, conviene cerrar y poner el capital en plazo fijo.
 
 ## Errores comunes / Distinciones
 
