@@ -47,5 +47,8 @@ next-env.d.ts
 
 /public/pagefind/
 
+# preview estático local (./run.sh build) — symlink efímero a out/
+/.preview/
+
 # generado por build-planner-data.mjs
 lib/planner/data.json

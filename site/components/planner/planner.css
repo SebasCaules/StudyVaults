@@ -727,9 +727,17 @@
    PLAN DE CURSADA v2 — roadmap a recibirte
    ========================================================================= */
 .planner .cmbcal--compact .cmbcal__day{padding:6px 4px;font-size:9.5px}
-.planner .cmbcal--compact .cmbcal-blk{padding:3px 5px;border-radius:5px}
+.planner .cmbcal--compact .cmbcal__hour span{font-size:8.5px}
+.planner .cmbcal--compact .cmbcal-blk{padding:3px 5px;border-radius:5px;gap:2px}
 .planner .cmbcal--compact .cmbcal-blk__abbr{font-size:11px}
-.planner .cmbcal--compact .cmbcal-blk__time{font-size:8.5px}
+/* sin rango horario en compacto → el aula es el dato protagonista del bloque */
+.planner .cmbcal--compact .cmbcal-blk__room{
+  margin-top:auto;align-self:flex-start;font-size:9.5px;font-weight:600;
+  color:var(--ink);letter-spacing:.01em;
+  background:color-mix(in srgb,var(--blk) 26%,var(--panel));
+  border-radius:4px;padding:1px 5px;
+  max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 
 /* =========================================================================
    HERO — boleto a recibirte (lead · destino · medidor de créditos)
@@ -862,85 +870,84 @@
 .planner .plan2-method b{color:var(--ink-soft);font-family:var(--f-d);font-weight:500}
 
 /* =========================================================================
-   ROADMAP — itinerario vertical hacia recibirte
+   ROADMAP — panorama de cuatrimestres lado a lado (vista general)
    ========================================================================= */
 .planner .plan2-board{margin-top:4px}
-.planner .rmap{list-style:none;margin:0;padding:0;position:relative}
 
-/* riel compartido: cada fila dibuja su propio tramo, sin pseudo global */
-.planner .rmap-origin,.planner .rmap-stop{
-  display:grid;grid-template-columns:40px minmax(0,1fr);gap:16px;align-items:start;position:relative;
+/* board a la izquierda + recomendaciones en sidebar derecha sticky: así los
+   calendarios/roadmap se ven actualizarse en vivo al pasar el cursor por una
+   recomendación. container-type → los calendarios se adaptan al ancho real de
+   esta columna (no del viewport) y no se aprietan al ceder espacio al sidebar. */
+.planner .plan2-split{
+  display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,30%,400px);
+  gap:18px;align-items:start;margin-top:4px;
 }
-.planner .rmap-stop{margin-top:14px}
-.planner .rmap-stop__rail,.planner .rmap-origin__rail{
-  position:relative;display:flex;justify-content:center;align-self:stretch;
+.planner .plan2-split__main{min-width:0;container-type:inline-size}
+.planner .plan2-split__side{
+  position:sticky;top:calc(var(--nav-h) + 88px);
+  max-height:calc(100vh - var(--nav-h) - 100px);overflow:auto;
+  min-width:0;padding-right:4px;
 }
-/* la línea: una franja vertical centrada en la columna del riel */
-.planner .rmap-stop__rail::before,.planner .rmap-origin__rail::before{
-  content:"";position:absolute;top:0;bottom:-14px;left:50%;transform:translateX(-50%);
-  width:2px;background:linear-gradient(180deg,var(--brass),var(--slate));opacity:.4;
+.planner .plan2-split__side::-webkit-scrollbar{width:8px}
+.planner .plan2-split__side::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:20px}
+.planner .plan2-split__side .plan2-recs{margin-top:0}
+@media (max-width:980px){
+  .planner .plan2-split{grid-template-columns:1fr}
+  .planner .plan2-split__side{
+    position:static;max-height:none;overflow:visible;padding-right:0;
+  }
 }
-.planner .rmap-origin__rail::before{top:9px}
-.planner .rmap-stop--grad .rmap-stop__rail::before{bottom:auto;height:50%;top:0}
+/* grilla que mete la mayor cantidad de cuatrimestres por fila y envuelve.
+   El height de cada tarjeta no importa: priorizamos ver todos de un vistazo. */
+.planner .rmap{
+  list-style:none;margin:0;padding:0;
+  display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+}
+.planner .rmap-stop{margin:0;min-width:0}
 
-.planner .rmap-stop__node{
-  position:relative;z-index:1;width:40px;height:40px;border-radius:50%;
-  display:grid;place-items:center;flex:none;margin-top:8px;
-  background:var(--panel);border:2px solid var(--brass);color:var(--brass);
-  font-family:var(--f-d);font-size:16px;font-weight:600;
-  box-shadow:0 0 0 4px var(--bg);
-}
-
-/* origen */
-.planner .rmap-origin{align-items:center}
-.planner .rmap-origin__dot{
-  position:relative;z-index:1;width:14px;height:14px;border-radius:50%;margin:5px auto 0;
-  background:var(--slate);box-shadow:0 0 0 4px var(--bg),0 0 0 6px color-mix(in srgb,var(--slate) 35%,transparent);
-}
-.planner .rmap-origin__txt{
-  font-family:var(--f-m);font-size:12.5px;color:var(--muted);padding:2px 0;
-}
-.planner .rmap-origin__lbl{
-  font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--slate);display:block;margin-bottom:2px;
-}
-.planner .rmap-origin__txt b{font-family:var(--f-d);font-weight:600;font-size:15px;color:var(--ink)}
-
-/* tarjeta de cuatrimestre */
+/* tarjeta de cuatrimestre — compacta, con las materias siempre desplegadas */
 .planner .rmap-stop__card{
+  height:100%;display:flex;flex-direction:column;gap:9px;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:15px 17px;animation:cmb-grid-in .3s var(--ease,ease) both;transition:border-color .18s,box-shadow .18s;
+  padding:12px 13px;animation:cmb-grid-in .3s var(--ease,ease) both;transition:border-color .18s,box-shadow .18s;
 }
 .planner .rmap-stop__card:hover{border-color:var(--line-2);box-shadow:0 6px 20px color-mix(in srgb,var(--ink) 6%,transparent)}
 .planner .rmap-stop__head{
-  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
 }
 .planner .rmap-stop__when{display:flex;flex-direction:column;gap:4px;min-width:0}
 .planner .rmap-stop__when h3{
-  font-family:var(--f-d);font-weight:600;font-size:18px;color:var(--ink);margin:0;letter-spacing:-.015em;
+  font-family:var(--f-d);font-weight:600;font-size:16px;color:var(--ink);margin:0;letter-spacing:-.015em;
 }
 .planner .rmap-stop__tag{
-  align-self:flex-start;font-family:var(--f-m);font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  align-self:flex-start;font-family:var(--f-m);font-size:9px;font-weight:600;letter-spacing:.08em;
   text-transform:uppercase;color:var(--brass);background:var(--brass-soft);
-  border-radius:5px;padding:2px 8px;
+  border-radius:5px;padding:2px 7px;
 }
-.planner .rmap-stop__ledger{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}
-.planner .rmap-stop__metric{font-family:var(--f-m);font-size:11px;color:var(--muted)}
-.planner .rmap-stop__metric b{font-family:var(--f-d);font-weight:600;font-size:17px;color:var(--ink);margin-right:2px}
-.planner .rmap-stop__metric--soft b{font-size:14px;color:var(--ink-soft)}
+/* numerito de orden del cuatrimestre */
+.planner .rmap-stop__step{
+  flex:none;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--slate);
+  font-family:var(--f-d);font-weight:600;font-size:12px;
+}
+.planner .rmap-stop__ledger{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.planner .rmap-stop__metric{font-family:var(--f-m);font-size:10.5px;color:var(--muted)}
+.planner .rmap-stop__metric b{font-family:var(--f-d);font-weight:600;font-size:15px;color:var(--ink);margin-right:2px}
+.planner .rmap-stop__metric--soft b{font-size:13px;color:var(--ink-soft)}
 
 /* barra de carga del cuatrimestre */
 .planner .rmap-stop__load{
-  height:4px;border-radius:999px;background:var(--panel-3);overflow:hidden;margin-bottom:13px;
+  height:4px;border-radius:999px;background:var(--panel-3);overflow:hidden;
 }
 .planner .rmap-stop__load i{
   display:block;height:100%;border-radius:999px;
   background:linear-gradient(90deg,var(--brass),var(--brass-2));transition:width .5s var(--ease,ease);
 }
 
-.planner .rmap-stop__mats{display:flex;flex-wrap:wrap;gap:7px}
+.planner .rmap-stop__mats{display:flex;flex-wrap:wrap;gap:6px}
 .planner .rmap-mat{
-  display:inline-flex;align-items:center;gap:8px;padding:6px 10px 6px 9px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px;padding:5px 9px 5px 8px;cursor:pointer;
   background:color-mix(in srgb,var(--blk,var(--brass)) 12%,var(--panel-2));
   border:1px solid color-mix(in srgb,var(--blk,var(--brass)) 28%,transparent);
   border-left:3px solid var(--blk,var(--brass));border-radius:8px;
@@ -948,47 +955,16 @@
 }
 .planner .rmap-mat:hover{transform:translateY(-2px);box-shadow:0 6px 16px color-mix(in srgb,var(--blk) 28%,transparent)}
 .planner .rmap-mat:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
-.planner .rmap-mat__abbr{font-family:var(--f-d);font-weight:600;font-size:13.5px;color:var(--ink)}
+.planner .rmap-mat__abbr{font-family:var(--f-d);font-weight:600;font-size:12.5px;color:var(--ink)}
 .planner .rmap-mat__cr{font-family:var(--f-m);font-size:10px;color:var(--muted)}
 
+/* pie: créditos acumulados, anclado al fondo para alinear entre tarjetas */
 .planner .rmap-stop__foot{
-  display:flex;align-items:center;gap:13px;margin-top:14px;padding-top:12px;
-  border-top:1px solid var(--line);flex-wrap:wrap;
+  display:flex;align-items:center;gap:13px;margin-top:auto;padding-top:9px;
+  border-top:1px solid var(--line);
 }
-.planner .rmap-stop__toggle{
-  display:inline-flex;align-items:center;gap:6px;border:none;background:none;color:var(--slate);
-  cursor:pointer;font-family:var(--f-m);font-size:11.5px;font-weight:600;letter-spacing:.02em;padding:2px 0;transition:.15s;
-}
-.planner .rmap-stop__toggle svg{transition:transform .2s var(--ease,ease)}
-.planner .rmap-stop__toggle.is-open svg{transform:rotate(0) scale(1.05);color:var(--brass)}
-.planner .rmap-stop__toggle:hover{color:var(--ink)}
-.planner .rmap-stop__acc{font-family:var(--f-m);font-size:11px;color:var(--muted)}
+.planner .rmap-stop__acc{font-family:var(--f-m);font-size:10.5px;color:var(--muted)}
 .planner .rmap-stop__acc b{font-family:var(--f-d);font-weight:600;color:var(--ink-soft);font-size:13px}
-.planner .rmap-stop__dl{margin-left:auto}
-.planner .rmap-stop__cal{
-  margin-top:14px;padding-top:13px;border-top:1px dashed var(--line);
-  animation:cmb-grid-in .26s var(--ease,ease) both;
-}
-
-/* graduación — terminus */
-.planner .rmap-stop--grad{align-items:stretch;margin-top:14px}
-.planner .rmap-stop__node--grad{
-  background:var(--brass);border-color:var(--brass);color:var(--block-ink);font-size:18px;
-  align-self:center;margin-top:0;box-shadow:0 0 0 5px var(--brass-soft),0 0 0 8px var(--bg);
-}
-.planner .rmap-grad{
-  display:flex;flex-direction:column;justify-content:center;
-  background:linear-gradient(120deg,color-mix(in srgb,var(--brass) 13%,var(--panel)),var(--panel) 70%);
-  border:1px solid color-mix(in srgb,var(--brass) 32%,var(--line));border-radius:var(--r-lg);
-  padding:16px 20px;
-}
-.planner .rmap-grad__lbl{
-  font-family:var(--f-m);font-size:9.5px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--brass);margin-bottom:3px;
-}
-.planner .rmap-grad h3{font-family:var(--f-d);font-weight:600;font-size:21px;color:var(--ink);margin:0;letter-spacing:-.01em}
-.planner .rmap-grad p{margin:4px 0 0;font-family:var(--f-m);font-size:12.5px;color:var(--muted)}
-.planner .rmap-grad p b{font-family:var(--f-d);font-weight:600;color:var(--brass);font-size:15px}
 
 /* empty */
 .planner .plan2-empty{
@@ -1117,14 +1093,13 @@
   .planner .plan2-controls__grow{display:none}
   .planner .plan2-controls__actions{flex:1 1 100%}
   .planner .plan2-controls__actions .btn{flex:1}
-  .planner .rmap-origin,.planner .rmap-stop{grid-template-columns:32px minmax(0,1fr);gap:11px}
-  .planner .rmap-stop__node{width:32px;height:32px;font-size:13px;margin-top:6px}
+  .planner .rmap{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
   .planner .plan2-pool .pool-cols{grid-template-columns:1fr}
   .planner .plan2-pool .pool-col:first-child{border-right:none;border-bottom:1px solid var(--line)}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .planner .rmap-stop__card,.planner .rmap-stop__cal{animation:none}
+  .planner .rmap-stop__card{animation:none}
   .planner .rmap-mat:hover{transform:none}
   .planner .plan2-meter__bar i,.planner .rmap-stop__load i{transition:none}
 }
@@ -1139,6 +1114,32 @@
 .planner .plan2-recs__grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:11px;
 }
+
+/* grupos desplegables: por si alargan o no la carrera */
+.planner .plan2-recgrp{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;margin-top:11px;
+}
+.planner .plan2-recgrp>summary{
+  cursor:pointer;list-style:none;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.planner .plan2-recgrp>summary::-webkit-details-marker{display:none}
+.planner .plan2-recgrp>summary::after{
+  content:"▸";color:var(--brass);font-size:11px;margin-left:auto;transition:transform .2s;
+}
+.planner .plan2-recgrp[open]>summary::after{content:"▾"}
+.planner .plan2-recgrp[open]>summary{border-bottom:1px solid var(--line)}
+.planner .plan2-recgrp__dot{width:8px;height:8px;border-radius:50%;flex:none}
+.planner .plan2-recgrp__dot--ok{background:var(--sage)}
+.planner .plan2-recgrp__dot--warn{background:var(--brass-2)}
+.planner .plan2-recgrp__dot--bad{background:var(--oxblood)}
+.planner .plan2-recgrp__title{font-family:var(--f-d);font-weight:600;font-size:14px;color:var(--ink)}
+.planner .plan2-recgrp__count{
+  font-family:var(--f-m);font-size:10.5px;font-weight:600;color:var(--muted);
+  background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:1px 8px;
+}
+.planner .plan2-recgrp__hint{font-family:var(--f-m);font-size:11px;color:var(--muted);letter-spacing:.02em}
+.planner .plan2-recgrp .plan2-recs__grid{padding:14px 16px}
 
 .planner .rec-card{
   display:flex;flex-direction:column;gap:8px;padding:13px 14px;min-width:0;
@@ -1169,6 +1170,13 @@
 .planner .rec-fit--warn{color:var(--brass-2);border-color:color-mix(in srgb,var(--brass) 40%,transparent);background:var(--brass-soft)}
 .planner .rec-fit--bad{color:var(--oxblood);border-color:color-mix(in srgb,var(--oxblood) 40%,transparent);background:color-mix(in srgb,var(--oxblood) 8%,transparent)}
 .planner .rec-fit--soft{color:var(--faint);border-style:dashed}
+.planner .rec-fit--nohor{
+  color:var(--muted);border-color:color-mix(in srgb,var(--muted) 38%,transparent);
+  border-style:dashed;
+}
+/* sin horario → mínima prioridad: atenuada hasta que la mirás de cerca */
+.planner .rec-card.is-nohor{opacity:.66}
+.planner .rec-card.is-nohor:hover,.planner .rec-card.is-nohor.is-active{opacity:1}
 .planner .rec-card__area{font-family:var(--f-m);font-size:10px;color:var(--muted);margin-left:auto}
 .planner .rec-card__acts{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
 .planner .rec-card__add{
@@ -1235,16 +1243,13 @@
   font-family:var(--f-m);font-size:11px;color:var(--muted);
 }
 
-/* fila side-by-side con paneo horizontal */
+/* grilla 2×2: todos los cuatrimestres a la vista, de a dos por fila */
 .planner .plan2-cals{
-  display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;
-  padding:2px 2px 12px;scroll-snap-type:x proximity;
-  scrollbar-width:thin;animation:cmb-grid-in .3s var(--ease,ease) both;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;
+  padding:2px;animation:cmb-grid-in .3s var(--ease,ease) both;
 }
-.planner .plan2-cals::-webkit-scrollbar{height:9px}
-.planner .plan2-cals::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:20px}
 .planner .cal-card{
-  flex:0 0 clamp(290px,30vw,350px);scroll-snap-align:start;min-width:0;
+  min-width:0;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
   padding:13px 14px;display:flex;flex-direction:column;gap:11px;
 }
@@ -1268,6 +1273,9 @@
 .planner .cal-card__meta b{color:var(--ink-soft);font-weight:600}
 .planner .cal-card .async-row{margin-top:0}
 
-@media (max-width:680px){
-  .planner .cal-card{flex-basis:86vw}
+/* columna del board angosta → una sola columna de calendario: bloques anchos
+   y aula legible. Usa el ancho del contenedor (.plan2-split__main), no el del
+   viewport, para reaccionar también cuando el sidebar derecho roba espacio. */
+@container (max-width:640px){
+  .planner .plan2-cals{grid-template-columns:1fr}
 }

@@ -17,7 +17,7 @@ export default function CursadaCalendar({
   days: string[];
   compact?: boolean;
 }) {
-  const PX = compact ? 0.6 : 0.82;
+  const PX = compact ? 0.5 : 0.82;
   let minM = 8 * 60;
   let maxM = 22 * 60;
   blocks.forEach((b) => {
@@ -92,10 +92,14 @@ export default function CursadaCalendar({
                     title={`${b.nombre}${b.sala ? " · " + b.sala : ""}${b.modalidad ? " · " + b.modalidad : ""}`}
                   >
                     <span className="cmbcal-blk__abbr">{b.abbr}</span>
-                    <span className="cmbcal-blk__time">
-                      {b.desde}–{b.hasta}
-                    </span>
-                    {b.sala && h > 38 && (
+                    {/* En compacto omitimos el rango horario: ya lo da el eje de
+                        la izquierda. Liberamos altura y destacamos el aula. */}
+                    {!compact && (
+                      <span className="cmbcal-blk__time">
+                        {b.desde}–{b.hasta}
+                      </span>
+                    )}
+                    {b.sala && h > (compact ? 18 : 38) && (
                       <span className="cmbcal-blk__room">{b.sala}</span>
                     )}
                   </div>

@@ -19,7 +19,7 @@ import {
   cuatriLabel,
   cuatriName,
 } from "@/lib/planner/optimize";
-import { recommendElectives } from "@/lib/planner/recommend";
+import { recommendElectives, type Recommendation } from "@/lib/planner/recommend";
 import { buildPlanHTML } from "@/lib/planner/exportPlan";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import type {
@@ -247,7 +247,7 @@ function CuatriCalCard({
   );
 }
 
-/* ---------- una parada del roadmap (un cuatrimestre) ---------- */
+/* ---------- una parada del roadmap (un cuatrimestre, tarjeta del panorama) ---------- */
 function RoadmapStop({
   it,
   i,
@@ -264,13 +264,11 @@ function RoadmapStop({
   previewCode: string | null;
 }) {
   const { dispatch } = usePlanner();
-  const [openCal, setOpenCal] = useState(false);
   const cu = cuatriAt(start, i);
 
-  const { blocks, asyncs, campusDays } = useMemo(
-    () => computeCuatriBlocks(it),
-    [it],
-  );
+  // sólo necesitamos los días de campus para el ledger; la grilla semanal
+  // detallada vive en la pestaña "Calendarios".
+  const { campusDays } = useMemo(() => computeCuatriBlocks(it), [it]);
 
   const cred = it.reduce((s, x) => s + (x.m.creditos || 0), 0);
   const acc = accBefore[i] + cred;
@@ -279,28 +277,29 @@ function RoadmapStop({
 
   return (
     <li className={"rmap-stop" + (hasPreview ? " has-preview" : "")}>
-      <span className="rmap-stop__rail" aria-hidden="true">
-        <span className="rmap-stop__node">{i + 1}</span>
-      </span>
       <div className="rmap-stop__card">
         <div className="rmap-stop__head">
           <div className="rmap-stop__when">
             <span className="rmap-stop__tag">{cuatriLabel(cu)}</span>
             <h3>{cuatriName(cu)}</h3>
           </div>
-          <div className="rmap-stop__ledger">
-            <span className="rmap-stop__metric">
-              <b>{cred}</b> cr
-            </span>
+          <span className="rmap-stop__step" aria-hidden="true">
+            {i + 1}
+          </span>
+        </div>
+
+        <div className="rmap-stop__ledger">
+          <span className="rmap-stop__metric">
+            <b>{cred}</b> cr
+          </span>
+          <span className="rmap-stop__metric rmap-stop__metric--soft">
+            <b>{it.length}</b> mat
+          </span>
+          {campusDays > 0 && (
             <span className="rmap-stop__metric rmap-stop__metric--soft">
-              <b>{it.length}</b> mat
+              <b>{campusDays}</b> {campusDays === 1 ? "día" : "días"}
             </span>
-            {campusDays > 0 && (
-              <span className="rmap-stop__metric rmap-stop__metric--soft">
-                <b>{campusDays}</b> {campusDays === 1 ? "día" : "días"}
-              </span>
-            )}
-          </div>
+          )}
         </div>
 
         <div className="rmap-stop__load" aria-hidden="true">
@@ -330,34 +329,10 @@ function RoadmapStop({
         </div>
 
         <div className="rmap-stop__foot">
-          <button
-            type="button"
-            className={"rmap-stop__toggle" + (openCal ? " is-open" : "")}
-            onClick={() => setOpenCal((o) => !o)}
-          >
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-              <rect x="3" y="4.5" width="18" height="16" rx="2" />
-              <path d="M3 9h18M8 2.5v4M16 2.5v4" />
-            </svg>
-            {openCal ? "Ocultar horario" : "Ver horario"}
-          </button>
           <span className="rmap-stop__acc">
             acumulado <b>{acc}</b> cr
           </span>
         </div>
-
-        {openCal && (
-          <div className="rmap-stop__cal">
-            {blocks.length ? (
-              <CursadaCalendar blocks={blocks} days={DAYS} compact />
-            ) : (
-              <p className="muted" style={{ padding: 8 }}>
-                Sólo materias sin grilla semanal.
-              </p>
-            )}
-            <AsyncRow asyncs={asyncs} />
-          </div>
-        )}
       </div>
     </li>
   );
@@ -376,8 +351,10 @@ function Recommendations({
   preview: string | null;
 }) {
   const { state, dispatch } = usePlanner();
+  // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
+  // rankeadas. Las agrupamos abajo según si alargan o no la carrera.
   const recs = useMemo(
-    () => recommendElectives(state.plan, state.approved, 6),
+    () => recommendElectives(state.plan, state.approved, Infinity),
     [
       state.plan.pool,
       state.plan.fixed,
@@ -392,80 +369,130 @@ function Recommendations({
   if (!recs.length) return null;
   const faltan = Math.max(0, ELEC_REQ - elecTotal);
 
+  // 3 grupos: entran sin alargar el plan · lo alargan · no se pueden ubicar.
+  const noExtiende = recs.filter((r) => !r.conflict && !r.addsCuatri);
+  const extiende = recs.filter((r) => !r.conflict && r.addsCuatri);
+  const noEntra = recs.filter((r) => r.conflict);
+
+  const card = (r: Recommendation) => (
+    <div
+      key={r.m.codigo}
+      className={
+        "rec-card" +
+        (preview === r.m.codigo ? " is-active" : "") +
+        (r.conflict ? " is-conf" : "") +
+        (r.noHorario ? " is-nohor" : "")
+      }
+      onMouseEnter={() => !r.conflict && onPreview(r.m.codigo)}
+      onMouseLeave={() => onPreview(null)}
+    >
+      <div className="rec-card__top">
+        <span className="rec-card__abbr">{r.m.abbr}</span>
+        <span className="rec-card__cr">{r.m.creditos} cr</span>
+      </div>
+      <p className="rec-card__name">{r.m.nombre}</p>
+      <div className="rec-card__fit">
+        {r.conflict ? (
+          <span className="rec-fit rec-fit--bad">no entra sin conflictos</span>
+        ) : (
+          <>
+            <span className="rec-fit rec-fit--when">
+              {cuatriLabel(cuatriAt(start, r.landingIdx))}
+            </span>
+            <span
+              className={
+                "rec-fit " + (r.addsCuatri ? "rec-fit--warn" : "rec-fit--ok")
+              }
+            >
+              {r.addsCuatri ? "+1 cuatrimestre" : "sin alargar el plan"}
+            </span>
+            {r.newDays > 0 && (
+              <span className="rec-fit rec-fit--soft">
+                +{r.newDays} {r.newDays === 1 ? "día" : "días"}
+              </span>
+            )}
+          </>
+        )}
+        {r.noHorario && (
+          <span className="rec-fit rec-fit--nohor">sin horario</span>
+        )}
+        {r.area && <span className="rec-card__area">{r.area}</span>}
+      </div>
+      <div className="rec-card__acts">
+        <button
+          type="button"
+          className="rec-card__add"
+          onClick={() => {
+            dispatch({ type: "PLAN_POOL_ADD", code: r.m.codigo });
+            onPreview(null);
+          }}
+        >
+          + Agregar al plan
+        </button>
+        <button
+          type="button"
+          className="rec-card__info"
+          onClick={() => dispatch({ type: "OPEN_DRAWER", code: r.m.codigo })}
+        >
+          detalle
+        </button>
+      </div>
+    </div>
+  );
+
+  const group = (
+    title: string,
+    hint: string,
+    items: Recommendation[],
+    tone: "ok" | "warn" | "bad",
+    open: boolean,
+  ) =>
+    items.length > 0 ? (
+      <details className={"plan2-recgrp plan2-recgrp--" + tone} open={open}>
+        <summary>
+          <span
+            className={"plan2-recgrp__dot plan2-recgrp__dot--" + tone}
+            aria-hidden="true"
+          />
+          <span className="plan2-recgrp__title">{title}</span>
+          <span className="plan2-recgrp__count">{items.length}</span>
+          <span className="plan2-recgrp__hint">{hint}</span>
+        </summary>
+        <div className="plan2-recs__grid">{items.map(card)}</div>
+      </details>
+    ) : null;
+
   return (
     <div className="plan2-recs">
       <div className="plan2-recs__h">
         <span className="plan2-recs__title">Recomendaciones de electivas</span>
         <span className="plan2-recs__sub">
           {faltan > 0
-            ? `Te faltan ${faltan} créditos electivos. Pasá el cursor para ver dónde entraría cada una.`
+            ? `Te faltan ${faltan} créditos electivos. Pasá el cursor sobre una para ver dónde entraría.`
             : "Ya cubrís los créditos electivos — estas sumarían extra."}
         </span>
       </div>
-      <div className="plan2-recs__grid">
-        {recs.map((r) => (
-          <div
-            key={r.m.codigo}
-            className={
-              "rec-card" +
-              (preview === r.m.codigo ? " is-active" : "") +
-              (r.conflict ? " is-conf" : "")
-            }
-            onMouseEnter={() => !r.conflict && onPreview(r.m.codigo)}
-            onMouseLeave={() => onPreview(null)}
-          >
-            <div className="rec-card__top">
-              <span className="rec-card__abbr">{r.m.abbr}</span>
-              <span className="rec-card__cr">{r.m.creditos} cr</span>
-            </div>
-            <p className="rec-card__name">{r.m.nombre}</p>
-            <div className="rec-card__fit">
-              {r.conflict ? (
-                <span className="rec-fit rec-fit--bad">no entra sin conflictos</span>
-              ) : (
-                <>
-                  <span className="rec-fit rec-fit--when">
-                    {cuatriLabel(cuatriAt(start, r.landingIdx))}
-                  </span>
-                  <span
-                    className={
-                      "rec-fit " +
-                      (r.addsCuatri ? "rec-fit--warn" : "rec-fit--ok")
-                    }
-                  >
-                    {r.addsCuatri ? "+1 cuatrimestre" : "sin alargar el plan"}
-                  </span>
-                  {r.newDays > 0 && (
-                    <span className="rec-fit rec-fit--soft">
-                      +{r.newDays} {r.newDays === 1 ? "día" : "días"}
-                    </span>
-                  )}
-                </>
-              )}
-              {r.area && <span className="rec-card__area">{r.area}</span>}
-            </div>
-            <div className="rec-card__acts">
-              <button
-                type="button"
-                className="rec-card__add"
-                onClick={() => {
-                  dispatch({ type: "PLAN_POOL_ADD", code: r.m.codigo });
-                  onPreview(null);
-                }}
-              >
-                + Agregar al plan
-              </button>
-              <button
-                type="button"
-                className="rec-card__info"
-                onClick={() => dispatch({ type: "OPEN_DRAWER", code: r.m.codigo })}
-              >
-                detalle
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {group(
+        "No alargan la carrera",
+        "entran en los cuatrimestres del plan actual",
+        noExtiende,
+        "ok",
+        true,
+      )}
+      {group(
+        "Alargan la carrera",
+        "suman al menos un cuatrimestre más",
+        extiende,
+        "warn",
+        false,
+      )}
+      {group(
+        "No se pueden ubicar",
+        "correlativas, créditos o superposición horaria",
+        noEntra,
+        "bad",
+        false,
+      )}
     </div>
   );
 }
@@ -908,87 +935,89 @@ export default function PlanView() {
         </div>
       )}
 
-      {used.length > 0 && (
-        <div className="plan2-boardbar">
-          <div className="plan2-seg" role="tablist" aria-label="Vista del plan">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={boardView === "roadmap"}
-              className={"plan2-seg__btn" + (boardView === "roadmap" ? " is-on" : "")}
-              onClick={() => setBoardView("roadmap")}
-            >
-              Roadmap
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={boardView === "calendars"}
-              className={"plan2-seg__btn" + (boardView === "calendars" ? " is-on" : "")}
-              onClick={() => setBoardView("calendars")}
-            >
-              Calendarios
-            </button>
-          </div>
-          {boardView === "calendars" && (
-            <span className="plan2-boardbar__hint">
-              Paneo de todos los cuatrimestres — deslizá para ver más
-            </span>
-          )}
-        </div>
-      )}
+      {used.length > 0 ? (
+        <div className="plan2-split">
+          <div className="plan2-split__main">
+            <div className="plan2-boardbar">
+              <div
+                className="plan2-seg"
+                role="tablist"
+                aria-label="Vista del plan"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={boardView === "roadmap"}
+                  className={
+                    "plan2-seg__btn" + (boardView === "roadmap" ? " is-on" : "")
+                  }
+                  onClick={() => setBoardView("roadmap")}
+                >
+                  Roadmap
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={boardView === "calendars"}
+                  className={
+                    "plan2-seg__btn" +
+                    (boardView === "calendars" ? " is-on" : "")
+                  }
+                  onClick={() => setBoardView("calendars")}
+                >
+                  Calendarios
+                </button>
+              </div>
+              {boardView === "calendars" && (
+                <span className="plan2-boardbar__hint">
+                  Todos los cuatrimestres, de a dos por fila
+                </span>
+              )}
+            </div>
 
-      <div className="plan2-board">
-        {used.length > 0 && boardView === "calendars" && (
-          <div className="plan2-cals">
-            {used.map(({ it, i }) => (
-              <CuatriCalCard
-                key={i}
-                it={it}
-                i={i}
-                start={PL.start}
-                previewCode={preview}
-              />
-            ))}
+            <div className="plan2-board">
+              {boardView === "calendars" && (
+                <div className="plan2-cals">
+                  {used.map(({ it, i }) => (
+                    <CuatriCalCard
+                      key={i}
+                      it={it}
+                      i={i}
+                      start={PL.start}
+                      previewCode={preview}
+                    />
+                  ))}
+                </div>
+              )}
+              {boardView === "roadmap" && (
+                <ol className="rmap">
+                  {used.map(({ it, i }) => (
+                    <RoadmapStop
+                      key={i}
+                      it={it}
+                      i={i}
+                      start={PL.start}
+                      accBefore={R.accBefore}
+                      maxCred={PL.maxCred}
+                      previewCode={preview}
+                    />
+                  ))}
+                </ol>
+              )}
+            </div>
           </div>
-        )}
-        {used.length > 0 && boardView === "roadmap" && (
-          <ol className="rmap">
-            <li className="rmap-origin">
-              <span className="rmap-origin__rail" aria-hidden="true">
-                <span className="rmap-origin__dot" />
-              </span>
-              <div className="rmap-origin__txt">
-                <span className="rmap-origin__lbl">Hoy</span>
-                <b>{accNow}</b> créditos aprobados
-              </div>
-            </li>
-            {used.map(({ it, i }) => (
-              <RoadmapStop
-                key={i}
-                it={it}
-                i={i}
-                start={PL.start}
-                accBefore={R.accBefore}
-                maxCred={PL.maxCred}
-                previewCode={preview}
-              />
-            ))}
-            <li className="rmap-stop rmap-stop--grad">
-              <span className="rmap-stop__rail" aria-hidden="true">
-                <span className="rmap-stop__node rmap-stop__node--grad">🎓</span>
-              </span>
-              <div className="rmap-grad">
-                <span className="rmap-grad__lbl">Meta</span>
-                <h3>¡Recibido!</h3>
-                <p>
-                  <b>{finalCred}</b> créditos · {cuatriName(gradCu)}
-                </p>
-              </div>
-            </li>
-          </ol>
-        )}
-        {used.length === 0 && (
+
+          <aside className="plan2-split__side">
+            <Recommendations
+              start={PL.start}
+              elecTotal={elecCommitted}
+              onPreview={setPreview}
+              preview={preview}
+            />
+          </aside>
+        </div>
+      ) : (
+        <div className="plan2-board">
           <div className="plan2-empty">
             <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.3">
               <path d="M12 3 2 8l10 5 10-5-10-5Z" />
@@ -996,16 +1025,7 @@ export default function PlanView() {
             </svg>
             <p>Agregá materias al plan para ver tu camino a recibirte.</p>
           </div>
-        )}
-      </div>
-
-      {used.length > 0 && (
-        <Recommendations
-          start={PL.start}
-          elecTotal={elecCommitted}
-          onPreview={setPreview}
-          preview={preview}
-        />
+        </div>
       )}
 
       <p className="plan2-method">{methodText(R, PL)}</p>

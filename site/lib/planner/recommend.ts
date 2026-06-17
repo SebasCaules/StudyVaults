@@ -13,6 +13,7 @@ export interface Recommendation {
   addsCuatri: boolean; // ¿alarga el plan en un cuatrimestre?
   newDays: number; // días de campus que suma a ese cuatrimestre
   conflict: boolean; // no se pudo ubicar (correlativas / créditos / superposición)
+  noHorario: boolean; // sin horario publicado → no se puede armar la cursada
   area: string | null;
 }
 
@@ -76,16 +77,19 @@ export function recommendElectives(
       addsCuatri,
       newDays,
       conflict,
+      noHorario: !hasHorario(m.codigo),
       area: m.areas?.[0] ?? null,
     };
   });
 
-  // ranking: ubicable › no alarga el plan › con horario verificable › más
-  // créditos (valor hacia la meta) › menos días nuevos › área nueva › código
+  // ranking: ubicable › no alarga el plan › con horario disponible › más
+  // créditos (valor hacia la meta) › menos días nuevos › área nueva › código.
+  // `noHorario` va antes que créditos/días: dentro de cada grupo, las electivas
+  // sin horario caen al fondo (mínima prioridad).
   const rank = (r: Recommendation): (number | string)[] => [
     r.conflict ? 1 : 0,
     r.addsCuatri ? 1 : 0,
-    hasHorario(r.m.codigo) ? 0 : 1,
+    r.noHorario ? 1 : 0,
     -(r.m.creditos || 0),
     r.newDays,
     r.area && !coveredAreas.has(r.area) ? 0 : 1,
