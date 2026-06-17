@@ -17,6 +17,8 @@ const LINKS: { label: string; href: string; raw?: boolean }[] = [
 export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  // Sección in-page actualmente a la vista (solo aplica en la home, p. ej. "materias").
+  const [section, setSection] = useState("");
 
   // Cerrar el menú al cambiar de ruta o con Escape.
   useEffect(() => {
@@ -30,8 +32,32 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href.split("#")[0]);
+  // Scroll-spy: solo la home tiene anclas in-page (#materias). El indicador
+  // sigue a la sección que cruza el centro del viewport, en lugar de quedar fijo.
+  useEffect(() => {
+    if (pathname !== "/") {
+      setSection("");
+      return;
+    }
+    const el = document.getElementById("materias");
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setSection(entry.isIntersecting ? "materias" : ""),
+      { rootMargin: "-45% 0px -45% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [pathname]);
+
+  const isActive = (href: string) => {
+    const [base, anchor] = href.split("#");
+    // Anclas in-page (p. ej. "/#materias"): activas solo mientras su sección
+    // está a la vista en la home — nunca de forma permanente.
+    if (anchor) return pathname === (base || "/") && section === anchor;
+    // "Inicio" cede el estado activo cuando hay una sección in-page a la vista.
+    if (base === "/") return pathname === "/" && section === "";
+    return pathname.startsWith(base);
+  };
 
   return (
     <header className="nav" role="banner">
