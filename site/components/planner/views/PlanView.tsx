@@ -22,6 +22,7 @@ import {
 import { recommendElectives, type Recommendation } from "@/lib/planner/recommend";
 import { buildPlanHTML } from "@/lib/planner/exportPlan";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
+import MinorsModal from "@/components/planner/MinorsModal";
 import type {
   MateriaM,
   PlacedMateria,
@@ -672,6 +673,7 @@ export default function PlanView() {
   const [boardView, setBoardView] = useState<"roadmap" | "calendars">(
     "roadmap",
   );
+  const [minorsOpen, setMinorsOpen] = useState(false);
 
   const baseR = useMemo(
     () => optimizePlan(PL, approved),
@@ -970,9 +972,23 @@ export default function PlanView() {
               </div>
               {boardView === "calendars" && (
                 <span className="plan2-boardbar__hint">
-                  Todos los cuatrimestres, de a dos por fila
+                  Todos los cuatrimestres de un vistazo
                 </span>
               )}
+              <span className="plan2-boardbar__grow" />
+              <button
+                type="button"
+                className="plan2-minors-btn"
+                onClick={() => setMinorsOpen(true)}
+              >
+                <span className="plan2-minors-btn__dots" aria-hidden="true">
+                  <i style={{ background: "#85a2c2" }} />
+                  <i style={{ background: "#c592ab" }} />
+                  <i style={{ background: "#a9b27e" }} />
+                  <i style={{ background: "#a497c0" }} />
+                </span>
+                Minors por cuatrimestre
+              </button>
             </div>
 
             <div className="plan2-board">
@@ -1052,6 +1068,15 @@ export default function PlanView() {
         </summary>
         <PlanPool start={PL.start} />
       </details>
+
+      {minorsOpen && (
+        <MinorsModal
+          used={used}
+          start={PL.start}
+          approved={approved}
+          onClose={() => setMinorsOpen(false)}
+        />
+      )}
     </section>
   );
 }

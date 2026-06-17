@@ -726,16 +726,18 @@
 /* =========================================================================
    PLAN DE CURSADA v2 — roadmap a recibirte
    ========================================================================= */
-.planner .cmbcal--compact .cmbcal__day{padding:6px 4px;font-size:9.5px}
-.planner .cmbcal--compact .cmbcal__hour span{font-size:8.5px}
-.planner .cmbcal--compact .cmbcal-blk{padding:3px 5px;border-radius:5px;gap:2px}
-.planner .cmbcal--compact .cmbcal-blk__abbr{font-size:11px}
+.planner .cmbcal--compact .cmbcal__day{padding:5px 3px;font-size:8.5px;gap:3px}
+.planner .cmbcal--compact .cmbcal__day i{font-size:8px;min-width:13px;padding:0 3px}
+.planner .cmbcal--compact .cmbcal__hour span{font-size:8px;right:5px}
+.planner .cmbcal--compact .cmbcal__freelbl{font-size:8.5px;letter-spacing:.2em}
+.planner .cmbcal--compact .cmbcal-blk{padding:2px 4px;border-radius:5px;gap:1px;left:2px;right:2px}
+.planner .cmbcal--compact .cmbcal-blk__abbr{font-size:10px}
 /* sin rango horario en compacto → el aula es el dato protagonista del bloque */
 .planner .cmbcal--compact .cmbcal-blk__room{
-  margin-top:auto;align-self:flex-start;font-size:9.5px;font-weight:600;
+  margin-top:auto;align-self:flex-start;font-size:8.5px;font-weight:600;
   color:var(--ink);letter-spacing:.01em;
   background:color-mix(in srgb,var(--blk) 26%,var(--panel));
-  border-radius:4px;padding:1px 5px;
+  border-radius:4px;padding:0 4px;
   max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 
@@ -1242,16 +1244,30 @@
 .planner .plan2-boardbar__hint{
   font-family:var(--f-m);font-size:11px;color:var(--muted);
 }
+.planner .plan2-boardbar__grow{flex:1 1 auto;min-width:0}
+.planner .plan2-minors-btn{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  padding:5px 13px 5px 9px;font-family:var(--f-m);font-size:11.5px;font-weight:600;
+  letter-spacing:.02em;color:var(--ink-soft);transition:.16s var(--ease,ease);
+}
+.planner .plan2-minors-btn:hover{
+  border-color:color-mix(in srgb,var(--brass) 45%,var(--line));
+  color:var(--ink);box-shadow:0 1px 0 color-mix(in srgb,var(--brass) 18%,transparent);
+}
+.planner .plan2-minors-btn__dots{display:inline-flex;gap:2px}
+.planner .plan2-minors-btn__dots i{width:7px;height:7px;border-radius:999px}
 
-/* grilla 2×2: todos los cuatrimestres a la vista, de a dos por fila */
+/* grilla compacta: 3 por fila si entran, si no 2, y 1 en pantallas chicas.
+   Reacciona al ancho real de la columna (.plan2-split__main), no del viewport. */
 .planner .plan2-cals{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;
   padding:2px;animation:cmb-grid-in .3s var(--ease,ease) both;
 }
 .planner .cal-card{
   min-width:0;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:13px 14px;display:flex;flex-direction:column;gap:11px;
+  padding:10px 11px;display:flex;flex-direction:column;gap:8px;
 }
 .planner .cal-card.has-preview{
   border-color:color-mix(in srgb,var(--brass) 45%,var(--line));
@@ -1262,20 +1278,79 @@
 }
 .planner .cal-card__when{display:flex;align-items:baseline;gap:8px;min-width:0}
 .planner .cal-card__when h3{
-  font-family:var(--f-d);font-weight:600;font-size:15px;color:var(--ink);margin:0;
+  font-family:var(--f-d);font-weight:600;font-size:13.5px;color:var(--ink);margin:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .planner .cal-card__tag{
-  font-family:var(--f-m);font-size:9.5px;color:var(--brass);background:var(--brass-soft);
-  border-radius:5px;padding:2px 6px;letter-spacing:.04em;flex:none;
+  font-family:var(--f-m);font-size:9px;color:var(--brass);background:var(--brass-soft);
+  border-radius:5px;padding:2px 5px;letter-spacing:.03em;flex:none;
 }
-.planner .cal-card__meta{font-family:var(--f-m);font-size:11px;color:var(--muted);flex:none}
+.planner .cal-card__meta{font-family:var(--f-m);font-size:10px;color:var(--muted);flex:none}
 .planner .cal-card__meta b{color:var(--ink-soft);font-weight:600}
 .planner .cal-card .async-row{margin-top:0}
 
-/* columna del board angosta → una sola columna de calendario: bloques anchos
-   y aula legible. Usa el ancho del contenedor (.plan2-split__main), no el del
-   viewport, para reaccionar también cuando el sidebar derecho roba espacio. */
-@container (max-width:640px){
+/* la grilla reacciona al ancho real de la columna del board
+   (.plan2-split__main, container-type:inline-size): 3 por fila cuando entra,
+   2 cuando se angosta y 1 en pantallas muy chicas. */
+@container (max-width:650px){
+  .planner .plan2-cals{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container (max-width:410px){
   .planner .plan2-cals{grid-template-columns:1fr}
 }
+
+/* =========================================================================
+   MODAL — créditos de minors acumulados por cuatrimestre
+   ========================================================================= */
+.planner .mnr-modal{position:fixed;inset:0;z-index:60;display:flex;
+  align-items:center;justify-content:center;padding:24px}
+.planner .mnr-modal__bg{position:absolute;inset:0;background:var(--scrim);
+  backdrop-filter:blur(2px);animation:planner-fade .22s}
+.planner .mnr-modal__panel{
+  position:relative;z-index:1;width:min(640px,100%);max-height:88vh;overflow:auto;
+  background:var(--panel);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  box-shadow:0 24px 60px color-mix(in srgb,#000 32%,transparent);
+  padding:26px 26px 20px;animation:mnr-pop .26s var(--ease,ease) both;
+}
+@keyframes mnr-pop{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.planner .mnr-close{position:absolute;top:16px;right:16px;width:30px;height:30px;
+  border-radius:6px;border:1px solid var(--line);background:var(--panel-2);
+  color:var(--ink);cursor:pointer;font-size:15px;line-height:1}
+.planner .mnr-close:hover{background:var(--panel);border-color:var(--line-2)}
+.planner .mnr-head{margin:0 0 18px;padding-right:30px}
+.planner .mnr-kick{font-family:var(--f-m);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--brass)}
+.planner .mnr-head h3{font-family:var(--f-d);font-weight:600;font-size:21px;
+  letter-spacing:-.01em;margin:5px 0 6px;line-height:1.15;color:var(--ink)}
+.planner .mnr-head p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.planner .mnr-head p b{color:var(--ink-soft)}
+
+.planner .mnr-tablewrap{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.planner .mnr-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.planner .mnr-table th,.planner .mnr-table td{padding:9px 10px;text-align:center}
+.planner .mnr-table thead th{
+  font-family:var(--f-m);font-size:10px;letter-spacing:.04em;font-weight:600;
+  color:var(--ink-soft);background:var(--panel-2);border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+.planner .mnr-th-cu{text-align:left !important}
+.planner .mnr-th-area{vertical-align:middle}
+.planner .mnr-swatch{display:inline-block;width:8px;height:8px;border-radius:999px;
+  margin-right:5px;vertical-align:baseline}
+.planner .mnr-table tbody tr{border-top:1px solid var(--line)}
+.planner .mnr-table tbody tr.is-base{background:var(--panel-2)}
+.planner .mnr-cu{text-align:left !important;white-space:nowrap}
+.planner .mnr-cu__name{font-family:var(--f-d);font-weight:600;color:var(--ink);font-size:12.5px}
+.planner .mnr-cu__tag{font-family:var(--f-m);font-size:9.5px;color:var(--muted);
+  margin-left:7px;letter-spacing:.03em}
+.planner .mnr-cell{font-family:var(--f-m);position:relative;color:var(--ink-soft)}
+.planner .mnr-cell__n{font-size:13px;font-weight:600}
+.planner .mnr-cell.is-empty .mnr-cell__n{color:var(--faint);font-weight:400}
+.planner .mnr-cell.is-done{background:color-mix(in srgb,var(--sage) 14%,transparent)}
+.planner .mnr-cell.is-done .mnr-cell__n{color:var(--sage)}
+.planner .mnr-cell__chk{color:var(--sage);font-size:11px;margin-left:3px}
+.planner .mnr-cell__d{font-size:9.5px;color:var(--brass);margin-left:3px;vertical-align:top}
+
+.planner .mnr-foot{margin-top:14px;font-size:12px;line-height:1.5}
+.planner .mnr-foot__ok{color:var(--ink-soft)}
+.planner .mnr-foot__none{color:var(--muted)}

@@ -9,7 +9,6 @@ import type {
   PlacedMateria,
   PlanResult,
   PlanStart,
-  Slot,
   WeekBlock,
 } from "./types";
 
@@ -21,22 +20,6 @@ const esc = (s: unknown): string =>
 
 const credOf = (it: PlacedMateria[]) =>
   it.reduce((s, x) => s + (x.m.creditos || 0), 0);
-
-// Resumen legible de horario de una comisión (días/horas + sala/sede).
-function slotLines(slots: Slot[]): { sync: string[]; async: string[] } {
-  const sync: string[] = [];
-  const async: string[] = [];
-  for (const s of slots) {
-    const where = [s.sala, s.sede].filter(Boolean).join(" · ");
-    if (isAsync(s)) {
-      async.push("asincrónico" + (where ? ` · ${where}` : ""));
-    } else {
-      const mod = s.modalidad ? ` · ${s.modalidad}` : "";
-      sync.push(`${s.dia} ${s.desde}–${s.hasta}${where ? " · " + where : ""}${mod}`);
-    }
-  }
-  return { sync, async };
-}
 
 // Tinte literal (rgba sobre papel claro) a partir del hex de la materia. No
 // usamos color-mix para que imprima bien en cualquier visor.
@@ -84,19 +67,24 @@ function computeCuatriBlocks(it: PlacedMateria[]): {
 // Grilla semanal autocontenida (lun–vie × horas) con bloques posicionados,
 // espejo de CursadaCalendar pero como string HTML con estilos literales.
 function weekGridHTML(blocks: WeekBlock[]): string {
-  const PX = 0.6; // px por minuto
-  let minM = 8 * 60;
-  let maxM = 22 * 60;
+  const PX = 0.5; // px por minuto (compacto para imprimir en pocas páginas)
+  // Rango ajustado a las horas reales de cursada → grillas cortas, menos páginas.
+  let minM = Infinity;
+  let maxM = -Infinity;
   blocks.forEach((b) => {
     minM = Math.min(minM, toMin(b.desde));
     maxM = Math.max(maxM, toMin(b.hasta));
   });
+  if (!isFinite(minM)) {
+    minM = 8 * 60;
+    maxM = 18 * 60;
+  }
   minM = Math.floor(minM / 60) * 60;
   maxM = Math.ceil(maxM / 60) * 60;
   const hours: number[] = [];
   for (let t = minM; t < maxM; t += 60) hours.push(t);
   const bodyH = (maxM - minM) * PX;
-  const cols = `46px repeat(${DAYS.length}, minmax(0, 1fr))`;
+  const cols = `38px repeat(${DAYS.length}, minmax(0, 1fr))`;
 
   const head = DAYS.map((d) => {
     const n = blocks.filter((b) => b.dia === d).length;
@@ -182,26 +170,21 @@ export function buildPlanHTML(a: ExportArgs): string {
     const calHTML = blocks.length
       ? weekGridHTML(blocks)
       : `<p class="cg-empty">Sólo materias sin grilla semanal.</p>`;
+    // Lista compacta de materias: identidad + créditos + comisión. La grilla de
+    // arriba ya muestra los horarios, así que no repetimos el detalle.
     const rows = it
       .slice()
       .sort((x, y) => (y.m.creditos || 0) - (x.m.creditos || 0))
       .map((x) => {
-        const { sync, async } = x.com
-          ? slotLines(x.com.slots)
-          : { sync: [], async: [] };
-        const horario =
-          x.com == null
-            ? `<span class="muted">sin horario</span>`
-            : [...sync, ...async].map(esc).join("<br>") || "—";
-        const com = x.com ? `<span class="mono">${esc(x.com.comision)}</span>` : "—";
-        return `<tr>
-          <td class="mono code">${esc(x.m.codigo)}</td>
-          <td class="abbr">${esc(x.m.abbr)}</td>
-          <td>${esc(x.m.nombre)}${x.m.tipo === "electiva" ? ' <span class="pill-el">electiva</span>' : ""}</td>
-          <td class="num">${esc(x.m.creditos)}</td>
-          <td>${com}</td>
-          <td class="hor">${horario}</td>
-        </tr>`;
+        const com = x.com
+          ? `Com. <span class="mono">${esc(x.com.comision)}</span>`
+          : `<span class="muted">sin horario</span>`;
+        return `<li class="mrow">
+          <span class="mrow__abbr">${esc(x.m.abbr)}</span>
+          <span class="mrow__name">${esc(x.m.nombre)}${x.m.tipo === "electiva" ? ' <span class="pill-el">electiva</span>' : ""}</span>
+          <span class="mrow__com">${com}</span>
+          <span class="mrow__cr">${esc(x.m.creditos)} cr</span>
+        </li>`;
       })
       .join("");
     return `<section class="cuatri">
@@ -210,14 +193,10 @@ export function buildPlanHTML(a: ExportArgs): string {
         <div class="cuatri__meta">${it.length} materia${it.length === 1 ? "" : "s"} · <b>${cred}</b> créditos</div>
       </div>
       <div class="cuatri__cal">
-        <div class="cuatri__cal-h">Semana tipo</div>
         ${calHTML}
         ${asyncRowHTML(asyncs)}
       </div>
-      <table>
-        <thead><tr><th>Código</th><th>Abrev.</th><th>Materia</th><th class="num">Cr.</th><th>Comisión</th><th>Horario</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <ul class="mlist">${rows}</ul>
     </section>`;
   };
 
@@ -248,31 +227,32 @@ export function buildPlanHTML(a: ExportArgs): string {
   .wrap{max-width:920px;margin:0 auto;padding:40px 32px 56px}
   .mono{font-family:"SFMono-Regular",Menlo,Consolas,monospace}
   .muted{color:var(--muted)}
-  header.doc{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:24px}
+  header.doc{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:18px}
   header.doc .kick{font-family:"SFMono-Regular",Menlo,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin:0 0 6px}
-  header.doc h1{font-size:30px;margin:0 0 4px;letter-spacing:-.01em}
+  header.doc h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
   header.doc .gen{color:var(--muted);font-size:12.5px;font-family:"SFMono-Regular",Menlo,monospace}
   .summary{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:10px;background:var(--panel)}
-  .summary .s{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--line)}
+  .summary .s{flex:1;min-width:140px;padding:11px 16px;border-right:1px solid var(--line)}
   .summary .s:last-child{border-right:none}
-  .summary .s b{display:block;font-size:24px;line-height:1.1}
+  .summary .s b{display:block;font-size:21px;line-height:1.1}
   .summary .s span{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:5px;font-family:"SFMono-Regular",Menlo,monospace}
   .summary .s.accent b{color:var(--coral)}
-  .meta-note{font-size:12px;color:var(--muted);margin:0 0 26px;line-height:1.55}
-  section.cuatri{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:16px;overflow:hidden;page-break-inside:auto;break-inside:auto}
-  .cuatri__h{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid var(--line);background:#f6efe7;page-break-after:avoid;break-after:avoid}
-  .cuatri__h h2{font-size:18px;margin:0}
-  .cuatri__h .tag{font-family:"SFMono-Regular",Menlo,monospace;font-size:11px;color:var(--slate);border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-left:6px;vertical-align:middle}
-  .cuatri__meta{font-family:"SFMono-Regular",Menlo,monospace;font-size:12.5px;color:var(--soft)}
+  .meta-note{font-size:11.5px;color:var(--muted);margin:0 0 18px;line-height:1.5}
+  /* cada cuatrimestre es un bloque que no se parte: si no entra, salta de página */
+  section.cuatri{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:13px;overflow:hidden;page-break-inside:avoid;break-inside:avoid}
+  .cuatri__h{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:#f6efe7}
+  .cuatri__h h2{font-size:16px;margin:0}
+  .cuatri__h .tag{font-family:"SFMono-Regular",Menlo,monospace;font-size:10.5px;color:var(--slate);border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+  .cuatri__meta{font-family:"SFMono-Regular",Menlo,monospace;font-size:12px;color:var(--soft)}
   .cuatri__meta b{color:var(--ink)}
-  table{width:100%;border-collapse:collapse;font-size:12.5px}
-  thead th{text-align:left;font-family:"SFMono-Regular",Menlo,monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:9px 14px;border-bottom:1px solid var(--line)}
-  tbody td{padding:9px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-  tbody tr:last-child td{border-bottom:none}
-  td.code{color:var(--slate);font-size:11.5px;white-space:nowrap}
-  td.abbr{font-weight:bold}
-  td.num,th.num{text-align:right;font-family:"SFMono-Regular",Menlo,monospace}
-  td.hor{font-family:"SFMono-Regular",Menlo,monospace;font-size:11px;color:var(--soft);line-height:1.45}
+  /* lista compacta de materias (una fila por materia) */
+  .mlist{list-style:none;margin:0;padding:0}
+  .mrow{display:flex;align-items:baseline;gap:10px;padding:7px 16px;border-bottom:1px solid var(--line)}
+  .mrow:last-child{border-bottom:none}
+  .mrow__abbr{font-weight:bold;font-size:12.5px;min-width:64px;flex:none}
+  .mrow__name{flex:1;min-width:0;font-size:12.5px;color:var(--ink)}
+  .mrow__com{font-family:"SFMono-Regular",Menlo,monospace;font-size:10.5px;color:var(--soft);flex:none;white-space:nowrap}
+  .mrow__cr{font-family:"SFMono-Regular",Menlo,monospace;font-size:11px;color:var(--soft);flex:none;min-width:42px;text-align:right}
   .pill-el{font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--coral);border:1px solid var(--line);border-radius:4px;padding:1px 5px;vertical-align:middle}
   .grad{margin-top:8px;border:1px solid var(--coral);background:#fbeee6;border-radius:10px;padding:16px 20px;page-break-inside:avoid}
   .grad .kick{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin:0}
@@ -280,8 +260,7 @@ export function buildPlanHTML(a: ExportArgs): string {
   .grad p{margin:0;color:var(--soft);font-family:"SFMono-Regular",Menlo,monospace;font-size:13px}
   footer.doc{margin-top:26px;border-top:1px solid var(--line);padding-top:12px;color:var(--muted);font-size:11px;font-family:"SFMono-Regular",Menlo,monospace}
   /* ---- calendario semanal por cuatrimestre ---- */
-  .cuatri__cal{padding:13px 18px 15px;border-bottom:1px solid var(--line)}
-  .cuatri__cal-h{font-family:"SFMono-Regular",Menlo,monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+  .cuatri__cal{padding:11px 16px 12px;border-bottom:1px solid var(--line)}
   .cg-empty{margin:2px 0 0;color:var(--muted);font-size:12.5px}
   .cg{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--paper);page-break-inside:avoid;break-inside:avoid}
   .cg-head{display:grid;border-bottom:1px solid var(--line)}

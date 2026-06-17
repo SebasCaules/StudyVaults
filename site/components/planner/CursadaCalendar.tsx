@@ -17,7 +17,7 @@ export default function CursadaCalendar({
   days: string[];
   compact?: boolean;
 }) {
-  const PX = compact ? 0.5 : 0.82;
+  const PX = compact ? 0.44 : 0.82;
   let minM = 8 * 60;
   let maxM = 22 * 60;
   blocks.forEach((b) => {
@@ -29,7 +29,7 @@ export default function CursadaCalendar({
   const hours: number[] = [];
   for (let t = minM; t < maxM; t += 60) hours.push(t);
   const bodyH = (maxM - minM) * PX;
-  const cols = `${compact ? 38 : 46}px repeat(${days.length}, minmax(0, 1fr))`;
+  const cols = `${compact ? 32 : 46}px repeat(${days.length}, minmax(0, 1fr))`;
   let order = 0;
 
   return (
