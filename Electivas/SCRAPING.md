@@ -28,6 +28,21 @@ corrompen el estado de sesión**. Por eso el scraper:
 - **`scrape-sga-full.js`** — scraper completo. Genera y descarga `horarios.json`
   con las materias de la lista `TARGETS` (obligatorias faltantes + electivas).
   Vaciá `TARGETS = []` para scrapear **todas** las materias ofrecidas.
+- **`scrape-sga-all.js`** — scraper del **catálogo entero**: recorre todas las
+  páginas del listado y baja **todas** las materias (sin `TARGETS`, sin filtro de
+  período por defecto) a `horarios-all.json`. Son ~400 materias → contá ~15
+  recargas (el script imprime cuántas faltan en cada corrida). Caché namespaced
+  propio (`__sga_all_all_all`), así no pisa el de `scrape-sga-full.js`.
+
+### Elegir el cuatrimestre
+Arriba de `scrape-sga-full.js` están `PERIODO` y `ANIO`. El filtro compara con
+`periodo.includes(PERIODO)`, así que `'Primer'` / `'Segundo'` alcanza. Al arrancar,
+el script imprime **`Períodos en el listado: [...]`**: si el rótulo no coincide
+(p. ej. el SGA muestra `"2do Cuat."`), ajustá `PERIODO` a lo que aparezca ahí.
+
+El progreso se cachea en `localStorage` con una clave **namespaced por período+año**
+(`__sga_done_Segundo_2026`), así re-scrapear otro cuatrimestre nunca se mezcla con
+lo ya bajado. Para reempezar un período: `localStorage.removeItem("__sga_done_Segundo_2026")`.
 
 ## Resultado: `horarios.json`
 Una entrada por materia ofrecida (Primer Cuat. 2026):

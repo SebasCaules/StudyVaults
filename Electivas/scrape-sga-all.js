@@ -1,50 +1,40 @@
 /* =========================================================================
-   SGA ITBA · SCRAPER COMPLETO DE HORARIOS (consola, sin Chrome MCP)
+   SGA ITBA · SCRAPER DE *TODAS* LAS MATERIAS DEL LISTADO (consola, sin Chrome MCP)
    -------------------------------------------------------------------------
-   Genera el mismo horarios.json que usa la página de electivas.
+   Recorre TODAS las páginas del "Listado de Cursos" y scrapea TODAS las
+   materias que aparezcan (no hay lista de objetivos: baja el catálogo entero).
+   Misma arquitectura probada que scrape-sga-full.js:
+     - SECUENCIAL (1 request a la vez): los fetches en paralelo corrompen la sesión.
+     - En CHUNKS, con progreso en localStorage → RE-EJECUTABLE: si quedan materias,
+       recargás la página (F5) y volvés a pegar el script; retoma donde quedó.
+     - Caché NAMESPACED por período+año, así no se mezcla con otras corridas.
 
-   GOTCHA IMPORTANTE (descubierto a los golpes):
-   El SGA es GeneXus y sus URLs encriptadas (detalle/paginación) van caducando
-   a medida que navegás: después de ~80 fetches acumulados, los links viejos
-   devuelven páginas vacías. Además, fetches EN PARALELO corrompen el estado
-   de sesión. Por eso este script:
-     - Scrapea SECUENCIAL (1 a la vez), nunca en paralelo.
-     - Trabaja en CHUNKS y guarda el progreso en localStorage.
-     - Es RE-EJECUTABLE: si quedan materias, recargás la página (F5) y volvés
-       a pegar el script; retoma donde quedó. Cuando termina, descarga el JSON.
+   GOTCHA del SGA (GeneXus): las URLs encriptadas caducan tras ~80 fetches dentro
+   de la MISMA sesión de página (el F5 resetea el contador). Por eso cada corrida
+   gasta: ~(páginas del listado) + CHUNK*2 fetches. Con CHUNK=25 y ~20 páginas son
+   ~70 fetches por corrida, debajo del límite. Como el catálogo completo son
+   ~400 materias, contá ~15 recargas (el script te dice cuántas faltan).
 
    USO:
    1. Académica > Cursos > "Listado de Cursos" en el SGA, logueado.
-   2. Asegurate de que el listado muestre el período que querés scrapear
-      (acá: Segundo Cuat. 2026). El script igual filtra por PERIODO/ANIO.
-   3. F12 > Console > pegar este archivo > Enter.
-   4. Si dice "incompleto: recargá (F5) y volvé a pegar", hacelo.
-   5. Al terminar baja horarios.json a tu carpeta de Descargas.
+   2. F12 > Console > pegar este archivo > Enter.
+   3. Cuando diga "INCOMPLETO: recargá (F5)", hacelo y volvé a pegar. Repetir.
+   4. Al terminar baja `horarios-all.json` a tu carpeta de Descargas.
 
-   CONFIG: CHUNK = cuántas materias por corrida (mantener <= 25 por el decay).
-           PERIODO/ANIO = filtro de período. El progreso se cachea con una clave
-           namespaced por período+año, así re-scrapear otro cuatrimestre NO se
-           mezcla con lo ya bajado (cada período tiene su propio caché).
-           TARGETS = códigos a scrapear. Vaciá el array [] para scrapear TODAS
-           las materias ofrecidas (tarda mucho más, varias recargas).
+   CONFIG: CHUNK   = materias por corrida (mantener <= 28 por el decay).
+           PERIODO = '' scrapea todos los períodos del listado. Poné 'Primer' o
+                     'Segundo' para filtrar (compara con periodo.includes()).
+           ANIO    = '' sin filtro de año; o p. ej. '2026'.
+           OUT     = nombre del archivo descargado.
+   Para reempezar de cero: borrá la clave que imprime el script al terminar,
+   o corré  localStorage.removeItem('__sga_all_all_all').
    ========================================================================= */
 (async () => {
-  const CHUNK = 22;
-  const PERIODO = 'Segundo';  // filtra "Segundo Cuat." ; poné '' para no filtrar
-  const ANIO = '2026';        // poné '' para no filtrar por año
-  const TARGETS = [
-    // --- Obligatorias que me faltan ---
-    '72.41','72.42','93.75','72.27','72.43','72.44','72.20','12.83','72.45','72.98','94.23','94.52',
-    // --- Electivas ---
-    '10.07','10.09','11.36','16.04','16.50','16.57','16.82','22.48','23.15','25.04','61.08','61.11',
-    '61.13','61.50','71.48','72.22','72.23','72.29','72.46','72.49','72.50','72.51','72.52','72.53',
-    '72.54','72.55','72.58','72.59','72.60','72.61','72.65','72.66','72.67','72.68','72.69','72.70',
-    '72.71','72.72','72.73','72.74','72.75','72.77','72.78','72.79','72.80','72.82','72.84','72.85',
-    '72.86','72.87','72.88','72.89','72.90','72.92','72.94','72.95','72.96','72.97','73.21','73.22',
-    '73.23','73.30','73.40','73.50','73.60','73.61','73.62','73.63','73.64','73.65','73.66','73.80',
-    '73.81','73.82','73.84','73.89','73.98','81.13','81.14','81.16','81.57','81.74','82.08','82.18',
-    '82.21','94.26','94.42','94.62','94.64','94.65','94.92',
-  ];
+  const CHUNK = 25;
+  const PERIODO = '';         // '' = todos los períodos del listado
+  const ANIO = '';            // '' = sin filtro de año
+  const OUT = 'horarios-all.json';
+  const MAX_PAGES = 40;       // tope de seguridad para la paginación
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const DAYS = 'Lunes|Martes|Mi[eé]rcoles|Jueves|Viernes|S[aá]bado|Domingo';
@@ -75,7 +65,7 @@
   };
 
   // ---- 1) Crawl FRESCO del listado (paginando con el link ">") ----
-  console.log('⏳ Crawleando el listado...');
+  console.log('⏳ Crawleando el listado completo...');
   const parseList = (doc) => {
     const table = [...doc.querySelectorAll('table')].sort((a, b) => b.querySelectorAll('tr').length - a.querySelectorAll('tr').length)[0];
     const rows = [];
@@ -91,23 +81,22 @@
     return { rows, next: next ? next.href : null };
   };
   let r = parseList(document), all = r.rows.slice(), nx = r.next, pages = 1; const seen = new Set([location.href]);
-  while (nx && pages < 40) { if (seen.has(nx)) break; seen.add(nx); const p = parseList(await fetchDoc(nx)); if (!p.rows.length) break; all = all.concat(p.rows); nx = p.next; pages++; await sleep(60); }
+  while (nx && pages < MAX_PAGES) { if (seen.has(nx)) break; seen.add(nx); const p = parseList(await fetchDoc(nx)); if (!p.rows.length) break; all = all.concat(p.rows); nx = p.next; pages++; await sleep(60); }
   console.log(`   ${all.length} cursos en ${pages} páginas.`);
-  // Diagnóstico: períodos presentes en el listado. Si no ves "Segundo Cuat.",
-  // ajustá PERIODO arriba al rótulo exacto que aparezca acá.
   console.log('   Períodos en el listado:', [...new Set(all.map(c => c.periodo))]);
 
   // ---- 2) Estado persistente (sobrevive a F5; namespaced por período+año) ----
-  const STORE = `__sga_done_${PERIODO || 'all'}_${ANIO || 'all'}`;
+  const STORE = `__sga_all_${PERIODO || 'all'}_${ANIO || 'all'}`;
   const done = JSON.parse(localStorage.getItem(STORE) || '{}');          // codigo -> registro
-  const want = TARGETS.length ? new Set(TARGETS) : null;                 // null = todas
   const seenCod = new Set();
   const queue = all.filter(c => c.detailHref
       && (!PERIODO || c.periodo.includes(PERIODO)) && (!ANIO || c.anio === ANIO)
-      && (!want || want.has(c.codigo)) && !done[c.codigo]
+      && !done[c.codigo]
       && !seenCod.has(c.codigo) && seenCod.add(c.codigo));
 
-  const totalGoal = (want ? [...want] : [...new Set(all.map(c => c.codigo))]).length;
+  const totalGoal = [...new Set(all
+      .filter(c => (!PERIODO || c.periodo.includes(PERIODO)) && (!ANIO || c.anio === ANIO))
+      .map(c => c.codigo))].length;
   console.log(`   ${Object.keys(done).length}/${totalGoal} ya hechas. Faltan ${queue.length}.`);
 
   // ---- 3) Scrapear este chunk SECUENCIALMENTE ----
@@ -128,13 +117,15 @@
   // ---- 4) ¿Terminamos? ----
   const remaining = queue.length - batch.length;
   if (remaining > 0) {
-    console.log(`\n🔁 INCOMPLETO: faltan ${remaining}. Recargá la página (F5) y volvé a pegar el script.`);
+    const reloads = Math.ceil(remaining / CHUNK);
+    console.log(`\n🔁 INCOMPLETO: faltan ${remaining} materias (~${reloads} recarga(s) más). Recargá la página (F5) y volvé a pegar el script.`);
   } else {
     const data = Object.values(done);
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'horarios.json'; a.click();
-    try { copy(JSON.stringify(data)); console.log('📋 También copiado al portapapeles (pegá en horarios.json).'); } catch {}
-    console.log(`\n✅ LISTO: ${data.length} materias. Descargado horarios.json. (Para reempezar: localStorage.removeItem("${STORE}"))`);
+    a.href = URL.createObjectURL(blob); a.download = OUT; a.click();
+    try { copy(JSON.stringify(data)); console.log(`📋 También copiado al portapapeles (pegá en ${OUT}).`); } catch {}
+    const conHor = data.filter(d => (d.comisiones || []).some(cm => (cm.slots || []).length)).length;
+    console.log(`\n✅ LISTO: ${data.length} materias (${conHor} con grilla). Descargado ${OUT}. (Para reempezar: localStorage.removeItem("${STORE}"))`);
   }
 })();

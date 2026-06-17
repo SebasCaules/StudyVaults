@@ -139,7 +139,7 @@ out = {
     "areas": AREAS, "obligatorias": obligatorias, "electivas": electivas,
     "horarios": horarios, "edges": edges, "aprobadasDefault": aprobadas_default,
     "creditosElectivasReq": 27, "tituloAnalista": 147,
-    "generado": "2026-06-13",
+    "generado": "2026-06-17",
 }
 
 with open("data.js", "w", encoding="utf-8") as f:
