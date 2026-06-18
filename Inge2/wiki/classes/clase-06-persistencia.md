@@ -31,7 +31,7 @@ related:
 
 # Clase 6 — Persistencia
 
-> **Nota sobre los archivos `raw/`:** la cátedra distribuyó el slide deck con filename `Clase 5.pdf` (vive en `raw/classes/2026-04-16 - Clase 5/Clase 5.pdf`). Sin embargo, según las hand-notes del alumno, **el 2026-04-16 se dictó Documentación de Arquitecturas** ([[Clase 5 — Documentación de arquitecturas]]), no Persistencia. Persistencia fue dictada el **2026-04-23** (jueves siguiente), junto con [[Clase 6 — Big Data en tiempo real (Twitter)|el caso Twitter]] como aplicación integral. La numeración del wiki refleja el orden cronológico real. El alias `Clase 5 — Persistencia` se conserva para wikilinks legacy.
+> **Nota sobre los archivos `raw/`:** la cátedra distribuyó el slide deck con filename `Clase 5.pdf` (vive en `raw/classes/2026-04-16 - Clase 5/Clase 5.pdf`). Sin embargo, según las notas de clase, **el 2026-04-16 se dictó Documentación de Arquitecturas** ([[Clase 5 — Documentación de arquitecturas]]), no Persistencia. Persistencia fue dictada el **2026-04-23** (jueves siguiente), junto con [[Clase 6 — Big Data en tiempo real (Twitter)|el caso Twitter]] como aplicación integral. La numeración del wiki refleja el orden cronológico real. El alias `Clase 5 — Persistencia` se conserva para wikilinks legacy.
 
 ## TL;DR
 

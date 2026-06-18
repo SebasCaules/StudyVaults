@@ -23,7 +23,7 @@ related:
 
 ## Qué es este documento
 
-Documento de estudio armado por el alumno (probablemente compartido entre la cohorte) para el **parcial de Inge2 (2026-1C)**. Funciona como **mapa rápido "problema → mecanismo arquitectónico"**, con dos partes:
+Documento de estudio armado por alumnos de la cohorte para el **parcial de Inge2 (2026-1C)**. Funciona como **mapa rápido "problema → mecanismo arquitectónico"**, con dos partes:
 
 1. **Bucket de Soluciones**: catálogo de mecanismos disponibles (hosting, bases de datos, frontend, colas, seguridad, autenticación, protección de datos, manejo numérico).
 2. **Mapeo por atributo de calidad**: dada una preocupación (Availability, Security, Performance, Precision, Scalability, Interoperabilidad, Fault Tolerance, Accessibility), qué mecanismo aplicar.

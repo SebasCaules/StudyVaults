@@ -27,9 +27,8 @@ Además del contenido por unidad, hay material integrador para el **1er y 2do pa
 ## Cómo navegarlo
 
 - Empezá por **[`wiki/index.md`](wiki/index.md)**: es el índice maestro con el catálogo de
-  páginas por categoría y el tracker de notas del cuatrimestre.
+  páginas por categoría.
 - Desde ahí seguí los `[[wikilinks]]` a conceptos, entidades y resúmenes de cada `unidad-N/`.
-- `wiki/log.md` es la bitácora de operaciones del vault.
 
 ## Más contexto
 

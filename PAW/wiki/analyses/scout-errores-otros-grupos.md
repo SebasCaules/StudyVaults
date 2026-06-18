@@ -1,15 +1,15 @@
 ---
-title: Scout — Errores de Otros Grupos (auditoría para nuestro TP1)
+title: Scout — Errores Comunes en TP1
 type: analysis
 created: 2026-05-27
-updated: 2026-05-27
-tags: [scout, auditoria, correcciones, tp1, claude-code, accionable]
+updated: 2026-06-18
+tags: [scout, auditoria, correcciones, tp1, accionable]
 sources: [Devolucion TP1.pdf]
 ---
 
-# Scout — Errores de Otros Grupos
+# Scout — Errores Comunes en TP1
 
-> **Propósito:** la cátedra encontró estos errores en otros grupos. **Quizás los cometimos también pero al corrector se le pasaron.** Este archivo es checklist para que Claude Code audite nuestro repo `paw-2026a-10` y verifique cada patrón. Si encontrás el mismo problema, **arreglarlo proactivamente** suma; si la cátedra lo encuentra después, descuenta.
+> **Propósito:** la cátedra encontró estos errores en los proyectos del TP1. Este archivo es un checklist para auditar una codebase Spring MVC y verificar cada patrón. Arreglar proactivamente los que aparezcan suma calidad; si la cátedra los encuentra después, descuenta.
 
 > **Cómo usar:** para cada sección, ejecutar los `grep`/búsquedas sugeridas. Si hay match, abrir el archivo y verificar si aplica el mismo error. Reportar resultados en el "Resumen de hallazgos" al final.
 
@@ -85,13 +85,13 @@ sources: [Devolucion TP1.pdf]
 - [ ] **Patrones rojos a buscar:**
   - Loops sobre `*Service.findById(...)` en el controller → debe ser un service nuevo que devuelva la lista completa de una.
   - `if/else` que aplican reglas de dominio (estados, validez, permisos) → mover al service.
-  - Cualquier `new EntidadDeDominio(...)` en el controller (excepto forms) — caso del Grupo 9: `UserServiceImpl.create` instancia `new User(...)` en service en vez de devolver del DAO, mismo antipatrón aplica si lo hacés en controller.
+  - Cualquier `new EntidadDeDominio(...)` en el controller (excepto forms) — caso del Grupo 9: `UserServiceImpl.create` instancia `new User(...)` en service en vez de devolver del DAO, mismo antipatrón aplica si ocurre en un controller.
   - Orquestación de varios services en un POST (`serviceA.x(); serviceB.y(); serviceC.z()`) **sin** `@Transactional` ✅ (Façade).
 
 ### 2.2 — Lógica de negocio en clases helper "MvcSupport" / soporte
 **Grupo:** 12 (`PublishMvcSupport`, `GalleryMvcSupport`, `PublicationAvailabilityMvcSupport.blockSlot()`)
 
-- [ ] Tenemos clases helpers en `webapp/`? Si tienen reglas de dominio, son service disfrazado. `find webapp/src -name '*Support*' -o -name '*Helper*' -o -name '*Util*'`
+- [ ] ¿Hay clases helpers en `webapp/`? Si tienen reglas de dominio, son service disfrazado. `find webapp/src -name '*Support*' -o -name '*Helper*' -o -name '*Util*'`
 
 ### 2.3 — Lógica de presentación en service
 **Grupo:** 14 (services definen a dónde redirige la acción)
@@ -181,7 +181,7 @@ sources: [Devolucion TP1.pdf]
 ### 4.7 — Borrado en cascada con múltiples DELETEs sin transacción
 **Grupo:** 13 (`ArtworkServiceImpl.deleteArtwork` dispara 5 deletes vía `ArtworkJdbcDao.deleteById`)
 
-- [ ] Si tenemos cascades manuales en services, deben estar bajo un único `@Transactional`.
+- [ ] Si hay cascades manuales en services, deben estar bajo un único `@Transactional`.
 - [ ] Alternativa: `ON DELETE CASCADE` en el schema.
 
 ### 4.8 — Upsert UPDATE-then-INSERT (race condition TOCTOU)
@@ -259,7 +259,7 @@ sources: [Devolucion TP1.pdf]
 ### 5.6 — Login programático sin invalidar sesión previa
 **Grupo:** 3 (`EmailVerificationController`)
 
-- [ ] Si después de verificar email hacemos login programático, debemos `request.getSession().invalidate()` y crear sesión nueva (fixation attack).
+- [ ] Si después de verificar email se hace login programático, debe llamarse `request.getSession().invalidate()` y crear sesión nueva (fixation attack).
 
 ### 5.7 — Recursos estáticos en filter chain en lugar de `web.ignoring()`
 **Grupos:** 8, 14
@@ -279,7 +279,7 @@ sources: [Devolucion TP1.pdf]
 ### 5.10 — Inyección del user autenticado redeclarada en cada controller
 **Grupos:** 5, 13
 
-- [ ] Tenemos `CurrentUserAdvice` — verificar que TODOS los controllers la usen, no que casteen `authentication.getPrincipal()` manualmente.
+- [ ] Si existe un `CurrentUserAdvice`, verificar que TODOS los controllers lo usen, no que casteen `authentication.getPrincipal()` manualmente.
 
 ### 5.11 — Filtros / componentes innecesarios que reimplementan Spring
 **Grupo:** 4 (`DeviceScopedPersistentRememberMeServices`, `RequestCorrelationFilter`, `CurrentUserSynchronizationFilter`, `RequestParamParsers`, `DatabaseEncodingValidator`, `SessionInvalidator`)
@@ -417,7 +417,7 @@ sources: [Devolucion TP1.pdf]
 ### 9.3 — Mails que usan `LocaleContextHolder.getLocale()` en `@Async`
 **Grupo:** 2
 
-- [ ] Si tenemos mailing async, el locale debe pasarse explícitamente al método async, no leerse del `LocaleContextHolder` (que es ThreadLocal y no se propaga).
+- [ ] Si hay mailing async, el locale debe pasarse explícitamente al método async, no leerse del `LocaleContextHolder` (que es ThreadLocal y no se propaga).
 
 ### 9.4 — `messageSource.getMessage()` en controllers/services en vez de `spring:message` en la JSP
 **Grupo:** 14
@@ -496,7 +496,7 @@ sources: [Devolucion TP1.pdf]
 ### 11.7 — `logback-test.xml` en `src/test/resources` en vez de `src/main/resources`
 **Grupo:** 3
 
-- [ ] Si nuestro `logback-test.xml` está en main, el dev environment carga config de test. Debe estar en test resources.
+- [ ] Si el `logback-test.xml` está en main, el dev environment carga config de test. Debe estar en test resources.
 
 ### 11.8 — Secretos hardcoded en código fuente
 **Grupos:** 11, 13
@@ -546,7 +546,7 @@ sources: [Devolucion TP1.pdf]
 ### 12.8 — DTOs en sentido service → jsp
 **Grupo:** 14
 
-- [ ] Si tenemos DTOs para que la JSP los renderice, probablemente nos sobran. Las JSPs deberían trabajar sobre el modelo directamente (con EL).
+- [ ] Si hay DTOs para que la JSP los renderice, probablemente sobran. Las JSPs deberían trabajar sobre el modelo directamente (con EL).
 
 ### 12.9 — Status + tokens combinados en un solo campo string
 **Grupo:** 2 (`PurchaseJdbcDao` combina status + token comprador + token vendedor)
@@ -585,7 +585,7 @@ sources: [Devolucion TP1.pdf]
 ### 14.1 — Recordatorios: un mail por suscripción en vez de uno por usuario
 **Grupo:** 4
 
-- [ ] Si tenemos jobs que envían recordatorios, agrupar por destinatario.
+- [ ] Si hay jobs que envían recordatorios, agrupar por destinatario.
 
 ### 14.2 — `MailDispatchService` no es dueño de la lógica
 **Grupo:** 14
@@ -598,7 +598,7 @@ sources: [Devolucion TP1.pdf]
 - [ ] Mailing es responsabilidad del módulo `services`. Templates de mail deben estar en `services/src/main/resources/mail-templates/` (no en `webapp/`).
 
 ### 14.4 — PDF viewer / comprobante roto
-**Grupo:** 11 — verificar nuestro generador de comprobante.
+**Grupo:** 11 — verificar el generador de comprobante de la codebase.
 
 ### 14.5 — Auth de mails con token sin invalidar tras uso / sin chequear user actual
 **Grupos:** 2, 3
@@ -607,7 +607,7 @@ sources: [Devolucion TP1.pdf]
 
 ---
 
-## 15. Bugs y consideraciones funcionales (ver si los tenemos)
+## 15. Bugs y consideraciones funcionales (verificar si están presentes)
 
 ### 15.1 — Página de número negativo da 500 en vez de 400
 **Grupos:** 2, 14
@@ -639,8 +639,8 @@ sources: [Devolucion TP1.pdf]
 
 - [ ] Documentar claramente qué campos están en el `LIKE` del search.
 
-### 15.7 — Verificar email deja autologueado (positivo, queremos esto)
-**Grupos:** 1, 3 — OK (lo hacemos).
+### 15.7 — Verificar email deja autologueado (positivo, comportamiento deseable)
+**Grupos:** 1, 3 — OK (es el comportamiento esperado).
 
 ### 15.8 — Doble submit (race condition en POST)
 **Grupo:** 12
@@ -649,12 +649,12 @@ sources: [Devolucion TP1.pdf]
 
 ---
 
-## Resumen de hallazgos (Claude Code completa esto)
+## Resumen de hallazgos
 
 Por cada sección 1-15, marcar:
 
-- [ ] **No aplica** — no tenemos código de ese tipo
-- [ ] **Limpio** — verificado, no estamos cometiendo el error
+- [ ] **No aplica** — no hay código de ese tipo
+- [ ] **Limpio** — verificado, el error no está presente
 - [ ] **Encontrado** — listar archivo + línea + acción propuesta
 - [ ] **Parcial** — listar dónde sí y dónde no
 
@@ -771,7 +771,7 @@ Resultados — completados por la auditoría General Audit V4 (commit `48c0b02`,
 | 15.4 Reset password pide email cuando logueado | ⚠️ A verificar | (no completado en V4) | — |
 | 15.5 i18n no cambia idioma | ✅ Limpio | — | — |
 | 15.6 Búsqueda devuelve campos inesperados | ✅ Limpio | (LIKE en campos documentados) | — |
-| 15.7 Verificar email deja autologueado | ✅ OK (queremos esto) | — | — |
+| 15.7 Verificar email deja autologueado | ✅ OK (comportamiento deseable) | — | — |
 | 15.8 Doble submit (race condition) | ⚠️ A verificar | (no completado en V4) | — |
 
 ### Resumen agregado
@@ -787,7 +787,7 @@ Resultados — completados por la auditoría General Audit V4 (commit `48c0b02`,
 
 ## Cross-references
 
-- [[devolucion-tp1-nuestra]] — feedback oficial del grupo 10.
+- [[devolucion-tp1-nuestra]] — feedback oficial de un grupo evaluado.
 - [[plan-correcciones-tp1-grupo10]] — plan principal de correcciones.
 - [[devolucion-tp1]] — devolución previa (12 grupos).
 - [[devolucion-tp1-referencia-15-grupos]] — referencia de 15 grupos.

@@ -27,7 +27,6 @@ Todo el contenido vive bajo `wiki/`:
 | Carpeta | Qué contiene |
 |---|---|
 | `wiki/index.md` | Catálogo de todas las páginas, organizado por unidad y por categoría. **Empezá por acá.** |
-| `wiki/log.md` | Bitácora cronológica append-only de las operaciones sobre el wiki. |
 | `wiki/fuentes/` | Una página-resumen por cada fuente del material de cátedra (teóricas, guías TP, parciales, capítulos). |
 | `wiki/conceptos/` | Conceptos: variable aleatoria, esperanza, varianza, independencia, FDA, etc. |
 | `wiki/distribuciones/` | Una página por distribución (Bernoulli, Binomial, Poisson, Normal, Exponencial, …). |
@@ -60,4 +59,4 @@ Todo el contenido vive bajo `wiki/`:
   estándar, usar la skill **`studyvault-page`**. La página resultante debe
   cumplir el checklist de `../_estandar/DESIGN.md` (frontmatter canónico, un solo
   H1, definiciones en blockquote con etiqueta en negrita, `## Ver también`) y
-  quedar listada en `wiki/index.md` y registrada en `wiki/log.md`.
+  quedar listada en `wiki/index.md`.

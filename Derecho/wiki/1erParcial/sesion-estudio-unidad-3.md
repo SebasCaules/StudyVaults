@@ -11,8 +11,7 @@ ultima_actualizacion: 2026-04-14
 
 **Fecha:** 14 de abril de 2026  
 **Tipo:** Práctica tipo parcial  
-**Total preguntas:** 10  
-**Calificación final:** 7.5 / 10
+**Total preguntas:** 10
 
 ---
 
@@ -23,7 +22,7 @@ ultima_actualizacion: 2026-04-14
 **Enunciado:**  
 Si una persona humana nace sin vida, se considera que nunca existió.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Verdadero
 
 **Corrección:**  
@@ -39,7 +38,7 @@ Correcto según el art. 19 del [[CCyCN|Código Civil y Comercial de la Nación]]
 **Enunciado:**  
 El CCyCN distingue entre dos tipos de personas: persona jurídica y persona __________.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 humana
 
 **Corrección:**  
@@ -57,14 +56,14 @@ Correcto. El [[CCyCN|Código Civil y Comercial]] distingue claramente entre:
 **Enunciado:**  
 Explica brevemente qué es la **[[capacidad|capacidad de derecho]]** y la **[[capacidad|capacidad de ejercicio]]**. ¿Cuál adquieren antes los menores?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 La capacidad de derechos es la capacidad de obtener derecho, se obtiene al nacer. La capacidad de ejercicio es la capacidad de ejercer esos derechos. Los menores obtienen antes la primera.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Respuesta correcta y bien estructurada. Demostraste entender el orden de adquisición:
+El orden de adquisición es el siguiente:
 
 - **[[capacidad|Capacidad de derecho]]** (art. 22 CCyCN): Aptitud para ser titular de derechos y obligaciones. Se adquiere con el nacimiento con vida.
 - **[[capacidad|Capacidad de ejercicio]]** (art. 23 CCyCN): Aptitud para ejercer por sí mismo esos derechos. Se adquiere a los 18 años (mayoría de edad).
@@ -88,7 +87,7 @@ Un menor de edad es una **persona con capacidad de derecho pero sin capacidad de
 - d) 25 años
 - e) Depende del contexto
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 b) 18 años
 
 **Corrección:**  
@@ -104,13 +103,13 @@ Correcto según el art. 24 del CCyCN. La mayoría de edad se adquiere a los 18 a
 **Enunciado:**  
 Sujetar una obligación a un plazo es superditarla al acontecimiento de un hecho.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 No respondida.
 
 **Corrección:**  
 ❌ **SIN RESPUESTA**
 
-**Comentario — Información clave (para estudiar):**
+**Comentario — Información clave:**
 
 Esta es una pregunta **trampera** importante. La respuesta es **FALSO**.
 
@@ -142,14 +141,14 @@ Art. 2619 CCyCN: "La obligación sujeta a plazo está diferida en su cumplimient
 - d) Plazo
 - e) Lugar
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, B y C
 
 **Corrección:**  
 ✅ **CORRECTA** (pero requiere aclaración)
 
 **Comentario:**  
-Bien. Correctamente identificaste los tres elementos esenciales:
+Los tres elementos esenciales son:
 
 - **(a) Sujetos:** Acreedor (quien tiene derecho a exigir) y deudor (quien debe cumplir). Art. 724 CCyCN.
 - **(b) Objeto:** La prestación (dar, hacer o no hacer). Debe ser lícito, posible y determinado.
@@ -159,7 +158,7 @@ Bien. Correctamente identificaste los tres elementos esenciales:
 - **(d) Plazo:** Cuándo se cumple (accidental)
 - **(e) Lugar:** Dónde se cumple (accidental)
 
-Bien hecho. Diferenciaste esencial de accidental.
+Conviene diferenciar los elementos esenciales de los accidentales.
 
 ---
 
@@ -168,14 +167,14 @@ Bien hecho. Diferenciaste esencial de accidental.
 **Enunciado:**  
 Explica brevemente qué es la **[[responsabilidad-civil|responsabilidad civil]]** y cuáles son sus tres funciones principales.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 La responsabilidad civil es la herramienta con la cual hacer que los ciudadanos respondan a daños contra un tercero.
 
 **Corrección:**  
 ⚠️ **PARCIALMENTE CORRECTA**
 
 **Comentario:**  
-Capturaste la idea general, pero la explicación es incompleta. Te faltó:
+Una respuesta completa requiere:
 1. Definición más precisa
 2. Las **tres funciones** (que es lo pedido)
 
@@ -189,7 +188,7 @@ La [[responsabilidad-civil|responsabilidad civil]] es el **sistema de imputació
 2. **Función punitiva:** Sanciona al responsable con una indemnización (daño punitivo). El responsable sufre una pena económica.
 3. **Función resarcitoria:** Repara el daño causado al damnificado. Busca dejarlo en la situación anterior al daño.
 
-**Mejor respuesta hubiera sido:**
+**Formulación completa:**
 *"La responsabilidad civil es el sistema que obliga a quienes causan daño a repararlo. Tiene tres funciones: preventiva (disuade conductas dañosas), punitiva (sanciona al responsable) y resarcitoria (repara el daño del damnificado)."*
 
 ---
@@ -206,14 +205,14 @@ Marque los **presupuestos de la función resarcitoria** de la [[responsabilidad-
 - e) Relación de causalidad
 - f) Intención dolosa
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, B, C, D, E
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente. Identificaste correctamente los **cinco presupuestos de la función resarcitoria**:
+Los **cinco presupuestos de la función resarcitoria** son:
 
 1. **Autoría:** Quién causó el daño (identificación del autor).
 2. **Antijuridicidad:** El acto viola una norma jurídica (es ilícito).
@@ -235,7 +234,7 @@ Una empresa de transporte de combustible sufre un accidente que derrama gasolina
 - b) ¿Se trata de responsabilidad contractual o extracontractual? ¿Por qué?
 - c) ¿Cuál de las tres funciones de la responsabilidad civil (preventiva, punitiva, resarcitoria) se aplica aquí?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) La empresa petrolera será responsable civil por los daños.  
 b) Extracontractual ya que ni los pescadores ni la empresa firmaron un contrato, sino que pasó y la última debe responder a la primera.  
 c) Resarcitoria y podría llegar a ser punitiva.
@@ -244,15 +243,15 @@ c) Resarcitoria y podría llegar a ser punitiva.
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente análisis. Demostraste entender toda la estructura de responsabilidad civil:
+El caso permite analizar toda la estructura de responsabilidad civil:
 
-**a) Responsable:** Correcto — la **empresa de transporte** es responsable civilmente. Es quien causó el daño (violó deberes de cuidado en transporte de combustible).
+**a) Responsable:** la **empresa de transporte** es responsable civilmente. Es quien causó el daño (violó deberes de cuidado en transporte de combustible).
 
-**b) Tipo de responsabilidad:** ✅ Correcta tu conclusión.
+**b) Tipo de responsabilidad:** ✅ Responsabilidad extracontractual.
 - **Extracontractual** (aquiliana, delictual): Surge de actos ilícitos sin relación contractual previa. No hay contrato entre la empresa y los pescadores; surge de la violación de una norma (negligencia en transporte).
 - (No es contractual porque no hay relación contractual entre partes)
 
-**c) Funciones aplicables:** ✅ Correcta tu identificación.
+**c) Funciones aplicables:** ✅ Resarcitoria y punitiva.
 - **Resarcitoria:** Reparar el daño a los pescadores (lucro cesante por 3 meses sin pesca).
 - **Punitiva:** Sancionar a la empresa (daño punitivo adicional a la reparación, por negligencia grave).
 - (La **preventiva** también se aplica: la empresa debe tomar precauciones futuras)
@@ -270,7 +269,7 @@ Elije un ejemplo de **[[contratos-general|contrato]]** que vos inventes. Define 
 - c) Cuál es la causa
 - d) Identifica los elementos esenciales
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Yo Juan Pérez, DNI 42.000.000, domicilio calle 123, CABA. Le vendo a Domingo González, DNI 43.000.000, domicilio calle 124, CABA, la moto marca Honda modelo C100 con número de serie ABC123 y color rojo por el precio de $100 PESOS CIEN en las condiciones que se encuentra al día de la fecha y a pagar al día de la fecha.
 
 a) Las partes son Juan y Domingo.  
@@ -282,17 +281,17 @@ d) (Incompleto)
 ⚠️ **PARCIALMENTE CORRECTA**
 
 **Comentario:**  
-Buen ejemplo concreto y bien estructurado. Capturaste las partes, objeto y causa de forma clara. Sin embargo, **no completaste el punto d) sobre elementos esenciales**, que era lo más importante.
+El ejemplo es concreto y está bien estructurado: las partes, el objeto y la causa quedan claros. El punto d) sobre elementos esenciales, que es el más importante, queda pendiente de desarrollo.
 
-**Análisis de lo que escribiste:**
+**Análisis del ejemplo:**
 
-✅ **a) Partes:** Correcto. Juan Pérez (vendedor) y Domingo González (comprador). Identificaste correctamente los datos (nombres, DNI, domicilio).
+✅ **a) Partes:** Correcto. Juan Pérez (vendedor) y Domingo González (comprador). Los datos (nombres, DNI, domicilio) están correctamente identificados.
 
 ✅ **b) Objeto:** Correcto. La moto Honda C100 (bien especificada con serie y color). El objeto debe ser **lícito, posible, determinado y patrimonial**.
 
 ✅ **c) Causa:** Bien explicado. La causa es el intercambio: Juan da la moto para recibir dinero; Domingo da dinero para recibir la moto. Causa onerosa (ambas partes dan algo).
 
-❌ **d) Elementos esenciales (FALTANTE):** Debería haber identificado:
+❌ **d) Elementos esenciales (FALTANTE):** Corresponde identificar:
 
 **Elementos esenciales del contrato:**
 1. **Consentimiento:** Acuerdo de voluntades entre Juan y Domingo.
@@ -300,37 +299,16 @@ Buen ejemplo concreto y bien estructurado. Capturaste las partes, objeto y causa
 3. **Causa:** Intercambio de dinero por cosa.
 4. **Forma:** Contrato de compraventa de bien mueble (puede ser informal, verbal o escrito).
 
-**Mejor respuesta hubiera sido:**
+**Formulación completa:**
 *"Los elementos esenciales son: 1) Consentimiento (acuerdo entre Juan y Domingo), 2) Objeto (la moto, bien determinado y patrimonial), 3) Causa (intercambio oneroso)."*
 
 ---
 
-## Resumen de Calificación
+## Conceptos a reforzar
 
-| Resultado | Cantidad | Porcentaje |
-|-----------|----------|-----------|
-| ✅ Correctas | 7 | 70% |
-| ⚠️ Parciales | 2 | 20% |
-| ❌ Incorrectas | 0 | 0% |
-| ❌ Sin respuesta | 1 | 10% |
-
-**Calificación final: 7.5 / 10**
-
----
-
-## Feedback General
-
-**Fortalezas:**
-- Excelente análisis en casos prácticos (pregunta 9 — análisis completo de responsabilidad)
-- Buena comprensión de elementos esenciales vs accidentales (pregunta 6)
-- Respuestas prácticas y concretas (ejemplo de contrato)
-- Dominas bien responsabilidad civil
-
-**Áreas de mejora:**
-- Completa siempre tus respuestas (pregunta 10 quedó sin punto d)
-- Estudia diferencia **plazo vs condición** — es tema frecuente (pregunta 5)
-- En desarrollos, menciona explícitamente las funciones/elementos pedidos (pregunta 7)
-- Cuando pidas no responder una pregunta, hazlo cuando no sabes — no dejes incompletas
+- Completar siempre el desarrollo de las respuestas (el punto d de la pregunta 10 queda pendiente)
+- Diferencia **plazo vs condición** — es un tema frecuente (pregunta 5)
+- En los desarrollos, mencionar explícitamente las funciones/elementos pedidos (pregunta 7)
 
 **Conceptos clave para reforzar:**
 - Plazo (futuro y cierto) vs Condición (futuro e incierto)
@@ -339,9 +317,9 @@ Buen ejemplo concreto y bien estructurado. Capturaste las partes, objeto y causa
 - Responsabilidad contractual vs extracontractual
 
 **Recomendación:**
-Estás en 7.5 stablemente. Necesitas:
-1. Ser más completo en desarrollos
-2. Completar respuestas que dejes a mitad
+Para esta unidad conviene:
+1. Ser completo en los desarrollos
+2. No dejar respuestas a medias
 3. Reforzar plazo vs condición antes del parcial
 
 ---

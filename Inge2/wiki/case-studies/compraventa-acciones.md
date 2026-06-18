@@ -138,7 +138,7 @@ Análisis de patrones de comunicación según el caso de uso:
 - **BC1 (Cotización) ↔ Back:** **WebSocket** — conexión abierta persistente. Justificación: el flujo de cotizaciones es **streaming continuo** (precios cambian decenas de veces por segundo); abrir un request HTTP por cada update sería ruidoso y agregaría latencia inaceptable.
 - **Usuario → Back (parte de venta):** **Request-Response** instantáneo (asunción tomada en clase). Justificación: la operación de venta es discreta y requiere confirmación inmediata; el modelo síncrono encaja.
 
-> Las notas de clase quedan cortadas en este punto. El desarrollo del 3er escenario (HA/replicación, failover, hot standby) probablemente se completó verbalmente en clase y queda para revisar con el material de la próxima.
+> Las notas de clase quedan cortadas en este punto. El desarrollo del 3er escenario (HA/replicación, failover, hot standby) probablemente se completó verbalmente en clase y queda como tema para profundizar.
 
 ## Diagrama final (2da iteración)
 

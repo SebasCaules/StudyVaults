@@ -78,7 +78,7 @@ Resúmenes de documentos fuente. Cada uno es inmutable en `raw/`; acá vive su d
 - [[Devolución TP1 — Feedback Primera Entrega]] — Correcciones del TP1 para los 12 grupos: errores graves (XSS, ownership, falta de tests), errores de código, errores de demo, puntos positivos, seguimiento por grupo.
 - [[Devolución TP1 — Referencia 15 Grupos]] — Segundo documento de devolución (15 grupos, proyectos variados: clubes, reservas, vinilos, lecciones, Roomify, torneos, turnos médicos). 30 errores recurrentes transversales: lógica en controllers, ownership manual, XSS, logging en prod, N+1, `Mockito.verify`, locale del sender, magic strings, versiones en hijos, etc.
 - [[Correcciones Segunda Entrega (TP2)]] — Consolidado de las dos devoluciones oficiales del TP2 (Corrector A con 17 grupos + Corrector B con 15 grupos). Tabla de notas comparada, Demo + Código + Seguimiento por grupo, y 19 patrones recurrentes consolidados. Trampa nueva del TP2: `@Async` + `@Transactional` accediendo a relaciones lazy sin materializar.
-- [[Devolución TP1 — Nuestro Grupo (10)]] — **Nuestra devolución oficial (nota 6)**. Transcripción completa del feedback del Grupo 10 + tabla cruzada con los patrones que la cátedra penaliza en toda la cohorte. Fuente directa para el plan de correcciones.
+- [[Devolución TP1 — Caso de un Grupo]] — Devolución oficial de la cátedra sobre un proyecto del TP1 (nota 6), tomada como caso de estudio. Transcripción completa del feedback + tabla cruzada con los patrones que la cátedra penaliza en toda la cohorte. Fuente directa para un plan de correcciones.
 
 ### Cátedra — clases teóricas
 
@@ -107,10 +107,10 @@ Comparaciones, deep dives y vistas transversales que valen la pena guardar.
 
 - [[Project Architecture Overview]] — Vista general del sistema: stack técnico, arquitectura de módulos, modelo de dominio, flujo de request, qué está implementado vs qué falta.
 - [[Errores Comunes TP1]] — Guía accionable con ejemplos de código reales: XSS, lógica en controllers, tests de implementación, ownership, magic strings, checklist de 15 puntos pre-entrega.
-- [[Sprint 2 — Roadmap y Asignaciones]] — Cambios de BD (ProductStatus, valores nuevos de RentStatus, `payment_image_id`), flujo de estados de Rent, pantallas nuevas y asignaciones por integrante (SEBAS / AZU / JOSE / MAGUI / TIAGO).
-- [[Plan de correcciones TP1 — Grupo 10 (para Claude Code)]] — Plan accionable punto-por-punto derivado de [[Devolución TP1 — Nuestro Grupo (10)]]. 5 fases priorizadas (graves → persistencia/tests → POM → UX/i18n → cierre), checklist condensado y reglas de trabajo para que Claude Code corrija el repo `paw-2026a-10`.
-- [[Scout — Errores de Otros Grupos (auditoría para nuestro TP1)]] — Checklist exhaustivo de TODOS los errores que la cátedra encontró en los otros 13 grupos del TP1, organizados en 15 categorías con `grep` sugeridos y patrones a buscar. Sirve para que Claude Code auditen nuestro repo y detecte errores que al corrector se le hayan pasado.
-- [[Prompt para Claude Code — Auditoría TP1]] — Prompt listo para pegar en una sesión de Claude Code en `paw-2026a-10`. Orquesta lectura de los 3 docs de feedback + reconocimiento + auditoría paralelizada con 6 agentes especializados (Explore read-only) + cross-check adversarial (falsos positivos/negativos) + consolidación en `.audit/` con plan maestro y planes individuales por hallazgo.
+- [[Sprint 2 — Roadmap del Proyecto]] — Cambios de BD (ProductStatus, valores nuevos de RentStatus, `payment_image_id`), flujo de estados de Rent, pantallas nuevas y desglose de tareas por área de trabajo.
+- [[Plan de correcciones TP1]] — Plan accionable punto-por-punto derivado de [[Devolución TP1 — Caso de un Grupo]]. 5 fases priorizadas (graves → persistencia/tests → POM → UX/i18n → cierre), con checklist condensado y reglas de trabajo para corregir una codebase Spring MVC.
+- [[Scout — Errores Comunes en TP1]] — Checklist exhaustivo de los errores que la cátedra encontró en los proyectos del TP1, organizados en 15 categorías con `grep` sugeridos y patrones a buscar. Sirve para auditar una codebase y detectar errores que una corrección manual podría pasar por alto.
+- [[Auditoría de TP1 — Workflow paralelizado]] — Workflow de auditoría: lectura de los docs de feedback + reconocimiento de la codebase + auditoría paralelizada con 6 agentes especializados (read-only) + cross-check adversarial (falsos positivos/negativos) + consolidación con plan maestro y planes individuales por hallazgo.
 
 ---
 
@@ -137,6 +137,6 @@ Qué archivo de `raw/` fue destilado en cada source. Útil para chequear cobertu
 | `Transcripciones/audio_transcript.vtt` | [[Transcripción Clase 13/04 — Logging, AOP y ControllerAdvice]] (audio fuente) |
 | `Transcripciones/Screen Recording 2026-04-13 at 21.07.05.mov` | [[Transcripción Clase 13/04 — Logging, AOP y ControllerAdvice]] (video fuente) |
 | `assets/NotionPAW.pdf` (+ `assets/notion-paw-images/img-*.png`, 71 imágenes) | [[Notion Teoricas PAW — Apuntes en vivo]] |
-| `Correcciones/Nuestras/Devolucion TP1.pdf` | [[Devolución TP1 — Nuestro Grupo (10)]] |
+| `Correcciones/Devolucion TP1.pdf` | [[Devolución TP1 — Caso de un Grupo]] |
 
 > **Cobertura:** 100%. Todo archivo en `raw/` tiene su página destilada en `wiki/sources/`. Las tres fuentes de la clase 13/04 (PDF estructurado, VTT del audio, grabación MOV) comparten una única página de destilación.

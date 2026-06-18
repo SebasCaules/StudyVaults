@@ -21,7 +21,7 @@ related:
 
 # Clase 5 — Documentación de arquitecturas
 
-> **Nota sobre los archivos `raw/`:** la cátedra distribuyó el slide deck que cubre este tema con el filename `Clase 3.pdf`. Vive en `raw/classes/2026-03-26 - Clase 3/Clase 3.pdf` porque así se organizó el vault originalmente. Sin embargo, las **notas a mano del alumno** sobre Documentación se tomaron el **2026-04-16** (`raw/classes/2026-04-16 - Clase 5/clase5.pdf`) — esa es la **fecha real de exposición** en la cátedra (Clase 5 cronológica). La numeración del wiki ahora refleja el orden cronológico real. El alias `Clase 3 — Documentación de arquitecturas` se mantiene para que wikilinks viejos sigan resolviendo. Los folders de `raw/` permanecen inmutables por convención.
+> **Nota sobre los archivos `raw/`:** la cátedra distribuyó el slide deck que cubre este tema con el filename `Clase 3.pdf`. Vive en `raw/classes/2026-03-26 - Clase 3/Clase 3.pdf` porque así se organizó el vault originalmente. Sin embargo, las **notas a mano** sobre Documentación corresponden al **2026-04-16** (`raw/classes/2026-04-16 - Clase 5/clase5.pdf`) — esa es la **fecha real de exposición** en la cátedra (Clase 5 cronológica). La numeración del wiki ahora refleja el orden cronológico real. El alias `Clase 3 — Documentación de arquitecturas` se mantiene para que wikilinks viejos sigan resolviendo. Los folders de `raw/` permanecen inmutables por convención.
 
 ## TL;DR
 

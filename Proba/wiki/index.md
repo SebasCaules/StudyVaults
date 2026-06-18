@@ -212,4 +212,4 @@ Para navegar rápido en Obsidian: abrí la vista de grafo.
 _(Sin pendientes conocidos.)_ Los forward-links que estaban en esta lista
 —`[[distribucion-erlang]]`, `[[distribucion-gamma]]`, `[[distribucion-ji-cuadrado]]`,
 `[[distribucion-weibull]]` y `[[De Morgan]]` (resuelto por
-`[[leyes-de-de-morgan]]`)— ya tienen su página propia (ver `log.md`).
+`[[leyes-de-de-morgan]]`)— ya tienen su página propia.

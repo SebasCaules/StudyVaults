@@ -12,7 +12,6 @@ ultima_actualizacion: 2026-04-14
 **Fecha:** 14 de abril de 2026  
 **Tipo:** Integración de conceptos de todas las unidades (1-5)  
 **Total preguntas:** 20  
-**Calificación final:** 13.5 / 20 = 6.75 / 10
 
 ---
 
@@ -23,14 +22,14 @@ ultima_actualizacion: 2026-04-14
 **Enunciado:**  
 Un acto ilícito que viola una norma del [[CCyCN|Código Civil y Comercial]] genera automáticamente responsabilidad penal.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Falso, es solo civil.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien. Demostraste entender que responsabilidad civil y responsabilidad penal son **sistemas diferentes e independientes**:
+La responsabilidad civil y la responsabilidad penal son **sistemas diferentes e independientes**:
 
 - **Responsabilidad civil:** Surge del incumplimiento de normas civiles. Objetivo: reparar daño (indemnización).
 - **Responsabilidad penal:** Surge de violación de normas penales. Objetivo: castigar delito (prisión, multa).
@@ -44,7 +43,7 @@ Un mismo acto puede generar ambas responsabilidades (delito) o solo civil (incum
 **Enunciado:**  
 Un comerciante vende un fondo de comercio a otro sin publicar los edictos requeridos por la **Ley 11.867**. ¿Qué consecuencias tiene esto para los acreedores del vendedor? ¿Qué normas de la jerarquía jurídica se aplican?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Los acreedores pueden frenar la venta para pedir que se les pague lo suyo y puede invocar fraude como motivo de cobro.
 
 **Corrección:**  
@@ -52,7 +51,7 @@ Los acreedores pueden frenar la venta para pedir que se les pague lo suyo y pued
 
 **Comentario — Información completa:**
 
-Tu idea es correcta pero incompleta. Los edictos en Ley 11.867 son cruciales para proteger acreedores:
+Los edictos en Ley 11.867 son cruciales para proteger acreedores:
 
 **Ley 11.867 — Transferencia de Fondo de Comercio:**
 - Exige publicación de **edictos** (avisos públicos) sobre la transferencia
@@ -86,14 +85,14 @@ Tu idea es correcta pero incompleta. Los edictos en Ley 11.867 son cruciales par
 - d) En la jurisprudencia únicamente
 - e) En costumbre y doctrina
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 b) Constitución Nacional + leyes especiales + tratados internacionales
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente. Reconociste que PI está regulada en **múltiples niveles jerárquicos**:
+La PI está regulada en **múltiples niveles jerárquicos**:
 
 **Niveles jerárquicos de PI en Argentina:**
 
@@ -125,7 +124,7 @@ Un ingeniero de software en una empresa crea un algoritmo revolucionario durante
 - b) ¿Qué tipo de protección sería más adecuada: patente o derecho de autor?
 - c) ¿Cuál sería la duración de protección en cada caso?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) La empresa ya que fue durante horario laboral y si fue con equipos y cosas de la empresa aún más.  
 b) Patente.  
 c) 20 años y 70 años + la vida del autor en el segundo caso.
@@ -134,7 +133,7 @@ c) 20 años y 70 años + la vida del autor en el segundo caso.
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente análisis. Demostraste entender relación laboral y protecciones de PI:
+La relación laboral y las protecciones de PI se analizan así:
 
 **a) Titular de derechos:** Correcto — **la empresa**.
 
@@ -162,7 +161,7 @@ Sin embargo, **ambas protecciones podrían aplicarse:**
 **Enunciado:**  
 El [[poder-ejecutivo|Poder Ejecutivo]] puede sancionar una ley como inconstitucional, pero el [[poder-ejecutivo|Poder Ejecutivo]] no puede hacer lo mismo al momento de ejecutarla.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Falso, puede vetarla.
 
 **Corrección:**  
@@ -170,7 +169,7 @@ Falso, puede vetarla.
 
 **Comentario — Aclaración importante:**
 
-Tu respuesta es imprecisa. Necesito aclarar:
+Conviene precisar:
 
 **¿Puede el PE vetar una ley por inconstitucional?**
 
@@ -197,14 +196,14 @@ En la pirámide jurídica de Kelsen, después de la [[constitucion-nacional|Cons
 
 __________ > __________ > __________
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Tratados sin jerarquía > Leyes nacionales > Reglamento y normativa administrativa.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien. La secuencia jerárquica es correcta:
+La secuencia jerárquica correcta es:
 
 1. Constitución Nacional
 2. Tratados internacionales con jerarquía constitucional (art. 75 inc. 22)
@@ -221,14 +220,14 @@ Bien. La secuencia jerárquica es correcta:
 **Enunciado:**  
 Define qué es un **hecho ilícito** y explica cómo se diferencia de un hecho simplemente contrario a la moral pero legal.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Un hecho ilícito está penado por la ley y tiene consecuencias claras. Un hecho ilícito moral solo se pena por la conciencia de la gente.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien diferenciado. Capturaste la distinción clave entre órdenes normativas:
+La distinción clave entre órdenes normativas es:
 
 **Hecho ilícito (jurídico):**
 - Violación de norma jurídica
@@ -257,14 +256,14 @@ Bien diferenciado. Capturaste la distinción clave entre órdenes normativas:
 - d) Un vendedor no entrega un producto vendido
 - e) Un médico comete un error quirúrgico causando daño
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, C, E
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien identificadas. Excluiste correctamente B y D (que son contractuales):
+Las opciones B y D quedan excluidas (son contractuales):
 
 ✅ **a) Conductor choca peatón:** Extracontractual. No hay relación contractual; surge de acto ilícito (negligencia).
 
@@ -287,7 +286,7 @@ Una marca de ropa quiere expandir internacionalmente. Sus productos están regis
 - b) ¿Qué sistema internacional debería usar para proteger su marca a nivel global?
 - c) ¿Qué ventajas tiene registrar la marca en múltiples países?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) Su marca no está protegida en otros países, deberá registrarla en cada país que vaya.  
 b) No sé.  
 c) Que nadie en otro país puede lucrar con esa marca.
@@ -327,21 +326,19 @@ Ventajas específicas:
 **Enunciado:**  
 Una [[obligaciones|obligación]] sujeta a condición es aquella cuya ejecución depende de un plazo futuro e incierto, mientras que una sujeta a plazo es aquella que depende de una fecha cierta.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Verdadero
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien. Pero la pregunta tiene un error de redacción que tú superaste intuitivamente. Aclaro:
+El enunciado tiene un error de redacción. Conviene aclarar:
 
 **Condición:** Hecho futuro e **incierto** (puede ocurrir o no)
 **Plazo:** Momento futuro **cierto** (ocurrirá inevitablemente)
 
-La pregunta original dice "condición depende de un plazo futuro e incierto" — esto es confuso porque plazo es **cierto**. Pero interpreté correctamente que preguntaba si condición es incierta y plazo es cierto.
-
-Tus respuestas posteriores demostraron que sí entiendes la diferencia.
+El enunciado dice "condición depende de un plazo futuro e incierto" — esto es confuso porque el plazo es **cierto**. La interpretación correcta es que la condición es incierta y el plazo es cierto.
 
 ---
 
@@ -356,14 +353,14 @@ Tus respuestas posteriores demostraron que sí entiendes la diferencia.
 - d) Dentro de 30 días
 - e) Dentro de 90 días
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Ninguna. 72 horas.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien. **72 horas** es la respuesta correcta aunque no estuviera en opciones.
+**72 horas** es la respuesta correcta, aunque no figure entre las opciones.
 
 **Ley 17.418 art. 46:** El asegurado debe denunciar el siniestro **dentro de 3 días hábiles** (aproximadamente 72 horas) de ocurrido.
 
@@ -372,8 +369,6 @@ Esto es importante porque:
 - La aseguradora necesita tiempo para investigación
 - Es medida de seguridad contra fraude
 
-Tu respuesta fue precisa — demostraste conocer el dato específico.
-
 ---
 
 ### Pregunta 12: Desarrollo Corto — Compraventa Inmueble vs Mueble (Forma Pública)
@@ -381,7 +376,7 @@ Tu respuesta fue precisa — demostraste conocer el dato específico.
 **Enunciado:**  
 Explica brevemente por qué en Argentina la compraventa de un inmueble requiere forma pública (escritura), pero la de un bien mueble puede ser informal.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Porque ese inmueble puede tener deudas con el municipio o con la administración si es que tiene y porque es un bien registrable entonces debe estar constatado a nombre de quien está. Un bien mueble es un bien sin importancia y no es registrable.
 
 **Corrección:**  
@@ -389,7 +384,7 @@ Porque ese inmueble puede tener deudas con el municipio o con la administración
 
 **Comentario — Razones completas:**
 
-Tu idea es correcta pero simplificada. Las razones reales son más profundas:
+Las razones de fondo son las siguientes:
 
 **Por qué inmueble requiere forma pública:**
 
@@ -420,7 +415,7 @@ Un juez dicta una sentencia que contradice el art. 18 de la [[constitucion-nacio
 - b) ¿Qué poder intervendría para resolver este conflicto?
 - c) ¿Sobre qué bases argumentaría el abogado para anular la sentencia?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) Apelación a la cámara de instancia superior.  
 b) Interviene el PJ.  
 c) Sobre la base de que se violó la CN.
@@ -429,7 +424,7 @@ c) Sobre la base de que se violó la CN.
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente análisis. Demostraste entender el sistema de impugnación:
+El sistema de impugnación funciona así:
 
 **a) Vía legal:** ✅ **Apelación**
 
@@ -457,14 +452,14 @@ Específicamente:
 **Enunciado:**  
 La [[fuentes-del-derecho|costumbre]] es considerada fuente del derecho en Argentina, pero solo tiene validez si no contradice la ley.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Verdadero
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien. Capturaste la jerarquía correctamente:
+La jerarquía es la siguiente:
 
 **Costumbre como fuente del derecho:**
 
@@ -492,14 +487,14 @@ Ejemplo:
 - d) Factor de atribución
 - e) Antijuridicidad
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, C, D, E
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente. Excluiste correctamente B. Los cinco presupuestos son:
+La opción B queda excluida. Los cinco presupuestos son:
 
 ✅ **a) Daño:** Lesión de derecho o interés jurídicamente protegido
 
@@ -520,7 +515,7 @@ Excelente. Excluiste correctamente B. Los cinco presupuestos son:
 **Enunciado:**  
 Compara el sistema de [[common-law-vs-codificado|Common Law]] con el de [[common-law-vs-codificado|Derecho Codificado]]. ¿Cuál utiliza Argentina y por qué es importante para interpretar las leyes?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Argentina utiliza derecho codificado. La gran diferencia que tiene este contra el de common law es que cada juez puede resolver independientemente de una resolución pasada sobre un caso similar. Solo debe abstenerse a respetar la jerarquía pero no genera jurisprudencia la sentencia de un juez.
 
 **Corrección:**  
@@ -528,7 +523,7 @@ Argentina utiliza derecho codificado. La gran diferencia que tiene este contra e
 
 **Comentario — Aclaración importante:**
 
-Tu idea es **correcta pero imprecisa**. Aclaré:
+Conviene precisar la distinción:
 
 **Derecho Codificado (Argentina):**
 - **Fuente principal:** Códigos escritos (Constitución, CCyCN, leyes)
@@ -553,8 +548,6 @@ Al interpretar leyes, el juez debe:
 3. Usar doctrina como auxiliar
 4. Respetar Constitución (jerarquía)
 
-Tu respuesta captura la idea pero necesita mayor precisión en la distinción.
-
 ---
 
 ### Pregunta 17: Caso Práctico — Empleado Accidente Laboral
@@ -566,7 +559,7 @@ Una empresa tiene un empleado que comete un accidente de tránsito manejando un 
 - b) ¿Qué tipo de responsabilidad sería: directa o indirecta?
 - c) ¿Hay alguna ley que la ampare en esta situación?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) Sí, el empleado estaba ejerciendo funciones laborales en horario laboral entonces sí.  
 b) Indirecta.  
 c) No, aunque sí el empleado estaba en negligencia absoluta como cometiendo un hecho ilícito o estaba en dolo sí.
@@ -575,7 +568,7 @@ c) No, aunque sí el empleado estaba en negligencia absoluta como cometiendo un 
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente análisis. Demostraste entender responsabilidad indirecta del empleador:
+La responsabilidad indirecta del empleador se analiza así:
 
 **a) ¿Puede empresa ser responsable?** ✅ Sí.
 
@@ -584,7 +577,7 @@ Requisitos:
 - En horario laboral o usando recursos de la empresa
 - Causó daño a tercero
 
-En tu caso: El empleado manejaba vehículo de la empresa (en ejercicio de función) → Empresa puede ser responsable ante tercero afectado.
+En el caso planteado: el empleado manejaba un vehículo de la empresa (en ejercicio de función) → la empresa puede ser responsable ante el tercero afectado.
 
 **b) Tipo de responsabilidad:** ✅ **Indirecta**
 
@@ -613,7 +606,7 @@ La empresa puede eximirse si prueba:
 **Enunciado:**  
 En Argentina, los [[tratados-internacionales|tratados internacionales]] tienen menor jerarquía que las leyes nacionales dictadas por el Congreso.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Verdadero
 
 **Corrección:**  
@@ -624,7 +617,7 @@ Verdadero
 
 **Comentario — Información crítica:**
 
-Este es un error importante. Necesito aclarar la reforma de 1994:
+Conviene aclarar la reforma de 1994:
 
 **Antes de 1994:**
 - Tratados internacionales < Leyes nacionales (en jerarquía)
@@ -650,7 +643,7 @@ Este es un error importante. Necesito aclarar la reforma de 1994:
 5. Decretos y reglamentos
 6. ...
 
-Esta fue una reforma fundamental. Tu respuesta fue incorrecta.
+Esta fue una reforma fundamental.
 
 ---
 
@@ -665,7 +658,7 @@ Esta fue una reforma fundamental. Tu respuesta fue incorrecta.
 - d) Autonomía de las provincias
 - e) Atribuciones del Poder Ejecutivo
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 d) Autonomía de las provincias
 
 **Corrección:**  
@@ -676,7 +669,7 @@ d) Autonomía de las provincias
 
 **Comentario — Información crítica:**
 
-Este es el error más importante de las 20 preguntas. Art. 75 inc. 22 es **fundamental** para todo el sistema de derechos en Argentina:
+El art. 75 inc. 22 es **fundamental** para todo el sistema de derechos en Argentina:
 
 **Art. 75 inc. 22 CN — Reforma 1994:**
 
@@ -703,7 +696,7 @@ La Convención Americana sobre Derechos Humanos; los Pactos Internacionales de D
 **Enunciado:**  
 Explica cómo funcionan las **[[fuentes-del-derecho|fuentes del derecho]]** en Argentina. Ordénalas jerárquicamente y explica un ejemplo práctico donde una ley deroga una costumbre anterior.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Si no hay un caso contemplado dentro de la ley se sigue de la siguiente manera: se toma primero la costumbre de la nación > se la eleva a varios fallos de jueces > se sanciona una ley en el congreso > (incompleta)
 
 **Corrección:**  
@@ -711,7 +704,7 @@ Si no hay un caso contemplado dentro de la ley se sigue de la siguiente manera: 
 
 **Comentario — Respuesta completa:**
 
-Tu respuesta invierte el orden jerárquico. Aclaré:
+El orden jerárquico correcto es:
 
 **Fuentes del Derecho en Argentina:**
 
@@ -726,7 +719,7 @@ Tu respuesta invierte el orden jerárquico. Aclaré:
 **Jerarquía correcta:**
 Ley > Costumbre (cuando no hay ley) > Jurisprudencia > Doctrina
 
-**Tu orden era incorrecto.** Dijiste costumbre primero, pero es:
+**La costumbre no va primero.** El criterio es:
 - Si **hay ley:** Se aplica la ley (deroga costumbre)
 - Si **NO hay ley:** Recién se usa costumbre
 
@@ -742,36 +735,22 @@ Esto es un ejemplo real donde una **ley deroga una costumbre** anterior porque t
 
 ---
 
-## Resumen de Calificación — Preguntas Mixtas
-
-| Resultado | Cantidad | Porcentaje |
-|-----------|----------|-----------|
-| ✅ Correctas | 9 | 45% |
-| ⚠️ Parciales | 7 | 35% |
-| ❌ Incorrectas | 2 | 10% |
-| ❌ Incompletas | 2 | 10% |
-
-**Calificación final: 13.5 / 20 = 6.75 / 10**
-
----
-
 ## Feedback General — Preguntas Mixtas
 
-**Fortalezas:**
-- Excelente en casos prácticos puntuales (preguntas 4, 13, 17)
-- Buen desempeño en distinciones conceptuales (pregunta 7, 8, 10)
-- Respuestas reflexivas cuando tienes claridad
+**Temas que suelen estar bien resueltos:**
+- Casos prácticos puntuales (preguntas 4, 13, 17)
+- Distinciones conceptuales (preguntas 7, 8, 10)
 
-**Errores críticos (que afectan parcial):**
+**Errores críticos frecuentes:**
 - **Pregunta 18:** Jerarquía de tratados vs leyes — es fundamental desde 1994
-- **Pregunta 19:** Art. 75 inc. 22 CN — PREGUNTA MUY FRECUENTE DE PARCIAL
-- **Pregunta 20:** Orden de fuentes del derecho — invertiste el orden
+- **Pregunta 19:** Art. 75 inc. 22 CN — pregunta muy frecuente de parcial
+- **Pregunta 20:** Orden de fuentes del derecho — suele invertirse
 
-**Áreas de mejora:**
+**Áreas de refuerzo habituales:**
 - Memorizar leyes y números específicos (Ley 11.867, Ley 17.418, art. 75 inc. 22)
 - Jerarquía normativa y tratados internacionales
 - Orden de fuentes del derecho
-- Ser más completo en respuestas (preguntas 2, 9, 16 quedaron incompletas)
+- Completar las respuestas de desarrollo (preguntas 2, 9, 16 tienden a quedar incompletas)
 
 **Conceptos clave para estudiar ANTES del parcial:**
 1. **Art. 75 inc. 22 CN:** Jerarquía constitucional de tratados de DD.HH.
@@ -784,16 +763,14 @@ Esto es un ejemplo real donde una **ley deroga una costumbre** anterior porque t
 
 ## Resumen General de Toda la Sesión (Unidades 1-5 + Mixtas)
 
-| Unidad | Calificación | Observación |
-|--------|--------------|-------------|
-| Unidad 1 (Intro. al Derecho) | 7.5 / 10 | Bueno. Conceptos fundamentales OK. |
-| Unidad 2 (Org. del Estado) | 8 / 10 | Excelente. Mejor desempeño. |
-| Unidad 3 (Derecho Civil) | 7.5 / 10 | Bueno. Responsabilidad civil OK. |
-| Unidad 4 (Derecho Comercial) | 7 / 10 | Aceptable. Error en Ley 11.867. |
-| Unidad 5 (Propiedad Intelectual) | 6.5 / 10 | **MÁS BAJO.** Necesita refuerzo. |
-| **Preguntas Mixtas (1-5)** | **6.75 / 10** | Errores en conceptos fundamentales. |
-
-**Promedio general:** (7.5 + 8 + 7.5 + 7 + 6.5 + 6.75) / 6 = **7.29 / 10**
+| Unidad | Foco de repaso |
+|--------|----------------|
+| Unidad 1 (Intro. al Derecho) | Conceptos fundamentales del Derecho. |
+| Unidad 2 (Org. del Estado) | División de poderes y jerarquía de normas. |
+| Unidad 3 (Derecho Civil) | Responsabilidad civil y obligaciones. |
+| Unidad 4 (Derecho Comercial) | Ley 11.867 (fondo de comercio), títulos de crédito. |
+| Unidad 5 (Propiedad Intelectual) | Suele ser la unidad más exigente: duraciones y tipos de PI. |
+| **Preguntas Mixtas (1-5)** | Integración de conceptos entre unidades. |
 
 ---
 
@@ -812,18 +789,18 @@ Esto es un ejemplo real donde una **ley deroga una costumbre** anterior porque t
 - Responsabilidad indirecta del empleador
 - Cheque cruzado, cheque no a la orden
 
-**PRIORIDAD BAJA (ya dominas):**
+**PRIORIDAD BAJA (conceptos más afianzados):**
 - Concepto de derecho, norma jurídica
 - División de poderes
 - Elementos de obligaciones
 - Casos prácticos aplicados
 
-**Tip final:** Tu mejor performance fue en Unidad 2 (Org. Estado) y peor en Unidad 5 (PI). Dedica más tiempo a PI antes del parcial. Y repasa URGENTEMENTE Art. 75 inc. 22 CN.
+**Tip final:** La Unidad 5 (Propiedad Intelectual) suele ser la más exigente: conviene dedicarle tiempo extra antes del parcial. Repasar con prioridad el art. 75 inc. 22 CN.
 
 ---
 
 ## Próximos Pasos
 
-Sesión de estudio completada. Tienes 50 preguntas de unidades + 20 preguntas mixtas = **70 preguntas tipo parcial** con correcciones completas en el wiki.
+El wiki reúne 50 preguntas por unidades + 20 preguntas mixtas = **70 preguntas tipo parcial** con correcciones completas.
 
-**Recomendación:** Repasa los temas con calificación < 7 antes del parcial.
+**Recomendación:** Repasar antes del parcial los temas en los que aparecen más errores (jerarquía de tratados, art. 75 inc. 22 CN y orden de fuentes del derecho).

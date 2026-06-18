@@ -11,7 +11,7 @@
 >
 > **Output en español rioplatense, conciso.** Los vaults originales son **SOLO LECTURA**: esto
 > describe el formato del repo publicable, nunca toca los vaults fuente (incluido SDS, que
-> tiene `index.md`/`log.md` en la raíz en vez de `wiki/`).
+> tiene `index.md` en la raíz en vez de `wiki/`).
 
 ---
 

@@ -296,7 +296,7 @@ updated: 2026-06-14
   búsqueda nativa de Obsidian (`tag:#teoria`, `path:parciales`) y por el listado manual de
   `index.md`. No diseñar frontmatter asumiendo queries Dataview.
 
-> **SDS — desviación conocida.** En SDS `index.md` y `log.md` están en la **raíz** del vault,
+> **SDS — desviación conocida.** En SDS `index.md` está en la **raíz** del vault,
 > no en `wiki/`. El frontmatter de las páginas SDS sigue el mismo esquema; solo cambia dónde
 > vive el catálogo que las lista. No "corregir" SDS: es solo lectura.
 

@@ -16,7 +16,7 @@ Catálogo completo del wiki de **Ingeniería de Software II (ITBA, 2026-1C)**. O
 
 Resúmenes clase por clase, ordenados cronológicamente. Cada página sigue el template de `class` definido en el schema: TL;DR, mapa conceptual, desarrollo, decisiones clave, ejemplos, preguntas de parcial, lecturas complementarias.
 
-> **Nota sobre numeración del wiki:** la numeración del wiki refleja el **orden cronológico real de exposición** en la cátedra, derivado de las hand-notes del alumno (2026-05-12). Esto NO coincide siempre con los filenames `Clase N.pdf` que la cátedra distribuye — esos slide decks se ordenan por tema, no por fecha. Por ejemplo, el deck `Clase 3.pdf` cubre Documentación pero se expuso el 2026-04-16 (Clase 5 cronológica). Los folders de `raw/classes/` están organizados por fecha (no por número del deck) y son inmutables. Cada página wiki cita ambos paths como sources.
+> **Nota sobre numeración del wiki:** la numeración del wiki refleja el **orden cronológico real de exposición** en la cátedra. Esto NO coincide siempre con los filenames `Clase N.pdf` que la cátedra distribuye — esos slide decks se ordenan por tema, no por fecha. Por ejemplo, el deck `Clase 3.pdf` cubre Documentación pero se expuso el 2026-04-16 (Clase 5 cronológica). Los folders de `raw/classes/` están organizados por fecha (no por número del deck) y son inmutables. Cada página wiki cita ambos paths como sources.
 
 - [[Clase 0 — Introducción al curso]] — docentes, evaluación (70% parcial + 30% TP), Katas de Arquitectura como vehículo pedagógico, dinámica del cuatrimestre. (2026-03-05)
 - [[Clase 1 — Introducción a Arquitectura]] — definiciones (Kruchten/Booch/Bittner/BCK), "decisiones significativas", [[Architecture Business Cycle]], [[Atributos de calidad]] ISO 25000, [[Cono de incertidumbre]], cuantificación con [[SLA, SLO, SLI]] y [[MTBF y MTTR]]. (2026-03-12)
@@ -170,13 +170,13 @@ Resúmenes de cada reading ingerido (paper, capítulo de libro, artículo, video
 - [[OEI-06-14-00350 — HealthCare.gov Case Study (HHS OIG)]] — reporte oficial (~92pp, 2016) del HHS Office of Inspector General sobre el lanzamiento de Healthcare.gov.
 - [[Atributos de Calidad — tabla ISO 25000 (cátedra)]] — handout con la tabla de atributos ISO 25000/25010 que usa la cátedra: Run-time, Design, System, User qualities con sus definiciones operativas.
 - [[Kallen — Big Data in Real-Time at Twitter (QCon 2010)]] — slide deck (71 slides) de Nick Kallen en QCon SF 2010; recorre los 4 sub-problemas de datos de Twitter (Tweets, Timelines, Social graphs, Search indices) con números reales y principios universales de escalabilidad.
-- [[Cheat Sheet Inge II — Bucket de soluciones por atributo de calidad]] — cheat sheet de alumno (2026-05-20) que cataloga mecanismos arquitectónicos por atributo de calidad y mapea problema→solución; derivado del corpus de la cursada, no introduce conceptos nuevos.
+- [[Cheat Sheet Inge II — Bucket de soluciones por atributo de calidad]] — cheat sheet de estudio (2026-05-20) que cataloga mecanismos arquitectónicos por atributo de calidad y mapea problema→solución; derivado del corpus de la cursada, no introduce conceptos nuevos.
 
 ---
 
 ## 🔍 Analyses — Síntesis y comparaciones
 
-Comparaciones transversales, deep dives y respuestas sustanciales a preguntas del alumno que vale la pena retener. Ejemplo: *"Clean Architecture vs Hexagonal Architecture vs DDD táctico — ¿qué resuelve cada una?"*.
+Comparaciones transversales, deep dives y respuestas sustanciales a preguntas que vale la pena retener. Ejemplo: *"Clean Architecture vs Hexagonal Architecture vs DDD táctico — ¿qué resuelve cada una?"*.
 
 - [[Cheat Sheet — Guía de estudio pre-parcial]] — destilado de estudio para el parcial (2026-05-20): metodología ADD, bucket completo de mecanismos (hosting, persistencia, frontend, colas, seguridad, autenticación, encryption), mapa problema→solución por atributo de calidad, tradeoffs canónicos, anti-patrones que dan 2 automático, runbook de 7 pasos para resolver el caso bajo presión.
 - [[TPE — Apache Airflow (investigación + PoC)]] — companion del **entregable terminado** del grupo para el [[TPE 2026-1C — Investigación y presentación de un tema|TPE]] (repo `raw/TPE/AirflowDemo/`): resume la presentación de 13 diapositivas (problema de negocio, arquitectura scheduler/executor/metadata-db, atributos de calidad ADD con sus trade-offs, comparativa cron/NiFi/Prefect/Dagster) y la demo ejecutable `reporte_ventas_diario` (DAG de 6 tasks en Docker, con variantes de fallo-recuperable y fail-fast), más el checklist de presentación.

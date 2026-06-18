@@ -86,7 +86,7 @@ Spring MVC sobre el proyecto **Rent The Slopes**: estructura multi-módulo Maven
 
 ## Simulación de Sistemas
 
-Métodos de simulación off-lattice y de partículas: Vicsek, EDMD (dinámica por eventos), dinámica molecular por paso temporal e integradores. Con TPs, conceptos, algoritmos y fuentes. Recordá que el índice y el log viven en la raíz del vault (`SDS/index.md`), no en `wiki/`; las páginas de contenido sí cuelgan de `SDS/wiki/`.
+Métodos de simulación off-lattice y de partículas: Vicsek, EDMD (dinámica por eventos), dinámica molecular por paso temporal e integradores. Con TPs, conceptos, algoritmos y fuentes. El índice vive en la raíz del vault (`SDS/index.md`), no en `wiki/`; las páginas de contenido sí cuelgan de `SDS/wiki/`.
 
 [Índice SDS](SDS/index.md)
 

@@ -18,7 +18,7 @@ ultima_actualizacion: 2026-06-01
 | Archivo | `raw/TPE/email-consulta-docente-tpe.md` |
 | Asunto | "Idea Trabajo Práctico - Médicos Con Matrícula Inhabilitada" |
 | Grupo | Grupo 7, comisión G |
-| Participantes | Ignacio Pedemonte Berthoud (legajo 64908), Josefina, Martín, Valentina; docente **Sofia Lavandera** |
+| Participantes | Integrantes del grupo; docente **Sofia Lavandera** |
 | Fechas | 25 abr 2026 → 26 may 2026 (4 mensajes) |
 | Doc del grupo | [Google Docs del grupo](https://docs.google.com/document/d/1Vl844puO8j2Ew_cGlxQ6C8EDoIOad48tJGeP1HgN0C4/edit?usp=sharing) |
 

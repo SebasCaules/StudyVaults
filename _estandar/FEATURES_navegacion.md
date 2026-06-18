@@ -6,7 +6,7 @@
 >
 > Output en **español rioplatense**, conciso. Los vaults originales son **SOLO LECTURA**: esto
 > describe la estructura de navegación del repo *publicable*, **nunca** modifica los vaults fuente.
-> Calibrado contra MNA (`wiki/index.md`, `wiki/00-mapa-temas.md`) y SDS (que pone `index.md`/`log.md`
+> Calibrado contra MNA (`wiki/index.md`, `wiki/00-mapa-temas.md`) y SDS (que pone `index.md`
 > en la raíz, no en `wiki/` — ver §7).
 
 Lo que `DESIGN.md` ya fija y acá **no** se repite: anatomía de página, frontmatter, headings,
@@ -16,13 +16,13 @@ deterministas de **cuándo y a qué** enlazar.
 
 ---
 
-## 0. Las 5 piezas y cómo encajan
+## 0. Las piezas y cómo encajan
 
 ```
 HOME.md (raíz del repo)
    │  enlaza los 7 vaults
    ▼
-index.md (1 por vault)  ◄──── log.md (bitácora, no navega: registra)
+index.md (1 por vault)
    │  cataloga TODAS las páginas del vault, agrupadas por tipo
    ├──► 00-mapa-temas.md (MOC, opcional pero recomendado)
    │       tabla Tema → {teoría, clase, guía, parcial...}: navegación POR CONCEPTO
@@ -57,8 +57,8 @@ las reglas de **decisión**, para que dos editores enlacen igual.
 - Enlazá la **primera** aparición, en el cuerpo, de un término que **tiene página propia**. Las
   siguientes menciones en la misma página van en texto plano (no re-enlazar).
 - "Tiene página propia" = existe (o existirá en este mismo lote de ingesta) un archivo en el wiki
-  cuyo tema es ese concepto. Si la página todavía no existe pero se va a crear, enlazá igual y
-  anotá el destino pendiente en `log.md` (link rojo intencional, no huérfano).
+  cuyo tema es ese concepto. Si la página todavía no existe pero se va a crear, enlazá igual
+  (link rojo intencional, no huérfano) y mantené pendiente la creación dentro del mismo lote.
 - **No** enlaces términos que solo son una página candidata difusa ("álgebra lineal" en general):
   enlazá conceptos con archivo concreto, no categorías.
 
@@ -103,7 +103,7 @@ gramatical → usá alias.** Prefijos numéricos (`01-`, `clase-2026-…`) casi 
 ## 2. `index.md` por vault — el catálogo
 
 Es la página más enlazada del vault: lista **todas** las páginas, agrupadas por tipo de contenido.
-No es bitácora (eso es `log.md`) ni mapa conceptual (eso es el MOC): es el **directorio**.
+No es mapa conceptual (eso es el MOC): es el **directorio**.
 
 ### 2.1 Estructura canónica (copy-paste)
 
@@ -115,7 +115,6 @@ No es bitácora (eso es `log.md`) ni mapa conceptual (eso es el MOC): es el **di
 ## Meta
 
 - [[00-mapa-temas]] — árbol Tema → Páginas (a dónde ir para repasar)
-- [[log]] — bitácora cronológica de la ingesta
 
 ## Teoría
 
@@ -176,11 +175,11 @@ Wiki de apuntes de ITBA. Cada materia es un vault con su propio índice.
 
 ## Materias
 
-- [[26-1C/MNA_Obsidian/wiki/index|MNA — Métodos Numéricos Avanzados]] — álgebra lineal numérica, Fourier, SVD/QR/LU
-- [[26-1C/Economia_Obsidian/wiki/index|Economía]] — micro/macro, optimización
-- [[26-1C/Proba_Obsidian/wiki/index|Probabilidad y Estadística]] — distribuciones, TCL, inferencia
-- [[26-1C/Derecho_Obsidian/wiki/index|Derecho]] — ...
-- [[26-1C/SDS/SDS_Obsidian/index|Simulación de Sistemas]] — Vicsek, EDMD, dinámica molecular
+- [[MNA/wiki/index|MNA — Métodos Numéricos Avanzados]] — álgebra lineal numérica, Fourier, SVD/QR/LU
+- [[Economia/wiki/index|Economía]] — micro/macro, optimización
+- [[Proba/wiki/index|Probabilidad y Estadística]] — distribuciones, TCL, inferencia
+- [[Derecho/wiki/index|Derecho]] — ...
+- [[SDS/index|Simulación de Sistemas]] — Vicsek, EDMD, dinámica molecular
 - [[.../PAW/wiki/index|PAW]] — ...
 - [[.../Inge2/wiki/index|Ingeniería de Software 2]] — ...
 
@@ -200,7 +199,7 @@ Wiki de apuntes de ITBA. Cada materia es un vault con su propio índice.
   mantiene HOME con pocas aristas entrantes y el grafo jerárquico limpio.
 - Atención a la **ruta del wikilink entre vaults**: HOME vive en la raíz del repo y los index están
   en `<vault>/wiki/index.md`, así que el link lleva ruta completa + alias legible (ej.
-  `[[26-1C/MNA_Obsidian/wiki/index|MNA]]`). Para SDS la ruta es `SDS/SDS_Obsidian/index` (sin
+  `[[MNA/wiki/index|MNA]]`). Para SDS la ruta es `SDS/index` (sin
   `wiki/`, ver §7).
 
 ---
@@ -291,7 +290,7 @@ Ejemplo real (MNA `04-determinantes`):
   ya está bien enlazado en el cuerpo no necesita repetirse salvo que sea una hermana de secuencia.
 - Dentro de "Ver también" **sí** se permite LaTeX inline en la descripción (es prosa, no math
   aislado). Coherente con el uso de la materia (LaTeX en MNA/Proba/Economía; ausente en Derecho/PAW).
-- Las páginas que solo existen para catalogar (`index`, `log`, MOC) **no** llevan "Ver también".
+- Las páginas que solo existen para catalogar (`index`, MOC) **no** llevan "Ver también".
 
 ### 5.3 Pares enunciado ↔ resolución (regla específica)
 
@@ -339,17 +338,17 @@ Reglas:
 
 ---
 
-## 7. Caso SDS — `index.md`/`log.md` en la raíz
+## 7. Caso SDS — `index.md` en la raíz
 
-SDS es la desviación medida: su `index.md` y `log.md` están en la **raíz del vault**, no en
+SDS es la desviación medida: su `index.md` está en la **raíz del vault**, no en
 `wiki/`. **No se corrige** (vaults son solo lectura, y es una convención consolidada del vault).
 Implicaciones de navegación:
 
 - Los wikilinks del index de SDS a sus páginas usan rutas **relativas a la raíz** (`[[tps/TP5]]`,
   `[[conceptos/vicsek]]`), no `[[wiki/...]]`.
-- El link desde `HOME.md` a SDS apunta a `SDS/SDS_Obsidian/index` (sin `wiki/`), a diferencia del
+- El link desde `HOME.md` a SDS apunta a `SDS/index` (sin `wiki/`), a diferencia del
   resto (`<vault>/wiki/index`).
-- Para vaults **nuevos**: seguí el patrón mayoritario (`index.md` y `log.md` dentro de `wiki/`).
+- Para vaults **nuevos**: seguí el patrón mayoritario (`index.md` dentro de `wiki/`).
   SDS es excepción histórica, no modelo a copiar.
 
 ---
@@ -388,19 +387,7 @@ saca del callejón.
 - **Link roto** = wikilink a un archivo que no existe ni se va a crear → **error**, corregir el
   nombre o quitar el link.
 - **Link rojo intencional** = wikilink a una página que **se va a crear en este mismo lote** →
-  permitido, pero debe quedar anotado en `log.md` como pendiente para no perderlo.
-
-### 8.4 `log.md` no navega
-
-`log.md` es **bitácora append-only**, no pieza de navegación: registra cada operación con el
-formato `## [AAAA-MM-DD] <op> | <subject>` (`DESIGN.md §9.3`). No se lo enlaza desde páginas hoja
-ni se espera navegar *a través* de él; solo el index lo referencia (en Meta) para trazabilidad.
-
-```markdown
-## [2026-05-26] ingest A1 | MNA_Unidad_I_Numeros_Complejos.pdf
-Unidad I completa: definicion y operaciones en C, modulo, forma polar, De Moivre.
-Output: wiki/teoria/01-numeros-complejos.md.
-```
+  permitido, pero la creación debe quedar pendiente dentro del mismo lote para no perderlo.
 
 ---
 
@@ -422,8 +409,8 @@ Verificá **todos** estos puntos antes de dar por publicable el grafo:
 - [ ] `index.md` cubre el 100% de las páginas existentes (cero archivos sin catalogar).
 - [ ] MOC `00-mapa-temas.md` presente si el tema se reparte en ≥3 tipos; celdas vacías como `—`.
 - [ ] `index.md` linkea de vuelta a `HOME.md`; ninguna página hoja linkea a HOME directo.
-- [ ] `log.md` con la entrada `## [fecha] <op> | <subject>` del lote; links rojos pendientes anotados.
-- [ ] SDS: rutas sin `wiki/` (`index.md`/`log.md` en raíz); resto: dentro de `wiki/`.
+- [ ] Links rojos pendientes (páginas a crear en el lote) resueltos antes de cerrar.
+- [ ] SDS: rutas sin `wiki/` (`index.md` en raíz); resto: dentro de `wiki/`.
 
 **Por repo:**
 

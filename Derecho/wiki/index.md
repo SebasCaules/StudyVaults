@@ -12,7 +12,6 @@ ultima_actualizacion: 2026-06-02
 ```
 wiki/
 ├── index.md          (este archivo)
-├── log.md            (bitacora de operaciones)
 ├── referencias/      → material de referencia general
 ├── parcialitos/      → guias y mocks de parcialitos individuales
 ├── 1erParcial/       → material integrador del 1er parcial (sesiones, megadoc, PDF compilado)
@@ -20,63 +19,9 @@ wiki/
 └── unidad-N/         → conceptos, entidades, fuentes y casos por unidad (1 a 9)
 ```
 
-## Tracker de notas y ruta a final reducido
+## Esquema de evaluacion de la materia
 
-**Objetivo**: llegar al **final reducido** = **70/100 puntos acumulados** sumando 5 parcialitos (10 pts c/u = 50) + 2 parciales (25 pts c/u = 50).
-
-### Estado actual (al 2026-06-02)
-
-| Evaluacion | Peso | Nota | Pts obtenidos |
-|---|---|---|---|
-| Parcialito 1 | /10 | **5** | 5 |
-| Parcialito 2 | /10 | **7** | 7 |
-| Parcialito 3 | /10 | **5** | 5 |
-| Parcialito 4 | /10 | **8** | 8 |
-| Parcialito 5 | /10 | **8** | 8 |
-| Parcial 1 | /25 | **18,7** | 18,7 |
-| Parcial 2 | /25 | pendiente | — |
-| **Subtotal corrido** | /75 | | **51,7** |
-| **Meta** | /100 | | **70** |
-| **Faltan** | /25 (solo Parcial 2) | | **18,3** |
-
-- Promedio parcialitos (FINAL, los 5 rendidos): **6,6/10** (33/50). Los dos ultimos (8 y 8) levantaron fuerte el promedio desde el 5,67 previo.
-- Nota del primer parcial: **18,7/25 = 74,8%**.
-- **Ya tenes asegurado 51,7/100** pase lo que pase: solo resta el Parcial 2.
-- Maximo alcanzable: **76,7/100** (si sacas 25/25 en el Parcial 2).
-
-### Lo unico que queda: el Parcial 2
-
-Los 5 parcialitos ya estan rendidos (33/50 cerrado). La meta de 70 ahora depende **exclusivamente** del Parcial 2 — una sola variable:
-
-- **Necesitas 18,3/25 = 73,2%** en el Parcial 2 para llegar justo a 70.
-- Eso es **practicamente idéntico** al primer parcial (18,7/25 = 74,8%). Si lo replicas, llegas y te sobra (~0,4 pts de margen).
-
-| Nota Parcial 2 | Total final | ¿Llega a 70? |
-|---|---|---|
-| 25/25 (100%) | 76,7 | ✅ con margen amplio |
-| 20/25 (80%) | 71,7 | ✅ |
-| 18,7/25 (=Parcial 1) | 70,4 | ✅ |
-| 18,3/25 (73,2%) | 70,0 | ✅ piso exacto |
-| 15/25 (60%) | 66,7 | ❌ (faltan 3,3) |
-| 12,5/25 (50%, aprob. simple) | 64,2 | ❌ (faltan 5,8) |
-
-#### Estrategia recomendada
-
-1. **Objetivo Parcial 2: ~19/25 (76%)** = repetir el rendimiento del primer parcial. Con eso quedás en ~70,4 y cerrás el final reducido.
-2. **Margen real**: con 73% ya alcanza. No necesitás un parcial perfecto, solo sostener tu nivel del primero.
-3. **Foco de estudio**: el Parcial 2 cubre **U6-U9**. Todo el material está en [[2doParcial/INDEX]] (guía maestra + quiz interactivo). El P5 (Laboral) recién salió 8, así que U9 viene sólida — reforzar U6 (Sociedades) y U8 (Consumidor), que suelen ser los puntos flacos.
-
-### Calificaciones internas de auto-evaluacion por unidad (del simulacro del 1er Parcial)
-
-| Unidad | Auto-evaluacion |
-|--------|-----------------|
-| U1 (Intro. Derecho) | 7,5/10 |
-| U2 (Org. Estado) | 8/10 ✅ |
-| U3 (Derecho Civil) | 7,5/10 |
-| U4 (Derecho Comercial) | 7/10 |
-| U5 (Propiedad Intelectual) | 6,5/10 ⚠️ |
-| Preguntas Mixtas | 6,75/10 |
-| **PROMEDIO** | **7,29/10** |
+La cursada se aprueba por **final reducido = 70/100 puntos acumulados**, sumando **5 parcialitos** (10 pts c/u = 50) + **2 parciales** (25 pts c/u = 50). El **Parcial 1** cubre las Unidades 1-5 y el **Parcial 2** las Unidades 6-9. El material de repaso integrador para cada parcial esta centralizado en [[1erParcial/INDEX]] y [[2doParcial/INDEX]].
 
 ## Resumenes por Unidad
 
@@ -318,5 +263,3 @@ Emprendimiento ficticio **Vitae** (plataforma de turnos médicos) y la problemat
 - ✅ Preguntas del megadoc de parciales anteriores
 - ✅ Correcciones detalladas para todas las preguntas
 - ✅ Resumen ejecutivo de conceptos clave
-
-> Nota: el tracker de notas oficiales del cuatrimestre esta al inicio del indice (seccion "Tracker de notas y ruta a final reducido").

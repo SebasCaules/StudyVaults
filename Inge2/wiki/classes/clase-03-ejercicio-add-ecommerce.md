@@ -25,7 +25,7 @@ related:
 
 # Clase 3 — Ejercicio en clase: ADD aplicado a e-commerce
 
-> **Nota sobre los archivos `raw/`:** el slide deck `Clase 3.pdf` (que cubre Documentación de Arquitecturas) vive en `raw/classes/2026-03-26 - Clase 3/Clase 3.pdf` por organización legacy del vault. Pero según las hand-notes del alumno, **el 2026-03-26 NO se dio Documentación**, sino un ejercicio práctico tipo parcial sobre e-commerce. Documentación se vio el 2026-04-16 — ver [[Clase 5 — Documentación de arquitecturas]]. La numeración del wiki refleja el orden cronológico real de exposición.
+> **Nota sobre los archivos `raw/`:** el slide deck `Clase 3.pdf` (que cubre Documentación de Arquitecturas) vive en `raw/classes/2026-03-26 - Clase 3/Clase 3.pdf` por organización legacy del vault. Pero según las notas de clase, **el 2026-03-26 NO se dio Documentación**, sino un ejercicio práctico tipo parcial sobre e-commerce. Documentación se vio el 2026-04-16 — ver [[Clase 5 — Documentación de arquitecturas]]. La numeración del wiki refleja el orden cronológico real de exposición.
 
 ## TL;DR
 

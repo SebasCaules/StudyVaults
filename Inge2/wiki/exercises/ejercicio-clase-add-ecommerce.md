@@ -28,7 +28,7 @@ related:
 
 ## Contexto
 
-Ejercicio práctico tipo parcial trabajado en vivo en clase (jueves 2026-03-26). El profesor desarrolla en pizarra la metodología de [[Attribute Driven Design]] sobre un dominio de **plataforma de e-commerce** con múltiples canales (sitio web, tablets, depósito/envío) y procesadores de pago externos. Las notas que tomó el alumno son parciales (la clase no se llegó a desarrollar entera en notas) y se complementan con [[Clase 2 — Construcción de la arquitectura]] donde se enseña el método (source: raw/classes/2026-03-26 - Clase 3/clase3.pdf).
+Ejercicio práctico tipo parcial trabajado en vivo en clase (jueves 2026-03-26). El profesor desarrolla en pizarra la metodología de [[Attribute Driven Design]] sobre un dominio de **plataforma de e-commerce** con múltiples canales (sitio web, tablets, depósito/envío) y procesadores de pago externos. Las notas de clase son parciales (la clase no se llegó a desarrollar entera en notas) y se complementan con [[Clase 2 — Construcción de la arquitectura]] donde se enseña el método (source: raw/classes/2026-03-26 - Clase 3/clase3.pdf).
 
 > Esta página captura el ejercicio como se vio en clase. Para el caso integral más completo de aplicación de ADD ver [[Caso Compraventa de Acciones]] (Clase 7).
 
@@ -93,7 +93,7 @@ Cita textual de la cátedra sobre OLAP: *"muy bueno para métricas, append-only 
 
 ### Pasos siguientes (no desarrollados en las notas)
 
-La hand-note se corta en el Paso 2. Por ADD, las iteraciones siguientes deberían:
+Las notas de clase se cortan en el Paso 2. Por ADD, las iteraciones siguientes deberían:
 
 1. **Generar escenarios** sobre los atributos seleccionados, en orden:
    - **Security:** "Un atacante intenta inyectar SQL en el checkout → la app sanitiza inputs y el WAF bloquea el patrón antes de llegar al backend."
@@ -118,5 +118,5 @@ La hand-note se corta en el Paso 2. Por ADD, las iteraciones siguientes debería
 
 ## Fuentes
 
-- raw/classes/2026-03-26 - Clase 3/clase3.pdf — notas a mano del alumno (parciales).
+- raw/classes/2026-03-26 - Clase 3/clase3.pdf — notas a mano (parciales).
 - [[Clase 2 — Construcción de la arquitectura]] — teoría completa del método aplicado en este ejercicio.

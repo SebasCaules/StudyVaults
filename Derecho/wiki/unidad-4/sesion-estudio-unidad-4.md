@@ -11,8 +11,7 @@ ultima_actualizacion: 2026-04-14
 
 **Fecha:** 14 de abril de 2026  
 **Tipo:** Práctica tipo parcial  
-**Total preguntas:** 10  
-**Calificación final:** 7 / 10
+**Total preguntas:** 10
 
 ---
 
@@ -23,7 +22,7 @@ ultima_actualizacion: 2026-04-14
 **Enunciado:**  
 El Derecho Comercial es una rama autónoma del Derecho Privado que se aplica solo a comerciantes, no a personas comunes.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Falso. Se puede aplicar a personas comunes que tratan con comercios.
 
 **Corrección:**  
@@ -44,7 +43,7 @@ La distinción entre comerciante/no comerciante ya **no existe** en el CCyCN. Lo
 **Enunciado:**  
 El régimen de transferencia de Fondo de Comercio está establecido en la _____________.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Ley 14.486
 
 **Corrección:**  
@@ -71,14 +70,14 @@ Error puntual pero importante. La ley que regula la transferencia de [[fondo-de-
 **Enunciado:**  
 Define brevemente qué es el **[[fondo-de-comercio|fondo de comercio]]**. ¿Cuál es la diferencia entre fondo de comercio y empresa?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 El fondo de comercio es el conjunto de elementos de un comercio como la clientela, los productos, la marca, etc. Puede o no ser una empresa. El kiosco de barrio es un fondo de comercio y puede ser trabajado por un monotributista.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente respuesta. Demostraste entender la **diferencia conceptual clave**:
+La **diferencia conceptual clave** es la siguiente:
 
 **[[fondo-de-comercio|Fondo de Comercio]]:**
 - **Concepto estático:** Conjunto de bienes, marcas, clientela, nombre comercial organizados como unidad.
@@ -90,7 +89,7 @@ Excelente respuesta. Demostraste entender la **diferencia conceptual clave**:
 - **Organización de fuerzas:** Capital + trabajo + dirección del empresario.
 - **Relación:** La empresa utiliza el fondo de comercio como su instrumento.
 
-**Tu ejemplo es perfecto:** Un kiosco de barrio trabajado por un monotributista es un fondo de comercio (tiene clientela, ubicación, marca, inventario) pero puede no ser una "empresa" en sentido formal.
+**Ejemplo:** Un kiosco de barrio trabajado por un monotributista es un fondo de comercio (tiene clientela, ubicación, marca, inventario) pero puede no ser una "empresa" en sentido formal.
 
 ---
 
@@ -105,7 +104,7 @@ Excelente respuesta. Demostraste entender la **diferencia conceptual clave**:
 - d) Ubicación del local
 - e) Elementos materiales (maquinaria, inventario)
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 d) Ubicación del local
 
 **Corrección:**  
@@ -132,7 +131,7 @@ Bien identificado. Según el art. 8 de la Ley 11.867, los elementos constitutivo
 **Enunciado:**  
 Un cheque no a la orden puede ser cobrado por cualquier persona que lo presente, sin necesidad de endoso.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Falso. El cheque no a la orden solo puede ser cobrado por quien está dirigido el cheque y no permite endoso.
 
 **Corrección:**  
@@ -164,7 +163,7 @@ Correcto. "No a la orden" es una clausula restrictiva según la Ley 24.452 de Ch
 - d) Obligaciones negociables
 - e) Facturas
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, B, C y E
 
 **Corrección:**  
@@ -180,7 +179,7 @@ Bien en la mayoría, pero hay dos cuestiones:
 - a) **Cheque:** Sí. Orden de pago a la vista (Ley 24.452).
 - b) **Letra de cambio:** Sí. Promesa de pago a plazo (Dec. Ley 5965/63).
 - c) **Pagaré:** Sí. Promesa incondicional de pago.
-- d) **Obligaciones negociables:** Sí. Títulos de crédito emitidos por sociedades (Ley 23.576). **TÚ NO LAS MARCASTE pero son títulos de crédito.**
+- d) **Obligaciones negociables:** Sí. Títulos de crédito emitidos por sociedades (Ley 23.576). Suelen pasarse por alto, pero son títulos de crédito.
 
 **Dudoso:**
 - e) **Facturas:** Discutible. En algunas jurisdicciones se consideran documentos comerciales pero **no títulos de crédito en sentido estricto** (no tienen la literalidad ni autonomía de un cheque o letra).
@@ -194,7 +193,7 @@ Bien en la mayoría, pero hay dos cuestiones:
 **Enunciado:**  
 Explica brevemente qué es un **cheque cruzado** y cuál es su diferencia con un cheque común.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 No respondida.
 
 **Corrección:**  
@@ -230,7 +229,7 @@ No respondida.
 - d) La aseguradora siempre debe pagar la indemnización sin importar las circunstancias
 - e) Requiere denuncia de siniestro en tiempo y forma
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 C y E
 
 **Corrección:**  
@@ -240,22 +239,22 @@ C y E
 A, B, C y E
 
 **Comentario:**  
-Bien en lo esencial, pero te faltaron dos características importantes:
+Dos características importantes suelen omitirse:
 
 **Características del contrato de seguro:**
 
 ✅ **a) Es bilateral:** Genera obligaciones para ambas partes:
 - Asegurado: Pagar la prima
 - Asegurador: Cubrir el riesgo y pagar indemnización si ocurre siniestro
-(TÚ NO LO MARCASTE pero es fundamental)
+(Suele omitirse, pero es fundamental)
 
 ✅ **b) Es aleatorio:** El resultado es incierto para ambas partes:
 - No se sabe si ocurrirá el siniestro
 - No se sabe cuándo ocurrirá
 - La ganancia/pérdida depende de un evento futuro e incierto
-(TÚ NO LO MARCASTE)
+(Suele omitirse)
 
-✅ **c) Requiere prima:** Contraprestación del asegurado. Correctamente marcado.
+✅ **c) Requiere prima:** Contraprestación del asegurado.
 
 ❌ **d) Aseguradora siempre paga:** FALSO. La aseguradora se puede negar si:
 - No hay denuncia de siniestro
@@ -278,7 +277,7 @@ Un comerciante recibe un cheque post-datado (con fecha futura) de pago diferido 
 - b) ¿Cuándo puede cobrar el cheque?
 - c) ¿Qué sucede si el banco rechaza el pago cuando llega la fecha?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) No, pues dice no a la orden.  
 b) Recién podrá cobrarlo el día de la fecha que figura en el cheque.  
 c) Se le devuelve el cheque al cliente y se inician medidas de acción contra el que lo escribió.
@@ -287,7 +286,7 @@ c) Se le devuelve el cheque al cliente y se inician medidas de acción contra el
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente análisis. Aplicaste correctamente los conceptos de cheque post-datado, cheque no a la orden, y consecuencias de rechazo:
+El análisis aplica correctamente los conceptos de cheque post-datado, cheque no a la orden, y consecuencias de rechazo:
 
 **a) Endoso:** ✅ Correcto. "No a la orden" = **intransferible**. El comerciante **no puede endosar** este cheque a un tercero. Solo el comerciante (portador nominado) puede cobrarlo.
 
@@ -308,20 +307,20 @@ Este es un caso real frecuente en comercio.
 **Enunciado:**  
 Compara brevemente el **[[concursos-y-quiebras|concurso preventivo]]** y la **[[concursos-y-quiebras|quiebra]]**. ¿Cuál es el objetivo de cada uno? ¿Cuándo se aplica cada uno?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 El concurso preventivo vela por mantener el fondo de comercio a flote, junta a todos los acreedores y negocia métodos de pago, y si el 70% está de acuerdo se establece eso para todos. La quiebra es si el concurso preventivo falló y los acreedores se deberán cobrar con los bienes que hay en el fondo de comercio.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente comprensión de la diferencia y la secuencia. Capturaste bien los objetivos y el flujo legal:
+Los objetivos y el flujo legal se resumen así:
 
 **[[concursos-y-quiebras|Concurso Preventivo]]:**
 - **Objetivo:** **Reorganización** de la empresa en dificultades; salvar la empresa del colapso
 - **Mecanismo:** Junta a acreedores, el deudor presenta plan de pagos (acuerdo preventivo)
 - **Mayoría requerida:** Generalmente más del 50%, pero para ciertos créditos puede ser mayor
-- **(Nota: mencionaste 70%, es aproximado — depende de la legislación específica)**
+- **(Nota: el 70% es una cifra aproximada — depende de la legislación específica)**
 - **Resultado:** Si se aprueba, se implementa el acuerdo y la empresa continúa
 
 **[[concursos-y-quiebras|Quiebra]]:**
@@ -335,36 +334,17 @@ Excelente comprensión de la diferencia y la secuencia. Capturaste bien los obje
 2. Si falla el concurso → Quiebra
 3. Liquidación de bienes → Pago a acreedores
 
-Demostraste entender que son dos **remedios diferentes** para la insolvencia, con objetivos opuestos.
+Son dos **remedios diferentes** para la insolvencia, con objetivos opuestos.
 
 ---
 
-## Resumen de Calificación
+## Conceptos a reforzar
 
-| Resultado | Cantidad | Porcentaje |
-|-----------|----------|-----------|
-| ✅ Correctas | 6 | 60% |
-| ⚠️ Parciales | 2 | 20% |
-| ❌ Incorrectas | 1 | 10% |
-| ❌ Sin respuesta | 1 | 10% |
-
-**Calificación final: 7 / 10**
-
----
-
-## Feedback General
-
-**Fortalezas:**
-- Excelente en casos prácticos (pregunta 9 — análisis completo de cheque post-datado)
-- Buena comprensión de concursos y quiebras (pregunta 10)
-- Dominas bien los conceptos de fondo de comercio vs empresa
-- Análisis coherente en general
-
-**Áreas de mejora:**
-- **Error puntual:** Memoriza **Ley 11.867** para fondo de comercio (no 14.486)
-- Estudia características del seguro — es tema frecuente (pregunta 8)
-- Revisa cheque cruzado — pregunta común de parcial (pregunta 7)
-- En selecciones múltiples, revisa todas opciones cuidadosamente
+**Conceptos a reforzar:**
+- **Error puntual frecuente:** la transferencia de fondo de comercio se rige por la **Ley 11.867** (no 14.486)
+- Características del contrato de seguro — es tema frecuente (pregunta 8)
+- Cheque cruzado — pregunta común de parcial (pregunta 7)
+- En selecciones múltiples, conviene revisar todas las opciones cuidadosamente
 
 **Conceptos clave para reforzar:**
 - Ley 11.867 (fondo de comercio) — memorizar número
@@ -374,12 +354,10 @@ Demostraste entender que son dos **remedios diferentes** para la insolvencia, co
 - Cheque "no a la orden" (intransferible)
 
 **Recomendación:**
-Estás en 7 estable (similar a U3). Necesitas reforzar:
+Para esta unidad conviene reforzar:
 1. Memorización de leyes comerciales (Ley 11.867)
 2. Características técnicas (cheque cruzado, seguro)
-3. Atención a todas opciones en selecciones múltiples
-
-**Progresión:** U1 (7.5) → U2 (8) → U3 (7.5) → U4 (7)
+3. Atención a todas las opciones en selecciones múltiples
 
 ---
 

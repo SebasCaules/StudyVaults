@@ -22,7 +22,6 @@ fuentes crudas ni el material de estudio interno.
 wiki/
   index.md          ← índice maestro: arrancá por acá
   overview.md       ← síntesis global del curso (módulos, parciales)
-  log.md            ← bitácora cronológica append-only de la construcción del wiki
   resumen-microeconomia.md  ← hoja de estudio integral Unidades 1-4 (Parcial 1)
   unidades/         ← un resumen por unidad (01 a 08)
   conceptos/        ← una página por concepto/término (~142 páginas)
@@ -65,6 +64,4 @@ README.md           ← presentación para lector humano
   páginas, y respondé con citas a los wikilinks correspondientes.
 - **Generar páginas nuevas** (un concepto, un resumen, un análisis): usá la skill
   **`studyvault-page`**, que produce páginas alineadas a `../_estandar/DESIGN.md`.
-  Registrá la operación en `wiki/log.md` y enlazá la página desde `wiki/index.md`.
-- **Nunca** modifiques el vault original en `26-1C/Economia_Obsidian` (es la fuente
-  privada de solo lectura). Acá se trabaja sobre la copia publicada.
+  Enlazá la página nueva desde `wiki/index.md`.

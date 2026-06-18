@@ -11,8 +11,7 @@ ultima_actualizacion: 2026-04-14
 
 **Fecha:** 14 de abril de 2026  
 **Tipo:** Práctica tipo parcial  
-**Total preguntas:** 10  
-**Calificación final:** 6.5 / 10
+**Total preguntas:** 10
 
 ---
 
@@ -23,7 +22,7 @@ ultima_actualizacion: 2026-04-14
 **Enunciado:**  
 Las patentes tienen una duración de 15 años a partir de su registro en la República Argentina.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Verdadero
 
 **Corrección:**  
@@ -54,7 +53,7 @@ Esta es una pregunta **muy frecuente en parciales** — memoriza 20 años.
 **Enunciado:**  
 El derecho de autor está protegido en Argentina por la Ley _____________ y tiene una duración de _____________ después de la muerte del autor.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Ley: (sin responder)  
 Duración: 70 años
 
@@ -65,7 +64,7 @@ Duración: 70 años
 **Ley 11.723** — Duración: **Vida del autor + 70 años** (después de su muerte)
 
 **Comentario:**  
-Bien la duración. Te faltó la ley:
+La ley aplicable es:
 
 - **Ley 11.723:** Régimen de propiedad intelectual de obras literarias, musicales, dramáticas, coreográficas, pictóricas, escultóricas, fotográficas y, desde 1992, **software**.
 - **Duración:** Art. 55 de Ley 11.723 — La protección se extiende durante toda la vida del autor y **70 años después de su muerte** (posteriores a la reforma de 1998).
@@ -79,14 +78,14 @@ Bien la duración. Te faltó la ley:
 **Enunciado:**  
 Define brevemente qué es una **[[marcas|marca]]** y explica la diferencia entre una **marca registrada** y una **marca notoria**.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Una marca es un concepto que identifica a una empresa. Marca registrada es aquella que una empresa registró en el ente competente con todos los archivos que la conforman. Una marca notoria es aquella que aunque no esté registrada se reconoce coloquialmente. Coca Cola es notoria ya que no necesita estar registrada para tener derechos.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente respuesta. Demostraste entender la diferencia clave y diste un buen ejemplo:
+La diferencia clave entre los tres conceptos:
 
 **[[marcas|Marca]]:**
 - Signo distintivo que identifica productos/servicios de una empresa
@@ -106,7 +105,7 @@ Excelente respuesta. Demostraste entender la diferencia clave y diste un buen ej
 - Ej: Coca-Cola, Ferrari, Rolex — son tan conocidas que tienen derechos aunque no estén registradas en ciertos territorios
 - **Protección transfronteriza:** Puede ser protegida en países donde no está registrada, por su notoriedad internacional
 
-Tu ejemplo de Coca-Cola es perfecto.
+El ejemplo de Coca-Cola ilustra bien el caso de una marca notoria.
 
 ---
 
@@ -121,7 +120,7 @@ Tu ejemplo de Coca-Cola es perfecto.
 - d) Marcas de garantía
 - e) Marcas tridimensionales (formas, colores, sonidos)
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, B, E
 
 **Corrección:**  
@@ -131,13 +130,13 @@ A, B, E
 A, B, C, D, E (todas son correctas)
 
 **Comentario:**  
-Te faltaron dos tipos importantes:
+Existen dos tipos adicionales que también son válidos:
 
-✅ **a) Marcas de producto:** Identifican productos tangibles. Correcto.
-✅ **b) Marcas de servicio:** Identifican servicios. Correcto.
-❌ **c) Marcas colectivas:** Identifican productos/servicios de miembros de asociación. Existen en Ley 22.362. **TÚ NO LA MARCASTE** — Ej: Denominación de origen (vinos de Mendoza).
-❌ **d) Marcas de garantía:** Certifican características comunes (calidad, material, origen). Existen en Ley 22.362. **TÚ NO LA MARCASTE** — Ej: "Puro algodón".
-✅ **e) Marcas tridimensionales:** Formas, colores distintivos, sonidos. Correcto.
+✅ **a) Marcas de producto:** Identifican productos tangibles.
+✅ **b) Marcas de servicio:** Identifican servicios.
+✅ **c) Marcas colectivas:** Identifican productos/servicios de miembros de asociación. Existen en Ley 22.362. Ej: Denominación de origen (vinos de Mendoza).
+✅ **d) Marcas de garantía:** Certifican características comunes (calidad, material, origen). Existen en Ley 22.362. Ej: "Puro algodón".
+✅ **e) Marcas tridimensionales:** Formas, colores distintivos, sonidos.
 
 **Mejor respuesta: A, B, C, D, E** (todas son tipos válidos de marcas)
 
@@ -148,7 +147,7 @@ Te faltaron dos tipos importantes:
 **Enunciado:**  
 El derecho de autor protege las ideas en sí mismas, no solo la expresión de las ideas.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Verdadero
 
 **Corrección:**  
@@ -185,7 +184,7 @@ El derecho de autor protege la **EXPRESIÓN** de las ideas, NO las ideas en sí.
 - d) Utilidad económica inmediata
 - e) No debe contradecir el orden público
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, B, E
 
 **Corrección:**  
@@ -195,7 +194,7 @@ A, B, E
 A, B, C (e es discutible)
 
 **Comentario:**  
-Te faltó uno de los **tres requisitos esenciales**:
+Uno de los **tres requisitos esenciales** suele omitirse:
 
 **Los tres requisitos principales de patentabilidad (art. 4 Ley 24.481):**
 
@@ -203,7 +202,7 @@ Te faltó uno de los **tres requisitos esenciales**:
 
 ✅ **b) Actividad inventiva (o nivel inventivo):** La invención no debe resultar evidente para un experto en la materia. Debe aportar algo que no es obvio.
 
-✅ **c) Aplicación industrial:** La invención debe ser susceptible de aplicación industrial — debe poder fabricarse o usarse en la industria. **TÚ NO LA MARCASTE pero es esencial.**
+✅ **c) Aplicación industrial:** La invención debe ser susceptible de aplicación industrial — debe poder fabricarse o usarse en la industria. Es un requisito esencial.
 
 ❌ **d) Utilidad económica inmediata:** NO es requisito. Puede haber patentes con utilidad económica futura.
 
@@ -218,14 +217,14 @@ Te faltó uno de los **tres requisitos esenciales**:
 **Enunciado:**  
 Explica brevemente qué es el **"estado de la técnica"** en relación a las patentes. ¿Por qué es importante para evaluar la novedad?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 El estado de la técnica es todo el conocimiento público previo a la patente ya sean papers, publicaciones, inventos, patentes preexistentes. Si la patente no converge con nada de eso se considera novedad y se la deja patentar.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente definición. Entiendes el concepto bien:
+Definición del concepto:
 
 **[[patentes|Estado de la técnica]]:**
 - **Definición:** Conjunto de conocimientos públicos disponibles antes de la fecha de presentación de solicitud de patente
@@ -237,7 +236,7 @@ Excelente definición. Entiendes el concepto bien:
 - Si la invención ya está en el estado de la técnica (publicada, patentada, usado públicamente), **NO es patentable**
 - El examinador de patentes debe hacer búsqueda exhaustiva del estado de la técnica
 
-**Tu explicación:** Correcta. Si la patente "no converge" (no coincide) con nada previo, tiene novedad y se otorga.
+**En síntesis:** Si la invención "no converge" (no coincide) con nada previo, tiene novedad y se otorga la patente.
 
 ---
 
@@ -252,7 +251,7 @@ Excelente definición. Entiendes el concepto bien:
 - d) Una persona que crea un software mientras trabaja en una empresa tiene propiedad total del código
 - e) El software puede ser licenciado bajo términos de software libre (GPL, MIT, etc.)
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A, E
 
 **Corrección:**  
@@ -262,13 +261,13 @@ A, E
 A, C, E
 
 **Comentario:**  
-Bien en general, pero te faltó una opción importante:
+Hay una opción correcta adicional que suele omitirse:
 
 ✅ **a) Protegido por derechos de autor (Ley 11.723):** Correcto. Desde 1992, el software está protegido como obra literaria.
 
 ❌ **b) NO puede ser patentado:** Falso. El software SÍ puede ser protegido por patentes en Argentina si cumple requisitos (novedad, actividad inventiva, aplicación industrial).
 
-✅ **c) Se protege como obra literaria:** Correcto. Ley 11.723 (desde reforma 1992) protege programas de computación como obras literarias. **TÚ NO LA MARCASTE** pero es fundamental.
+✅ **c) Se protege como obra literaria:** Correcto. Ley 11.723 (desde reforma 1992) protege programas de computación como obras literarias. Es un punto fundamental.
 
 ❌ **d) Creador tiene propiedad total:** Falso. Si el software se crea en el contexto de una relación de empleo, la **propiedad o derechos patrimoniales pueden pertenecer al empleador** según contrato o ley laboral (art. 9 de Ley 11.723).
 
@@ -287,7 +286,7 @@ Una empresa de tecnología desarrolla un nuevo software de análisis de datos. Q
 - b) ¿Cuál es la duración de cada protección?
 - c) ¿Qué ventajas y desventajas tiene cada una para un software?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) Un contrato de confidencialidad.  
 b) (Sin responder)  
 c) (Sin responder)
@@ -317,7 +316,7 @@ La respuesta correcta es **derecho de autor** (NO confidencialidad, NO patente e
 - **Duración:** Solo 20 años (vs. 70 años de autor)
 - **Divulgación:** Requiere publicación del invento (menos secreto)
 
-**Confidencialidad (tu respuesta):**
+**Confidencialidad:**
 - NO es una forma de protección de PI formalmente
 - Es una medida de seguridad complementaria
 - Sin contrato explícito, no hay derecho exclusivo
@@ -347,14 +346,14 @@ La respuesta correcta es **derecho de autor** (NO confidencialidad, NO patente e
 **Enunciado:**  
 Explica brevemente por qué es importante establecer un **plazo de protección limitado en el tiempo** para la Propiedad Intelectual (especialmente en patentes). ¿Cuál es el equilibrio que busca el sistema?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Primero el plazo de protección es para incentivar la invención ya que se le podrá dar un fin de lucro a corto plazo, pero pasado ese plazo de lucro es para no restringir el conocimiento y que sea de orden público.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente explicación. Capturaste el equilibrio fundamental del sistema de PI:
+El equilibrio fundamental del sistema de PI:
 
 **Por qué plazo limitado:**
 
@@ -380,38 +379,18 @@ Excelente explicación. Capturaste el equilibrio fundamental del sistema de PI:
 
 **Crítica:** Algunos argumentan que 20 años es poco (especialmente en farmacéutica), otros que es demasiado (softwares). Hay debate internacional sobre duración óptima.
 
-Tu respuesta muestra comprensión del **trade-off** fundamental entre protección privada e interés público.
+El **trade-off** fundamental del sistema está entre la protección privada y el interés público.
 
 ---
 
-## Resumen de Calificación
+## Conceptos a reforzar
 
-| Resultado | Cantidad | Porcentaje |
-|-----------|----------|-----------|
-| ✅ Correctas | 3 | 30% |
-| ⚠️ Parciales | 4 | 40% |
-| ❌ Incorrectas | 2 | 20% |
-| ❌ Incompletas | 1 | 10% |
-
-**Calificación final: 6.5 / 10**
-
----
-
-## Feedback General
-
-**Fortalezas:**
-- Excelente en conceptos estratégicos (pregunta 10 — equilibrio de plazo limitado)
-- Buen ejemplo práctico (Coca-Cola como marca notoria)
-- Entiendes estado de la técnica bien
-- Respuestas reflexivas en general
-
-**Áreas de mejora:**
-- **Memorización de duraciones:** Patentes 20 años (NO 15); Derecho de autor vida + 70 años
-- **Conceptos fundamentales:** Confundiste que "ideas" están protegidas (Falso — solo expresión)
+- **Duraciones:** Patentes 20 años (NO 15); Derecho de autor vida + 70 años
+- **Ideas vs. expresión:** Las ideas NO están protegidas: solo se protege la expresión
 - **Leyes específicas:** Ley 11.723 para derechos de autor
-- **Requisitos técnicos:** Aplicación industrial es esencial en patentes (no lo incluiste)
-- **Tipos de marcas:** Colectivas y de garantía existen
-- **Caso práctico:** Confundiste confidencialidad con protección formal de PI
+- **Requisitos técnicos:** Aplicación industrial es un requisito esencial de las patentes
+- **Tipos de marcas:** Existen también las colectivas y de garantía
+- **Caso práctico:** La confidencialidad no equivale a una protección formal de PI
 
 **Conceptos clave para reforzar (CRÍTICOS PARA PARCIAL):**
 - Duración de patentes: **20 años** (improrrogable)
@@ -421,18 +400,16 @@ Tu respuesta muestra comprensión del **trade-off** fundamental entre protecció
 - Requisitos patenta: Novedad, actividad inventiva, **aplicación industrial**
 - Tipos de marcas: De producto, servicio, colectivas, garantía, tridimensionales
 
-**Recomendación urgente:**
-Necesitas estudiar más Unidad 5 antes del parcial. Es la unidad con calificación más baja (6.5). Revisa especialmente:
+**Puntos a reforzar (críticos para el parcial):**
+La Unidad 5 suele ser de las más exigentes. Conviene repasar especialmente:
 1. Duraciones (memorizar números exactos)
 2. Protección ideas vs expresión
 3. Casos prácticos de PI
-
-**Progresión:** U1 (7.5) → U2 (8) → U3 (7.5) → U4 (7) → U5 (6.5) — descenso en últimas unidades
 
 ---
 
 ## Próximos Pasos
 
-Preparado para **20 PREGUNTAS MIXTAS FINALES** (combinadas de todas las unidades 1-5)
+Como continuación se sugieren **20 preguntas mixtas finales** que combinan las unidades 1-5.
 
 Estas preguntas son más complejas y requieren integración de conceptos de múltiples unidades.

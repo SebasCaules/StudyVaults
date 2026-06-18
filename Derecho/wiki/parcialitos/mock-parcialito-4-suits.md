@@ -205,7 +205,7 @@ ultima_actualizacion: 2026-04-28
 | 10-14 | **4-5,6** | Reprueba — necesitas estudiar a fondo |
 | <10 | **<4** | Empezar de cero el material |
 
-**Para el parcialito real**, apuntale a **8+ (20+/25)**. El primer parcial 1C2026 te dio 18,7/25 = 74,8%, lo que se traduce a un parcialito de **7,5/10** equivalente. Si replicas eso, suma **~7-8** en este — y dado que los anteriores fueron 5/7/5, **un 8 te empuja al promedio que necesitas para el final reducido**.
+**Para el parcialito real**, conviene apuntar a **8+ (20+/25)**: un buen desempeño en este parcialito ayuda a sostener el promedio necesario para el final reducido.
 
 ## Que repasar si fallaste...
 

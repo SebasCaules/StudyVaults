@@ -1,21 +1,21 @@
 ---
-title: Devolución TP1 — Nuestro Grupo (10)
+title: Devolución TP1 — Caso de un Grupo
 type: source
 created: 2026-05-27
-updated: 2026-05-27
-tags: [feedback, tp1, correcciones, grupo-10, nuestro-tp, accionable]
+updated: 2026-06-18
+tags: [feedback, tp1, correcciones, accionable]
 sources: [Devolucion TP1.pdf]
 ---
 
-# Devolución TP1 — Nuestro Grupo (Grupo 10)
+# Devolución TP1 — Caso de un Grupo
 
-Devolución de la cátedra sobre nuestra entrega de TP1 (archivo `raw/Correcciones/Nuestras/Devolucion TP1.pdf`). Este documento es **distinto** de la devolución previa ya ingerida en [[devolucion-tp1]] (las notas no coinciden — esta corresponde a otra instancia de evaluación). Cubre 14 grupos.
+Devolución de la cátedra sobre la entrega de TP1 de un grupo evaluado (archivo `raw/Correcciones/Devolucion TP1.pdf`). Este documento es **distinto** de la devolución previa ya ingerida en [[devolucion-tp1]] (las notas no coinciden — esta corresponde a otra instancia de evaluación). Cubre 14 grupos.
 
-**Nuestra nota: 6** — sin puntos por seguimiento pendientes.
+**La nota asignada fue 6** — sin puntos por seguimiento pendientes.
 
 ---
 
-## Nuestro feedback (Grupo 10) — transcripción completa
+## Devolución del grupo evaluado — transcripción completa
 
 ### Demo
 
@@ -92,7 +92,7 @@ No resta puntos por seguimiento.
 
 ## Patrones que se castigan en TODA la cohorte (transversal)
 
-Para contextualizar, estos son patrones que aparecen como **error conceptual grave** en múltiples grupos — no solo el nuestro. Conviene cruzarlos con [[devolucion-tp1]] (otra devolución) y [[correcciones-segunda-entrega]]:
+Para contextualizar, estos son patrones que aparecen como **error conceptual grave** en múltiples grupos — no solo en este grupo. Conviene cruzarlos con [[devolucion-tp1]] (otra devolución) y [[correcciones-segunda-entrega]]:
 
 1. **Lógica de negocio en controllers** (grupos 2, 4, 5, 6, 7, 8, 9, 10, 12, 14 — casi todos).
 2. **Validaciones manuales en controllers en vez de Bean Validation** (grupos 4, 6, 8, 9, 10, 14).
@@ -115,4 +115,4 @@ Para contextualizar, estos son patrones que aparecen como **error conceptual gra
 - [[devolucion-tp1]] — devolución previa (12 grupos, otra evaluación).
 - [[devolucion-tp1-referencia-15-grupos]] — referencia de 15 grupos.
 - [[correcciones-segunda-entrega]] — feedback general de segunda entrega.
-- Plan accionable para nuestra codebase: ver `wiki/analyses/plan-correcciones-tp1-grupo10.md`.
+- Plan accionable para una codebase Spring MVC: ver `wiki/analyses/plan-correcciones-tp1-grupo10.md`.

@@ -34,7 +34,6 @@ aprobación de la cátedra es **final reducido = 70/100 puntos** acumulados entr
 ```
 wiki/
 ├── index.md            # Índice maestro: catálogo de páginas + tracker de notas
-├── log.md              # Bitácora cronológica de operaciones
 ├── referencias/        # Material de referencia general (mapeo unidades ↔ libro, etc.)
 ├── parcialitos/        # Guías y mocks de los parcialitos individuales
 ├── 1erParcial/         # Material integrador del 1er parcial (resumen, PDF/tex compilados)

@@ -68,5 +68,5 @@ ii) **Otra propiedad:**
      [ ] definiciones en blockquote > **Etiqueta.**; cero callouts [!type]
      [ ] LaTeX coherente con la materia; tablas con cabecera; codigo con lenguaje
      [ ] wikilinks en kebab-case sin .md; nombre de archivo kebab-case sin tildes
-     [ ] separador --- + "## Ver también"; listar la pagina en index.md y log.md
+     [ ] separador --- + "## Ver también"; listar la pagina en index.md
      BORRAR este bloque y todos los comentarios antes de publicar. -->

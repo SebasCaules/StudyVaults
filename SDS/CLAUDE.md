@@ -8,7 +8,7 @@ El vault original sigue el patrón "LLM Wiki": el humano cura fuentes crudas en
 `raw/` y Claude construye y mantiene `wiki/`. **Esta copia NO incluye `raw/`**
 (PDFs de cátedra, enunciados, correcciones, código de TPs pasados, papers): es
 una instantánea limpia y navegable solo del conocimiento destilado en `wiki/`,
-más `index.md` y `log.md`. Por eso, las citas a `raw/...` que aparecen en el
+más `index.md`. Por eso, las citas a `raw/...` que aparecen en el
 frontmatter y en el cuerpo de las páginas son **referencias de procedencia**
 que apuntan al vault privado original; los archivos a los que refieren **no
 están** en esta copia.
@@ -30,7 +30,6 @@ SDS/
 ├── CLAUDE.md   # este archivo
 ├── README.md   # orientación para lector humano
 ├── index.md    # catálogo de toda la wiki (empezar acá)
-├── log.md      # bitácora cronológica append-only
 └── wiki/
     ├── tps/            # una página por TP (TP2…TP5) + previsualización de gráficos
     ├── conceptos/      # conceptos teóricos (Vicsek, EDMD, integradores, polarización, …)
@@ -70,7 +69,7 @@ SDS/
 - **Generar páginas nuevas:** usar la skill **`studyvault-page`**, que produce
   páginas alineadas al estándar de [`../_estandar/DESIGN.md`](../_estandar/DESIGN.md)
   (frontmatter, headings, blockquotes, "Ver también", wikilinks). Después de
-  crear una página, sumarla a `index.md` y registrar la operación en `log.md`.
+  crear una página, sumarla a `index.md`.
 
 ## Reglas duras
 
@@ -78,5 +77,5 @@ SDS/
   ni material crudo acá.
 - **No inventar contenido.** Si algo no está respaldado por una fuente, marcarlo
   como interpretación o decisión del grupo.
-- **Updates atómicos:** si se crea o edita una página, `index.md` y `log.md`
-  quedan consistentes en la misma operación.
+- **Updates atómicos:** si se crea o edita una página, `index.md`
+  queda consistente en la misma operación.

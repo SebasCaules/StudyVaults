@@ -1,6 +1,6 @@
 # studyvault-page
 
-Skill de [Claude Code](https://claude.com/claude-code) que genera una **página nueva de wiki de estudio** para un vault de [StudyVaults ITBA](../../../README.md), siguiendo el estándar canónico de diseño (`assets/DESIGN.md`) de punta a punta: frontmatter YAML correcto, jerarquía de headings, definiciones en blockquote, wikilinks en kebab-case, LaTeX según la materia y la sección `## Ver también` al pie — además de listar la página en `wiki/index.md` y registrar la operación en `wiki/log.md`.
+Skill de [Claude Code](https://claude.com/claude-code) que genera una **página nueva de wiki de estudio** para un vault de [StudyVaults ITBA](../../../README.md), siguiendo el estándar canónico de diseño (`assets/DESIGN.md`) de punta a punta: frontmatter YAML correcto, jerarquía de headings, definiciones en blockquote, wikilinks en kebab-case, LaTeX según la materia y la sección `## Ver también` al pie — además de listar la página en `wiki/index.md`.
 
 Con mínima instrucción (p. ej. *"creá una página de teoría sobre la descomposición LU"*) infiere la materia, ubica el material fuente, elige carpeta y nombre, y produce una página que pasa el checklist de calidad del estándar.
 

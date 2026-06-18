@@ -1,6 +1,6 @@
 # Wiki Index — Economía para Ingenieros
 
-> Índice maestro. Se actualiza en cada ingest.
+> Índice maestro de la wiki.
 
 ---
 

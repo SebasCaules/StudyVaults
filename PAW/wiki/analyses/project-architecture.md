@@ -87,7 +87,7 @@ Key business rules:
 - **Size/category compatibility**: equipment and accessories have no size; clothing uses XXS–XXL; footwear uses EU 36–48
 - **Price overlap detection**: no two prices for the same product can overlap in date range
 - **Blocked dates**: blocks with PENDING or APPROVED rents prevent new bookings
-- **Rent lifecycle (Sprint 2)**: PENDING → APPROVED → PAYMENT_PENDING → PAYMENT_ACCEPTED / PAYMENT_REJECTED. También REJECTED, CANCELLED, EXPIRED. Ver [[Sprint 2 — Roadmap y Asignaciones]].
+- **Rent lifecycle (Sprint 2)**: PENDING → APPROVED → PAYMENT_PENDING → PAYMENT_ACCEPTED / PAYMENT_REJECTED. También REJECTED, CANCELLED, EXPIRED. Ver [[Sprint 2 — Roadmap del Proyecto]].
 
 ---
 

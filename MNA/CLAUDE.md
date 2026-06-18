@@ -17,7 +17,6 @@ notación es fuertemente matemática (LaTeX `$...$` inline y `$$...$$` display).
 ```
 wiki/
   index.md            # catálogo de todas las páginas — empezar acá
-  log.md              # bitácora append-only (## [AAAA-MM-DD] <op> | <subject>)
   00-mapa-temas.md    # tabla Unidad → Tema → páginas (qué entrena qué)
   AUDIT_REPORT.md     # informe de cobertura/consistencia de la wiki
   teoria/             # 4 páginas — teoría de Unidad I y II (slides)
@@ -57,5 +56,4 @@ fuente y no resuelven en esta copia.
 - **Consulta:** leé `wiki/index.md` primero para ubicar la página relevante, después la
   página concreta. Respondé con citas a las páginas de la wiki.
 - **Generar páginas nuevas:** usá la skill `studyvault-page`, respetando
-  `../_estandar/DESIGN.md`. Toda página nueva se lista en `wiki/index.md` y se registra
-  en `wiki/log.md`.
+  `../_estandar/DESIGN.md`. Toda página nueva se lista en `wiki/index.md`.

@@ -17,7 +17,7 @@ actualizado: 2026-06-08
 Último TP de la materia: un **simulador de dinámica peatonal multi-agente** a tiempo
 discreto, construido entre **9 grupos** sobre una arquitectura de puertos y
 adaptadores (un módulo por grupo). Repo (monorepo Maven/Java 21):
-`~/Desktop/ITBA/26-1C/SDS/TP5_SDS/sim-dinamica-peatonal`.
+`sim-dinamica-peatonal`.
 
 ## Qué hace G05
 

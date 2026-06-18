@@ -8,7 +8,7 @@ description: Genera una pagina nueva de wiki de estudio (StudyVaults) desde cero
 Genera una pagina `.md` de wiki publicable para un vault de StudyVaults, siguiendo el estandar
 canonico de diseno. El objetivo es **determinismo**: con minima instruccion del usuario, la skill
 infiere la materia, ubica el material fuente, elige carpeta y nombre, y produce una pagina que pasa
-el checklist de calidad de DESIGN.md, ademas de registrarla en `index.md` y `log.md`.
+el checklist de calidad de DESIGN.md, ademas de listarla en `index.md`.
 
 ## Patron LLM Wiki
 
@@ -17,7 +17,7 @@ Un vault StudyVaults separa **fuente** de **conocimiento generado**:
 - **`raw/`** — material crudo de la materia (PDFs de catedra, slides, fotos, codigo de TPs). Es la
   fuente. Las copias publicables a veces NO incluyen `raw/` (es read-only y vive en el vault origen).
 - **`wiki/`** — paginas `.md` generadas a partir del `raw/`. Es lo que esta skill escribe. Contiene
-  `index.md` (catalogo), `log.md` (bitacora append-only) y subcarpetas tematicas (`teoria/`,
+  `index.md` (catalogo) y subcarpetas tematicas (`teoria/`,
   `clases/`, `guias/`, `resueltos/`, `parciales/`, `conceptos/`, etc.). SDS es la excepcion: usa la
   raiz del vault en vez de `wiki/`.
 
@@ -47,7 +47,7 @@ Reglas duras (resumen; el detalle esta en DESIGN.md):
   LaTeX donde la materia no lo usa.
 - **Seccion final `## Ver tambien`** al pie, precedida por un separador `---`, con wikilinks
   descriptivos a paginas hermanas/relacionadas.
-- **Registrar en `log.md`** (linea `## [AAAA-MM-DD] crear | <tema>`) y **listar en `index.md`**.
+- **Listar en `index.md`** (entrada en la seccion correcta, con wikilink + descripcion corta).
 - Tono: español rioplatense, tecnico, conciso. Excepcion: vaults que nacen en ingles (PAW, Inge2)
   mantienen su idioma.
 
@@ -59,10 +59,10 @@ Al invocarte, segui estos pasos en orden:
    tene a mano `assets/TEMPLATE_pagina.md` y `assets/EJEMPLO_pagina.md`.
 
 2. **Detectar el vault y la materia.** Ubica la raiz del vault (carpeta con `CLAUDE.md` + `wiki/`, o
-   `index.md`/`log.md` en raiz para SDS). Lee el `CLAUDE.md` del vault para inferir la materia,
+   `index.md` en raiz para SDS). Lee el `CLAUDE.md` del vault para inferir la materia,
    idioma, si usa LaTeX, convencion de naming (`-` vs `_`), numeracion de unidades (romana vs entera)
    y subcarpetas existentes. Si hay duda de en que vault estas, mira `index.md` para confirmar la
-   materia. Si el vault es nuevo y faltan `index.md`/`log.md`, crealos minimos antes de seguir.
+   materia. Si el vault es nuevo y falta `index.md`, crealo minimo antes de seguir.
 
 3. **Ubicar el material fuente del tema pedido.** Busca en `raw/` (y en paginas `fuentes/` si existen)
    el PDF/slide/archivo que cubre el tema. Si `raw/` no esta en esta copia, usa la ruta `raw/...` mas
@@ -86,16 +86,16 @@ Al invocarte, segui estos pasos en orden:
    propia (`[[carpeta/pagina]]`, con `|alias` si hace falta). Cierra con separador `---` y
    `## Ver tambien` listando paginas relacionadas con descripcion corta.
 
-8. **Actualizar `index.md` y `log.md`.** Agrega la entrada de la pagina nueva en la seccion correcta
-   de `index.md` (mismo formato de wikilink + descripcion corta que las vecinas). Anexa al final de
-   `log.md` una linea `## [AAAA-MM-DD] crear | <tema>` con una frase de que se genero y el output path.
+8. **Actualizar `index.md`.** Agrega la entrada de la pagina nueva en la seccion correcta
+   de `index.md` (mismo formato de wikilink + descripcion corta que las vecinas) y toca la fecha
+   `actualizado:` del indice.
 
 9. **Checklist de calidad (DESIGN.md §11).** Antes de cerrar, verifica TODOS los puntos: frontmatter
    en linea 1; `tags`+`fuente` presentes y en orden; un solo `# H1` sin saltos de heading;
    definiciones en blockquote `> **Etiqueta.**` y cero callouts `[!type]`; LaTeX coherente con la
    materia; tablas con cabecera, codigo con lenguaje; wikilinks kebab-case sin `.md`; nombre de
    archivo kebab-case sin tildes en la carpeta correcta; separador `---` + `## Ver tambien`; tono
-   rioplatense conciso; pagina listada en `index.md` y registrada en `log.md`.
+   rioplatense conciso; pagina listada en `index.md`.
 
 ## Ejemplo de invocacion end-to-end
 
@@ -138,17 +138,12 @@ Al invocarte, segui estos pasos en orden:
    ```
 
 8. Agrega `- [[teoria/05-descomposicion-lu]] — factorizacion LU/PLU, Doolittle, pivoteo` a la
-   seccion "Teoria" de `wiki/index.md`, y anexa a `wiki/log.md`:
-
-   ```markdown
-   ## [2026-06-14] crear | descomposicion LU
-   Pagina de teoria: definicion LU, existencia y pivoteo (PLU), algoritmo de Doolittle, ejemplo y verificacion numpy. Output: wiki/teoria/05-descomposicion-lu.md.
-   ```
+   seccion "Teoria" de `wiki/index.md` y actualiza su fecha `actualizado:`.
 
 9. Corre el checklist de DESIGN.md §11 y reporta el path generado.
 
-**Archivo resultante:** `StudyVaultsITBA/MNA/wiki/teoria/05-descomposicion-lu.md`, mas las entradas
-en `index.md` y `log.md`.
+**Archivo resultante:** `StudyVaultsITBA/MNA/wiki/teoria/05-descomposicion-lu.md`, mas la entrada
+en `index.md`.
 
 ## Instalacion
 

@@ -61,7 +61,7 @@ StudyVaultsITBA/
   - `EJEMPLO_pagina.md` — una página real y completa como prueba de oro.
   - `AUDIT.md` — auditoría de los vaults que dio origen al estándar.
 - **Una carpeta por vault** — cada materia trae:
-  - `wiki/` — las páginas `.md` curadas (más `index.md` y `log.md`).
+  - `wiki/` — las páginas `.md` curadas (más su `index.md`).
   - `README.md` — qué es la materia y cómo está organizado su vault.
   - `CLAUDE.md` — instrucciones para el asistente al trabajar ese vault (convenciones propias, desviaciones, qué no tocar).
 
@@ -81,7 +81,7 @@ Todas las páginas siguen [`_estandar/DESIGN.md`](./_estandar/DESIGN.md). En res
 
 ## Generar páginas nuevas
 
-Las páginas nuevas se generan con la **skill [`studyvault-page`](./.claude/skills/studyvault-page/)** (para [Claude Code](https://claude.com/claude-code)). La skill toma material de una materia y produce una página `.md` que cumple el estándar de punta a punta: frontmatter correcto, jerarquía de headings, definiciones en blockquote, wikilinks, LaTeX según la materia, y la sección `## Ver también` al pie — además de listarla en `wiki/index.md` y registrar la operación en `wiki/log.md`. Así dos páginas generadas por separado, a partir del mismo material, salen idénticas en estructura.
+Las páginas nuevas se generan con la **skill [`studyvault-page`](./.claude/skills/studyvault-page/)** (para [Claude Code](https://claude.com/claude-code)). La skill toma material de una materia y produce una página `.md` que cumple el estándar de punta a punta: frontmatter correcto, jerarquía de headings, definiciones en blockquote, wikilinks, LaTeX según la materia, y la sección `## Ver también` al pie — además de listarla en `wiki/index.md`. Así dos páginas generadas por separado, a partir del mismo material, salen idénticas en estructura.
 
 La skill es **autocontenida** (trae su propia copia del estándar en `assets/`, así funciona aunque la saques del repo). Tenés tres formas de usarla:
 

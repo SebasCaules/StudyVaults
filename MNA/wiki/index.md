@@ -10,7 +10,6 @@ Material de estudio aplicado en `study/`:
 
 - [[00-mapa-temas]] — árbol Unidad → Tema → Páginas, con qué entrena qué
 - [[AUDIT_REPORT]] — informe de cobertura y consistencia
-- [[log]] — bitácora cronológica de la ingesta
 - [[parciales/patrones]] — análisis transversal de los 30 modelos de examen
 
 ## Teoría (slides Unidad I y II)

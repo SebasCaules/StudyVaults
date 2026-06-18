@@ -7,7 +7,7 @@
 > **Output en español rioplatense, conciso.** Los vaults originales son SOLO LECTURA: este
 > estándar describe el formato del repo publicable, **nunca** modifica los vaults fuente.
 >
-> Calibrado contra el vault de referencia (MNA): ver `26-1C/MNA_Obsidian/wiki/teoria/02-vectores-cn-rn.md`
+> Calibrado contra el vault de referencia (MNA): ver `MNA/wiki/teoria/02-vectores-cn-rn.md`
 > y `04-determinantes.md`. Estándar derivado de la auditoría: ver `AUDIT.md`.
 
 Archivos compañeros de este estándar:
@@ -221,7 +221,7 @@ Reglas:
 
 - Cross-links inline (sección 5) para conexiones conceptuales dentro del cuerpo.
 - "Ver también" para navegación lateral entre páginas hermanas/relacionadas.
-- `index.md` y `log.md` se mantienen aparte: `index.md` cataloga, `log.md` es bitácora append-only con entradas `## [AAAA-MM-DD] <op> | <subject>`.
+- `index.md` se mantiene aparte: es el catálogo navegable de todas las páginas del vault, agrupado por secciones.
 
 ---
 
@@ -285,7 +285,7 @@ Antes de dar por terminada una página, verificar **todos** estos puntos:
 - [ ] Nombre de archivo en kebab-case, sin tildes/ñ, con prefijo numérico si el orden importa, en la carpeta temática correcta.
 - [ ] Separador `---` y sección `## Ver también` al pie con wikilinks descriptivos.
 - [ ] Tono español rioplatense, conciso; cero callouts/Dataview/HTML de render.
-- [ ] La página está listada en `wiki/index.md` y se registró la operación en `wiki/log.md`.
+- [ ] La página está listada en `wiki/index.md`.
 
 ---
 

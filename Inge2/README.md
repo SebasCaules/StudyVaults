@@ -17,7 +17,6 @@ Es una **copia publicable, de solo lectura**, de un vault de Obsidian. Está pen
 
 1. **Empezá por [`wiki/index.md`](wiki/index.md):** es el catálogo completo, organizado por categoría (clases, conceptos, ejercicios, casos de estudio, fuentes, análisis), con una descripción por entrada.
 2. Seguí los **wikilinks** `[[…]]` entre páginas para moverte entre conceptos relacionados; cada página cierra con una sección **"Ver también"**.
-3. La **bitácora** de cambios está en [`wiki/log.md`](wiki/log.md).
 
 > El contenido está en español, con terminología técnica en inglés cuando es la convención del área (dependency injection, bounded context, etc.).
 

@@ -22,7 +22,6 @@ Inge2/
 ├── README.md             # Entrada para lector humano
 └── wiki/                  # Wiki curada (lo único publicado)
     ├── index.md           # Catálogo completo por categoría — EMPEZAR ACÁ
-    ├── log.md             # Bitácora cronológica append-only
     ├── classes/           # Un resumen por clase (clase-NN-tema.md)
     ├── concepts/          # Patrones, principios, estilos, atributos de calidad
     ├── exercises/         # Ejercicios y parciales resueltos con justificación
@@ -44,14 +43,14 @@ Inge2/
 - **LaTeX:** Inge2 **no usa** matemática; no introducir `$…$` ni `$$…$$` donde la materia no lo usa.
 - **Naming:** archivos en kebab-case, sin tildes ni ñ; prefijo numérico (`clase-07-…`) cuando el orden importa.
 - **Wikilinks** estilo Obsidian (`[[pagina]]`, `[[carpeta/pagina]]`, `[[pagina|alias]]`) para cross-references; nombre de archivo sin `.md`.
-- **Navegación:** página → `wiki/index.md` (catálogo del vault) → [`../HOME.md`](../HOME.md) (índice del repo de vaults). El `index.md` cataloga; el `log.md` es bitácora append-only con entradas `## [AAAA-MM-DD] <op> | <subject>`.
+- **Navegación:** página → `wiki/index.md` (catálogo del vault) → [`../HOME.md`](../HOME.md) (índice del repo de vaults). El `index.md` cataloga el vault entero por categoría.
 
 ---
 
 ## Cómo pedirle cosas a Claude en esta copia
 
 - **Consulta (`Query`):** la operación principal acá. Para responder, leer primero `wiki/index.md`, ubicar las páginas relevantes, leerlas y sintetizar. Estilo de respuesta esperado: contextualizar la decisión → enumerar opciones con trade-offs → recomendar (o decir "depende de X, Y, Z") → justificar con cita al corpus (`[[página]]`, `(source: archivo)`, bibliografía canónica) → cerrar con una pregunta a profundizar si quedó algo abierto.
-- **Generar páginas nuevas:** se hace con la skill **`studyvault-page`**, que produce páginas alineadas a [`../_estandar/DESIGN.md`](../_estandar/DESIGN.md). Al crear una página, listarla en `wiki/index.md` y registrar la operación en `wiki/log.md`.
+- **Generar páginas nuevas:** se hace con la skill **`studyvault-page`**, que produce páginas alineadas a [`../_estandar/DESIGN.md`](../_estandar/DESIGN.md). Al crear una página, listarla en `wiki/index.md`.
 - **Ingest NO aplica:** esta copia no tiene `raw/`, así que no se ingiere material crudo nuevo. Para eso se usa el vault original de trabajo. Si el usuario pega material nuevo, sugerir que lo haga en el vault fuente, no acá.
 
 ### Persona — "El Profesor"

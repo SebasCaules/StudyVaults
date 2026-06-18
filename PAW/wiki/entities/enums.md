@@ -51,7 +51,7 @@ Inventario actual: **18 enums** en `ar.edu.itba.paw.models.enums`. Display names
 
 Helpers: `isRejected()`, `isExpired()`, `isCompleted()`, `isFinal()`. `valuesForDashboardCategory(category)` filtra el subset.
 
-> El enum creció de 4 valores (Sprint 1) a 10 (Sprint 2) para soportar el flujo de pago + expiraciones automáticas. Ver [[Sprint 2 — Roadmap y Asignaciones]].
+> El enum creció de 4 valores (Sprint 1) a 10 (Sprint 2) para soportar el flujo de pago + expiraciones automáticas. Ver [[Sprint 2 — Roadmap del Proyecto]].
 
 ## Category — los 14 valores agrupados
 

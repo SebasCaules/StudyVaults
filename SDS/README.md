@@ -2,7 +2,7 @@
 
 Wiki de estudio de la materia **Simulación de Sistemas** (ITBA, 1.º cuatrimestre
 2026). Es una **copia publicada y de solo lectura** de un vault de Obsidian:
-contiene el conocimiento destilado de la cursada, sin las fuentes crudas
+contiene el conocimiento destilado de la materia, sin las fuentes crudas
 originales (PDFs de cátedra, enunciados, código de TPs) que viven en el vault
 privado.
 
@@ -29,7 +29,6 @@ Simulación de sistemas de partículas y agentes:
    fuentes.
 2. Seguí los wikilinks `[[...]]` entre páginas; al pie de cada una hay una
    sección de navegación lateral.
-3. La bitácora cronológica de cambios está en [`log.md`](log.md).
 
 ## Contexto del repo
 

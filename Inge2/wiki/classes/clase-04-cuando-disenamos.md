@@ -119,7 +119,7 @@ La clase muestra un **video sobre Residuality Theory** como complemento al mater
 
 Es una contracara útil al ATAM: ATAM evalúa que la arquitectura cumpla atributos definidos; Residuality Theory pregunta cómo se comporta ante stressors **no previstos**. En la práctica, los dos se complementan.
 
-> En las notas de clase se registra sólo la mención del video; el alumno debería ver el video completo para profundizar. Búsquedas útiles: *Barry O'Reilly Residuality Theory*, *Antifragile Software Architecture*.
+> En las notas de clase se registra sólo la mención del video; conviene ver el video completo para profundizar. Búsquedas útiles: *Barry O'Reilly Residuality Theory*, *Antifragile Software Architecture*.
 
 ### Ejercicio en clase — Parcial 2013 desarrollado en pizarra
 

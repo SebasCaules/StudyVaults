@@ -15,7 +15,7 @@ Migración de la capa de persistencia desde **Spring JDBC** (ver [[Persistence (
 
 ## ⚠ Aviso: stack actual del proyecto (Java 21 + Hibernate 5.1)
 
-Combinación verificada en `paw-2026a-10/pom.xml`:
+Combinación verificada en el `pom.xml` del proyecto:
 
 | | Versión | Año | Comentario |
 |---|---|---|---|

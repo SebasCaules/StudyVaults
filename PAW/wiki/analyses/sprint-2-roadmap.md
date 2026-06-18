@@ -1,15 +1,15 @@
 ---
-title: Sprint 2 — Roadmap y Asignaciones
+title: Sprint 2 — Roadmap del Proyecto
 type: analysis
 created: 2026-04-19
-updated: 2026-04-19
+updated: 2026-06-18
 tags: [sprint-2, roadmap, tareas, bd, pantallas]
 sources: [sprint-2-indicaciones.md]
 ---
 
-# Sprint 2 — Roadmap y Asignaciones
+# Sprint 2 — Roadmap del Proyecto
 
-Planificación del Sprint 2 según indicaciones del corrector. Incluye cambios en BD, pantallas a modificar, pantallas nuevas y asignaciones por integrante.
+Planificación del Sprint 2 según indicaciones del corrector. Incluye cambios en BD, pantallas a modificar, pantallas nuevas y desglose de tareas por área de trabajo.
 
 ---
 
@@ -72,9 +72,9 @@ PENDING
 
 ---
 
-## Asignaciones Sprint 2
+## Desglose de tareas — Sprint 2
 
-### SEBAS
+### Autenticación y perfil
 
 - [ ] **Login** — nueva pantalla de login
 - [ ] **Register** — validar email no existe con custom validator que llame al service (`NewUserValidator`)
@@ -82,7 +82,7 @@ PENDING
   - Acceso restringido: sólo usuarios logueados, sólo su propio perfil (403 si intenta acceder a otro)
 - [ ] **Auth** — agregar tabla users / configurar Spring Security
 
-### AZU
+### Catálogo, búsqueda y validación
 
 - [ ] **Catálogo** — filtros + nueva searchbar + paginación
   - Location como query param (no path variable)
@@ -92,7 +92,7 @@ PENDING
 - [ ] **Validators** — custom validators para forms del catálogo
 - [ ] **Tests** — DAOs y services con cobertura de casos felices e infelices
 
-### JOSE
+### Reservas: historial y solicitudes
 
 - [ ] **Historial de reservas** — filtrar por:
   - Rol: reservas donde soy renter / donde soy provider
@@ -102,7 +102,7 @@ PENDING
 - [ ] **Solicitudes provider** — aceptar/rechazar reservas → lleva a manage; estado vacío "No hay solicitudes"
 - [ ] **Solicitudes renter** — ver estados; estado vacío + CTA al catálogo sin filtros
 
-### MAGUI
+### Productos: detalle y gestión
 
 - [ ] **Detalle de producto** — si sos el provider:
   - Mostrar lápiz para editar campos
@@ -115,7 +115,7 @@ PENDING
   - Botón para cambiar precio
   - Botón para despausar
 
-### TIAGO
+### Flujo de pago y expiración
 
 - [ ] **Pseudo-chat de reserva** — manage.jsp con fotos para comprobante
   - Provider manda CVU, renter manda comprobante, provider confirma/rechaza
@@ -128,7 +128,7 @@ PENDING
 - [ ] El scroll cambia el input del precio al crear un producto
 - [ ] CTA "Solicitar Reserva" demasiado abajo — mover arriba
 - [ ] `GetLogUser` para mostrar perfil en la navbar
-- [ ] En `UserServiceImpl.normalizeAndValidateEmail` — sacar el chequeo del mail (ver con Jose)
+- [ ] En `UserServiceImpl.normalizeAndValidateEmail` — sacar el chequeo del mail (revisar la regla de negocio del email)
 - [ ] Agregar todas las funciones de los services a las interfaces
 
 ---

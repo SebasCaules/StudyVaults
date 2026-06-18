@@ -48,7 +48,7 @@ Detalle ampliado en [[conceptos/oscilador_amortiguado]].
 
 ### Slide 28-29 — Coeficientes α de Gear
 
-⚠️ Hay dos tablas distintas según la fuerza dependa o no de la velocidad. **Para el TP4 Sistema 1 (F = -kr - γv tiene v) corresponde α₀ = 3/16** (no 3/20 como yo había escrito originalmente).
+⚠️ Hay dos tablas distintas según la fuerza dependa o no de la velocidad. **Para el TP4 Sistema 1 (F = -kr - γv tiene v) corresponde α₀ = 3/16** (no 3/20, que aplica al caso sin dependencia de la velocidad).
 
 Detalle en [[metodos/gear_predictor_corrector]] con la tabla completa para órdenes 2-5.
 

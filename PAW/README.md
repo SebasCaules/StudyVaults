@@ -17,8 +17,6 @@ Es una **copia publicada read-only**: se lee y se consulta, no es el vault de tr
 2. Seguir los `[[wikilinks]]` entre páginas para moverte entre conceptos relacionados.
 3. Abrir el vault con Obsidian (`File → Open vault → PAW`) o con cualquier editor de Markdown.
 
-`wiki/log.md` es la bitácora cronológica de cómo se fue construyendo el wiki.
-
 ## Notas
 
 - El `raw/` de fuentes (PDFs de clases, correcciones, transcripciones) **no se incluye** en esta copia. Solo se conservan las imágenes embebidas bajo `raw/assets/notion-paw-images/` para que no se rompan los enlaces del wiki.

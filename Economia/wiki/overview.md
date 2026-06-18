@@ -1,11 +1,10 @@
 # Overview — Economía para Ingenieros
 
-> Síntesis global del curso. Se actualiza con cada unidad procesada.
+> Síntesis global del curso.
 
 **Curso:** Economía para Ingenieros — ITBA | Código 61.23  
 **Profesor:** Cepeda | **Bibliografía:** "Economía para Ingenieros" — Cepeda (Thomson)  
-**Último update:** 2026-06-12  
-**Unidades procesadas:** 8 / 8 ✅ (curso completo)
+**Unidades:** 8 / 8 (curso completo)
 
 ---
 

@@ -12,7 +12,6 @@ ultima_actualizacion: 2026-04-14
 **Fecha:** 14 de abril de 2026  
 **Tipo:** Práctica tipo parcial  
 **Total preguntas:** 10  
-**Calificación final:** 8 / 10
 
 ---
 
@@ -23,14 +22,14 @@ ultima_actualizacion: 2026-04-14
 **Enunciado:**  
 El Poder Ejecutivo es: "Es el jefe supremo de la Nación, jefe de gobierno y responsable político de la administración general del país".
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Falso. Eso describe al presidente y eso no es la totalidad del PE.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente distinción. El enunciado describe específicamente al **Presidente de la República**, no al Poder Ejecutivo en su totalidad. El [[poder-ejecutivo|Poder Ejecutivo]] es una rama del gobierno que incluye al presidente, gabinete de ministros, secretarías y organismos administrativos. Demostraste comprensión de la estructura.
+El enunciado describe específicamente al **Presidente de la República**, no al Poder Ejecutivo en su totalidad. El [[poder-ejecutivo|Poder Ejecutivo]] es una rama del gobierno que incluye al presidente, gabinete de ministros, secretarías y organismos administrativos.
 
 ---
 
@@ -39,7 +38,7 @@ Excelente distinción. El enunciado describe específicamente al **Presidente de
 **Enunciado:**  
 ¿Cuántos años dura el mandato de un presidente de la República Argentina?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 4 años
 
 **Corrección:**  
@@ -55,14 +54,14 @@ Correcto según el art. 94 de la [[constitucion-nacional|Constitución Nacional]
 **Enunciado:**  
 Explica brevemente qué son los **[[derechos-y-garantias|derechos y garantías constitucionales]]**. ¿Cuál es la diferencia entre un derecho y una garantía?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Los derechos constitucionales son derechos que la constitución otorga a todo ciudadano argentino y las garantías constitucionales son las cosas que la constitución declara que el estado debe dar como garantia a cada uno de los ciudadanos. No todos los derechos son garantías. El derecho a un techo no es una garantía.
 
 **Corrección:**  
 ⚠️ **PARCIALMENTE CORRECTA**
 
 **Comentario:**  
-La idea fundamental está presente, pero la explicación es incompleta:
+La distinción puede precisarse del siguiente modo:
 
 **Derechos:** Son facultades o prerrogativas reconocidas a las personas. Ej: Derecho a la vida, libertad de expresión, derecho de propiedad.
 
@@ -72,11 +71,11 @@ La idea fundamental está presente, pero la explicación es incompleta:
 - Todo derecho debe tener una garantía para protegerlo.
 - No hay derecho sin garantía (art. 18 CN: "Ningún habitante puede ser penado sin juicio previo").
 
-**Sobre tu ejemplo:**
+**Ejemplo aplicado:**
 - Derecho a vivienda: reconocido en la CN (art. 14 bis, vivienda digna)
 - Garantía: El Estado debe proveer políticas de acceso a vivienda
 
-Mejor respuesta hubiera sido:
+Síntesis:
 *"Los derechos son facultades reconocidas a los ciudadanos. Las garantías son mecanismos que aseguran que esos derechos se respeten y protejan. Toda garantía existe para proteger un derecho."*
 
 ---
@@ -92,7 +91,7 @@ Mejor respuesta hubiera sido:
 - d) 2005
 - e) 2008
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 c) 1994
 
 **Corrección:**  
@@ -111,14 +110,14 @@ Correcto. La reforma de 1994 fue la última reforma constitucional argentina. Fu
 **Enunciado:**  
 La Iglesia es una persona jurídica de carácter público.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Falso. Solo la Iglesia Católica.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Bien. Técnicamente, la **Iglesia Católica Argentina** es la única iglesia que tiene reconocimiento de carácter público en nuestro ordenamiento jurídico. Otras iglesias (evangélicas, protestantes, etc.) son personas jurídicas pero de carácter **privado**. Esta es una sutileza importante del derecho argentino ligada al art. 2 CN que menciona al catolicismo apostólico romano.
+Técnicamente, la **Iglesia Católica Argentina** es la única iglesia que tiene reconocimiento de carácter público en nuestro ordenamiento jurídico. Otras iglesias (evangélicas, protestantes, etc.) son personas jurídicas pero de carácter **privado**. Esta es una sutileza importante del derecho argentino ligada al art. 2 CN que menciona al catolicismo apostólico romano.
 
 ---
 
@@ -133,7 +132,7 @@ El Congreso Nacional está compuesto por:
 - d) Senado, Diputados y Jueces
 - e) Poder Ejecutivo y Legislativo
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) Senado y Diputados
 
 **Corrección:**  
@@ -152,14 +151,14 @@ Correcto. El [[poder-legislativo|Congreso Nacional]] es **bicameral** (dos cáma
 **Enunciado:**  
 Explica brevemente la **división de poderes** según la [[constitucion-nacional|Constitución Nacional]]. ¿Cuál es el rol de cada poder?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 PE: ejecuta las leyes del PL; PL: sanciona leyes; PJ: asegura que las leyes se rijan bien.
 
 **Corrección:**  
 ✅ **CORRECTA**
 
 **Comentario:**  
-Respuesta clara y precisa. Capturaste los roles correctamente:
+Los roles de cada poder se distribuyen del siguiente modo:
 
 - **[[poder-ejecutivo|Poder Ejecutivo]]:** Ejecuta las leyes, administra la república, dirige política exterior, es jefe de fuerzas armadas.
 - **[[poder-legislativo|Poder Legislativo]]:** Sanciona leyes, controla presupuesto, ratifica tratados, tiene poder de veto sobre actos del PE.
@@ -180,7 +179,7 @@ Este sistema de **pesos y contrapesos** (checks and balances) evita concentraci�
 - d) Disolver el Congreso
 - e) Ratificar tratados internacionales
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 A y E
 
 **Corrección:**  
@@ -190,12 +189,12 @@ A y E
 A, C y E
 
 **Comentario:**  
-Te faltó marcar **(c) Crear impuestos**. Según el art. 75 de la Constitución, el Congreso tiene la atribución de "Imponer contribuciones directas y indirectas". Es una de sus facultades más importantes.
+La opción **(c) Crear impuestos** también es correcta. Según el art. 75 de la Constitución, el Congreso tiene la atribución de "Imponer contribuciones directas y indirectas". Es una de sus facultades más importantes.
 
 Análisis de cada opción:
 - **(a) Sancionar leyes:** ✅ Correcta. Es atribución fundamental.
 - **(b) Dictar sentencias:** ❌ Incorrecta. Eso es función del Poder Judicial.
-- **(c) Crear impuestos:** ✅ Correcta. Art. 75 CN. **TÚ NO LA MARCASTE**
+- **(c) Crear impuestos:** ✅ Correcta. Art. 75 CN.
 - **(d) Disolver el Congreso:** ❌ Incorrecta. El Congreso no puede disolverse a sí mismo; eso sería autodestrucción.
 - **(e) Ratificar tratados:** ✅ Correcta. El Senado debe ratificar tratados internacionales.
 
@@ -210,7 +209,7 @@ El gobierno necesita invertir dinero en infraestructura de transporte. Analiza e
 - b) ¿Qué poder debe intervenir para ejecutar la obra?
 - c) ¿Qué poder controlaría si se realizó correctamente?
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 a) Debe intervenir el congreso (PL) para aprobar el presupuesto.  
 b) Debe intervenir el PE para licitar la obra y llevarla a cabo.  
 c) Debe intervenir el PJ para garantizar que no haya vicios en esa gestión.
@@ -219,7 +218,7 @@ c) Debe intervenir el PJ para garantizar que no haya vicios en esa gestión.
 ✅ **CORRECTA**
 
 **Comentario:**  
-Excelente análisis. Demostraste entender la **división de poderes en acción**:
+Este caso ilustra la **división de poderes en acción**:
 
 - **PL (Congreso):** Aprueba el presupuesto nacional con los fondos para infraestructura (art. 75, atribuciones presupuestarias).
 - **PE:** Ejecuta la obra, licita a contratistas, dirige la ejecución (administración).
@@ -234,15 +233,15 @@ Este es un **ejemplo real** de cómo funcionan los pesos y contrapesos.
 **Enunciado:**  
 Compara el sistema federal argentino con una organización unitaria. ¿Por qué Argentina eligió el federalismo? Menciona qué son las **facultades delegadas** y **concurrentes**.
 
-**Respuesta del estudiante:**  
+**Respuesta propuesta:**  
 Argentina eligió el federalismo para que cada provincia tenga la libertad de regir las leyes y normas a su manera.
 
 **Corrección:**  
 ⚠️ **PARCIALMENTE CORRECTA**
 
 **Comentario:**  
-Capturaste la idea general del federalismo, pero la respuesta es incompleta. Te faltó:
-1. Comparación real con sistema unitario
+Una respuesta completa sobre el federalismo debe incluir:
+1. Comparación con el sistema unitario
 2. Definición de facultades delegadas y concurrentes
 
 **Sistema Federal vs Unitario:**
@@ -265,47 +264,24 @@ Capturaste la idea general del federalismo, pero la respuesta es incompleta. Te 
 - **Facultades concurrentes:** Ambas jurisdicciones (Nación y provincias) las ejercen simultáneamente. Ej: Educación, salud, obras públicas.
 - **Facultades reservadas:** Las que retienen las provincias para sí. Ej: Policía local, justicia local.
 
-**Mejor respuesta hubiera sido:**
+**Síntesis:**
 *"Argentina eligió federalismo para distribuir el poder entre la Nación y las provincias. A diferencia de un sistema unitario donde todo está centralizado en la capital, el federalismo permite que las provincias mantengan autonomía en ciertos temas. Las facultades delegadas (relaciones exteriores, defensa) son solo de la Nación. Las facultades concurrentes (educación, transporte) las ejercen ambas jurisdicciones."*
 
 ---
 
-## Resumen de Calificación
+## Conceptos a reforzar
 
-| Resultado | Cantidad | Porcentaje |
-|-----------|----------|-----------|
-| ✅ Correctas | 8 | 80% |
-| ⚠️ Parciales | 2 | 20% |
-| ❌ Incorrectas | 0 | 0% |
-| ❌ Sin respuesta | 0 | 0% |
-
-**Calificación final: 8 / 10**
-
----
-
-## Feedback General
-
-**Fortalezas:**
-- Excelente progresión respecto a Unidad 1 (+0.5 puntos)
-- Muy buena aplicación de conceptos a casos concretos (pregunta 9)
-- Entiendes bien la estructura institucional argentina
-- Respuestas directas y claras
-
-**Áreas de mejora:**
-- En selecciones múltiples, revisa **todas** las opciones con cuidado (pregunta 8 — faltó "crear impuestos")
-- Los desarrollos a veces omiten comparaciones o definiciones pedidas (pregunta 10)
-- Estudia mejor facultades delegadas/concurrentes — son preguntas frecuentes de parcial
+- En selecciones múltiples conviene revisar **todas** las opciones con cuidado: el Congreso también tiene la atribución de crear impuestos (pregunta 8).
+- Los desarrollos deben incluir las comparaciones y definiciones que pide el enunciado (pregunta 10).
+- Las facultades delegadas y concurrentes del federalismo son temas frecuentes de parcial y conviene dominarlas.
 
 **Conceptos clave para reforzar:**
 - Facultades delegadas y concurrentes del federalismo
 - Diferencia entre derechos y garantías (mecanismo de protección)
 - Atribuciones específicas de cada poder
 
-**Recomendación:**
-Mantén este nivel. Estás muy bien. Solo sé más meticuloso con selecciones múltiples y más completo en desarrollos.
-
 ---
 
 ## Próximos Pasos
 
-Preparado para **Unidad 3: Derecho Civil** (10 preguntas)
+Continúa con **Unidad 3: Derecho Civil** (10 preguntas)

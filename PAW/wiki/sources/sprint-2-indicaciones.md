@@ -21,9 +21,9 @@ Notas tomadas durante la reunión de corrección/planificación del Sprint 2. In
 
 ---
 
-## Notas técnicas (Jose)
+## Notas técnicas
 
-- En `normalizeAndValidateEmail` del `UserServiceImpl` sacar el chequeo del mail (ver qué hacemos con eso)
+- En `normalizeAndValidateEmail` del `UserServiceImpl` sacar el chequeo del mail (revisar la regla de negocio del email)
 - Agregar todas las funciones de los services a la interfaz (ningún método público del service puede quedar fuera de la interfaz)
 
 ---
@@ -147,28 +147,28 @@ Ver [[Domain Models]] y [[Enums]].
 
 ### Cambios en pantallas ya hechas
 
-| Pantalla | Cambio | Asignado |
-|----------|--------|----------|
-| Detalle de producto | Si sos el provider: editar campos + lápiz; CTA arriba; arreglar fechas antes del modal | MAGUI |
-| Catálogo | Filtros + nueva searchbar + paginación; location como query param (no path variable); mostrar sólo active | AZU |
-| Landing | Nueva searchbar | AZU |
-| Validators | Custom validators para forms | AZU |
-| Tests | Tests de DAOs y services | AZU |
+| Pantalla | Cambio | Área |
+|----------|--------|------|
+| Detalle de producto | Si sos el provider: editar campos + lápiz; CTA arriba; arreglar fechas antes del modal | Productos |
+| Catálogo | Filtros + nueva searchbar + paginación; location como query param (no path variable); mostrar sólo active | Catálogo |
+| Landing | Nueva searchbar | Catálogo |
+| Validators | Custom validators para forms | Catálogo |
+| Tests | Tests de DAOs y services | Catálogo |
 
 ### Nuevas pantallas
 
-| Pantalla | Detalle | Asignado |
-|----------|---------|----------|
-| Login | Nueva pantalla de login | SEBAS |
-| Register | Validar que el mail no exista con custom validator que llame al service | SEBAS |
-| Configurar perfil | Editar nombre, apellido, foto de perfil (contraseña: no este sprint); acceso restringido | SEBAS |
-| Historial de reservas | Filtrar por rol (renter/provider), estado, tiempo; estados vacíos con CTA | JOSE |
-| Solicitudes provider | Aceptar/rechazar reservas → manage; estado vacío "No hay solicitudes" | JOSE |
-| Solicitudes renter | Ver estados; estado vacío + CTA al catálogo | JOSE |
-| Listado mis productos | Provider ve sus productos → detalle con edición; estado vacío + CTA publish | MAGUI |
-| Estado del producto | ACTIVE/PAUSED/DELETED + botón cambiar precio y despausar | MAGUI |
-| Pseudo-chat reserva | manage.jsp — comprobante con fotos, flujo CVU/comprobante/confirmar | TIAGO |
-| Manejo expiración | Expiración de estados de reserva | TIAGO |
+| Pantalla | Detalle | Área |
+|----------|---------|------|
+| Login | Nueva pantalla de login | Autenticación |
+| Register | Validar que el mail no exista con custom validator que llame al service | Autenticación |
+| Configurar perfil | Editar nombre, apellido, foto de perfil (contraseña: no este sprint); acceso restringido | Autenticación |
+| Historial de reservas | Filtrar por rol (renter/provider), estado, tiempo; estados vacíos con CTA | Reservas |
+| Solicitudes provider | Aceptar/rechazar reservas → manage; estado vacío "No hay solicitudes" | Reservas |
+| Solicitudes renter | Ver estados; estado vacío + CTA al catálogo | Reservas |
+| Listado mis productos | Provider ve sus productos → detalle con edición; estado vacío + CTA publish | Productos |
+| Estado del producto | ACTIVE/PAUSED/DELETED + botón cambiar precio y despausar | Productos |
+| Pseudo-chat reserva | manage.jsp — comprobante con fotos, flujo CVU/comprobante/confirmar | Pago |
+| Manejo expiración | Expiración de estados de reserva | Pago |
 
 ---
 

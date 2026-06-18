@@ -1,26 +1,26 @@
 ---
-title: Plan de correcciones TP1 — Grupo 10 (para Claude Code)
+title: Plan de correcciones TP1
 type: analysis
 created: 2026-05-27
-updated: 2026-05-27
-tags: [plan, correcciones, tp1, grupo-10, claude-code, accionable]
+updated: 2026-06-18
+tags: [plan, correcciones, tp1, accionable]
 sources: [Devolucion TP1.pdf]
 ---
 
-# Plan de correcciones TP1 — Grupo 10
+# Plan de correcciones TP1
 
-> **Para Claude Code:** este archivo es tu briefing para corregir el TP1. La fuente es [[devolucion-tp1-nuestra]] (transcripción literal del feedback). Trabajás sobre el repo `~/Desktop/ITBA/26-1C/PAW/paw-2026a-10`. Antes de tocar código, **leé `PAW_Directives.md` del repo** y la sección "Reglas de trabajo" abajo.
+> **Cómo usar:** plan de correcciones para una codebase Spring MVC del TP1, derivado de [[devolucion-tp1-nuestra]] (transcripción literal del feedback de la cátedra). Antes de tocar código, conviene revisar las reglas vigentes de la cátedra y la sección "Reglas de trabajo" más abajo.
 
 ---
 
 ## Objetivo
 
-Corregir **punto por punto** todas las observaciones de la devolución TP1 del Grupo 10 (nota 6). El plan está priorizado por: (1) errores conceptuales graves, (2) bugs funcionales, (3) mejoras UX/i18n.
+Corregir **punto por punto** todas las observaciones de la devolución TP1. El plan está priorizado por: (1) errores conceptuales graves, (2) bugs funcionales, (3) mejoras UX/i18n.
 
 ## Reglas de trabajo (leer antes de empezar)
 
-1. **Antes de cualquier cambio**: leer `~/Desktop/ITBA/26-1C/PAW/paw-2026a-10/PAW_Directives.md` para reglas vigentes de la cátedra, convenciones del equipo y bugs conocidos.
-2. **Verificar cada hallazgo antes de actuar.** La devolución cita nombres de clases/métodos — confirmá con `grep` que existen tal cual antes de modificar. Si fueron renombrados/movidos, ajustá.
+1. **Antes de cualquier cambio**: revisar las reglas vigentes de la cátedra, las convenciones del proyecto y los bugs conocidos.
+2. **Verificar cada hallazgo antes de actuar.** La devolución cita nombres de clases/métodos — conviene confirmar con `grep` que existen tal cual antes de modificar. Si fueron renombrados/movidos, ajustar.
 3. **Una corrección = un commit (o un PR coherente).** No mezclar fixes de distintas categorías.
 4. **No introducir features nuevas** que no estén pedidas explícitamente por la devolución.
 5. **Tests primero cuando sea posible**: para los fixes de lógica de negocio, agregar/ajustar el test antes de mover el código.
@@ -31,9 +31,9 @@ Corregir **punto por punto** todas las observaciones de la devolución TP1 del G
 
 ## Fase 0 — Setup y verificación
 
-- [ ] Leer `PAW_Directives.md` del repo.
+- [ ] Revisar las reglas vigentes de la cátedra.
 - [ ] Revisar `wiki/` para conceptos relevantes ([[spring-security]], [[bean-validation]], [[n+1-queries]], [[mockito-best-practices]] si existen).
-- [ ] Confirmar que el repo compila y los tests pasan en main antes de empezar.
+- [ ] Confirmar que la codebase compila y los tests pasan en main antes de empezar.
 - [ ] Crear branch `correcciones-tp1` desde main.
 
 ---
@@ -75,7 +75,7 @@ Corregir **punto por punto** todas las observaciones de la devolución TP1 del G
 
 - [ ] Inventariar TODOS los checks manuales de ownership en services (grep por `if (!resource.getOwner().getId().equals(...))` o patrones similares).
 - [ ] Migrar a `@PreAuthorize` con SpEL, o crear `PermissionEvaluator` custom si la lógica es compleja.
-- [ ] Documentar la convención en `PAW_Directives.md`: "ownership checks → `@PreAuthorize`, NO en el service".
+- [ ] Documentar la convención del proyecto: "ownership checks → `@PreAuthorize`, NO en el service".
 - [ ] Tests de integración con `@WithMockUser` para confirmar que un usuario no-owner recibe 403.
 
 ---
@@ -179,7 +179,7 @@ Corregir **punto por punto** todas las observaciones de la devolución TP1 del G
 
 ### 4.5 — Compartir comprobante por PDF (mejora sugerida)
 
-- [ ] Evaluar costo/beneficio. Si tenemos templating de mails con HTML, podemos generar PDF con iText o flying-saucer. **Si toma >2h, postergar.**
+- [ ] Evaluar costo/beneficio. Si hay templating de mails con HTML, se puede generar PDF con iText o flying-saucer. **Si toma >2h, postergar.**
 
 ### 4.6 — `aria-label`s en inglés sin i18n
 
@@ -192,9 +192,8 @@ Corregir **punto por punto** todas las observaciones de la devolución TP1 del G
 
 - [ ] Correr `mvn verify` completo. Cero failures.
 - [ ] Smoke test manual de los flujos tocados.
-- [ ] Actualizar `PAW_Directives.md` con las convenciones nuevas que surjan (especialmente Fase 1.3 sobre ownership).
+- [ ] Documentar las convenciones nuevas que surjan (especialmente Fase 1.3 sobre ownership).
 - [ ] Squash/cleanup de commits, push, PR con checklist de la devolución.
-- [ ] Actualizar `wiki/log.md` con resumen de lo corregido.
 
 ---
 
@@ -213,7 +212,7 @@ Corregir **punto por punto** todas las observaciones de la devolución TP1 del G
 [ ] 2.5   assertDoesNotThrow sin asserts → fix o rename                    ❌ SIGUE VIVO (V4 T2) — 11 ocurrencias
 [ ] 2.6   CurrencyTest → @ParameterizedTest                                ❌ SIGUE VIVO (V4 T3)
 [x] 3.1   commons-fileupload version → dependencyManagement                ✅ pom.xml:40,263-265 fixeado
-[x] 3.2   javax.servlet-api scope provided                                 ✅ verificado por agente INFRA
+[x] 3.2   javax.servlet-api scope provided                                 ✅ verificado
 [ ] 3.3   ErrorController method= en RequestMapping                        ❌ SIGUE VIVO (V4 B3) — líneas 12, 18, 24
 [ ] 4.1   Bug precio especial pisa default                                 ❌ SIGUE VIVO (V4 A3) — PriceServiceImpl + Price.EFFECTIVE_ORDER
 [ ] 4.2   CBU faltante: mensaje UI                                         ❌ SIGUE VIVO (V4 A9)
@@ -225,17 +224,17 @@ Corregir **punto por punto** todas las observaciones de la devolución TP1 del G
 
 ---
 
-## Hallazgos extra (a triage) — descubrimientos del scout V4 NO listados por el corrector
+## Hallazgos extra (a triage) — descubrimientos de auditoría NO listados por el corrector
 
-Estos hallazgos no aparecen en la devolución oficial TP1 pero fueron detectados por la auditoría general V4 sobre `main` post-TP2. Son los "más jugosos" para arreglar antes de la próxima entrega, porque demuestran patrones nuevos o residuales que el corrector probablemente marcará en TP3.
+Estos hallazgos no aparecen en la devolución oficial TP1 pero fueron detectados por una auditoría general sobre `main` post-TP2. Son los "más jugosos" para arreglar antes de la próxima entrega, porque demuestran patrones nuevos o residuales que el corrector probablemente marcará en TP3.
 
 ### Seguridad / Layering
-- **V4 S2 — `@AuthenticationPrincipal AuthUser` × 10 en `RentRequestController` (8 sitios) + `DashboardController` (2 sitios)**. Viola `docs/security.md`: la convención es `@ModelAttribute("loggedUser") final User loggedUser`. Plan individual: `0_Plans/audits/2daEntrega/V3/critica/plan_2_S2-AuthenticationPrincipal.md`.
+- **V4 S2 — `@AuthenticationPrincipal AuthUser` × 10 en `RentRequestController` (8 sitios) + `DashboardController` (2 sitios)**. Viola `docs/security.md`: la convención es `@ModelAttribute("loggedUser") final User loggedUser`.
 - **V4 S3 — `SecurityContextHolder` × 2 en validators** (`NotSelfProviderValidator:51`, `CurrentPasswordMatchesValidator:24`). Zona gris arquitectural; documentar o refactorizar para inyectar `userId` desde el form.
 - **V4 L6 — `ImageController.@PreAuthorize("@imageAccessHandler.canViewImage(...)")`** mixed strategy. Mover a `WebAuthConfig`.
 
 ### Excepciones de dominio
-- **V4 L1 — `IllegalArgumentException` / `IllegalStateException` × 15 como business exception** (ReportServiceImpl × 8, EmailServiceImpl × 3, BlockServiceImpl × 1, AdminActionServiceImpl × 1, ProductServiceImpl × 1, RentServiceImpl × 1). Crear excepciones de dominio + mapear en `GlobalExceptionHandler`. Plan individual: `plan_3_L1-IllegalArgumentException.md`.
+- **V4 L1 — `IllegalArgumentException` / `IllegalStateException` × 15 como business exception** (ReportServiceImpl × 8, EmailServiceImpl × 3, BlockServiceImpl × 1, AdminActionServiceImpl × 1, ProductServiceImpl × 1, RentServiceImpl × 1). Crear excepciones de dominio + mapear en `GlobalExceptionHandler`.
 - **V4 T5 — `AlreadyReviewedException` no mapeada en `GlobalExceptionHandler`** → devuelve 500 cuando debería ser 409 Conflict.
 
 ### Atomicidad / robustez
@@ -264,19 +263,14 @@ Estos hallazgos no aparecen en la devolución oficial TP1 pero fueron detectados
 
 ### Vista / i18n
 - **V4 V3 — JSON inline sin escape en `views/products/detail.jsp:72`** (`${sp.priceFrom}` crudo en JSON).
-- **V4 I2 — 51 keys faltantes en `messages_fr.properties` vs default** (+ 19 al revés). Auto-memory `feedback_i18n_french` ya alertó sobre esto.
-
-### Output completo de la auditoría
-- DICTAMEN: `0_Plans/audits/2daEntrega/V3/TODO_2daEntrega.md` (TREE + tabla + secciones detalladas)
-- Planes individuales CRÍTICOS: `0_Plans/audits/2daEntrega/V3/critica/plan_1_S1-PreAuthorize-RentService.md`, `plan_2_S2-AuthenticationPrincipal.md`, `plan_3_L1-IllegalArgumentException.md`, `plan_4_T1-AtomicReference-tests.md`
-- Apéndice A (descartados, incluye hallazgos ya cerrados de la devolución original): ver DICTAMEN.
+- **V4 I2 — 51 keys faltantes en `messages_fr.properties` vs default** (+ 19 al revés).
 
 ---
 
-## Notas para el agente
+## Notas de seguimiento
 
-- Cuando termines una fase, **actualizá este archivo** marcando los `[x]` y comentando hallazgos.
-- Si encontrás código mal del mismo patrón que NO está en la devolución, **anotalo abajo** pero no lo arregles en esta pasada (scope creep).
+- Al terminar una fase, conviene **actualizar este archivo** marcando los `[x]` y comentando hallazgos.
+- Si aparece código con el mismo patrón defectuoso que NO está en la devolución, **anotarlo abajo** pero no arreglarlo en esta pasada (scope creep).
 
 ### Hallazgos extra (a triage)
 

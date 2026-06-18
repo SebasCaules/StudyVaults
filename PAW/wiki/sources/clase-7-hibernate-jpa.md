@@ -11,7 +11,7 @@ sources: [PAW - clase 7.pdf]
 
 **Archivo original:** `PAW - clase 7.pdf`
 
-> ⚠ **Aviso de versiones — el PDF está desactualizado para nuestro setup.** El PDF asume implícitamente Java 7/8 (Hibernate 5.1 es de 2016). Nuestro proyecto corre con **Java 21 + Spring 5.3.33 + Hibernate 5.1.0.Final**, combinación que requiere ajustes que el PDF no menciona. Ver la sección final **"Adaptación a Java 21"** y los apuntes de [[Notion Teoricas PAW — Apuntes en vivo]] (bloque 27/04) para los detalles. Esta página deja el contenido literal del PDF y suma las correcciones.
+> ⚠ **Aviso de versiones — el PDF está desactualizado para el setup del proyecto.** El PDF asume implícitamente Java 7/8 (Hibernate 5.1 es de 2016). El proyecto corre con **Java 21 + Spring 5.3.33 + Hibernate 5.1.0.Final**, combinación que requiere ajustes que el PDF no menciona. Ver la sección final **"Adaptación a Java 21"** y los apuntes de [[Notion Teoricas PAW — Apuntes en vivo]] (bloque 27/04) para los detalles. Esta página deja el contenido literal del PDF y suma las correcciones.
 
 ## Takeaways principales
 
@@ -199,13 +199,13 @@ public class User {
 
 Al correr la aplicación aparece un error porque Hibernate trae una dependencia transitiva que entra en conflicto con otra preexistente. Solución: **modificar el pom padre para excluir la dependencia conflictiva** (la clase no detalla cuál — es un caso a resolver puntualmente).
 
-> En nuestro setup con Java 21 los conflictos concretos están detallados en la sección siguiente.
+> En el setup con Java 21 los conflictos concretos están detallados en la sección siguiente.
 
 ---
 
 ## Adaptación a Java 21 (no está en el PDF)
 
-> Esta sección **NO está en el PDF de la cátedra**. La agrego acá porque nuestro proyecto compila con `<maven.compiler.release>21</maven.compiler.release>` y Hibernate 5.1.0.Final fue liberado en 2016 para Java 7/8 — la combinación necesita workarounds. Material verificado con los apuntes de clase del 27/04 (ver [[Notion Teoricas PAW — Apuntes en vivo]]).
+> Esta sección **NO está en el PDF de la cátedra**. Se incluye acá porque el proyecto compila con `<maven.compiler.release>21</maven.compiler.release>` y Hibernate 5.1.0.Final fue liberado en 2016 para Java 7/8 — la combinación necesita workarounds. Material verificado con los apuntes de clase del 27/04 (ver [[Notion Teoricas PAW — Apuntes en vivo]]).
 
 ### Por qué la combinación pincha sola
 
@@ -277,7 +277,7 @@ Y declararla en `persistence/pom.xml`:
 
 #### 3) Mantener `javax.persistence` (no migrar a `jakarta.persistence`)
 
-Hibernate 5.1 usa el namespace **legacy `javax.persistence`** (JPA 2.1). La migración a `jakarta.persistence` recién aparece en Hibernate 6+ y no es algo que debamos hacer en este TP. Las dependencias `org.hibernate.javax.persistence:hibernate-jpa-2.1-api` son las correctas para nuestro setup.
+Hibernate 5.1 usa el namespace **legacy `javax.persistence`** (JPA 2.1). La migración a `jakarta.persistence` recién aparece en Hibernate 6+ y no corresponde en este proyecto. Las dependencias `org.hibernate.javax.persistence:hibernate-jpa-2.1-api` son las correctas para este setup.
 
 ### Alternativa: actualizar Hibernate
 
