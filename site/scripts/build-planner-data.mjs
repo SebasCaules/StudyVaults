@@ -20,6 +20,10 @@ if (!PLAN || !Array.isArray(PLAN.obligatorias)) {
   throw new Error("[build-planner-data] window.PLAN inválido en " + SRC);
 }
 
+// Build divulgable: el planner se publica SIN materias pre-aprobadas, para que
+// cada compañero arranque limpio y persista su propio progreso en localStorage.
+PLAN.aprobadasDefault = [];
+
 mkdirSync(DEST_DIR, { recursive: true });
 writeFileSync(DEST, JSON.stringify(PLAN));
 console.log(
