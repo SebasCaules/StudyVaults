@@ -1,7 +1,15 @@
-import Link from "next/link";
+import {
+  Reveal,
+  Section,
+  SectionHeading,
+  Eyebrow,
+  CardGrid,
+  Card,
+  CardIcon,
+  Button,
+} from "@studyvaults/ui";
 import { getManifest } from "@/lib/content/manifest";
 import { VAULTS, REPO_URL } from "@/lib/content/vaults";
-import Reveal from "@/components/Reveal";
 import GraphExplorer from "@/components/portal/GraphExplorer";
 import { BANNERS } from "@/components/portal/VaultBanners";
 
@@ -43,17 +51,12 @@ export default async function Home() {
             notas — cada punto es una página, cada línea un enlace entre ideas.
           </p>
           <div className="home-actions">
-            <a className="btn btn--primary btn--lg" href="#materias">
+            <Button variant="primary" size="lg" href="#materias">
               Explorar materias
-            </a>
-            <a
-              className="btn btn--ghost btn--lg"
-              href={REPO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            </Button>
+            <Button variant="ghost" size="lg" href={REPO_URL} external>
               Ver en GitHub
-            </a>
+            </Button>
           </div>
           <div className="home-stats">
             <span>
@@ -73,65 +76,54 @@ export default async function Home() {
       </section>
 
       {/* 2 · GRAFO */}
-      <section className="section container">
+      <Section container>
         <Reveal>
-          <p className="eyebrow">SYS // el mapa de las notas</p>
-          <h2 className="section__title">Todo el conocimiento, conectado.</h2>
-          <p className="home-lead">
-            Cada materia forma su propio cúmulo; las líneas son los enlaces entre
-            notas. Pasá el cursor para identificar una página, hacé click para
-            abrirla, o elegí una materia para aislar su red.
-          </p>
+          <SectionHeading
+            eyebrow="SYS // el mapa de las notas"
+            title="Todo el conocimiento, conectado."
+            lead="Cada materia forma su propio cúmulo; las líneas son los enlaces entre notas. Pasá el cursor para identificar una página, hacé click para abrirla, o elegí una materia para aislar su red."
+          />
         </Reveal>
         <Reveal>
           <GraphExplorer />
         </Reveal>
-      </section>
+      </Section>
 
       {/* 3 · QUÉ ES */}
-      <section className="section container home-prose">
+      <Section container className="home-prose">
         <Reveal>
-          <p className="eyebrow">SYS // qué es</p>
-          <h2 className="section__title">
-            Un archivo de la carrera, no un drive de PDFs.
-          </h2>
-          <p className="home-lead">
-            Tomar apuntes no es lo mismo que entender. StudyVaults toma las
-            carpetas sueltas de cada materia —teóricas, prácticas, parciales
-            viejos— y las pasa por un mismo proceso: partir el contenido en
-            notas chicas y autocontenidas, conectarlas entre sí y publicarlas
-            como un sitio que se puede leer, buscar y recorrer. El resultado son
-            siete vaults: uno por materia, todos con la misma estructura.
-          </p>
+          <SectionHeading
+            eyebrow="SYS // qué es"
+            title="Un archivo de la carrera, no un drive de PDFs."
+            lead="Tomar apuntes no es lo mismo que entender. StudyVaults toma las carpetas sueltas de cada materia —teóricas, prácticas, parciales viejos— y las pasa por un mismo proceso: partir el contenido en notas chicas y autocontenidas, conectarlas entre sí y publicarlas como un sitio que se puede leer, buscar y recorrer. El resultado son siete vaults: uno por materia, todos con la misma estructura."
+          />
         </Reveal>
-      </section>
+      </Section>
 
       {/* 4 · MATERIAS */}
-      <section id="materias" className="section container">
+      <Section container id="materias">
         <Reveal>
-          <p className="eyebrow">SYS // índice de vaults</p>
-          <h2 className="section__title">Una materia, un vault.</h2>
-          <p className="home-lead">
-            Siete materias de Ingeniería Informática del ITBA, cada una como una
-            base de conocimiento independiente. El número junto a cada materia es
-            la cantidad de páginas que contiene.
-          </p>
+          <SectionHeading
+            eyebrow="SYS // índice de vaults"
+            title="Una materia, un vault."
+            lead="Siete materias de Ingeniería Informática del ITBA, cada una como una base de conocimiento independiente. El número junto a cada materia es la cantidad de páginas que contiene."
+          />
         </Reveal>
-        <div className="cards cards--vaults" style={{ marginTop: "32px" }}>
+        <CardGrid className="cards--vaults" style={{ marginTop: "32px" }}>
           {VAULTS.map((v, i) => (
             <Reveal as="div" delay={i * 50} key={v.id}>
-              <Link href={`/${v.id}/`} className="card vaultcard" data-vault={v.id}>
+              <Card href={`/${v.id}/`} className="vaultcard" data-vault={v.id}>
                 <div className="vaultcard__bannerwrap">{BANNERS[v.id]}</div>
                 <h3>{v.name}</h3>
                 <p>{v.blurb}</p>
                 <span className="vaultcard__meta">{counts[v.id]} páginas →</span>
-              </Link>
+              </Card>
             </Reveal>
           ))}
           <Reveal as="div" delay={VAULTS.length * 50}>
-            <Link href="/electivas/" className="card vaultcard">
+            <Card href="/electivas/" className="vaultcard">
               <div className="vaultcard__bannerwrap vaultcard__bannerwrap--tool">
-                <div className="card__ico blue">PL</div>
+                <CardIcon tone="blue">PL</CardIcon>
               </div>
               <h3>Planificador de electivas</h3>
               <p>
@@ -139,18 +131,20 @@ export default async function Home() {
                 minors, créditos y armado de horario cuatrimestral.
               </p>
               <span className="vaultcard__meta">Abrir planner →</span>
-            </Link>
+            </Card>
           </Reveal>
-        </div>
-      </section>
+        </CardGrid>
+      </Section>
 
       {/* 5 · MÉTODO */}
-      <section className="section container">
+      <Section container>
         <Reveal>
-          <p className="eyebrow">SYS // método</p>
-          <h2 className="section__title">Destilado con IA, curado a mano.</h2>
+          <SectionHeading
+            eyebrow="SYS // método"
+            title="Destilado con IA, curado a mano."
+          />
         </Reveal>
-        <div className="cards cards--feature" style={{ marginTop: "32px" }}>
+        <CardGrid className="cards--feature" style={{ marginTop: "32px" }}>
           {[
             {
               k: "Capturar",
@@ -166,29 +160,28 @@ export default async function Home() {
             },
           ].map((c, i) => (
             <Reveal as="div" delay={i * 60} key={c.k}>
-              <div className="card">
-                <div className="card__ico">{String(i + 1).padStart(2, "0")}</div>
+              <Card>
+                <CardIcon>{String(i + 1).padStart(2, "0")}</CardIcon>
                 <h3>{c.k}</h3>
                 <p>{c.d}</p>
-              </div>
+              </Card>
             </Reveal>
           ))}
-        </div>
+        </CardGrid>
         <Reveal>
           <p className="home-foot">
             No es material oficial de las cátedras. Son apuntes de un estudiante,
             abiertos por si le sirven a alguien más.
           </p>
         </Reveal>
-      </section>
+      </Section>
 
       {/* 6 · CÓMO SE USA */}
-      <section className="section container">
+      <Section container>
         <Reveal>
-          <p className="eyebrow">SYS // cómo se usa</p>
-          <h2 className="section__title">Tres formas de entrar.</h2>
+          <SectionHeading eyebrow="SYS // cómo se usa" title="Tres formas de entrar." />
         </Reveal>
-        <div className="cards cards--feature" style={{ marginTop: "32px" }}>
+        <CardGrid className="cards--feature" style={{ marginTop: "32px" }}>
           {[
             {
               k: "Por materia",
@@ -204,21 +197,21 @@ export default async function Home() {
             },
           ].map((c, i) => (
             <Reveal as="div" delay={i * 60} key={c.k}>
-              <div className="card">
-                <div className="card__ico blue">{String(i + 1).padStart(2, "0")}</div>
+              <Card>
+                <CardIcon tone="blue">{String(i + 1).padStart(2, "0")}</CardIcon>
                 <h3>{c.k}</h3>
                 <p>{c.d}</p>
-              </div>
+              </Card>
             </Reveal>
           ))}
-        </div>
-      </section>
+        </CardGrid>
+      </Section>
 
       {/* 7 · ELECTIVAS */}
-      <section className="section container">
+      <Section container>
         <Reveal as="div" className="home-band">
           <div>
-            <p className="eyebrow">SYS // herramientas</p>
+            <Eyebrow>SYS // herramientas</Eyebrow>
             <h2 className="section__title">
               Planificá la carrera, no solo la cursada.
             </h2>
@@ -229,22 +222,22 @@ export default async function Home() {
               para decidir qué cursar y cuándo.
             </p>
           </div>
-          <Link className="btn btn--primary btn--lg" href="/electivas/">
+          <Button variant="primary" size="lg" href="/electivas/">
             Abrir el planificador →
-          </Link>
+          </Button>
         </Reveal>
-      </section>
+      </Section>
 
       {/* 8 · LETRA CHICA */}
-      <section className="section container">
-        <p className="eyebrow">SYS // letra chica</p>
+      <Section container>
+        <Eyebrow>SYS // letra chica</Eyebrow>
         <p className="home-note">
           Material de estudio de un estudiante, con fines académicos. No es
           contenido oficial de ninguna cátedra del ITBA. Los vaults originales de
           Obsidian son la fuente de verdad; este sitio es una vista estática
           publicada de ese contenido.
         </p>
-      </section>
+      </Section>
     </>
   );
 }

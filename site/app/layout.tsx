@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeScript } from "@studyvaults/ui";
 import AmbientLayer from "@/components/portal/AmbientLayer";
 import Navbar from "@/components/portal/Navbar";
 import ConditionalFooter from "@/components/portal/ConditionalFooter";
@@ -41,10 +42,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Anti-flash: fija data-theme antes de pintar (default dark de marca;
-// honra el preferido del sistema solo si no hay elección guardada).
-const THEME_INIT = `(function(){try{var s=localStorage.getItem('sv-theme');var t=(s==='light'||s==='dark')?s:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -58,7 +55,7 @@ export default function RootLayout({
       className={`${newsreader.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+        <ThemeScript />
         <a className="skip-link" href="#main">
           Saltar al contenido
         </a>

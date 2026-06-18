@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { THEME_STORAGE_KEY } from "../tokens";
 
 const MoonIcon = (
   <svg
@@ -33,11 +34,21 @@ const SunIcon = (
   </svg>
 );
 
-export default function ThemeToggle({
-  variant = "desktop",
-}: {
+/**
+ * ThemeToggle — conmuta `[data-theme]` en `<html>` entre `dark`/`light`,
+ * persiste la elección en `localStorage` (clave `THEME_STORAGE_KEY`) y
+ * emite el evento `sv:themechange`. Se sincroniza con el valor que fijó
+ * el script anti-flash. Variante `desktop` (íconos) o `mobile` (con label).
+ *
+ * @example
+ *   <ThemeToggle />
+ *   <ThemeToggle variant="mobile" />
+ */
+export interface ThemeToggleProps {
   variant?: "desktop" | "mobile";
-}) {
+}
+
+export function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
   const [isLight, setIsLight] = useState(false);
 
   // Sincronizar con el data-theme que fijó el script anti-flash.
@@ -54,7 +65,7 @@ export default function ThemeToggle({
         : "light";
     document.documentElement.setAttribute("data-theme", next);
     try {
-      localStorage.setItem("sv-theme", next);
+      localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {}
     setIsLight(next === "light");
     window.dispatchEvent(
@@ -86,3 +97,5 @@ export default function ThemeToggle({
     </button>
   );
 }
+
+export default ThemeToggle;

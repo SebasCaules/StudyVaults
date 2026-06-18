@@ -18,7 +18,9 @@ import type {
 const clampInt = (n: number, min: number, max: number) =>
   Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : min;
 
-/** Estado inicial determinístico (igual en SSR y primer render del cliente). */
+/** Estado inicial determinístico (igual en SSR y primer render del cliente).
+ *  Build divulgable: arranca SIN materias aprobadas — cada usuario marca las
+ *  suyas y se persisten en localStorage (ver persist.ts). */
 export function initialState(): PlannerState {
   const approved = new Set<string>(PLAN.aprobadasDefault);
   return {

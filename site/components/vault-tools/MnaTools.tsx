@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
+import { Panel, SubPanel, Note, Chip } from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 import {
   rows,
@@ -120,7 +121,7 @@ function MatrixOut({
   caption?: ReactNode;
 }) {
   if (!M || !M.length) {
-    return <p className="vtool-note">Sin resultado.</p>;
+    return <Note>Sin resultado.</Note>;
   }
   return (
     <div className="vtool-field">
@@ -157,15 +158,14 @@ function SizePicker({
       </span>
       <div className="vtool-row">
         {[2, 3, 4, 5].map((k) => (
-          <button
+          <Chip
             key={k}
-            type="button"
-            className={`vtool-chip${k === n ? " is-active" : ""}`}
+            active={k === n}
             aria-pressed={k === n}
             onClick={() => onChange(k)}
           >
             {k}×{k}
-          </button>
+          </Chip>
         ))}
       </div>
     </div>
@@ -242,7 +242,7 @@ function MatrixCalc() {
   );
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Calculadora de matrices</h3>
         <p>
@@ -342,10 +342,10 @@ function MatrixCalc() {
 
         <div className="vtool-stack">
           {invalidA ? (
-            <p className="vtool-error vtool-note">
+            <Note tone="error">
               Hay celdas vacías o no numéricas en A. Completá todas las celdas
               para calcular.
-            </p>
+            </Note>
           ) : (
             <>
               <div className="vtool-readout">
@@ -386,9 +386,9 @@ function MatrixCalc() {
                   }
                 />
               ) : (
-                <p className="vtool-note">
+                <Note>
                   A⁻¹ no existe: la matriz es singular (det ≈ 0, rango &lt; n).
-                </p>
+                </Note>
               )}
             </>
           )}
@@ -396,9 +396,9 @@ function MatrixCalc() {
           {useB &&
             !invalidA &&
             (invalidB ? (
-              <p className="vtool-error vtool-note">
+              <Note tone="error">
                 Completá todas las celdas de B para calcular A·B.
-              </p>
+              </Note>
             ) : prod ? (
               <MatrixOut
                 M={prod}
@@ -409,13 +409,13 @@ function MatrixCalc() {
                 }
               />
             ) : (
-              <p className="vtool-note">
+              <Note>
                 A·B no está definido para estas dimensiones.
-              </p>
+              </Note>
             ))}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -431,7 +431,7 @@ function Factorizations() {
   const qr = useMemo(() => (invalidA ? null : qrGramSchmidt(a.A)), [a.A, invalidA]);
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Factorizaciones LU y QR</h3>
         <p>
@@ -476,21 +476,21 @@ function Factorizations() {
               Ejemplo
             </button>
           </div>
-          <p className="vtool-note">
+          <Note>
             <b>LU (Doolittle):</b> eliminación gaussiana con pivoteo parcial. La
             permutación de filas P evita pivotes nulos y mejora la estabilidad;
             L es triangular inferior unitaria, U triangular superior.
             <br />
             <b>QR (Gram–Schmidt):</b> ortonormaliza las columnas de A → Q
             ortogonal (QᵀQ = I), R triangular superior.
-          </p>
+          </Note>
         </div>
 
         <div className="vtool-stack">
           {invalidA ? (
-            <p className="vtool-error vtool-note">
+            <Note tone="error">
               Completá todas las celdas de A para factorizar.
-            </p>
+            </Note>
           ) : (
             <>
               <span className="vtool-eyebrow">PA = LU</span>
@@ -516,9 +516,9 @@ function Factorizations() {
                   <MatrixOut M={lu.U} caption={<>U (triangular superior)</>} />
                 </>
               ) : (
-                <p className="vtool-note">
+                <Note>
                   La factorización LU requiere una matriz cuadrada.
-                </p>
+                </Note>
               )}
 
               <span className="vtool-eyebrow">A = QR</span>
@@ -528,16 +528,16 @@ function Factorizations() {
                   <MatrixOut M={qr.R} caption={<>R (triangular superior)</>} />
                 </>
               ) : (
-                <p className="vtool-note">
+                <Note>
                   Gram–Schmidt necesita columnas linealmente independientes
                   (rango completo). Si A es singular, R tendrá diagonal nula.
-                </p>
+                </Note>
               )}
             </>
           )}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -595,17 +595,17 @@ function EigenSvd() {
       );
     }
     return (
-      <p className="vtool-note">
+      <Note>
         Para n ≥ 3 los autovalores se calculan por el método de Jacobi, que
         requiere una matriz <b>simétrica</b> (A = Aᵀ). Editá A para hacerla
         simétrica, usá una matriz 2×2, o mirá los valores singulares (SVD)
         abajo, que existen para cualquier A.
-      </p>
+      </Note>
     );
   }, [a.A, a.n, sym, invalidA]);
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Autovalores y SVD</h3>
         <p>
@@ -666,9 +666,9 @@ function EigenSvd() {
 
         <div className="vtool-stack">
           {invalidA ? (
-            <p className="vtool-error vtool-note">
+            <Note tone="error">
               Completá todas las celdas de A para calcular autovalores y SVD.
-            </p>
+            </Note>
           ) : (
             <>
               <span className="vtool-eyebrow">Autovalores</span>
@@ -689,7 +689,7 @@ function EigenSvd() {
                   <MatrixOut M={s.V} caption={<>V (vectores derechos)</>} />
                 </>
               ) : (
-                <p className="vtool-note">No se pudo calcular la SVD.</p>
+                <Note>No se pudo calcular la SVD.</Note>
               )}
 
               <span className="vtool-eyebrow">Normas y condición</span>
@@ -721,7 +721,7 @@ function EigenSvd() {
           )}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -731,7 +731,7 @@ function EigenSvd() {
 
 function Reference() {
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Formulario</h3>
         <p>
@@ -740,7 +740,7 @@ function Reference() {
         </p>
       </div>
 
-      <div className="vtool-sub">
+      <SubPanel>
         <span className="vtool-eyebrow">Normas matriciales</span>
         <table className="vtool-table">
           <thead>
@@ -785,9 +785,9 @@ function Reference() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </SubPanel>
 
-      <div className="vtool-sub">
+      <SubPanel>
         <span className="vtool-eyebrow">Número de condición</span>
         <table className="vtool-table">
           <thead>
@@ -825,9 +825,9 @@ function Reference() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </SubPanel>
 
-      <div className="vtool-sub">
+      <SubPanel>
         <span className="vtool-eyebrow">Factorizaciones</span>
         <table className="vtool-table">
           <thead>
@@ -881,9 +881,9 @@ function Reference() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </SubPanel>
 
-      <div className="vtool-sub">
+      <SubPanel>
         <span className="vtool-eyebrow">Inversa, rango y autovalores</span>
         <table className="vtool-table">
           <thead>
@@ -929,14 +929,14 @@ function Reference() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </SubPanel>
 
-      <p className="vtool-note">
+      <Note>
         Convención: índices desde 1, normas inducidas salvo Frobenius. Los
         cálculos del toolkit usan pivoteo parcial (LU), Gram–Schmidt (QR) y
         Jacobi sobre AᵀA (SVD), coherentes con el método del curso.
-      </p>
-    </div>
+      </Note>
+    </Panel>
   );
 }
 

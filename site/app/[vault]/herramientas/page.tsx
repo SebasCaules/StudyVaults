@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getManifest } from "@/lib/content/manifest";
 import { buildNav } from "@/lib/content/nav-tree";
 import { VAULTS, getVault, type VaultId } from "@/lib/content/vaults";
+import { Eyebrow } from "@studyvaults/ui";
 import WikiLayout from "@/components/wiki/WikiLayout";
 import { TOOLKITS } from "@/components/vault-tools/registry";
 
@@ -59,9 +60,9 @@ export default async function ToolkitPage({
       wide
     >
       <header className="wiki__head">
-        <p className="eyebrow">
+        <Eyebrow>
           {cfg.code} // {en ? "Study toolkit" : "Herramientas de estudio"}
-        </p>
+        </Eyebrow>
         <h1 className="wiki__title">
           {en ? "Study toolkit" : "Herramientas de estudio"}
         </h1>

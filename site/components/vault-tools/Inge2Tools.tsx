@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Panel, SubPanel, Note, Mono, TextInput, Select, Chip } from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -288,7 +289,7 @@ function PatternCatalog() {
   }, []);
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <span className="vtool-eyebrow">Gang of Four</span>
         <h3>Design pattern catalog</h3>
@@ -303,10 +304,8 @@ function PatternCatalog() {
           <label className="vtool-label" htmlFor="pat-q">
             <b>Search</b>
           </label>
-          <input
+          <TextInput
             id="pat-q"
-            className="vtool-input"
-            type="text"
             placeholder="e.g. decouple, runtime algorithm, tree, undo…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -314,35 +313,33 @@ function PatternCatalog() {
         </div>
 
         <div className="vtool-row">
-          <button
-            type="button"
-            className={`vtool-chip${cat === "All" ? " is-active" : ""}`}
+          <Chip
+            active={cat === "All"}
             onClick={() => setCat("All")}
           >
             All · {counts.All}
-          </button>
+          </Chip>
           {CATEGORIES.map((c) => (
-            <button
+            <Chip
               key={c}
-              type="button"
-              className={`vtool-chip${cat === c ? " is-active" : ""}`}
+              active={cat === c}
               onClick={() => setCat(c)}
             >
               {c} · {counts[c]}
-            </button>
+            </Chip>
           ))}
         </div>
       </div>
 
       {results.length === 0 ? (
-        <p className="vtool-note">
+        <Note>
           No patterns match “{query}”. Try a broader term (e.g. “create”, “behavior”,
           “structure”) or clear the filter.
-        </p>
+        </Note>
       ) : (
         <div className="vtool-stack" style={{ marginTop: 16 }}>
           {results.map((p) => (
-            <div key={p.name} className="vtool-sub">
+            <SubPanel key={p.name}>
               <div
                 className="vtool-row"
                 style={{ justifyContent: "space-between", alignItems: "baseline" }}
@@ -392,11 +389,11 @@ function PatternCatalog() {
                   </div>
                 </div>
               </div>
-            </div>
+            </SubPanel>
           ))}
         </div>
       )}
-    </div>
+    </Panel>
   );
 }
 
@@ -543,7 +540,7 @@ function WhichPattern() {
     stage && optionIdx != null ? stage.refine.options[optionIdx] : null;
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <span className="vtool-eyebrow">Guided picker</span>
         <h3>Which pattern?</h3>
@@ -560,20 +557,19 @@ function WhichPattern() {
           </label>
           <div className="vtool-row">
             {(Object.keys(PICKER) as ProblemKind[]).map((k) => (
-              <button
+              <Chip
                 key={k}
-                type="button"
-                className={`vtool-chip${kind === k ? " is-active" : ""}`}
+                active={kind === k}
                 onClick={() => {
                   setKind(k);
                   setOptionIdx(null);
                 }}
               >
                 {PICKER[k].title}
-              </button>
+              </Chip>
             ))}
           </div>
-          {stage && <p className="vtool-note">{stage.blurb}</p>}
+          {stage && <Note>{stage.blurb}</Note>}
         </div>
 
         {stage && (
@@ -581,9 +577,8 @@ function WhichPattern() {
             <label className="vtool-label" htmlFor="pick-refine">
               <b>Step 2 — {stage.refine.q}</b>
             </label>
-            <select
+            <Select
               id="pick-refine"
-              className="vtool-select"
               value={optionIdx ?? ""}
               onChange={(e) =>
                 setOptionIdx(e.target.value === "" ? null : Number(e.target.value))
@@ -595,15 +590,15 @@ function WhichPattern() {
                   {o.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         )}
       </div>
 
       {!kind && (
-        <p className="vtool-note" style={{ marginTop: 14 }}>
+        <Note style={{ marginTop: 14 }}>
           Pick a problem category above to begin.
-        </p>
+        </Note>
       )}
 
       {chosen && (
@@ -611,13 +606,13 @@ function WhichPattern() {
           <span className="vtool-eyebrow">
             Recommended {chosen.patterns.length > 1 ? "patterns" : "pattern"}
           </span>
-          <p className="vtool-note" style={{ marginTop: 0 }}>
+          <Note style={{ marginTop: 0 }}>
             {chosen.why}
-          </p>
+          </Note>
           {chosen.patterns.map((name) => {
             const p = patternByName(name);
             return (
-              <div key={name} className="vtool-sub">
+              <SubPanel key={name}>
                 <div
                   className="vtool-row"
                   style={{ justifyContent: "space-between", alignItems: "baseline" }}
@@ -651,12 +646,12 @@ function WhichPattern() {
                     {p.intent}
                   </p>
                 )}
-              </div>
+              </SubPanel>
             );
           })}
         </div>
       )}
-    </div>
+    </Panel>
   );
 }
 
@@ -762,7 +757,7 @@ function ReviewChecklist() {
   const overallPct = ALL_ITEMS ? Math.round((overall / ALL_ITEMS) * 100) : 0;
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <span className="vtool-eyebrow">Pre-release review</span>
         <h3>Architecture &amp; security review</h3>
@@ -773,7 +768,7 @@ function ReviewChecklist() {
       </div>
 
       {/* Overall progress */}
-      <div className="vtool-sub" style={{ marginBottom: 16 }}>
+      <SubPanel style={{ marginBottom: 16 }}>
         <div
           className="vtool-row"
           style={{ justifyContent: "space-between", alignItems: "baseline" }}
@@ -789,14 +784,14 @@ function ReviewChecklist() {
             Reset all
           </button>
         </div>
-      </div>
+      </SubPanel>
 
       <div className="vtool-stack">
         {REVIEW.map((g) => {
           const done = groupDone(g);
           const pct = g.items.length ? Math.round((done / g.items.length) * 100) : 0;
           return (
-            <div key={g.id} className="vtool-sub">
+            <SubPanel key={g.id}>
               <div
                 className="vtool-row"
                 style={{ justifyContent: "space-between", alignItems: "baseline" }}
@@ -814,9 +809,9 @@ function ReviewChecklist() {
                   {done} / {g.items.length}
                 </span>
               </div>
-              <p className="vtool-note" style={{ marginTop: 4 }}>
+              <Note style={{ marginTop: 4 }}>
                 {g.blurb}
-              </p>
+              </Note>
               <ProgressBar pct={pct} />
               <div className="vtool-stack" style={{ gap: 8, marginTop: 12 }}>
                 {g.items.map((it) => {
@@ -852,11 +847,11 @@ function ReviewChecklist() {
                   );
                 })}
               </div>
-            </div>
+            </SubPanel>
           );
         })}
       </div>
-    </div>
+    </Panel>
   );
 }
 

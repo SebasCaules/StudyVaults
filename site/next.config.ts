@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   basePath,
   images: { unoptimized: true }, // no Image Optimization server on Pages
   trailingSlash: true, // /a/b/ → /a/b/index.html (nested routes work on Pages)
+  // El sistema de diseño vive en un package privado del workspace que se
+  // publica como TS/TSX crudo; Next lo transpila junto a la app.
+  transpilePackages: ["@studyvaults/ui"],
 };
 
 export default nextConfig;

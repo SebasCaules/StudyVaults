@@ -1,6 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  Panel,
+  SubPanel,
+  Note,
+  Field,
+  TextInput,
+  TextArea,
+  Select,
+  Slider,
+  Chip,
+} from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 import {
   binomial,
@@ -212,7 +223,7 @@ function DistribucionesTool() {
   const syCdf = (v: number) => PAD.t + innerH - v * innerH;
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Explorador de distribuciones</h3>
         <p>
@@ -224,13 +235,9 @@ function DistribucionesTool() {
       <div className="vtool-grid vtool-grid--ctrl">
         {/* Controles */}
         <div className="vtool-stack">
-          <div className="vtool-field">
-            <label className="vtool-label" htmlFor="dist-kind">
-              <span>Distribución</span>
-            </label>
-            <select
+          <Field label="Distribución" htmlFor="dist-kind">
+            <Select
               id="dist-kind"
-              className="vtool-select"
               value={kind}
               onChange={(e) => setKind(e.target.value as DistKey)}
             >
@@ -239,106 +246,78 @@ function DistribucionesTool() {
                   {DIST_LABELS[k]}
                 </option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </Field>
 
           {/* Parámetros según la distribución */}
           {kind === "normal" && (
             <div className="vtool-row">
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="p-mu">
-                  <span>μ (media)</span>
-                </label>
-                <input
+              <Field label="μ (media)" htmlFor="p-mu" style={{ flex: 1 }}>
+                <TextInput
                   id="p-mu"
-                  className="vtool-input"
                   value={mu}
                   onChange={(e) => setMu(e.target.value)}
                   inputMode="decimal"
                 />
-              </div>
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="p-sigma">
-                  <span>σ &gt; 0</span>
-                </label>
-                <input
+              </Field>
+              <Field label={<>σ &gt; 0</>} htmlFor="p-sigma" style={{ flex: 1 }}>
+                <TextInput
                   id="p-sigma"
-                  className="vtool-input"
                   value={sigma}
                   onChange={(e) => setSigma(e.target.value)}
                   inputMode="decimal"
                 />
-              </div>
+              </Field>
             </div>
           )}
           {kind === "binomial" && (
             <div className="vtool-row">
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="p-n">
-                  <span>n (entero ≥ 0)</span>
-                </label>
-                <input
+              <Field label="n (entero ≥ 0)" htmlFor="p-n" style={{ flex: 1 }}>
+                <TextInput
                   id="p-n"
-                  className="vtool-input"
                   value={n}
                   onChange={(e) => setN(e.target.value)}
                   inputMode="numeric"
                 />
-              </div>
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="p-p">
-                  <span>p ∈ (0, 1)</span>
-                </label>
-                <input
+              </Field>
+              <Field label="p ∈ (0, 1)" htmlFor="p-p" style={{ flex: 1 }}>
+                <TextInput
                   id="p-p"
-                  className="vtool-input"
                   value={p}
                   onChange={(e) => setP(e.target.value)}
                   inputMode="decimal"
                 />
-              </div>
+              </Field>
             </div>
           )}
           {(kind === "poisson" || kind === "exponential") && (
-            <div className="vtool-field">
-              <label className="vtool-label" htmlFor="p-lambda">
-                <span>λ &gt; 0</span>
-              </label>
-              <input
+            <Field label={<>λ &gt; 0</>} htmlFor="p-lambda">
+              <TextInput
                 id="p-lambda"
-                className="vtool-input"
                 value={lambda}
                 onChange={(e) => setLambda(e.target.value)}
                 inputMode="decimal"
               />
-            </div>
+            </Field>
           )}
           {kind === "uniformDisc" && (
             <div className="vtool-row">
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="p-a">
-                  <span>a (entero)</span>
-                </label>
-                <input
+              <Field label="a (entero)" htmlFor="p-a" style={{ flex: 1 }}>
+                <TextInput
                   id="p-a"
-                  className="vtool-input"
                   value={a}
                   onChange={(e) => setA(e.target.value)}
                   inputMode="numeric"
                 />
-              </div>
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="p-b">
-                  <span>b ≥ a</span>
-                </label>
-                <input
+              </Field>
+              <Field label="b ≥ a" htmlFor="p-b" style={{ flex: 1 }}>
+                <TextInput
                   id="p-b"
-                  className="vtool-input"
                   value={b}
                   onChange={(e) => setB(e.target.value)}
                   inputMode="numeric"
                 />
-              </div>
+              </Field>
             </div>
           )}
           {kind === "geometric" && (
@@ -346,22 +325,21 @@ function DistribucionesTool() {
               <label className="vtool-label" htmlFor="p-pgeo">
                 <span>p ∈ (0, 1)</span>
               </label>
-              <input
+              <TextInput
                 id="p-pgeo"
-                className="vtool-input"
                 value={pGeo}
                 onChange={(e) => setPGeo(e.target.value)}
                 inputMode="decimal"
               />
-              <p className="vtool-note" style={{ marginTop: 8 }}>
+              <Note style={{ marginTop: 8 }}>
                 Convención: nº de ensayos hasta el primer éxito (soporte k =
                 1, 2, …).
-              </p>
+              </Note>
             </div>
           )}
 
           {/* Momentos de la distribución */}
-          <div className="vtool-sub">
+          <SubPanel>
             <div className="vtool-eyebrow">Momentos</div>
             <div className="vtool-readout" style={{ marginTop: 8 }}>
               <div className="vtool-kv">
@@ -385,13 +363,13 @@ function DistribucionesTool() {
                 </span>
               </div>
             </div>
-          </div>
+          </SubPanel>
         </div>
 
         {/* Salida: plot + calculadora */}
         <div className="vtool-stack">
           {"err" in built && built.err ? (
-            <p className="vtool-note vtool-error">{built.err}</p>
+            <Note tone="error">{built.err}</Note>
           ) : (
             plot && (
               <>
@@ -585,45 +563,33 @@ function DistribucionesTool() {
           )}
 
           {/* Calculadora de probabilidades */}
-          <div className="vtool-sub">
+          <SubPanel>
             <div className="vtool-eyebrow">Calculadora de probabilidades</div>
             <div className="vtool-row" style={{ marginTop: 10 }}>
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="c-x">
-                  <span>x</span>
-                </label>
-                <input
+              <Field label="x" htmlFor="c-x" style={{ flex: 1 }}>
+                <TextInput
                   id="c-x"
-                  className="vtool-input"
                   value={xVal}
                   onChange={(e) => setXVal(e.target.value)}
                   inputMode="decimal"
                 />
-              </div>
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="c-a">
-                  <span>a</span>
-                </label>
-                <input
+              </Field>
+              <Field label="a" htmlFor="c-a" style={{ flex: 1 }}>
+                <TextInput
                   id="c-a"
-                  className="vtool-input"
                   value={aVal}
                   onChange={(e) => setAVal(e.target.value)}
                   inputMode="decimal"
                 />
-              </div>
-              <div className="vtool-field" style={{ flex: 1 }}>
-                <label className="vtool-label" htmlFor="c-b">
-                  <span>b</span>
-                </label>
-                <input
+              </Field>
+              <Field label="b" htmlFor="c-b" style={{ flex: 1 }}>
+                <TextInput
                   id="c-b"
-                  className="vtool-input"
                   value={bVal}
                   onChange={(e) => setBVal(e.target.value)}
                   inputMode="decimal"
                 />
-              </div>
+              </Field>
             </div>
             {dist && calc ? (
               <div className="vtool-readout" style={{ marginTop: 10 }}>
@@ -647,19 +613,19 @@ function DistribucionesTool() {
                 </div>
               </div>
             ) : (
-              <p className="vtool-note" style={{ marginTop: 10 }}>
+              <Note style={{ marginTop: 10 }}>
                 Ingresá valores numéricos para evaluar.
-              </p>
+              </Note>
             )}
             {dist?.discrete && (
-              <p className="vtool-note" style={{ marginTop: 10 }}>
+              <Note style={{ marginTop: 10 }}>
                 En discretas: P(X ≥ x) y P(a ≤ X ≤ b) incluyen los extremos.
-              </p>
+              </Note>
             )}
-          </div>
+          </SubPanel>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -733,7 +699,7 @@ function NormalTool() {
       : [];
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Tabla Z / normal estándar</h3>
         <p>
@@ -743,58 +709,40 @@ function NormalTool() {
       </div>
 
       <div className="vtool-row" style={{ marginBottom: 16 }}>
-        <button
-          type="button"
-          className={`vtool-chip${mode === "z2p" ? " is-active" : ""}`}
-          onClick={() => setMode("z2p")}
-        >
+        <Chip active={mode === "z2p"} onClick={() => setMode("z2p")}>
           z → Φ(z)
-        </button>
-        <button
-          type="button"
-          className={`vtool-chip${mode === "p2z" ? " is-active" : ""}`}
-          onClick={() => setMode("p2z")}
-        >
+        </Chip>
+        <Chip active={mode === "p2z"} onClick={() => setMode("p2z")}>
           p → z = Φ⁻¹(p)
-        </button>
+        </Chip>
       </div>
 
       <div className="vtool-grid vtool-grid--ctrl">
         <div className="vtool-stack">
           {mode === "z2p" ? (
-            <div className="vtool-field">
-              <label className="vtool-label" htmlFor="z-in">
-                <span>z</span>
-                <b>cuantil estandarizado</b>
-              </label>
-              <input
+            <Field label="z" hint="cuantil estandarizado" htmlFor="z-in">
+              <TextInput
                 id="z-in"
-                className="vtool-input"
                 value={zStr}
                 onChange={(e) => setZStr(e.target.value)}
                 inputMode="decimal"
               />
-            </div>
+            </Field>
           ) : (
-            <div className="vtool-field">
-              <label className="vtool-label" htmlFor="p-in">
-                <span>p ∈ (0, 1)</span>
-                <b>prob. acumulada</b>
-              </label>
-              <input
+            <Field label="p ∈ (0, 1)" hint="prob. acumulada" htmlFor="p-in">
+              <TextInput
                 id="p-in"
-                className="vtool-input"
                 value={pStr}
                 onChange={(e) => setPStr(e.target.value)}
                 inputMode="decimal"
               />
-            </div>
+            </Field>
           )}
 
           {"err" in res ? (
-            <p className="vtool-note vtool-error">{res.err}</p>
+            <Note tone="error">{res.err}</Note>
           ) : (
-            <div className="vtool-sub">
+            <SubPanel>
               <div className="vtool-bignum">
                 {mode === "z2p" ? fmt(res.phi) : fmt(res.z)}
                 <small>
@@ -824,7 +772,7 @@ function NormalTool() {
                   <span className="v">{fmt(res.pdf)}</span>
                 </div>
               </div>
-            </div>
+            </SubPanel>
           )}
         </div>
 
@@ -910,16 +858,16 @@ function NormalTool() {
               )}
             </svg>
           </div>
-          <p className="vtool-note">
+          <Note>
             <b>Teorema central del límite.</b> Si X₁, …, Xₙ son i.i.d. con media
             μ y varianza σ² finita, entonces para n grande la media muestral X̄
             se aproxima a una normal: (X̄ − μ) / (σ/√n) → N(0, 1). Por eso la
             tabla Z resuelve aproximadamente problemas sobre promedios y sumas
             de muchas variables, sin importar la distribución original.
-          </p>
+          </Note>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -949,7 +897,7 @@ function DescriptivaTool() {
     PAD.l + (hHi === hLo ? innerW / 2 : ((v - hLo) / (hHi - hLo)) * innerW);
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Estadística descriptiva</h3>
         <p>
@@ -960,20 +908,15 @@ function DescriptivaTool() {
 
       <div className="vtool-grid vtool-grid--ctrl">
         <div className="vtool-stack">
-          <div className="vtool-field">
-            <label className="vtool-label" htmlFor="data-in">
-              <span>Datos</span>
-              <b>{xs.length} valores</b>
-            </label>
-            <textarea
+          <Field label="Datos" hint={`${xs.length} valores`} htmlFor="data-in">
+            <TextArea
               id="data-in"
-              className="vtool-textarea"
               value={raw}
               onChange={(e) => setRaw(e.target.value)}
               spellCheck={false}
               rows={5}
             />
-          </div>
+          </Field>
           <div className="vtool-row">
             <button
               type="button"
@@ -991,32 +934,26 @@ function DescriptivaTool() {
             </button>
           </div>
 
-          <div className="vtool-field">
-            <label className="vtool-label" htmlFor="bins-in">
-              <span>Bins del histograma</span>
-              <b>{bins}</b>
-            </label>
-            <input
+          <Field label="Bins del histograma" hint={bins} htmlFor="bins-in">
+            <Slider
               id="bins-in"
-              className="vtool-slider"
-              type="range"
               min={2}
               max={20}
               step={1}
               value={bins}
               onChange={(e) => setBins(Number(e.target.value))}
             />
-          </div>
+          </Field>
         </div>
 
         <div className="vtool-stack">
           {!stats ? (
-            <p className="vtool-note vtool-error">
+            <Note tone="error">
               No hay datos numéricos válidos. Ingresá al menos un valor.
-            </p>
+            </Note>
           ) : (
             <>
-              <div className="vtool-sub">
+              <SubPanel>
                 <div className="vtool-eyebrow">Resumen</div>
                 <table className="vtool-table" style={{ marginTop: 8 }}>
                   <tbody>
@@ -1096,11 +1033,11 @@ function DescriptivaTool() {
                     </tr>
                   </tbody>
                 </table>
-                <p className="vtool-note" style={{ marginTop: 10 }}>
+                <Note style={{ marginTop: 10 }}>
                   Var. muestral usa divisor n−1 (insesgada); var. poblacional
                   usa n. CV = σ muestral / |media|.
-                </p>
-              </div>
+                </Note>
+              </SubPanel>
 
               <div className="vtool-plot">
                 <svg
@@ -1231,7 +1168,7 @@ function DescriptivaTool() {
           )}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -1306,7 +1243,7 @@ const DIST_REF: {
 
 function RefTool() {
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Formulario</h3>
         <p>
@@ -1315,7 +1252,7 @@ function RefTool() {
         </p>
       </div>
 
-      <div className="vtool-sub">
+      <SubPanel>
         <div className="vtool-eyebrow">Distribuciones</div>
         <div style={{ overflowX: "auto", marginTop: 8 }}>
           <table className="vtool-table">
@@ -1349,9 +1286,9 @@ function RefTool() {
             </tbody>
           </table>
         </div>
-      </div>
+      </SubPanel>
 
-      <div className="vtool-sub" style={{ marginTop: 16 }}>
+      <SubPanel style={{ marginTop: 16 }}>
         <div className="vtool-eyebrow">Teoremas clave</div>
         <table className="vtool-table" style={{ marginTop: 8 }}>
           <tbody>
@@ -1411,8 +1348,8 @@ function RefTool() {
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
+      </SubPanel>
+    </Panel>
   );
 }
 

@@ -2,6 +2,9 @@
   "name": "site",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "predev": "node scripts/copy-assets.mjs && node scripts/build-planner-data.mjs && node scripts/copy-vault-apps.mjs",
     "dev": "next dev",
@@ -10,6 +13,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@studyvaults/ui": "*",
     "d3-force": "^3.0.0",
     "fast-glob": "^3.3.3",
     "gray-matter": "^4.0.3",

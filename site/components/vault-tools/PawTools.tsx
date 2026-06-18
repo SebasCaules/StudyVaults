@@ -1,6 +1,14 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
+import {
+  Panel,
+  SubPanel,
+  Note,
+  CodeBlock,
+  Chip,
+  TextInput,
+} from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 
 /* ------------------------------------------------------------------ *
@@ -445,7 +453,7 @@ function SnippetTool() {
   }, [query, cat]);
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Snippet cheatsheet</h3>
         <p>
@@ -462,10 +470,8 @@ function SnippetTool() {
               {filtered.length} / {SNIPPETS.length}
             </span>
           </label>
-          <input
+          <TextInput
             id="paw-snip-search"
-            className="vtool-input"
-            type="text"
             placeholder="e.g. @Valid, forEach, SecurityFilterChain, @PathVariable…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -475,35 +481,30 @@ function SnippetTool() {
         </div>
 
         <div className="vtool-row" role="group" aria-label="Filter by category">
-          <button
-            type="button"
-            className={`vtool-chip${cat === null ? " is-active" : ""}`}
-            onClick={() => setCat(null)}
-          >
+          <Chip active={cat === null} onClick={() => setCat(null)}>
             All
-          </button>
+          </Chip>
           {CATEGORIES.map((c) => (
-            <button
+            <Chip
               key={c}
-              type="button"
-              className={`vtool-chip${cat === c ? " is-active" : ""}`}
+              active={cat === c}
               onClick={() => setCat(cat === c ? null : c)}
             >
               {c}
-            </button>
+            </Chip>
           ))}
         </div>
       </div>
 
       {filtered.length === 0 ? (
-        <p className="vtool-note vtool-error">
+        <Note tone="error">
           No snippets match “{query}”
           {cat ? ` in ${cat}` : ""}. Clear the search or pick another category.
-        </p>
+        </Note>
       ) : (
         <div className="vtool-stack" style={{ marginTop: 18, gap: 18 }}>
           {filtered.map((s) => (
-            <div className="vtool-sub" key={`${s.category}-${s.title}`}>
+            <SubPanel key={`${s.category}-${s.title}`}>
               <div className="vtool-head" style={{ marginBottom: 12 }}>
                 <div>
                   <div className="vtool-eyebrow">{s.category}</div>
@@ -511,13 +512,13 @@ function SnippetTool() {
                 </div>
                 <CopyButton text={s.code} />
               </div>
-              <pre className="vtool-code">{s.code}</pre>
-              {s.note && <p className="vtool-note">{s.note}</p>}
-            </div>
+              <CodeBlock>{s.code}</CodeBlock>
+              {s.note && <Note>{s.note}</Note>}
+            </SubPanel>
           ))}
         </div>
       )}
-    </div>
+    </Panel>
   );
 }
 
@@ -663,7 +664,7 @@ function LifecycleTool() {
   }
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>Request lifecycle</h3>
         <p>
@@ -757,7 +758,7 @@ function LifecycleTool() {
         </svg>
       </div>
 
-      <div className="vtool-sub" style={{ marginTop: 18 }}>
+      <SubPanel style={{ marginTop: 18 }}>
         <div className="vtool-eyebrow">
           Stage {STAGES.findIndex((s) => s.key === cur.key) + 1} of{" "}
           {STAGES.length}
@@ -790,15 +791,15 @@ function LifecycleTool() {
             </span>
           ))}
         </div>
-      </div>
+      </SubPanel>
 
-      <p className="vtool-note">
+      <Note>
         DispatcherServlet is the front controller orchestrating every step. A{" "}
         <span className="vtool-mono">return &quot;redirect:/…&quot;</span> short-circuits
         view rendering and starts a fresh request (the POST-Redirect-GET
         pattern).
-      </p>
-    </div>
+      </Note>
+    </Panel>
   );
 }
 
@@ -878,7 +879,7 @@ function RefTable({
   rows: RefRow[];
 }) {
   return (
-    <div className="vtool-sub" style={{ overflowX: "auto" }}>
+    <SubPanel style={{ overflowX: "auto" }}>
       <div className="vtool-eyebrow" style={{ marginBottom: 10 }}>
         {caption}
       </div>
@@ -904,7 +905,7 @@ function RefTable({
           ))}
         </tbody>
       </table>
-    </div>
+    </SubPanel>
   );
 }
 
@@ -912,7 +913,7 @@ function ReferenceTool() {
   const [tab, setTab] = useState<"el" | "jstl" | "ann">("el");
 
   return (
-    <div className="vtool-panel">
+    <Panel>
       <div className="vtool-head">
         <h3>EL &amp; JSTL reference</h3>
         <p>
@@ -922,27 +923,15 @@ function ReferenceTool() {
       </div>
 
       <div className="vtool-row" role="group" aria-label="Reference section">
-        <button
-          type="button"
-          className={`vtool-chip${tab === "el" ? " is-active" : ""}`}
-          onClick={() => setTab("el")}
-        >
+        <Chip active={tab === "el"} onClick={() => setTab("el")}>
           EL
-        </button>
-        <button
-          type="button"
-          className={`vtool-chip${tab === "jstl" ? " is-active" : ""}`}
-          onClick={() => setTab("jstl")}
-        >
+        </Chip>
+        <Chip active={tab === "jstl"} onClick={() => setTab("jstl")}>
           JSTL tags
-        </button>
-        <button
-          type="button"
-          className={`vtool-chip${tab === "ann" ? " is-active" : ""}`}
-          onClick={() => setTab("ann")}
-        >
+        </Chip>
+        <Chip active={tab === "ann"} onClick={() => setTab("ann")}>
           Annotations
-        </button>
+        </Chip>
       </div>
 
       <div className="vtool-stack" style={{ marginTop: 18, gap: 18 }}>
@@ -958,7 +947,7 @@ function ReferenceTool() {
               headers={["Object", "Resolves to", "Example"]}
               rows={EL_IMPLICIT}
             />
-            <p className="vtool-note">
+            <Note>
               EL is null-safe and silently yields empty for missing links, so{" "}
               <span className="vtool-mono">${"{a.b.c}"}</span> never throws an NPE in
               the view. Word forms (<span className="vtool-mono">eq</span>,{" "}
@@ -966,7 +955,7 @@ function ReferenceTool() {
               <span className="vtool-mono">lt</span>) avoid having to escape{" "}
               <span className="vtool-mono">&lt;</span> /{" "}
               <span className="vtool-mono">&amp;</span> inside XML/JSP.
-            </p>
+            </Note>
           </>
         )}
 
@@ -977,7 +966,7 @@ function ReferenceTool() {
               headers={["Tag", "Meaning", "Example"]}
               rows={JSTL_TAGS}
             />
-            <p className="vtool-note">
+            <Note>
               Declare the taglibs at the top of the JSP:{" "}
               <span className="vtool-mono">prefix=&quot;c&quot;</span> →
               jstl/core,{" "}
@@ -987,7 +976,7 @@ function ReferenceTool() {
               jstl/functions. Prefer <span className="vtool-mono">&lt;c:out&gt;</span>{" "}
               over a bare <span className="vtool-mono">${"{…}"}</span> for
               user-supplied text to escape HTML and prevent XSS.
-            </p>
+            </Note>
           </>
         )}
 
@@ -998,7 +987,7 @@ function ReferenceTool() {
               headers={["Annotation", "Purpose", "Usage"]}
               rows={ANNOTATIONS}
             />
-            <p className="vtool-note">
+            <Note>
               <span className="vtool-mono">@RestController</span> equals{" "}
               <span className="vtool-mono">@Controller</span> +{" "}
               <span className="vtool-mono">@ResponseBody</span> on every method —
@@ -1007,11 +996,11 @@ function ReferenceTool() {
               Remember: <span className="vtool-mono">BindingResult</span> must
               immediately follow the{" "}
               <span className="vtool-mono">@Valid</span> parameter it reports on.
-            </p>
+            </Note>
           </>
         )}
       </div>
-    </div>
+    </Panel>
   );
 }
 

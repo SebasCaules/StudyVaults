@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import type { NavSection } from "@/lib/content/nav-tree";
 import type { TocItem } from "@/lib/content/render";
+import { Breadcrumbs, type Crumb } from "@studyvaults/ui";
 import Sidebar from "./Sidebar";
-import Breadcrumbs, { type Crumb } from "./Breadcrumbs";
 import TableOfContents from "./TableOfContents";
 import MermaidRunner from "./MermaidRunner";
 import WikiRail from "./WikiRail";

@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@studyvaults/ui": ["./packages/ui/src/index.ts"],
+      "@studyvaults/ui/*": ["./packages/ui/src/*"]
     }
   },
   "include": [

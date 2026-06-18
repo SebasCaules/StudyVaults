@@ -5,6 +5,7 @@ import { getManifest, getNoteByVaultSlug } from "@/lib/content/manifest";
 import { renderNote } from "@/lib/content/render";
 import { buildNav } from "@/lib/content/nav-tree";
 import { VAULTS, getVault } from "@/lib/content/vaults";
+import { Eyebrow, Badge } from "@studyvaults/ui";
 import WikiLayout from "@/components/wiki/WikiLayout";
 import Prose from "@/components/wiki/Prose";
 import VaultToolLaunchers from "@/components/wiki/VaultToolLaunchers";
@@ -69,13 +70,13 @@ export default async function VaultPage({
       toc={toc}
     >
       <header className="wiki__head">
-        <p className="eyebrow">
+        <Eyebrow>
           {cfg.code} // {cfg.lang === "en" ? "Subject" : "Materia"}
-        </p>
+        </Eyebrow>
         <h1 className="wiki__title">{cfg.name}</h1>
         <p className="wiki__blurb">{cfg.blurb}</p>
         <div className="wiki__meta">
-          <span className="badge badge--status">{count} páginas</span>
+          <Badge variant="status">{count} páginas</Badge>
         </div>
       </header>
       <VaultToolLaunchers cfg={cfg} />

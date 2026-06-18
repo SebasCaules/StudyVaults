@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { TextInput, Select, Slider, Note } from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 import { fmt } from "./lib/stats";
 
@@ -108,9 +109,7 @@ function MercadoTool() {
             <label className="vtool-label">
               <b>a</b> intercepto demanda · {fmt(a, 1)}
             </label>
-            <input
-              className="vtool-slider"
-              type="range"
+            <Slider
               min={20}
               max={200}
               step={1}
@@ -122,9 +121,7 @@ function MercadoTool() {
             <label className="vtool-label">
               <b>b</b> pendiente demanda · {fmt(b, 2)}
             </label>
-            <input
-              className="vtool-slider"
-              type="range"
+            <Slider
               min={0.1}
               max={6}
               step={0.1}
@@ -136,9 +133,7 @@ function MercadoTool() {
             <label className="vtool-label">
               <b>c</b> intercepto oferta · {fmt(c, 1)}
             </label>
-            <input
-              className="vtool-slider"
-              type="range"
+            <Slider
               min={0}
               max={120}
               step={1}
@@ -150,9 +145,7 @@ function MercadoTool() {
             <label className="vtool-label">
               <b>d</b> pendiente oferta · {fmt(d, 2)}
             </label>
-            <input
-              className="vtool-slider"
-              type="range"
+            <Slider
               min={0.1}
               max={6}
               step={0.1}
@@ -164,9 +157,7 @@ function MercadoTool() {
             <label className="vtool-label">
               <b>t</b> impuesto por unidad · {fmt(t, 1)}
             </label>
-            <input
-              className="vtool-slider"
-              type="range"
+            <Slider
               min={0}
               max={60}
               step={1}
@@ -249,13 +240,13 @@ function MercadoTool() {
         </div>
       )}
 
-      <p className="vtool-note">
+      <Note>
         El impuesto por unidad se modela como un desplazamiento de la oferta a{" "}
         <span className="vtool-mono">P = (c + t) + d·Q</span>: la cuña fiscal{" "}
         <span className="vtool-mono">P_comprador − P_vendedor = t</span> reduce la
         cantidad y genera el triángulo de peso muerto{" "}
         <span className="vtool-mono">½·t·(Q* − Q_t)</span>.
-      </p>
+      </Note>
     </div>
   );
 }
@@ -610,16 +601,15 @@ function ElasticidadTool() {
         {/* (a) Puntual */}
         <div className="vtool-sub">
           <span className="vtool-eyebrow">a · Elasticidad puntual</span>
-          <p className="vtool-note">
+          <Note>
             <span className="vtool-mono">ε = (dQ/dP)·(P/Q)</span>
-          </p>
+          </Note>
           <div className="vtool-row">
             <div className="vtool-field">
               <label className="vtool-label">
                 <b>P</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={pP}
                 onChange={(e) => setPP(e.target.value)}
@@ -629,8 +619,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>Q</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={pQ}
                 onChange={(e) => setPQ(e.target.value)}
@@ -640,8 +629,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>dQ/dP</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={pSlope}
                 onChange={(e) => setPSlope(e.target.value)}
@@ -654,11 +642,11 @@ function ElasticidadTool() {
                 ε = {fmt(punt.eps, 4)}
                 <small>{clasifPrecio(punt.eps)}</small>
               </div>
-              <p className="vtool-note">
+              <Note>
                 Una suba de precio del 1% mueve la cantidad{" "}
                 <span className="vtool-mono">{fmt(punt.eps, 2)}%</span> (signo
                 negativo = demanda decreciente habitual).
-              </p>
+              </Note>
             </>
           ) : (
             <p className="vtool-error">{punt.msg}</p>
@@ -668,18 +656,17 @@ function ElasticidadTool() {
         {/* (b) Arco */}
         <div className="vtool-sub">
           <span className="vtool-eyebrow">b · Elasticidad arco (punto medio)</span>
-          <p className="vtool-note">
+          <Note>
             <span className="vtool-mono">
               ε = (ΔQ / Q̄) / (ΔP / P̄)
             </span>
-          </p>
+          </Note>
           <div className="vtool-row">
             <div className="vtool-field">
               <label className="vtool-label">
                 <b>P₁</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={P1}
                 onChange={(e) => setP1(e.target.value)}
@@ -689,8 +676,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>Q₁</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={Q1}
                 onChange={(e) => setQ1(e.target.value)}
@@ -702,8 +688,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>P₂</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={P2}
                 onChange={(e) => setP2(e.target.value)}
@@ -713,8 +698,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>Q₂</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={Q2}
                 onChange={(e) => setQ2(e.target.value)}
@@ -738,8 +722,7 @@ function ElasticidadTool() {
             <label className="vtool-label">
               <b>Variable explicativa X</b>
             </label>
-            <select
-              className="vtool-select"
+            <Select
               value={xLabel}
               onChange={(e) =>
                 setXLabel(e.target.value as "precio de otro bien" | "ingreso")
@@ -749,15 +732,14 @@ function ElasticidadTool() {
               <option value="precio de otro bien">
                 Precio de otro bien (cruzada ε_xy)
               </option>
-            </select>
+            </Select>
           </div>
           <div className="vtool-row">
             <div className="vtool-field">
               <label className="vtool-label">
                 <b>X₁</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={X1}
                 onChange={(e) => setX1(e.target.value)}
@@ -767,8 +749,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>Q₁</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={Q1c}
                 onChange={(e) => setQ1c(e.target.value)}
@@ -780,8 +761,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>X₂</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={X2}
                 onChange={(e) => setX2(e.target.value)}
@@ -791,8 +771,7 @@ function ElasticidadTool() {
               <label className="vtool-label">
                 <b>Q₂</b>
               </label>
-              <input
-                className="vtool-input"
+              <TextInput
                 inputMode="decimal"
                 value={Q2c}
                 onChange={(e) => setQ2c(e.target.value)}
@@ -810,12 +789,12 @@ function ElasticidadTool() {
         </div>
       </div>
 
-      <p className="vtool-note">
+      <Note>
         La fórmula del punto medio usa los promedios{" "}
         <span className="vtool-mono">Q̄ = (Q₁+Q₂)/2</span> y{" "}
         <span className="vtool-mono">P̄ = (P₁+P₂)/2</span>, de modo que la
         elasticidad arco es simétrica respecto del sentido del cambio.
-      </p>
+      </Note>
     </div>
   );
 }
@@ -941,17 +920,14 @@ function VanTirTool() {
             <label className="vtool-label">
               <b>Tasa de descuento r</b> · {fmt(r * 100, 2)}%
             </label>
-            <input
-              className="vtool-slider"
-              type="range"
+            <Slider
               min={0}
               max={40}
               step={0.5}
               value={clamp(num(rStr, 0), 0, 40)}
               onChange={(e) => setRStr(e.target.value)}
             />
-            <input
-              className="vtool-input"
+            <TextInput
               inputMode="decimal"
               value={rStr}
               onChange={(e) => setRStr(e.target.value)}
@@ -967,8 +943,7 @@ function VanTirTool() {
                   </label>
                 </div>
                 <div className="vtool-field">
-                  <input
-                    className="vtool-input"
+                  <TextInput
                     inputMode="decimal"
                     value={v}
                     onChange={(e) => setFlow(i, e.target.value)}
@@ -1034,18 +1009,18 @@ function VanTirTool() {
               </div>
 
               {result.tir === null && (
-                <p className="vtool-note">
+                <Note>
                   No hay cambio de signo en el VAN sobre [−99%, 1000%]: la TIR no
                   está definida para este flujo (todos los signos iguales o sin
                   raíz real en el rango).
-                </p>
+                </Note>
               )}
               {result.multiple && (
-                <p className="vtool-note">
+                <Note>
                   El flujo cambia de signo más de una vez: puede haber múltiples
                   TIR. Se reporta la primera raíz; interpretá el VAN como criterio
                   principal.
-                </p>
+                </Note>
               )}
             </>
           ) : null}

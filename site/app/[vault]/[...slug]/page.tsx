@@ -6,6 +6,7 @@ import { renderNote } from "@/lib/content/render";
 import { buildNav } from "@/lib/content/nav-tree";
 import { getVault } from "@/lib/content/vaults";
 import { humanize } from "@/lib/content/slug";
+import { Eyebrow, Tag } from "@studyvaults/ui";
 import WikiLayout from "@/components/wiki/WikiLayout";
 import Prose from "@/components/wiki/Prose";
 
@@ -82,9 +83,9 @@ export default async function NotePage({
     >
       <div data-pagefind-body data-pagefind-filter={`materia:${cfg.short}`}>
         <header className="wiki__head">
-          <p className="eyebrow">
+          <Eyebrow>
             {cfg.code} // {sectionLabel}
-          </p>
+          </Eyebrow>
           <h1 className="wiki__title" data-pagefind-meta="title">
             {note.title}
           </h1>
@@ -94,9 +95,7 @@ export default async function NotePage({
                 <span className="wiki__updated">act. {note.updated}</span>
               )}
               {note.tags.slice(0, 6).map((t) => (
-                <span className="tag" key={t}>
-                  {t}
-                </span>
+                <Tag key={t}>{t}</Tag>
               ))}
             </div>
           )}

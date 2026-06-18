@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { Tabs } from "@studyvaults/ui";
 
 export interface Tool {
   key: string;
@@ -10,8 +11,9 @@ export interface Tool {
 
 /**
  * Shell común de los toolkits por materia: una intro opcional + tabs
- * (segmented control) que conmutan entre herramientas. Solo monta la
- * herramienta activa (cada una mantiene su propio estado interno).
+ * (segmented control de @studyvaults/ui) que conmutan entre herramientas.
+ * Solo monta la herramienta activa (cada una mantiene su propio estado
+ * interno mientras está visible).
  */
 export default function ToolkitShell({
   intro,
@@ -21,26 +23,17 @@ export default function ToolkitShell({
   tools: Tool[];
 }) {
   const [active, setActive] = useState(tools[0]?.key);
-  const cur = tools.find((t) => t.key === active) ?? tools[0];
+  const panels = Object.fromEntries(tools.map((t) => [t.key, t.node]));
 
   return (
     <div className="vtool">
       {intro && <p className="vtool__intro">{intro}</p>}
-      <div className="vtool-tabs" role="tablist" aria-label="Herramientas">
-        {tools.map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            role="tab"
-            aria-selected={t.key === cur.key}
-            className={`vtool-tab${t.key === cur.key ? " is-active" : ""}`}
-            onClick={() => setActive(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-      <div role="tabpanel">{cur?.node}</div>
+      <Tabs
+        tabs={tools.map((t) => ({ id: t.key, label: t.label }))}
+        value={active}
+        onChange={setActive}
+        panels={panels}
+      />
     </div>
   );
 }
