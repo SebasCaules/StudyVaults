@@ -12,8 +12,9 @@ export const economiaFormulas: Sheet = {
   "updated": "2026-06-19",
   "groups": [
     {
-      "title": "U1 · Oferta, demanda y precios",
+      "title": "Oferta, demanda y precios",
       "hint": "Equilibrio, deflactar e índices",
+      "unit": "1",
       "entries": [
         {
           "label": "Equilibrio de mercado",
@@ -56,8 +57,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U1 · Elasticidades",
+      "title": "Elasticidades",
       "hint": "Sensibilidad porcentual",
+      "unit": "1",
       "entries": [
         {
           "label": "Elasticidad-precio demanda",
@@ -104,8 +106,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U1 · Excedentes y bienestar",
+      "title": "Excedentes y bienestar",
       "hint": "Áreas y controles de precio",
+      "unit": "1",
       "entries": [
         {
           "label": "Excedente consumidor",
@@ -138,8 +141,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U2 · Producción",
+      "title": "Producción",
       "hint": "Factores, PMg/PMe, escala",
+      "unit": "2",
       "entries": [
         {
           "label": "Función de producción",
@@ -172,8 +176,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U2 · Costos",
+      "title": "Costos",
       "hint": "CT/CF/CV, medios, marginal",
+      "unit": "2",
       "entries": [
         {
           "label": "Costo total",
@@ -213,8 +218,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U2 · Ingreso, beneficio y break-even",
+      "title": "Ingreso, beneficio y break-even",
       "hint": "Optimización general",
+      "unit": "2",
       "entries": [
         {
           "label": "Ingreso total y marginal",
@@ -244,8 +250,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U3 · Competencia perfecta",
+      "title": "Competencia perfecta",
       "hint": "Precio-aceptante, cierre, LP",
+      "unit": "3",
       "entries": [
         {
           "label": "Empresa precio-aceptante",
@@ -279,8 +286,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U3 · Impuestos y subsidios",
+      "title": "Impuestos y subsidios",
       "hint": "Incidencia, DWL, recaudación",
+      "unit": "3",
       "entries": [
         {
           "label": "Efecto del impuesto $t$",
@@ -308,8 +316,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U4 · Monopolio",
+      "title": "Monopolio",
       "hint": "IMg, markup, Lerner",
+      "unit": "4",
       "entries": [
         {
           "label": "IMg con demanda lineal",
@@ -349,8 +358,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U4 · Otros mercados imperfectos",
+      "title": "Otros mercados imperfectos",
       "hint": "Discriminación, comp. monopolística, Nash",
+      "unit": "4",
       "entries": [
         {
           "label": "Discriminación 3.er grado",
@@ -389,8 +399,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · PBI e inflación",
+      "title": "PBI e inflación",
       "hint": "Tres métodos, deflactor",
+      "unit": "5",
       "entries": [
         {
           "label": "PBI (método del gasto)",
@@ -442,8 +453,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · Empleo y distribución",
+      "title": "Empleo y distribución",
       "hint": "Tasas, Okun, Gini",
+      "unit": "5",
       "entries": [
         {
           "label": "Tasas laborales",
@@ -479,8 +491,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · Política fiscal y deuda",
+      "title": "Política fiscal y deuda",
       "hint": "Multiplicadores, sostenibilidad",
+      "unit": "5",
       "entries": [
         {
           "label": "Multiplicador del gasto",
@@ -516,8 +529,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · Dinero y sector externo",
+      "title": "Dinero y sector externo",
       "hint": "Multiplicador monetario, TCR",
+      "unit": "5",
       "entries": [
         {
           "label": "Agregados monetarios",
@@ -558,8 +572,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · Valuación de activos financieros",
+      "title": "Valuación de activos financieros",
       "hint": "Bonos, acciones, Fisher ex-ante",
+      "unit": "5",
       "entries": [
         {
           "label": "Valuación de bonos (renta fija)",
@@ -596,8 +611,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U6 · Contabilidad y EERR",
+      "title": "Contabilidad y EERR",
       "hint": "Ecuación patrimonial, cascada",
+      "unit": "6",
       "entries": [
         {
           "label": "Ecuación contable",
@@ -632,8 +648,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U6 · Flujo de fondos (EOAF)",
+      "title": "Flujo de fondos (EOAF)",
       "hint": "Orígenes/aplicaciones, FCFF",
+      "unit": "6",
       "entries": [
         {
           "label": "Variación de caja",
@@ -662,8 +679,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U6 · Costos de fabricación",
+      "title": "Costos de fabricación",
       "hint": "Componentes, costeo, producto/período",
+      "unit": "6",
       "entries": [
         {
           "label": "Costo de fabricación",
@@ -691,8 +709,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U6 · Ratios financieros",
+      "title": "Ratios financieros",
       "hint": "Liquidez, actividad, deuda, DuPont",
+      "unit": "6",
       "entries": [
         {
           "label": "Liquidez",
@@ -733,8 +752,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U7 · Valor tiempo del dinero",
+      "title": "Valor tiempo del dinero",
       "hint": "Capitalizar y descontar",
+      "unit": "7",
       "entries": [
         {
           "label": "Interés compuesto",
@@ -787,8 +807,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U7 · Rentas y préstamos",
+      "title": "Rentas y préstamos",
       "hint": "Anualidades, perpetuidades, amortización",
+      "unit": "7",
       "entries": [
         {
           "label": "Anualidad vencida",
@@ -840,8 +861,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U8 · Evaluación de proyectos",
+      "title": "Evaluación de proyectos",
       "hint": "VAN, TIR, ranking",
+      "unit": "8",
       "entries": [
         {
           "label": "Valor Actual Neto",
@@ -884,8 +906,9 @@ export const economiaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U8 · Flujos e impuestos",
+      "title": "Flujos e impuestos",
       "hint": "FEO, escudo, terminal",
+      "unit": "8",
       "entries": [
         {
           "label": "Flujo efectivo operativo",
@@ -936,8 +959,9 @@ export const economiaConceptos: Sheet = {
   "updated": "2026-06-19",
   "groups": [
     {
-      "title": "U1 · Fundamentos y mercado",
+      "title": "Fundamentos y mercado",
       "hint": "Escasez, FPP, oferta-demanda, equilibrio",
+      "unit": "1",
       "entries": [
         {
           "label": "Economía / Escasez",
@@ -980,8 +1004,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U1 · Elasticidades",
+      "title": "Elasticidades",
       "hint": "Sensibilidad porcentual y conexión con el ingreso",
+      "unit": "1",
       "entries": [
         {
           "label": "Elasticidad-precio demanda",
@@ -1008,8 +1033,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U1 · Bienestar e intervención",
+      "title": "Bienestar e intervención",
       "hint": "Excedentes, controles, impuestos",
+      "unit": "1",
       "entries": [
         {
           "label": "Excedentes EC y EP",
@@ -1043,8 +1069,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U2 · Producción",
+      "title": "Producción",
       "hint": "Función de producción, productividades, escala",
+      "unit": "2",
       "entries": [
         {
           "label": "Función de producción / CP vs LP",
@@ -1075,8 +1102,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U2 · Costos",
+      "title": "Costos",
       "hint": "Económico vs contable, estructura, regla del óptimo",
+      "unit": "2",
       "entries": [
         {
           "label": "Costo económico vs contable",
@@ -1119,8 +1147,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U3 · Competencia perfecta",
+      "title": "Competencia perfecta",
       "hint": "Precio-aceptante, cierre, equilibrio LP",
+      "unit": "3",
       "entries": [
         {
           "label": "Los 4 supuestos",
@@ -1158,8 +1187,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U4 · Monopolio y poder de mercado",
+      "title": "Monopolio y poder de mercado",
       "hint": "IMg < P, Lerner, discriminación, regulación",
+      "unit": "4",
       "entries": [
         {
           "label": "Causas del monopolio",
@@ -1204,8 +1234,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U4 · Oligopolio y comp. monopolística",
+      "title": "Oligopolio y comp. monopolística",
       "hint": "Interdependencia, juegos, diferenciación",
+      "unit": "4",
       "entries": [
         {
           "label": "Competencia monopolística (eq. LP)",
@@ -1231,8 +1262,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U5 · PBI y cuentas nacionales",
+      "title": "PBI y cuentas nacionales",
       "hint": "Medición del producto, real vs nominal, identidades",
+      "unit": "5",
       "entries": [
         {
           "label": "PBI",
@@ -1263,8 +1295,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U5 · Inflación y empleo",
+      "title": "Inflación y empleo",
       "hint": "IPC, costos de inflación, mercado de trabajo",
+      "unit": "5",
       "entries": [
         {
           "label": "Inflación",
@@ -1301,8 +1334,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U5 · ODA y política fiscal",
+      "title": "ODA y política fiscal",
       "hint": "Demanda/oferta agregadas, multiplicador, déficit",
+      "unit": "5",
       "entries": [
         {
           "label": "Demanda agregada (DA)",
@@ -1341,8 +1375,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U5 · Dinero y política monetaria",
+      "title": "Dinero y política monetaria",
       "hint": "Agregados, multiplicador, mercado de dinero, M·V=P·Y",
+      "unit": "5",
       "entries": [
         {
           "label": "Funciones y agregados del dinero",
@@ -1419,8 +1454,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U6 · Contabilidad",
+      "title": "Contabilidad",
       "hint": "Balance, devengado, resultados, amortización",
+      "unit": "6",
       "entries": [
         {
           "label": "Ecuación contable / partida doble",
@@ -1456,8 +1492,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U6 · Análisis financiero y costos",
+      "title": "Análisis financiero y costos",
       "hint": "Capital de trabajo, ratios, DuPont, punto de equilibrio",
+      "unit": "6",
       "entries": [
         {
           "label": "Capital de trabajo y ciclo de caja",
@@ -1498,8 +1535,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U7 · Cálculo financiero",
+      "title": "Cálculo financiero",
       "hint": "Valor tiempo, tasas equivalentes, anualidades, préstamos",
+      "unit": "7",
       "entries": [
         {
           "label": "Valor tiempo del dinero",
@@ -1548,8 +1586,9 @@ export const economiaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U8 · Evaluación de proyectos",
+      "title": "Evaluación de proyectos",
       "hint": "Flujo de caja, FEO, escudo fiscal, VAN/TIR",
+      "unit": "8",
       "entries": [
         {
           "label": "Principio rector: caja, no contabilidad",

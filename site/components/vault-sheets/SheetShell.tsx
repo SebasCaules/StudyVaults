@@ -1,25 +1,46 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import type { Sheet, SheetEntry } from "./types";
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
+import type { Sheet, SheetEntry, SheetGroup } from "./types";
 import { defaultKind, KIND_META, type EntryKind } from "./types";
 import { Math, RichText } from "./SheetMath";
 import { toTex, toMd, downloadText } from "./exporters";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   SheetShell — chrome de una "hoja de estudio": toolbar (toggle de modo +
-   acciones de exportación) y el documento denso, color-coded e imprimible.
-   Cada materia provee `formulas` y/o `conceptos`. La impresión usa CSS
-   (@media print en sheets.css) para aislar solo `.sheet-print-root`.
+   SheetShell — chrome de una "hoja de estudio": toolbar (modo + export),
+   panel de personalización (densidad, columnas, filtro de unidades y
+   categorías) y el documento denso, color-coded e imprimible, separado por
+   unidad. La personalización afecta a la vez la VISUALIZACIÓN, la IMPRESIÓN
+   (window.print) y los EXPORTS (.tex / .md) — siempre se exporta "lo que ves".
    ────────────────────────────────────────────────────────────────────────── */
 
 type Mode = "formulas" | "conceptos";
+type Density = "compact" | "normal" | "wide";
+type Cols = "auto" | "2" | "3" | "4";
+
+interface Opts {
+  density: Density;
+  cols: Cols;
+  hiddenUnits: string[];
+  hiddenKinds: EntryKind[];
+}
+const DEFAULT_OPTS: Opts = {
+  density: "normal",
+  cols: "auto",
+  hiddenUnits: [],
+  hiddenKinds: [],
+};
+const OPTS_KEY = "sv-sheet-opts";
 
 const MODE_LABEL: Record<Mode, string> = {
   formulas: "Fórmulas",
   conceptos: "Conceptos",
 };
-
+const DENSITY_LABEL: Record<Density, string> = {
+  compact: "Compacta",
+  normal: "Normal",
+  wide: "Amplia",
+};
 const KIND_ORDER: EntryKind[] = [
   "def",
   "theorem",
@@ -28,6 +49,22 @@ const KIND_ORDER: EntryKind[] = [
   "caution",
   "example",
 ];
+
+/** Columnas efectivas: override explícito o default por densidad y tipo. */
+function colCount(opts: Opts, kind: Mode): number {
+  if (opts.cols !== "auto") return Number(opts.cols);
+  if (kind === "formulas")
+    return opts.density === "compact" ? 3 : 2;
+  return opts.density === "compact" ? 4 : opts.density === "wide" ? 2 : 3;
+}
+
+/** Unidades presentes, en orden de aparición. */
+function unitsOf(sheet: Sheet): { unit: string; title?: string }[] {
+  const seen = new Map<string, string | undefined>();
+  for (const g of sheet.groups)
+    if (g.unit && !seen.has(g.unit)) seen.set(g.unit, g.unitTitle);
+  return [...seen].map(([unit, title]) => ({ unit, title }));
+}
 
 export default function SheetShell({
   formulas,
@@ -44,9 +81,52 @@ export default function SheetShell({
   );
   const [mode, setMode] = useState<Mode>(modes[0]);
   const sheet = mode === "formulas" ? formulas : conceptos;
-  if (!sheet) return null;
 
-  const base = `${sheet.vault}-${sheet.kind}`;
+  // Persistencia per (vault,kind) bajo una sola key; hidratada post-mount.
+  const [allOpts, setAllOpts] = useState<Record<string, Opts>>({});
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(OPTS_KEY);
+      if (raw) setAllOpts(JSON.parse(raw));
+    } catch {}
+    setHydrated(true);
+  }, []);
+  useEffect(() => {
+    if (hydrated) {
+      try {
+        localStorage.setItem(OPTS_KEY, JSON.stringify(allOpts));
+      } catch {}
+    }
+  }, [allOpts, hydrated]);
+
+  const base = sheet ? `${sheet.vault}-${sheet.kind}` : "";
+  const opts = allOpts[base] ?? DEFAULT_OPTS;
+  const setOpts = (fn: (o: Opts) => Opts) =>
+    setAllOpts((prev) => ({ ...prev, [base]: fn(prev[base] ?? DEFAULT_OPTS) }));
+
+  const units = useMemo(() => (sheet ? unitsOf(sheet) : []), [sheet]);
+  const kinds = useMemo(() => (sheet ? usedKinds(sheet) : []), [sheet]);
+
+  // Hoja efectiva (filtrada por unidad + categoría) — alimenta render y export.
+  const visibleSheet = useMemo<Sheet | null>(() => {
+    if (!sheet) return null;
+    const hu = new Set(opts.hiddenUnits);
+    const hk = new Set(opts.hiddenKinds);
+    const groups: SheetGroup[] = [];
+    for (const g of sheet.groups) {
+      if (g.unit && hu.has(g.unit)) continue;
+      const entries = g.entries.filter(
+        (e) => !hk.has(e.kind ?? defaultKind(sheet.kind)),
+      );
+      if (entries.length) groups.push({ ...g, entries });
+    }
+    return { ...sheet, groups };
+  }, [sheet, opts.hiddenUnits, opts.hiddenKinds]);
+
+  if (!sheet || !visibleSheet) return null;
+
+  const cols = colCount(opts, sheet.kind);
   const showTags = sheet.kind === "conceptos";
 
   return (
@@ -82,7 +162,7 @@ export default function SheetShell({
           <button
             className="sheet-btn"
             onClick={() =>
-              downloadText(`${base}.tex`, toTex(sheet), "text/x-tex")
+              downloadText(`${base}.tex`, toTex(visibleSheet, cols), "text/x-tex")
             }
           >
             <DownIcon /> .tex
@@ -90,7 +170,7 @@ export default function SheetShell({
           <button
             className="sheet-btn"
             onClick={() =>
-              downloadText(`${base}.md`, toMd(sheet), "text/markdown")
+              downloadText(`${base}.md`, toMd(visibleSheet), "text/markdown")
             }
           >
             <DownIcon /> .md
@@ -98,26 +178,160 @@ export default function SheetShell({
         </div>
       </div>
 
-      <Legend kinds={usedKinds(sheet)} />
+      <Controls
+        opts={opts}
+        setOpts={setOpts}
+        units={units}
+        kinds={kinds}
+      />
 
       <div className="sheet-print-root">
-        <SheetDoc sheet={sheet} showTags={showTags} />
+        <SheetDoc
+          sheet={visibleSheet}
+          showTags={showTags}
+          density={opts.density}
+          cols={cols}
+        />
       </div>
+    </div>
+  );
+}
+
+/* ───────────────────────────── controles ──────────────────────────────── */
+
+function Controls({
+  opts,
+  setOpts,
+  units,
+  kinds,
+}: {
+  opts: Opts;
+  setOpts: (fn: (o: Opts) => Opts) => void;
+  units: { unit: string; title?: string }[];
+  kinds: EntryKind[];
+}) {
+  const toggle = (key: "hiddenUnits" | "hiddenKinds", v: string) =>
+    setOpts((o) => {
+      const set = new Set(o[key] as string[]);
+      set.has(v) ? set.delete(v) : set.add(v);
+      return { ...o, [key]: [...set] } as Opts;
+    });
+
+  const allUnitsOn = opts.hiddenUnits.length === 0;
+  const allKindsOn = opts.hiddenKinds.length === 0;
+
+  return (
+    <div className="sheet-opts" data-noprint>
+      <div className="sheet-opts__row">
+        <span className="sheet-opts__label">Densidad</span>
+        <div className="sheet-seg sheet-seg--sm">
+          {(["compact", "normal", "wide"] as Density[]).map((d) => (
+            <button
+              key={d}
+              className={`sheet-seg__btn${opts.density === d ? " is-active" : ""}`}
+              onClick={() => setOpts((o) => ({ ...o, density: d }))}
+            >
+              {DENSITY_LABEL[d]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="sheet-opts__row">
+        <span className="sheet-opts__label">Columnas</span>
+        <div className="sheet-seg sheet-seg--sm">
+          {(["auto", "2", "3", "4"] as Cols[]).map((c) => (
+            <button
+              key={c}
+              className={`sheet-seg__btn${opts.cols === c ? " is-active" : ""}`}
+              onClick={() => setOpts((o) => ({ ...o, cols: c }))}
+            >
+              {c === "auto" ? "Auto" : c}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {units.length > 0 && (
+        <div className="sheet-opts__row">
+          <span className="sheet-opts__label">Unidades</span>
+          <div className="sheet-chips">
+            <button
+              className={`sheet-chip sheet-chip--all${allUnitsOn ? " is-active" : ""}`}
+              onClick={() => setOpts((o) => ({ ...o, hiddenUnits: [] }))}
+            >
+              Todas
+            </button>
+            {units.map(({ unit, title }) => {
+              const on = !opts.hiddenUnits.includes(unit);
+              return (
+                <button
+                  key={unit}
+                  className={`sheet-chip${on ? " is-active" : ""}`}
+                  title={title ? `Unidad ${unit} · ${title}` : `Unidad ${unit}`}
+                  aria-pressed={on}
+                  onClick={() => toggle("hiddenUnits", unit)}
+                >
+                  U{unit}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {kinds.length > 1 && (
+        <div className="sheet-opts__row">
+          <span className="sheet-opts__label">Mostrar</span>
+          <div className="sheet-chips">
+            <button
+              className={`sheet-chip sheet-chip--all${allKindsOn ? " is-active" : ""}`}
+              onClick={() => setOpts((o) => ({ ...o, hiddenKinds: [] }))}
+            >
+              Todo
+            </button>
+            {kinds.map((k) => {
+              const on = !opts.hiddenKinds.includes(k);
+              return (
+                <button
+                  key={k}
+                  className={`sheet-chip sheet-chip--kind${on ? " is-active" : ""}`}
+                  data-kind={k}
+                  aria-pressed={on}
+                  onClick={() => toggle("hiddenKinds", k)}
+                >
+                  <i className="sheet-chip__dot" />
+                  {KIND_META[k].label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 /* ───────────────────────────── documento ──────────────────────────────── */
 
-function SheetDoc({ sheet, showTags }: { sheet: Sheet; showTags: boolean }) {
+function SheetDoc({
+  sheet,
+  showTags,
+  density,
+  cols,
+}: {
+  sheet: Sheet;
+  showTags: boolean;
+  density: Density;
+  cols: number;
+}) {
+  const hasUnits = sheet.groups.some((g) => g.unit);
   return (
-    <article className="sheet-doc" data-kind={sheet.kind}>
+    <article className="sheet-doc" data-kind={sheet.kind} data-density={density}>
       <header className="sheet-doc__head">
         <div>
           <h2 className="sheet-doc__title">{sheet.title}</h2>
-          {sheet.subtitle && (
-            <p className="sheet-doc__sub">{sheet.subtitle}</p>
-          )}
+          {sheet.subtitle && <p className="sheet-doc__sub">{sheet.subtitle}</p>}
         </div>
         <span className="sheet-doc__kind">
           {sheet.kind === "formulas" ? "Hoja de fórmulas" : "Hoja de conceptos"}
@@ -130,28 +344,52 @@ function SheetDoc({ sheet, showTags }: { sheet: Sheet; showTags: boolean }) {
         </p>
       )}
 
-      <div className="sheet-doc__cols">
-        {sheet.groups.map((g, gi) => (
-          <section className="sheet-group" key={gi}>
-            <h3 className="sheet-group__title">{g.title}</h3>
-            {g.hint && (
-              <p className="sheet-group__hint">
-                <RichText text={g.hint} />
-              </p>
-            )}
-            <div className="sheet-group__entries">
-              {g.entries.map((e, ei) => (
-                <Entry
-                  key={ei}
-                  entry={e}
-                  sheetKind={sheet.kind}
-                  showTag={showTags}
-                />
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+      {sheet.groups.length === 0 ? (
+        <p className="sheet-doc__empty">
+          Nada para mostrar con los filtros actuales.
+        </p>
+      ) : (
+        <div
+          className="sheet-doc__cols"
+          style={{ ["--sheet-cols" as string]: String(cols) }}
+        >
+          {sheet.groups.map((g, gi) => {
+            const prev = sheet.groups[gi - 1];
+            const showUnit =
+              hasUnits && g.unit && g.unit !== (prev ? prev.unit : undefined);
+            return (
+              <Fragment key={gi}>
+                {showUnit && (
+                  <h3 className="sheet-unit">
+                    <span className="sheet-unit__tag">U{g.unit}</span>
+                    <span className="sheet-unit__title">
+                      {g.unitTitle ?? `Unidad ${g.unit}`}
+                    </span>
+                  </h3>
+                )}
+                <section className="sheet-group">
+                  <h4 className="sheet-group__title">{g.title}</h4>
+                  {g.hint && (
+                    <p className="sheet-group__hint">
+                      <RichText text={g.hint} />
+                    </p>
+                  )}
+                  <div className="sheet-group__entries">
+                    {g.entries.map((e, ei) => (
+                      <Entry
+                        key={ei}
+                        entry={e}
+                        sheetKind={sheet.kind}
+                        showTag={showTags}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
     </article>
   );
 }
@@ -206,28 +444,13 @@ function Entry({
   );
 }
 
-/* ───────────────────────────── leyenda ────────────────────────────────── */
+/* ───────────────────────────── helpers ────────────────────────────────── */
 
 function usedKinds(sheet: Sheet): EntryKind[] {
   const set = new Set<EntryKind>();
   for (const g of sheet.groups)
     for (const e of g.entries) set.add(e.kind ?? defaultKind(sheet.kind));
   return KIND_ORDER.filter((k) => set.has(k));
-}
-
-function Legend({ kinds }: { kinds: EntryKind[] }) {
-  if (kinds.length <= 1) return null;
-  return (
-    <div className="sheet-legend" data-noprint>
-      <span className="sheet-legend__label">Color</span>
-      {kinds.map((k) => (
-        <span className="sheet-legend__item" data-kind={k} key={k}>
-          <i className="sheet-legend__dot" />
-          {KIND_META[k].label}
-        </span>
-      ))}
-    </div>
-  );
 }
 
 /* ───────────────────────────── iconos ─────────────────────────────────── */

@@ -137,7 +137,8 @@ function texEntry(e: SheetEntry, sheetKind: Sheet["kind"]): string {
 }
 
 /** Sheet → documento LaTeX completo y compilable (article + multicol). */
-export function toTex(sheet: Sheet): string {
+export function toTex(sheet: Sheet, columns = 3): string {
+  const cols = Math.max(1, Math.min(4, Math.round(columns)));
   const head = `% ${sheet.title} — ${sheet.kind === "formulas" ? "hoja de fórmulas" : "hoja de conceptos"}
 % Generado por StudyVaults. Compilar con pdflatex.
 \\documentclass[10pt,a4paper]{article}
@@ -167,13 +168,20 @@ ${sheet.subtitle ? `{\\small ${texEscape(sheet.subtitle)}}\\par` : ""}
 ${sheet.notation ? `{\\footnotesize\\itshape ${texRich(sheet.notation)}}\\par` : ""}
 \\vspace{4pt}\\hrule\\vspace{6pt}
 \\footnotesize
-\\begin{multicols}{3}`;
+\\begin{multicols}{${cols}}`;
 
+  let lastUnit: string | undefined;
   const body = sheet.groups
     .map((g) => {
+      let unitHead = "";
+      if (g.unit && g.unit !== lastUnit) {
+        lastUnit = g.unit;
+        const ut = g.unitTitle ? texEscape(g.unitTitle) : `Unidad ${texEscape(g.unit)}`;
+        unitHead = `{\\color{sheetFml}\\rule{\\linewidth}{0.6pt}}\\par\\nobreak\\vspace{1pt}{\\bfseries\\normalsize\\color{sheetFml} U${texEscape(g.unit)} · ${ut}}\\par\\nobreak\\vspace{2pt}\n`;
+      }
       const items = g.entries.map((e) => texEntry(e, sheet.kind)).join("\n");
       const hint = g.hint ? `\\par{\\scriptsize\\itshape ${texRich(g.hint)}}` : "";
-      return `\\section*{${texEscape(g.title)}}${hint}\n\\begin{itemize}\n${items}\n\\end{itemize}`;
+      return `${unitHead}\\section*{${texEscape(g.title)}}${hint}\n\\begin{itemize}\n${items}\n\\end{itemize}`;
     })
     .join("\n\n");
 
@@ -215,11 +223,19 @@ export function toMd(sheet: Sheet): string {
     .filter(Boolean)
     .join("\n\n");
 
+  const hasUnits = sheet.groups.some((g) => g.unit);
+  let lastUnit: string | undefined;
   const body = sheet.groups
     .map((g) => {
+      let unitHead = "";
+      if (g.unit && g.unit !== lastUnit) {
+        lastUnit = g.unit;
+        unitHead = `## Unidad ${g.unit}${g.unitTitle ? ` · ${g.unitTitle}` : ""}\n\n`;
+      }
+      const level = hasUnits ? "###" : "##";
       const hint = g.hint ? `\n_${g.hint}_\n` : "";
       const items = g.entries.map(mdEntry).join("\n");
-      return `## ${g.title}\n${hint}\n${items}`;
+      return `${unitHead}${level} ${g.title}\n${hint}\n${items}`;
     })
     .join("\n\n");
 

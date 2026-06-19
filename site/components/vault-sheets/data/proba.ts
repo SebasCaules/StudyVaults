@@ -12,8 +12,9 @@ export const probaFormulas: Sheet = {
   "updated": "2026-06-19",
   "groups": [
     {
-      "title": "U1 · Estadística descriptiva",
+      "title": "Estadística descriptiva",
       "hint": "Resumen de una muestra {x_i}: centro, dispersión, forma, posición",
+      "unit": "1",
       "entries": [
         {
           "label": "Media muestral",
@@ -58,8 +59,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U2 · Probabilidad y conteo",
+      "title": "Probabilidad y conteo",
       "hint": "Axiomas, Laplace, condicional, independencia, Bayes, combinatoria",
+      "unit": "2",
       "entries": [
         {
           "label": "Axiomas de Kolmogorov",
@@ -116,8 +118,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U3 · Variable aleatoria discreta",
+      "title": "Variable aleatoria discreta",
       "hint": "PMF, FDA, esperanza, varianza, momentos, FGM",
+      "unit": "3",
       "entries": [
         {
           "label": "PMF y FDA",
@@ -156,8 +159,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U3 · Distribuciones discretas",
+      "title": "Distribuciones discretas",
       "hint": "Soporte, PMF, E, V, FGM. Convención cátedra: geométrica/binneg cuentan FRACASOS",
+      "unit": "3",
       "entries": [
         {
           "label": "Bernoulli(p)",
@@ -210,8 +214,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U4 · Variable aleatoria continua",
+      "title": "Variable aleatoria continua",
       "hint": "FDA, densidad, E/V por integral, tasa de fallas",
+      "unit": "4",
       "entries": [
         {
           "label": "FDA y densidad",
@@ -238,8 +243,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U4/7 · Distribuciones continuas",
+      "title": "Distribuciones continuas",
       "hint": "Densidad, FDA, E, V. La cátedra parametriza la normal por el DESVÍO σ",
+      "unit": "4",
       "entries": [
         {
           "label": "Uniforme(a,b)",
@@ -290,8 +296,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U4 · Normal estándar y tabla Z",
+      "title": "Normal estándar y tabla Z",
       "hint": "Estandarizar para resolver cualquier normal con una sola tabla",
+      "unit": "4",
       "entries": [
         {
           "label": "Estandarización",
@@ -322,8 +329,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · Bidimensionales, función de v.a.",
+      "title": "Bidimensionales, función de v.a.",
       "hint": "Conjunta, marginales, condicionales, covarianza, transformaciones",
+      "unit": "5",
       "entries": [
         {
           "label": "Conjunta y marginales",
@@ -372,8 +380,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U5 · Esperanza condicional y mezcla",
+      "title": "Esperanza condicional y mezcla",
       "hint": "Promediar por etapas: leyes total; varianza con cuidado",
+      "unit": "5",
       "entries": [
         {
           "label": "Esperanza y varianza condicional",
@@ -407,8 +416,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U6 · Procesos estocásticos",
+      "title": "Procesos estocásticos",
       "hint": "Bernoulli (discreto) ↔ Poisson (continuo); cadenas de Markov; caminata",
+      "unit": "6",
       "entries": [
         {
           "label": "Proceso de Bernoulli",
@@ -454,8 +464,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U7 · Suma de v.a.",
+      "title": "Suma de v.a.",
       "hint": "E/V de sumas, convolución, casos cerrados con nombre propio",
+      "unit": "7",
       "entries": [
         {
           "label": "E y V de una suma",
@@ -484,8 +495,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U7 · Cotas, LGN y TCL",
+      "title": "Cotas, LGN y TCL",
       "hint": "Markov, Chebyshev, ley de grandes números, teorema central del límite",
+      "unit": "7",
       "entries": [
         {
           "label": "Markov y Chebyshev",
@@ -525,8 +537,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U8 · Estimación puntual",
+      "title": "Estimación puntual",
       "hint": "Calidad del estimador y métodos de construcción",
+      "unit": "8",
       "entries": [
         {
           "label": "ECM, sesgo, consistencia",
@@ -566,8 +579,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U8 · Distribuciones de muestreo (t, χ²)",
+      "title": "Distribuciones de muestreo (t, χ²)",
       "hint": "Las leyes que aparecen al estimar μ y σ²",
+      "unit": "8",
       "entries": [
         {
           "label": "Ji-cuadrado χ²_k",
@@ -590,8 +604,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U8 · Intervalos de confianza",
+      "title": "Intervalos de confianza",
       "hint": "Rango que atrapa θ con confianza γ. Semiamplitud bilateral Δ_B",
+      "unit": "8",
       "entries": [
         {
           "label": "IC media, σ conocido (Z)",
@@ -626,8 +641,9 @@ export const probaFormulas: Sheet = {
       ]
     },
     {
-      "title": "U9 · Pruebas de hipótesis",
+      "title": "Pruebas de hipótesis",
       "hint": "Estadístico, región de rechazo, valor p, errores. Igualdad siempre en H₀",
+      "unit": "9",
       "entries": [
         {
           "label": "Errores y potencia",
@@ -689,8 +705,9 @@ export const probaConceptos: Sheet = {
   "updated": "2026-06-19",
   "groups": [
     {
-      "title": "U1 · Estadística descriptiva",
+      "title": "Estadística descriptiva",
       "hint": "Resumir una muestra observada (centro, dispersión, forma) sin inferir todavía sobre la población.",
+      "unit": "1",
       "entries": [
         {
           "label": "Población vs muestra",
@@ -751,8 +768,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U2 · Fundamentos de probabilidad",
+      "title": "Fundamentos de probabilidad",
       "hint": "Modelar la incertidumbre antes de observar: espacio muestral, axiomas y sus consecuencias.",
+      "unit": "2",
       "entries": [
         {
           "label": "Espacio muestral y eventos",
@@ -796,8 +814,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U2 · Condicional, independencia y Bayes",
+      "title": "Condicional, independencia y Bayes",
       "hint": "Cómo se actualiza la probabilidad con información y cómo invertir la condicional.",
+      "unit": "2",
       "entries": [
         {
           "label": "Probabilidad condicional",
@@ -847,8 +866,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U3 · Variable aleatoria discreta",
+      "title": "Variable aleatoria discreta",
       "hint": "Asignar números a resultados; describir con PMF/FDA y resumir con E y V.",
+      "unit": "3",
       "entries": [
         {
           "label": "V.a. discreta y PMF",
@@ -904,8 +924,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U3 · Distribuciones discretas",
+      "title": "Distribuciones discretas",
       "hint": "Catálogo: recorrido, E, V y cuándo usar cada una.",
+      "unit": "3",
       "entries": [
         {
           "label": "Bernoulli$(p)$",
@@ -962,8 +983,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U4 · Variable aleatoria continua",
+      "title": "Variable aleatoria continua",
       "hint": "El continuo: densidad, integrales y confiabilidad.",
+      "unit": "4",
       "entries": [
         {
           "label": "V.a. continua",
@@ -1021,8 +1043,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U4 · Distribuciones continuas",
+      "title": "Distribuciones continuas",
       "hint": "Uniforme, exponencial, normal, Weibull y la estandarización.",
+      "unit": "4",
       "entries": [
         {
           "label": "Uniforme$(a,b)$",
@@ -1079,8 +1102,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U5 · Variables bidimensionales",
+      "title": "Variables bidimensionales",
       "hint": "Conjunta, marginales, condicionales; covarianza, correlación e independencia.",
+      "unit": "5",
       "entries": [
         {
           "label": "Conjunta y marginales",
@@ -1155,8 +1179,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U6 · Procesos estocásticos",
+      "title": "Procesos estocásticos",
       "hint": "Familias de v.a. en el tiempo: Bernoulli, Poisson, Markov, caminata.",
+      "unit": "6",
       "entries": [
         {
           "label": "Proceso estocástico",
@@ -1227,8 +1252,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U7 · Suma de variables aleatorias",
+      "title": "Suma de variables aleatorias",
       "hint": "E, V y distribución de S=X+Y; convolución y casos estables.",
+      "unit": "7",
       "entries": [
         {
           "label": "E y V de una suma",
@@ -1285,8 +1311,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U7 · Teoremas límite",
+      "title": "Teoremas límite",
       "hint": "Chebyshev (cota), LGN (a dónde va) y TCL (cómo fluctúa).",
+      "unit": "7",
       "entries": [
         {
           "label": "Desigualdad de Markov",
@@ -1333,8 +1360,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U8 · Inferencia: estimación puntual",
+      "title": "Inferencia: estimación puntual",
       "hint": "Estimar un parámetro con un valor; medir calidad y métodos.",
+      "unit": "8",
       "entries": [
         {
           "label": "Estadístico vs estimador vs estimación",
@@ -1391,8 +1419,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U8 · Intervalos de confianza",
+      "title": "Intervalos de confianza",
       "hint": "Rango que atrapa al parámetro con confianza γ; tres casos y tamaño muestral.",
+      "unit": "8",
       "entries": [
         {
           "label": "Intervalo de confianza",
@@ -1450,8 +1479,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U8 · Distribuciones de muestreo",
+      "title": "Distribuciones de muestreo",
       "hint": "t de Student y ji-cuadrado: las que aparecen al estimar con σ desconocido.",
+      "unit": "8",
       "entries": [
         {
           "label": "t de Student $t_m$",
@@ -1470,8 +1500,9 @@ export const probaConceptos: Sheet = {
       ]
     },
     {
-      "title": "U9 · Pruebas de hipótesis",
+      "title": "Pruebas de hipótesis",
       "hint": "Decidir entre H0 y H1 controlando la probabilidad de error.",
+      "unit": "9",
       "entries": [
         {
           "label": "Hipótesis y tipo de cola",

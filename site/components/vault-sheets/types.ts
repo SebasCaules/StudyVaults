@@ -49,6 +49,14 @@ export interface SheetGroup {
   title: string;
   /** Subtítulo / pista breve opcional (admite `$...$`). */
   hint?: string;
+  /**
+   * Unidad a la que pertenece la sección (ej. "1".."9"). Varias secciones
+   * pueden compartir unidad; la hoja las agrupa bajo un encabezado de unidad
+   * y permite filtrar por unidad. Si se omite, la sección queda "sin unidad".
+   */
+  unit?: string;
+  /** Título humano de la unidad (opcional; coherente entre secciones del mismo unit). */
+  unitTitle?: string;
   entries: SheetEntry[];
 }
 

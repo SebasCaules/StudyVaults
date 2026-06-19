@@ -14,6 +14,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Números complejos",
       "hint": "Forma binómica y polar",
+      "unit": "1",
+      "unitTitle": "Números complejos",
       "entries": [
         {
           "label": "Unidad imaginaria",
@@ -79,6 +81,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Vectores, producto interno y normas",
       "hint": "Geometría en $\\mathbb{K}^n$",
+      "unit": "2",
+      "unitTitle": "Vectores y normas",
       "entries": [
         {
           "label": "Producto interno",
@@ -122,6 +126,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Matrices y determinantes",
       "hint": "Operaciones, tipos especiales, det",
+      "unit": "3",
+      "unitTitle": "Matrices y determinantes",
       "entries": [
         {
           "label": "Producto de matrices",
@@ -185,6 +191,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Espacios vectoriales y subespacios",
       "hint": "Base, dimensión, rango",
+      "unit": "4",
+      "unitTitle": "Espacios vectoriales",
       "entries": [
         {
           "label": "Base y dimensión",
@@ -219,6 +227,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Transformaciones lineales",
       "hint": "Núcleo, imagen, matriz asociada",
+      "unit": "5",
+      "unitTitle": "Transformaciones lineales",
       "entries": [
         {
           "label": "Núcleo e imagen",
@@ -264,6 +274,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Autovalores y diagonalización",
       "hint": "Espectro, multiplicidades, $A=PDP^{-1}$",
+      "unit": "6",
+      "unitTitle": "Autovalores y diagonalización",
       "entries": [
         {
           "label": "Autovalor / autovector",
@@ -333,6 +345,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Factorización LU / PLU",
       "hint": "Doolittle, resolver $Ax=b$ barato",
+      "unit": "7",
+      "unitTitle": "Factorizaciones y mínimos cuadrados",
       "entries": [
         {
           "label": "Idea: invertir sin invertir",
@@ -373,6 +387,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Factorización QR (Gram–Schmidt)",
       "hint": "Base ortonormal de las columnas",
+      "unit": "7",
+      "unitTitle": "Factorizaciones y mínimos cuadrados",
       "entries": [
         {
           "label": "QR",
@@ -413,6 +429,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "SVD y pseudoinversa",
       "hint": "Generaliza la diagonalización",
+      "unit": "7",
+      "unitTitle": "Factorizaciones y mínimos cuadrados",
       "entries": [
         {
           "label": "Teorema SVD",
@@ -464,6 +482,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Mínimos cuadrados",
       "hint": "Ajuste por ecuaciones normales",
+      "unit": "7",
+      "unitTitle": "Factorizaciones y mínimos cuadrados",
       "entries": [
         {
           "label": "Planteo",
@@ -499,6 +519,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Series de Fourier",
       "hint": "Trigonométrica, laboratorio y exponencial",
+      "unit": "8",
+      "unitTitle": "Fourier",
       "entries": [
         {
           "label": "Serie trigonométrica",
@@ -571,6 +593,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "Transformada de Fourier (continua)",
       "hint": "Espectro de señales aperiódicas",
+      "unit": "8",
+      "unitTitle": "Fourier",
       "entries": [
         {
           "label": "Definición",
@@ -623,6 +647,8 @@ export const mnaFormulas: Sheet = {
     {
       "title": "EDO/EDP: diferencias finitas implícitas",
       "hint": "Euler implícito: sistema EDO, calor y convección–difusión",
+      "unit": "9",
+      "unitTitle": "Ecuaciones diferenciales",
       "entries": [
         {
           "label": "EDO 2.º orden → sistema 1.º",
