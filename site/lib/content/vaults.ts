@@ -30,6 +30,9 @@ export interface VaultConfig {
   lang: "es" | "en";
   // ¿tiene página /[vault]/herramientas? (toolkit interactivo por materia)
   toolkit?: boolean;
+  // ¿tiene página /[vault]/hojas? (hojas de fórmulas/conceptos imprimibles)
+  // Debe mantenerse en sync con SHEETS en components/vault-sheets/registry.ts.
+  sheets?: boolean;
   // apps estáticas propias (HTML restilizado, servido bajo /apps/<vault>/)
   apps?: VaultApp[];
 }
@@ -48,6 +51,7 @@ export const VAULTS: VaultConfig[] = [
     math: true,
     lang: "es",
     toolkit: true,
+    sheets: true,
   },
   {
     id: "derecho",
@@ -92,6 +96,7 @@ export const VAULTS: VaultConfig[] = [
     math: true,
     lang: "es",
     toolkit: true,
+    sheets: true,
   },
   {
     id: "proba",
@@ -106,6 +111,7 @@ export const VAULTS: VaultConfig[] = [
     math: true,
     lang: "es",
     toolkit: true,
+    sheets: true,
   },
   {
     id: "paw",
@@ -120,6 +126,7 @@ export const VAULTS: VaultConfig[] = [
     math: false, // $...$ es Expression Language / JSP, no matemática
     lang: "en",
     toolkit: true,
+    sheets: true,
   },
   {
     id: "sds",
@@ -154,6 +161,7 @@ export const VAULTS: VaultConfig[] = [
     math: false,
     lang: "en",
     toolkit: true,
+    sheets: true,
   },
 ];
 

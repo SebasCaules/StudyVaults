@@ -15,13 +15,22 @@ const AppIcon = (
   </svg>
 );
 
+const SheetIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h11l5 5v11a0 0 0 0 1 0 0H4Z" />
+    <path d="M14 4v5h5" />
+    <path d="M8 13h7M8 16h7M8 10h2" />
+  </svg>
+);
+
 // Cards-lanzador en la landing de la materia: el toolkit interactivo
 // (/[vault]/herramientas) y las apps estáticas propias (cfg.apps, servidas
 // bajo /apps/<vault>/). Server component — sin estado.
 export default function VaultToolLaunchers({ cfg }: { cfg: VaultConfig }) {
   const hasToolkit = !!cfg.toolkit;
+  const hasSheets = !!cfg.sheets;
   const apps = cfg.apps ?? [];
-  if (!hasToolkit && apps.length === 0) return null;
+  if (!hasToolkit && !hasSheets && apps.length === 0) return null;
 
   const en = cfg.lang === "en";
 
@@ -46,6 +55,21 @@ export default function VaultToolLaunchers({ cfg }: { cfg: VaultConfig }) {
                 : "Calculadoras, exploradores y referencias interactivas hechas a medida de la materia."
             }
             cta={en ? "Open toolkit →" : "Abrir toolkit →"}
+          />
+        )}
+
+        {hasSheets && (
+          <ToolCard
+            href={`/${cfg.id}/hojas`}
+            icon={SheetIcon}
+            kind={en ? "Printable" : "Imprimible"}
+            title={en ? "Study sheets" : "Hojas de estudio"}
+            description={
+              en
+                ? "Dense, color-coded formula and concept sheets — print to PDF or export to .tex / .md."
+                : "Hojas de fórmulas y conceptos densas y color-coded — imprimí a PDF o exportá a .tex / .md."
+            }
+            cta={en ? "Open sheets →" : "Abrir hojas →"}
           />
         )}
 

@@ -63,7 +63,7 @@ export default function Sidebar({
         {cfg?.short ?? vault} · índice
       </Link>
 
-      {(cfg?.toolkit || (cfg?.apps?.length ?? 0) > 0) && (
+      {(cfg?.toolkit || cfg?.sheets || (cfg?.apps?.length ?? 0) > 0) && (
         <div className="wikinav__tools">
           <span className="wikinav__toolslabel">
             {cfg?.lang === "en" ? "Tools" : "Herramientas"}
@@ -76,6 +76,16 @@ export default function Sidebar({
               }`}
             >
               {cfg.lang === "en" ? "Study toolkit" : "Toolkit de estudio"}
+            </Link>
+          )}
+          {cfg?.sheets && (
+            <Link
+              href={`/${vault}/hojas`}
+              className={`wikinav__toollink${
+                currentHref === `/${vault}/hojas` ? " is-active" : ""
+              }`}
+            >
+              {cfg.lang === "en" ? "Study sheets" : "Hojas de estudio"}
             </Link>
           )}
           {cfg?.apps?.map((app) => (

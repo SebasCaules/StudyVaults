@@ -1,0 +1,374 @@
+/* ============================================================
+   HOJAS DE ESTUDIO (.sheet-*) — hojas de fórmulas / conceptos
+   densas, color-coded e imprimibles (mínimas hojas). En pantalla
+   se ven como un "papel" multi-columna; @media print aísla solo
+   .sheet-print-root y fuerza color en B/N de impresora.
+   Color-coding por categoría semántica (data-kind).
+   ============================================================ */
+
+.sheet {
+  margin-top: 8px;
+  /* paleta de categorías — saturada para papel (print + tema claro) */
+  --sheet-def: #2563eb; /* definición — azul */
+  --sheet-theorem: #7c3aed; /* teorema — púrpura */
+  --sheet-formula: #0f9d8f; /* fórmula — verde */
+  --sheet-method: #d97706; /* técnica — ámbar */
+  --sheet-caution: #dc2626; /* cuidado — coral/rojo */
+  --sheet-example: #6b7280; /* ejemplo — gris */
+}
+/* tema oscuro: variantes más luminosas para contraste en pantalla */
+[data-theme="dark"] .sheet {
+  --sheet-def: #7fb4ff;
+  --sheet-theorem: #c4a6ff;
+  --sheet-formula: #5fd8c8;
+  --sheet-method: #f4b860;
+  --sheet-caution: #ff8a8a;
+  --sheet-example: #b9bfc9;
+}
+
+.sheet__intro {
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 70ch;
+  margin: 0 0 22px;
+}
+
+/* ---- toolbar: toggle de modo + acciones ---- */
+.sheet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.sheet-seg {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-ctrl);
+}
+.sheet-seg__btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.sheet-seg__btn:hover { color: var(--ink-strong); }
+.sheet-seg__btn.is-active {
+  color: var(--ink-strong);
+  background: var(--surface-3);
+  border-color: var(--hairline-strong);
+}
+.sheet-seg__solo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.sheet-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.sheet-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-ctrl);
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.sheet-btn:hover { color: var(--ink-strong); border-color: var(--ring); }
+.sheet-btn svg { opacity: 0.85; }
+.sheet-btn--primary {
+  color: var(--ink-strong);
+  background: color-mix(in srgb, var(--vault-tint) 16%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--vault-tint) 42%, transparent);
+}
+.sheet-btn--primary:hover {
+  background: color-mix(in srgb, var(--vault-tint) 24%, var(--surface-2));
+}
+
+/* ---- leyenda de color-coding ---- */
+.sheet-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.sheet-legend__label {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+}
+.sheet-legend__item { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+.sheet-legend__item[data-kind="def"] { --k: var(--sheet-def); }
+.sheet-legend__item[data-kind="theorem"] { --k: var(--sheet-theorem); }
+.sheet-legend__item[data-kind="formula"] { --k: var(--sheet-formula); }
+.sheet-legend__item[data-kind="method"] { --k: var(--sheet-method); }
+.sheet-legend__item[data-kind="caution"] { --k: var(--sheet-caution); }
+.sheet-legend__item[data-kind="example"] { --k: var(--sheet-example); }
+.sheet-legend__dot { width: 9px; height: 9px; border-radius: 3px; background: var(--k); }
+
+/* ---- documento "papel" ---- */
+.sheet-print-root { display: block; }
+.sheet-doc {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 26px 28px 22px;
+  box-shadow: var(--shadow-sm);
+}
+.sheet-doc__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid var(--ink-strong);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+.sheet-doc__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1.1;
+  color: var(--ink-strong);
+  margin: 0;
+}
+.sheet-doc__sub { margin: 4px 0 0; color: var(--text-secondary); font-size: 13px; }
+.sheet-doc__kind {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+.sheet-doc__notation {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  padding: 9px 13px;
+  background: var(--surface-3);
+  border-radius: var(--r-ctrl);
+  border-left: 3px solid var(--vault-tint);
+}
+.sheet-doc__notation b { color: var(--ink-strong); }
+
+/* columnas — densidad: tantas como entren (mín. ancho 250px, máx. 3) */
+.sheet-doc__cols {
+  columns: 250px 3;
+  column-gap: 26px;
+}
+/* las fórmulas necesitan más ancho por columna (display math) → máx. 2 */
+.sheet-doc[data-kind="formulas"] .sheet-doc__cols {
+  columns: 2;
+  column-gap: 30px;
+}
+
+/* ---- grupo / sección ---- */
+.sheet-group { break-inside: auto; margin: 0 0 14px; }
+.sheet-group__title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vault-tint);
+  border-bottom: 1px solid var(--hairline-strong);
+  padding-bottom: 4px;
+  margin: 0 0 8px;
+  break-after: avoid;
+}
+.sheet-group__hint {
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin: -4px 0 8px;
+}
+.sheet-group__entries { display: block; }
+
+/* ---- entrada (color-coded) ---- */
+.sheet-entry {
+  --k: var(--sheet-example);
+  break-inside: avoid;
+  border-left: 2.5px solid var(--k);
+  padding: 1px 0 1px 9px;
+  margin: 0;
+}
+.sheet-entry + .sheet-entry { margin-top: 7px; }
+.sheet-entry[data-kind="def"] { --k: var(--sheet-def); }
+.sheet-entry[data-kind="theorem"] { --k: var(--sheet-theorem); }
+.sheet-entry[data-kind="formula"] { --k: var(--sheet-formula); }
+.sheet-entry[data-kind="method"] { --k: var(--sheet-method); }
+.sheet-entry[data-kind="caution"] { --k: var(--sheet-caution); }
+.sheet-entry[data-kind="example"] { --k: var(--sheet-example); }
+
+.sheet-entry__head { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+.sheet-entry__label {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-strong);
+}
+.sheet-entry__inline { font-size: 12.5px; color: var(--text-primary); }
+.sheet-entry__tag {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--k);
+  border: 1px solid color-mix(in srgb, var(--k) 45%, transparent);
+  border-radius: var(--r-pill);
+  padding: 0 6px;
+  line-height: 1.5;
+}
+.sheet-entry__tex { margin: 2px 0 0; overflow-x: auto; }
+.sheet-entry__tex .katex-display { margin: 2px 0; text-align: left; }
+.sheet-entry__body {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+.sheet-entry__cond {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+.sheet-entry__note {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--sheet-caution) 72%, var(--text-secondary));
+}
+
+.sheet-math-err {
+  color: var(--sheet-caution);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* código inline (identificadores, comandos) — para vaults sin matemática */
+.sheet-code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--surface-3);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 0.5px 5px;
+  color: var(--ink-strong);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   IMPRESIÓN — aísla la hoja, fuerza papel blanco, conserva color
+   y maximiza densidad para usar las mínimas páginas.
+   ============================================================ */
+@media print {
+  @page { size: A4 portrait; margin: 9mm; }
+  :root, html, body { background: #ffffff !important; }
+
+  /* color saturado en blanco aunque la pantalla esté en dark */
+  .sheet, .sheet-doc {
+    --sheet-def: #1d4ed8;
+    --sheet-theorem: #6d28d9;
+    --sheet-formula: #0d7d72;
+    --sheet-method: #b45309;
+    --sheet-caution: #dc2626;
+    --sheet-example: #4b5563;
+  }
+
+  /* ocultar todo el chrome de la app */
+  .nav, .footer, .ambient, .rail, .crumbs, .wiki__head,
+  .sheet-toolbar, .sheet-legend, .sheet__intro,
+  [data-noprint] { display: none !important; }
+
+  /* aislar la hoja: todo invisible salvo el print-root */
+  body * { visibility: hidden !important; }
+  .sheet-print-root, .sheet-print-root * { visibility: visible !important; }
+  .sheet-print-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .sheet-doc {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-size: 8.3pt;
+    line-height: 1.3;
+  }
+  .sheet-doc__head { border-bottom-color: #111827 !important; padding-bottom: 6px; margin-bottom: 9px; }
+  .sheet-doc__title { font-size: 15pt; color: #111827 !important; }
+  .sheet-doc__sub { font-size: 8pt; color: #374151 !important; }
+  .sheet-doc__kind { color: #6b7280 !important; }
+  .sheet-doc__notation {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+    font-size: 7.6pt;
+    padding: 5px 8px;
+    margin-bottom: 9px;
+  }
+  .sheet-doc__cols { columns: 3; column-gap: 6mm; }
+  .sheet-doc[data-kind="formulas"] .sheet-doc__cols { columns: 2; }
+
+  .sheet-group { margin-bottom: 7px; }
+  .sheet-group__title { font-size: 8.2pt; color: #111827 !important; border-bottom-color: #d1d5db !important; padding-bottom: 2px; margin-bottom: 4px; }
+  .sheet-entry { padding-left: 6px; border-left-width: 2pt; }
+  .sheet-entry + .sheet-entry { margin-top: 4px; }
+  .sheet-entry__label { font-size: 8.3pt; color: #111827 !important; }
+  .sheet-entry__body { font-size: 8pt; color: #1f2937 !important; line-height: 1.3; }
+  .sheet-entry__cond { font-size: 7.4pt; color: #4b5563 !important; }
+  .sheet-entry__note { font-size: 7.4pt; }
+  .sheet-entry__tex .katex { font-size: 1em !important; }
+  .sheet-entry__tex .katex-display { margin: 1px 0 !important; }
+  .sheet-code {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+    font-size: 0.88em;
+    padding: 0 3px;
+  }
+}
