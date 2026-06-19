@@ -20,6 +20,7 @@ import {
 } from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 import DiagramBoard from "./DiagramBoard";
+import ParcialSimulado from "./parcial/ParcialSimulado";
 
 /* ──────────────────────────────────────────────────────────────────────────
    Ingeniería del Software II — study toolkit
@@ -2191,6 +2192,7 @@ function ProgressBar({ pct }: { pct: number }) {
 /* ════════════════════════════════ SHELL ════════════════════════════════ */
 export default function Inge2Tools() {
   const tools = [
+    { key: "parcial", label: "Parcial simulado", group: "Práctica de parcial", node: <ParcialSimulado /> },
     { key: "board", label: "Pizarra de diagramas", group: "Dibujar", node: <DiagramBoard /> },
     { key: "scenarios", label: "Escenarios de calidad", group: "Resolver", node: <QualityAttributeScenarios /> },
     { key: "add", label: "ADD: caso resuelto", group: "Resolver", node: <AddWalkthrough /> },
@@ -2205,7 +2207,7 @@ export default function Inge2Tools() {
 
   return (
     <ToolkitShell
-      intro="Toolkit de Ingeniería de Software II — arquitectura de software de punta a punta: dibujá arquitecturas en la pizarra de diagramas, armá escenarios de atributos de calidad, recorré un parcial resuelto con ADD, clasificá tu sistema en CAP/PACELC, calculá disponibilidad, explorá estilos y mecanismos de seguridad, y cerrá con el catálogo de patrones GoF y una review pre-entrega."
+      intro="Toolkit de Ingeniería de Software II — arquitectura de software de punta a punta: practicá un parcial simulado caso por caso (atributos, priorización, arquitectura y export), dibujá arquitecturas en la pizarra de diagramas, armá escenarios de atributos de calidad, recorré un parcial resuelto con ADD, clasificá tu sistema en CAP/PACELC, calculá disponibilidad, explorá estilos y mecanismos de seguridad, y cerrá con el catálogo de patrones GoF y una review pre-entrega."
       tools={tools}
     />
   );

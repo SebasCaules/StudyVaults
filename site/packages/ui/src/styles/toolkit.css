@@ -417,10 +417,12 @@
 }
 
 /* ============================================================
-   TOOLKIT CONSOLE (.tk-*) — layout "Technical Split": índice de
-   herramientas numerado + escenario. Reemplaza al tab bar que se
-   envolvía en varias filas. Construido sobre los tokens; conmuta
-   dark/light y se tinta por --vault-tint. Lo monta ToolkitShell.
+   TOOLKIT LAUNCHER (.tk-*) — grilla de cards-lanzador + vista de
+   herramienta abierta. Por defecto muestra una card por tool,
+   agrupadas por `group`; al abrir una card se monta solo la tool
+   activa a ancho completo, con breadcrumb para volver / saltar.
+   Construido sobre los tokens; conmuta dark/light y se tinta por
+   --vault-tint. Lo monta ToolkitShell.
    ============================================================ */
 .tk { margin-top: 10px; }
 .tk__intro {
@@ -428,136 +430,235 @@
   font-size: 16px;
   line-height: 1.65;
   max-width: 70ch;
-  margin: 0 0 28px;
-}
-.tk__console {
-  display: grid;
-  grid-template-columns: minmax(206px, 236px) minmax(0, 1fr);
-  gap: 30px;
-  align-items: start;
+  margin: 0 0 30px;
 }
 
-/* ---- índice (rail) ---- */
-.tk__rail {
-  position: sticky;
-  top: calc(var(--nav-h) + 16px);
+/* ---- grilla de cards ---- */
+.tk__deck { display: flex; flex-direction: column; gap: 34px; }
+.tk__set { display: flex; flex-direction: column; gap: 16px; }
+
+.tk__set-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.tk__set-name { color: var(--ink-strong); flex: 0 0 auto; }
+.tk__set-rule { flex: 1 1 auto; height: 1px; background: var(--hairline-strong); }
+.tk__set-count { flex: 0 0 auto; color: var(--accent-text); letter-spacing: 0.1em; }
+
+.tk__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 16px;
+}
+
+.tk__card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 10px;
+  text-align: left;
+  min-height: 138px;
+  padding: 16px 18px 15px;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-sm);
-}
-.tk__rail-head {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 6px 8px 12px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid var(--hairline);
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-.tk__rail-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--vault-tint, var(--accent));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vault-tint, var(--accent)) 22%, transparent);
-}
-.tk__rail-count { margin-left: auto; color: var(--accent-text); letter-spacing: 0.1em; }
-
-.tk__group { display: flex; flex-direction: column; gap: 2px; }
-.tk__group + .tk__group { margin-top: 12px; }
-.tk__group-label {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  opacity: 0.62;
-  padding: 8px 8px 5px;
-}
-
-.tk__item {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 11px;
-  width: 100%;
-  text-align: left;
-  padding: 9px 11px;
-  border: 1px solid transparent;
-  border-radius: var(--r-ctrl);
-  background: transparent;
   cursor: pointer;
   color: var(--text-secondary);
-  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease),
     border-color var(--dur-fast) var(--ease);
 }
-.tk__item-mark {
+/* barra de acento (materia) al hover, igual lenguaje que .card */
+.tk__card::after {
+  content: "";
   position: absolute;
-  left: -1px;
-  top: 50%;
-  width: 3px;
-  height: 58%;
-  border-radius: 0 3px 3px 0;
+  inset: 0 0 auto 0;
+  height: 2px;
   background: var(--vault-tint, var(--accent));
-  transform: translateY(-50%) scaleY(0);
-  transform-origin: center;
-  transition: transform 220ms var(--ease);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
 }
-.tk__item-num {
+.tk__card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--hairline-strong);
+}
+.tk__card:hover::after { transform: scaleX(1); }
+.tk__card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.tk__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.tk__card-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent-text);
+}
+.tk__card-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+.tk__card-label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--ink-strong);
+}
+.tk__card-cta {
+  margin-top: auto;
+  padding-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease);
+}
+.tk__card-arrow {
+  font-style: normal;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.tk__card:hover .tk__card-cta { color: var(--ink-strong); }
+.tk__card:hover .tk__card-arrow { transform: translateX(3px); }
+
+/* ---- vista: herramienta abierta ---- */
+.tk__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--hairline);
+}
+.tk__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-strong);
+  background: var(--surface-2);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-ctrl);
+  padding: 7px 13px 7px 11px;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.tk__back:hover { border-color: var(--ring); background: var(--surface-3); }
+.tk__back:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.tk__back-arrow { transition: transform var(--dur-fast) var(--ease); }
+.tk__back:hover .tk__back-arrow { transform: translateX(-2px); }
+
+.tk__crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.tk__crumb-sep { color: var(--text-secondary); opacity: 0.55; }
+.tk__crumb-idx { color: var(--accent-text); font-weight: 700; }
+.tk__crumb-group {
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline-strong);
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.tk__crumb-label {
+  color: var(--ink-strong);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* saltar a otra herramienta — fila de pills mono, scrollable en estrecho */
+.tk__jump {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.tk__jump-btn {
+  flex: 0 0 auto;
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-secondary);
-  opacity: 0.6;
-  transition: color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  padding: 5px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
-.tk__item-label {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1.3;
-  color: inherit;
-}
-.tk__item:hover { color: var(--ink-strong); background: var(--row-hover); }
-.tk__item:hover .tk__item-num { opacity: 1; color: var(--ink-strong); }
-.tk__item.is-active {
+.tk__jump-btn:hover { color: var(--ink-strong); background: var(--hairline); }
+.tk__jump-btn.is-active {
   color: var(--ink-strong);
   background: var(--surface-3);
   border-color: var(--hairline-strong);
 }
-.tk__item.is-active .tk__item-num { opacity: 1; color: var(--accent-text); }
-.tk__item.is-active .tk__item-mark { transform: translateY(-50%) scaleY(1); }
-.tk__item:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.tk__jump-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
-/* ---- escenario (stage) ---- */
-.tk__stage { min-width: 0; }
-.tk__stage-bar {
+/* encabezado del panel abierto + cuerpo (la tool) */
+.tk__open { animation: tkOpenIn 420ms var(--ease) both; }
+.tk__open-head {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 2px 2px 14px;
+  padding: 0 2px 16px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.tk__stage-idx { color: var(--accent-text); font-weight: 700; }
-.tk__stage-idx i { color: var(--text-secondary); font-style: normal; font-weight: 600; opacity: 0.7; }
-.tk__stage-group {
+.tk__open-head:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
+.tk__open-idx { color: var(--accent-text); font-weight: 700; }
+.tk__open-idx i { color: var(--text-secondary); font-style: normal; font-weight: 600; opacity: 0.7; }
+.tk__open-group {
   padding: 3px 10px;
   border-radius: var(--r-pill);
   border: 1px solid var(--hairline-strong);
@@ -566,50 +667,40 @@
   font-weight: 700;
   letter-spacing: 0.16em;
 }
+.tk__open-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  color: var(--ink-strong);
+}
+.tk__open-body { min-width: 0; }
 
-.tk__panel { animation: tkPanelIn 440ms var(--ease) both; }
-@keyframes tkPanelIn {
+@keyframes tkOpenIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 /* la cabecera de la herramienta entra escalonada respecto del panel */
-.tk__panel .vtool-head > * { animation: tkHeadIn 560ms var(--ease) both; }
-.tk__panel .vtool-head > *:nth-child(1) { animation-delay: 70ms; }
-.tk__panel .vtool-head > *:nth-child(2) { animation-delay: 130ms; }
-.tk__panel .vtool-head > *:nth-child(3) { animation-delay: 190ms; }
+.tk__open .vtool-head > * { animation: tkHeadIn 540ms var(--ease) both; }
+.tk__open .vtool-head > *:nth-child(1) { animation-delay: 60ms; }
+.tk__open .vtool-head > *:nth-child(2) { animation-delay: 120ms; }
+.tk__open .vtool-head > *:nth-child(3) { animation-delay: 180ms; }
 @keyframes tkHeadIn {
   from { opacity: 0; transform: translateY(7px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tk__panel, .tk__panel .vtool-head > * { animation: none; }
-  .tk__item, .tk__item-mark { transition: none; }
+  .tk__open, .tk__open .vtool-head > * { animation: none; }
+  .tk__card, .tk__card::after, .tk__card-arrow, .tk__back-arrow { transition: none; }
+  .tk__card:hover { transform: none; }
 }
 
-/* ---- responsive: el índice pasa a un riel horizontal arriba ---- */
-@media (max-width: 860px) {
-  .tk__console { grid-template-columns: 1fr; gap: 18px; }
-  .tk__rail {
-    position: static;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 6px;
-    padding: 8px;
-    scroll-snap-type: x proximity;
-  }
-  .tk__rail-head { display: none; }
-  /* display:contents → los items de cada grupo entran al flex-row del rail */
-  .tk__group { display: contents; }
-  .tk__group-label { display: none; }
-  .tk__item {
-    width: auto;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-    padding: 8px 12px;
-  }
-  .tk__item-mark { display: none; }
-  .tk__stage-bar { display: none; }
+/* ---- responsive: grilla a 1 columna en pantallas chicas ---- */
+@media (max-width: 560px) {
+  .tk__grid { grid-template-columns: 1fr; }
+  .tk__jump { display: none; }
+  .tk__crumb-label { max-width: 18ch; }
 }
 

@@ -348,7 +348,6 @@
       w: VIEW_W0,
       h: VIEW_H0
     };
-    let spaceHeld = false;
     let panning = null;  // { startMouseX, startMouseY, startVx, startVy }
     // Lifecycle / scope-gating (integración React: cleanup + teclado acotado al editor)
     let pointerInside = false; // el mouse está sobre el editor → habilita atajos de teclado
@@ -512,14 +511,29 @@
     zoomControls.querySelector('[data-zoom="reset"]').addEventListener('click', () => resetView());
     zoomControls.querySelector('[data-zoom="fit"]').addEventListener('click', () => fitView());
 
-    // Wheel: scroll = zoom (toward cursor). On Mac, pinch arrives as wheel
-    // with ctrlKey=true and a stronger deltaY — bump the sensitivity there.
+    // Wheel gestures, Figma/Miro style:
+    //  - ctrlKey set → pinch-to-zoom on Mac (or Ctrl+wheel) → ZOOM toward cursor.
+    //  - otherwise (two-finger trackpad scroll / mouse wheel) → PAN the viewport.
     svg.addEventListener('wheel', (evt) => {
       evt.preventDefault();
-      const p = svgPoint(evt);
-      const intensity = evt.ctrlKey ? 0.015 : 0.0025;
-      const factor = Math.exp(-evt.deltaY * intensity);
-      zoomBy(factor, p);
+      if (evt.ctrlKey) {
+        // Pinch / Ctrl+wheel → zoom toward the cursor.
+        const p = svgPoint(evt);
+        const factor = Math.exp(-evt.deltaY * 0.015);
+        zoomBy(factor, p);
+        return;
+      }
+      // Two-finger scroll / wheel → pan. Convert the wheel delta (CSS px) into
+      // canvas units using the current CTM scale, so panning feels 1:1 with the
+      // cursor regardless of zoom. Signs follow Figma: scrolling content down /
+      // right moves the page so new content appears in that direction.
+      const m = svg.getScreenCTM();
+      const scaleX = m ? 1 / m.a : viewport.w / VIEW_W0;
+      const scaleY = m ? 1 / m.d : viewport.h / VIEW_H0;
+      viewport.x += evt.deltaX * scaleX;
+      viewport.y += evt.deltaY * scaleY;
+      clampViewport();
+      updateViewBox();
     }, { passive: false });
 
 
@@ -1132,8 +1146,8 @@
 
     // ---- Mousedown: select + start drag (node) OR start marquee (empty) ----
     svg.addEventListener('mousedown', (evt) => {
-      // Pan: space+drag OR middle mouse button
-      if (spaceHeld || evt.button === 1) {
+      // Pan: middle mouse button drag (two-finger scroll handles trackpad pan)
+      if (evt.button === 1) {
         panning = {
           startMouseX: evt.clientX,
           startMouseY: evt.clientY,
@@ -1332,13 +1346,6 @@
       // Solo actuar si el mouse está sobre el editor (evita capturar teclas en
       // el resto de la página, donde la pizarra monta por defecto).
       if (!pointerInside) return;
-      // Hold Space → enter pan mode (cursor change). Browsers fire 'keydown'
-      // repeatedly while held; guard so we only flip state once.
-      if (evt.code === 'Space' && !spaceHeld) {
-        spaceHeld = true;
-        container.classList.add('is-pan-ready');
-        evt.preventDefault();
-      }
       if (evt.key === 'Escape') {
         if (pendingConnect) {
           pendingConnect = null;
@@ -1368,14 +1375,6 @@
       }
     }
     document.addEventListener('keydown', onKey);
-    function onKeyUp(evt) {
-      if (!container.isConnected) return;
-      if (evt.code === 'Space') {
-        spaceHeld = false;
-        container.classList.remove('is-pan-ready');
-      }
-    }
-    document.addEventListener('keyup', onKeyUp);
 
     setMode(null);
     // Frame the existing content (or stay centered for an empty canvas).
@@ -1433,14 +1432,13 @@
         if (rafId) cancelAnimationFrame(rafId);
         if (inlineTimer) clearTimeout(inlineTimer);
         document.removeEventListener('keydown', onKey);
-        document.removeEventListener('keyup', onKeyUp);
         window.removeEventListener('mousemove', onMove);
         window.removeEventListener('mouseup', onUp);
         window.removeEventListener('mouseup', onAnchorDrop);
         container.removeEventListener('mouseenter', onPointerEnter);
         container.removeEventListener('mouseleave', onPointerLeave);
         container.innerHTML = '';
-        container.classList.remove('diagram-editor', 'is-placing', 'is-connecting', 'is-pan-ready', 'is-panning-active');
+        container.classList.remove('diagram-editor', 'is-placing', 'is-connecting', 'is-panning-active');
       }
     };
   }

@@ -185,8 +185,9 @@ export default function DiagramBoard() {
 
       <Note style={{ marginTop: 12 }}>
         Atajos: doble-click renombra · arrastrá desde un punto cardinal para conectar ·
-        arrastrá en vacío para seleccionar varias · Supr borra · Espacio + arrastrar (o rueda)
-        para moverte y hacer zoom.
+        arrastrá en vacío para seleccionar varias · Supr borra · arrastrá con dos dedos
+        (o rueda) para moverte · pellizcá (o Ctrl + rueda) para zoom · el botón del medio
+        también mueve.
       </Note>
     </Panel>
   );

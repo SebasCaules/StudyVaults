@@ -1,25 +1,29 @@
 "use client";
 
-import { useId, useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { cn } from "@studyvaults/ui";
 
 export interface Tool {
   key: string;
   label: string;
   node: ReactNode;
-  /** Categoría opcional: agrupa la herramienta en el índice (con encabezado). */
+  /** Categoría opcional: agrupa la herramienta en la grilla (con encabezado). */
   group?: string;
 }
 
 /**
- * Shell de los toolkits por materia — una "consola de instrumento": índice
- * vertical numerado y categorizado a la izquierda (sticky, con riel activo) +
- * escenario a la derecha que monta solo la herramienta activa (cada una
- * conserva su estado mientras está visible). Compatible hacia atrás: sin
- * `group`, las herramientas caen en un único bloque sin encabezado.
+ * Shell de los toolkits por materia — una "grilla de cards-lanzador": por
+ * defecto muestra una tarjeta por herramienta, agrupadas por `group` (con
+ * encabezado de grupo cuando lo hay; sin `group` caen en un único bloque sin
+ * encabezado). Al abrir una card se monta solo la herramienta activa a ancho
+ * completo, con un breadcrumb para volver a la grilla o saltar a otra tool.
  *
- * Patrón ARIA tablist/tab/tabpanel con roving tabindex + navegación por
- * flechas / Home / End, igual que el segmented control del sistema.
+ * Cada herramienta conserva su estado mientras está visible; al cambiar de
+ * tool el panel se remonta (`key={active}`) para disparar la entrada y el
+ * cleanup de la anterior (p.ej. la pizarra de diagramas).
+ *
+ * Compatible hacia atrás: la interfaz `Tool` y la firma de `ToolkitShell`
+ * no cambian — sólo cambia la presentación.
  */
 export default function ToolkitShell({
   intro,
@@ -29,11 +33,11 @@ export default function ToolkitShell({
   tools: Tool[];
 }) {
   const base = useId();
-  const [active, setActive] = useState(tools[0]?.key);
+  const [active, setActive] = useState<string | null>(null);
 
   const order = useMemo(() => tools.map((t) => t.key), [tools]);
-  const activeIdx = Math.max(0, order.indexOf(active));
-  const activeTool = tools[activeIdx];
+  const activeIdx = active ? order.indexOf(active) : -1;
+  const activeTool = activeIdx >= 0 ? tools[activeIdx] : undefined;
 
   // Agrupar preservando el orden original. Tramos contiguos con el mismo
   // `group` (o sin group) forman un bloque; el número es el índice global 1-based.
@@ -48,90 +52,137 @@ export default function ToolkitShell({
     return out;
   }, [tools]);
 
-  const tabId = (k: string) => `${base}-tk-tab-${k}`;
-  const panelId = (k: string) => `${base}-tk-panel-${k}`;
+  const cardId = (k: string) => `${base}-tk-card-${k}`;
   const total = String(tools.length).padStart(2, "0");
 
-  const onKeyNav = (e: KeyboardEvent<HTMLElement>) => {
-    let next = activeIdx;
-    if (e.key === "ArrowDown" || e.key === "ArrowRight") next = (activeIdx + 1) % order.length;
-    else if (e.key === "ArrowUp" || e.key === "ArrowLeft") next = (activeIdx - 1 + order.length) % order.length;
-    else if (e.key === "Home") next = 0;
-    else if (e.key === "End") next = order.length - 1;
-    else return;
-    e.preventDefault();
-    const k = order[next];
+  // Al abrir una herramienta, llevar el foco al encabezado del panel (a11y).
+  const headRef = useRef<HTMLDivElement | null>(null);
+  // Al volver a la grilla, devolver el foco a la card que estaba abierta.
+  const returnKey = useRef<string | null>(null);
+  const [pendingFocus, setPendingFocus] = useState<string | null>(null);
+
+  const open = (k: string) => {
+    returnKey.current = k;
     setActive(k);
-    document.getElementById(tabId(k))?.focus();
+  };
+  const back = () => {
+    setPendingFocus(returnKey.current);
+    setActive(null);
   };
 
-  return (
-    <div className="tk">
-      {intro && <p className="tk__intro">{intro}</p>}
+  useEffect(() => {
+    if (active) headRef.current?.focus();
+  }, [active]);
 
-      <div className="tk__console">
-        <nav
-          className="tk__rail"
-          role="tablist"
-          aria-orientation="vertical"
-          aria-label="Índice de herramientas"
-          onKeyDown={onKeyNav}
-        >
-          <div className="tk__rail-head" aria-hidden="true">
-            <span className="tk__rail-dot" />
-            <span>Toolkit</span>
-            <span className="tk__rail-count">{total}</span>
-          </div>
+  useEffect(() => {
+    if (active === null && pendingFocus) {
+      document.getElementById(cardId(pendingFocus))?.focus();
+      setPendingFocus(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, pendingFocus]);
 
+  // ---- vista: grilla de cards ----
+  if (!activeTool) {
+    return (
+      <div className="tk">
+        {intro && <p className="tk__intro">{intro}</p>}
+
+        <div className="tk__deck">
           {groups.map((g, gi) => (
-            <div className="tk__group" key={g.name ?? `g${gi}`}>
-              {g.name && <span className="tk__group-label">{g.name}</span>}
-              {g.items.map(({ tool, n }) => {
-                const isActive = tool.key === active;
-                return (
+            <section className="tk__set" key={g.name ?? `g${gi}`} aria-label={g.name ?? undefined}>
+              {g.name && (
+                <h3 className="tk__set-head">
+                  <span className="tk__set-name">{g.name}</span>
+                  <span className="tk__set-rule" aria-hidden="true" />
+                  <span className="tk__set-count">
+                    {String(g.items.length).padStart(2, "0")}
+                  </span>
+                </h3>
+              )}
+              <div className="tk__grid">
+                {g.items.map(({ tool, n }) => (
                   <button
                     key={tool.key}
-                    id={tabId(tool.key)}
+                    id={cardId(tool.key)}
                     type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-controls={panelId(tool.key)}
-                    tabIndex={isActive ? 0 : -1}
-                    className={cn("tk__item", isActive && "is-active")}
-                    onClick={() => setActive(tool.key)}
+                    className="tk__card"
+                    onClick={() => open(tool.key)}
                   >
-                    <span className="tk__item-mark" aria-hidden="true" />
-                    <span className="tk__item-num">{String(n).padStart(2, "0")}</span>
-                    <span className="tk__item-label">{tool.label}</span>
+                    <span className="tk__card-top">
+                      <span className="tk__card-num" aria-hidden="true">
+                        {String(n).padStart(2, "0")}
+                      </span>
+                      <span className="tk__card-eyebrow">Herramienta</span>
+                    </span>
+                    <span className="tk__card-label">{tool.label}</span>
+                    <span className="tk__card-cta" aria-hidden="true">
+                      Abrir
+                      <i className="tk__card-arrow">→</i>
+                    </span>
                   </button>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- vista: herramienta abierta ----
+  return (
+    <div className="tk tk--open">
+      <div className="tk__bar">
+        <button type="button" className="tk__back" onClick={back}>
+          <span className="tk__back-arrow" aria-hidden="true">
+            ←
+          </span>
+          Herramientas
+        </button>
+
+        <span className="tk__crumb" aria-hidden="true">
+          <span className="tk__crumb-sep">/</span>
+          <span className="tk__crumb-idx">{String(activeIdx + 1).padStart(2, "0")}</span>
+          {activeTool.group && <span className="tk__crumb-group">{activeTool.group}</span>}
+          <span className="tk__crumb-label">{activeTool.label}</span>
+        </span>
+
+        <nav className="tk__jump" aria-label="Cambiar de herramienta">
+          {tools.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              className={cn("tk__jump-btn", t.key === active && "is-active")}
+              aria-current={t.key === active ? "true" : undefined}
+              title={t.label}
+              onClick={() => open(t.key)}
+            >
+              {t.label}
+            </button>
           ))}
         </nav>
+      </div>
 
-        <div className="tk__stage">
-          <div className="tk__stage-bar" aria-hidden="true">
-            <span className="tk__stage-idx">
-              {String(activeIdx + 1).padStart(2, "0")}
-              <i>/{total}</i>
-            </span>
-            {activeTool?.group && <span className="tk__stage-group">{activeTool.group}</span>}
-          </div>
-
-          {/* key={active} → remonta al cambiar: dispara la entrada y desmonta
-              la herramienta anterior (cleanup, p.ej. la pizarra). */}
-          <div
-            key={active}
-            className="tk__panel"
-            role="tabpanel"
-            id={panelId(active ?? "")}
-            aria-labelledby={tabId(active ?? "")}
-            tabIndex={0}
-          >
-            {activeTool?.node}
-          </div>
+      {/* key={active} → remonta al cambiar: dispara la entrada y desmonta
+          la herramienta anterior (cleanup, p.ej. la pizarra). */}
+      <div key={active} className="tk__open">
+        <div
+          ref={headRef}
+          className="tk__open-head"
+          tabIndex={-1}
+          role="group"
+          aria-label={activeTool.label}
+        >
+          <span className="tk__open-idx" aria-hidden="true">
+            {String(activeIdx + 1).padStart(2, "0")}
+            <i>/{total}</i>
+          </span>
+          {activeTool.group && <span className="tk__open-group">{activeTool.group}</span>}
+          <span className="tk__open-title">{activeTool.label}</span>
         </div>
+
+        <div className="tk__open-body">{activeTool.node}</div>
       </div>
     </div>
   );
