@@ -19,6 +19,7 @@ import {
   CopyButton,
 } from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
+import DiagramBoard from "./DiagramBoard";
 
 /* ──────────────────────────────────────────────────────────────────────────
    Ingeniería del Software II — study toolkit
@@ -2190,6 +2191,7 @@ function ProgressBar({ pct }: { pct: number }) {
 /* ════════════════════════════════ SHELL ════════════════════════════════ */
 export default function Inge2Tools() {
   const tools = [
+    { key: "board", label: "Pizarra de diagramas", node: <DiagramBoard /> },
     { key: "scenarios", label: "Escenarios de calidad", node: <QualityAttributeScenarios /> },
     { key: "add", label: "ADD: caso resuelto", node: <AddWalkthrough /> },
     { key: "cap", label: "CAP / PACELC", node: <CapClassifier /> },
@@ -2203,7 +2205,7 @@ export default function Inge2Tools() {
 
   return (
     <ToolkitShell
-      intro="Toolkit de Ingeniería de Software II — arquitectura de software de punta a punta: armá escenarios de atributos de calidad, recorré un parcial resuelto con ADD, clasificá tu sistema en CAP/PACELC, calculá disponibilidad, explorá estilos y mecanismos de seguridad, y cerrá con el catálogo de patrones GoF y una review pre-entrega."
+      intro="Toolkit de Ingeniería de Software II — arquitectura de software de punta a punta: dibujá arquitecturas en la pizarra de diagramas, armá escenarios de atributos de calidad, recorré un parcial resuelto con ADD, clasificá tu sistema en CAP/PACELC, calculá disponibilidad, explorá estilos y mecanismos de seguridad, y cerrá con el catálogo de patrones GoF y una review pre-entrega."
       tools={tools}
     />
   );
