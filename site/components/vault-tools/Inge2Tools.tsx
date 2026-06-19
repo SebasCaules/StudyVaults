@@ -2191,16 +2191,16 @@ function ProgressBar({ pct }: { pct: number }) {
 /* ════════════════════════════════ SHELL ════════════════════════════════ */
 export default function Inge2Tools() {
   const tools = [
-    { key: "board", label: "Pizarra de diagramas", node: <DiagramBoard /> },
-    { key: "scenarios", label: "Escenarios de calidad", node: <QualityAttributeScenarios /> },
-    { key: "add", label: "ADD: caso resuelto", node: <AddWalkthrough /> },
-    { key: "cap", label: "CAP / PACELC", node: <CapClassifier /> },
-    { key: "availability", label: "Disponibilidad", node: <AvailabilityCalculator /> },
-    { key: "styles", label: "Estilos", node: <StyleCatalog /> },
-    { key: "security", label: "Seguridad", node: <SecurityCatalog /> },
-    { key: "patterns", label: "Patrones GoF", node: <PatternCatalog /> },
-    { key: "decision", label: "¿Qué patrón?", node: <WhichPattern /> },
-    { key: "checklist", label: "Review checklist", node: <ReviewChecklist /> },
+    { key: "board", label: "Pizarra de diagramas", group: "Dibujar", node: <DiagramBoard /> },
+    { key: "scenarios", label: "Escenarios de calidad", group: "Resolver", node: <QualityAttributeScenarios /> },
+    { key: "add", label: "ADD: caso resuelto", group: "Resolver", node: <AddWalkthrough /> },
+    { key: "cap", label: "CAP / PACELC", group: "Resolver", node: <CapClassifier /> },
+    { key: "availability", label: "Disponibilidad", group: "Resolver", node: <AvailabilityCalculator /> },
+    { key: "styles", label: "Estilos", group: "Referencia", node: <StyleCatalog /> },
+    { key: "security", label: "Seguridad", group: "Referencia", node: <SecurityCatalog /> },
+    { key: "patterns", label: "Patrones GoF", group: "Referencia", node: <PatternCatalog /> },
+    { key: "decision", label: "¿Qué patrón?", group: "Referencia", node: <WhichPattern /> },
+    { key: "checklist", label: "Review checklist", group: "Referencia", node: <ReviewChecklist /> },
   ];
 
   return (
