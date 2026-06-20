@@ -5,6 +5,7 @@ import EconomiaTools from "./EconomiaTools";
 import ProbaTools from "./ProbaTools";
 import PawTools from "./PawTools";
 import Inge2Tools from "./Inge2Tools";
+import DerechoTools from "./DerechoTools";
 
 // id de materia → componente de toolkit (island client). Lo consume la ruta
 // app/[vault]/herramientas/page.tsx. Debe cubrir exactamente las vaults con
@@ -15,4 +16,5 @@ export const TOOLKITS: Partial<Record<VaultId, ComponentType>> = {
   proba: ProbaTools,
   paw: PawTools,
   inge2: Inge2Tools,
+  derecho: DerechoTools,
 };

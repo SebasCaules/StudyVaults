@@ -65,23 +65,10 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: false,
     lang: "es",
-    apps: [
-      {
-        label: "Estudio interactivo",
-        href: "/apps/derecho/estudio-interactivo.html",
-        desc: "App de repaso del 2.º parcial: tarjetas, casos y conceptos navegables por unidad.",
-      },
-      {
-        label: "Quiz · 2.º parcial",
-        href: "/apps/derecho/quiz-2do-parcial.html",
-        desc: "Autoevaluación con preguntas de opción múltiple y corrección al instante.",
-      },
-      {
-        label: "Preguntas repetidas",
-        href: "/apps/derecho/preguntas-repetidas-2do-parcial-print.html",
-        desc: "Hoja imprimible con las preguntas que más se repiten en el 2.º parcial.",
-      },
-    ],
+    // Toolkit unificado: el repaso + flashcards del 1.º parcial y el banco de
+    // práctica, los conceptos y las preguntas repetidas del 2.º — antes tres
+    // apps HTML sueltas, ahora consolidadas en /[vault]/herramientas.
+    toolkit: true,
   },
   {
     id: "economia",

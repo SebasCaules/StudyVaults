@@ -12,18 +12,9 @@ const DEST_ROOT = path.join(process.cwd(), "public", "apps");
 
 // [vaultId, [archivos fuente relativos al dir del vault]]
 // Debe coincidir con los cfg.apps de lib/content/vaults.ts.
-const APPS = [
-  [
-    "derecho",
-    "Derecho",
-    [
-      "wiki/2doParcial/estudio-interactivo.html",
-      "wiki/2doParcial/quiz-2do-parcial.html",
-      "wiki/2doParcial/preguntas-repetidas-2do-parcial-print.html",
-    ],
-  ],
-  ["sds", "SDS", ["wiki/tps/TP4_previsualizacion.html"]],
-];
+// Derecho consolidó sus tres apps HTML en el toolkit React
+// (components/vault-tools/DerechoTools.tsx), así que ya no se copian sueltas.
+const APPS = [["sds", "SDS", ["wiki/tps/TP4_previsualizacion.html"]]];
 
 await rm(DEST_ROOT, { recursive: true, force: true });
 
