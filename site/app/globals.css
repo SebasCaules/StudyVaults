@@ -300,7 +300,11 @@
   .rail--right { display: none; }
 }
 @media (max-width: 860px) {
-  .wiki { grid-template-columns: minmax(0, 1fr); }
+  /* el selector debe igualar la especificidad de `.wiki[data-toc="0"]`
+     (línea ~54) para que el colapso a una columna gane en mobile también
+     en la variante ancha de /[vault]/herramientas (data-toc="0"). */
+  .wiki,
+  .wiki[data-toc="0"] { grid-template-columns: minmax(0, 1fr); }
   .rail--left {
     position: fixed;
     left: 0;

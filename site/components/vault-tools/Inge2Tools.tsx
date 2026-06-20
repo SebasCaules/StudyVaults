@@ -21,6 +21,12 @@ import {
 import ToolkitShell from "./ToolkitShell";
 import DiagramBoard from "./DiagramBoard";
 import ParcialSimulado from "./parcial/ParcialSimulado";
+import StudyDashboard from "./inge2/StudyDashboard";
+import Flashcards from "./inge2/Flashcards";
+import TradeoffTrainer from "./inge2/TradeoffTrainer";
+import QuizBank from "./inge2/QuizBank";
+import MechanismPicker from "./inge2/MechanismPicker";
+import AntipatternDrill from "./inge2/AntipatternDrill";
 
 /* ──────────────────────────────────────────────────────────────────────────
    Ingeniería del Software II — study toolkit
@@ -2192,12 +2198,18 @@ function ProgressBar({ pct }: { pct: number }) {
 /* ════════════════════════════════ SHELL ════════════════════════════════ */
 export default function Inge2Tools() {
   const tools = [
+    { key: "dashboard", label: "Mapa de estudio", group: "Plan de recu", node: <StudyDashboard /> },
+    { key: "flashcards", label: "Flashcards", group: "Aprender", node: <Flashcards /> },
+    { key: "tradeoffs", label: "Trade-offs", group: "Aprender", node: <TradeoffTrainer /> },
+    { key: "quiz", label: "Banco de preguntas", group: "Practicar", node: <QuizBank /> },
+    { key: "mechanism", label: "¿Qué mecanismo?", group: "Practicar", node: <MechanismPicker /> },
+    { key: "antipatterns", label: "Anti-patrones", group: "Practicar", node: <AntipatternDrill /> },
     { key: "parcial", label: "Parcial simulado", group: "Práctica de parcial", node: <ParcialSimulado /> },
-    { key: "board", label: "Pizarra de diagramas", group: "Dibujar", node: <DiagramBoard /> },
     { key: "scenarios", label: "Escenarios de calidad", group: "Resolver", node: <QualityAttributeScenarios /> },
     { key: "add", label: "ADD: caso resuelto", group: "Resolver", node: <AddWalkthrough /> },
     { key: "cap", label: "CAP / PACELC", group: "Resolver", node: <CapClassifier /> },
     { key: "availability", label: "Disponibilidad", group: "Resolver", node: <AvailabilityCalculator /> },
+    { key: "board", label: "Pizarra de diagramas", group: "Dibujar", node: <DiagramBoard /> },
     { key: "styles", label: "Estilos", group: "Referencia", node: <StyleCatalog /> },
     { key: "security", label: "Seguridad", group: "Referencia", node: <SecurityCatalog /> },
     { key: "patterns", label: "Patrones GoF", group: "Referencia", node: <PatternCatalog /> },
@@ -2207,7 +2219,7 @@ export default function Inge2Tools() {
 
   return (
     <ToolkitShell
-      intro="Toolkit de Ingeniería de Software II — arquitectura de software de punta a punta: practicá un parcial simulado caso por caso (atributos, priorización, arquitectura y export), dibujá arquitecturas en la pizarra de diagramas, armá escenarios de atributos de calidad, recorré un parcial resuelto con ADD, clasificá tu sistema en CAP/PACELC, calculá disponibilidad, explorá estilos y mecanismos de seguridad, y cerrá con el catálogo de patrones GoF y una review pre-entrega."
+      intro="Toolkit de Ingeniería de Software II para estudiar la materia de punta a punta y llegar listo al recuperatorio. Arrancá por el mapa de estudio (tu progreso por unidad y dónde enfocar), aprendé con flashcards de recuerdo activo y el entrenador de trade-offs, practicá con el banco de preguntas, el drill de mecanismos y el de anti-patrones, y poné todo a prueba en un parcial simulado caso por caso. Sumá las herramientas de resolución (escenarios de calidad, ADD resuelto, CAP/PACELC, disponibilidad), la pizarra de diagramas y la referencia rápida (estilos, seguridad, patrones GoF y review pre-entrega)."
       tools={tools}
     />
   );
