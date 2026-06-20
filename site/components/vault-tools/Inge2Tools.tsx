@@ -18,7 +18,7 @@ import {
   DataTable,
   CopyButton,
 } from "@studyvaults/ui";
-import ToolkitShell from "./ToolkitShell";
+import ToolkitShell, { type Tool } from "./ToolkitShell";
 import DiagramBoard from "./DiagramBoard";
 import ParcialSimulado from "./parcial/ParcialSimulado";
 import StudyDashboard from "./inge2/StudyDashboard";
@@ -2197,29 +2197,165 @@ function ProgressBar({ pct }: { pct: number }) {
 
 /* ════════════════════════════════ SHELL ════════════════════════════════ */
 export default function Inge2Tools() {
-  const tools = [
-    { key: "dashboard", label: "Mapa de estudio", group: "Plan de recu", node: <StudyDashboard /> },
-    { key: "flashcards", label: "Flashcards", group: "Aprender", node: <Flashcards /> },
-    { key: "tradeoffs", label: "Trade-offs", group: "Aprender", node: <TradeoffTrainer /> },
-    { key: "quiz", label: "Banco de preguntas", group: "Practicar", node: <QuizBank /> },
-    { key: "mechanism", label: "¿Qué mecanismo?", group: "Practicar", node: <MechanismPicker /> },
-    { key: "antipatterns", label: "Anti-patrones", group: "Practicar", node: <AntipatternDrill /> },
-    { key: "parcial", label: "Parcial simulado", group: "Práctica de parcial", node: <ParcialSimulado /> },
-    { key: "scenarios", label: "Escenarios de calidad", group: "Resolver", node: <QualityAttributeScenarios /> },
-    { key: "add", label: "ADD: caso resuelto", group: "Resolver", node: <AddWalkthrough /> },
-    { key: "cap", label: "CAP / PACELC", group: "Resolver", node: <CapClassifier /> },
-    { key: "availability", label: "Disponibilidad", group: "Resolver", node: <AvailabilityCalculator /> },
-    { key: "board", label: "Pizarra de diagramas", group: "Dibujar", node: <DiagramBoard /> },
-    { key: "styles", label: "Estilos", group: "Referencia", node: <StyleCatalog /> },
-    { key: "security", label: "Seguridad", group: "Referencia", node: <SecurityCatalog /> },
-    { key: "patterns", label: "Patrones GoF", group: "Referencia", node: <PatternCatalog /> },
-    { key: "decision", label: "¿Qué patrón?", group: "Referencia", node: <WhichPattern /> },
-    { key: "checklist", label: "Review checklist", group: "Referencia", node: <ReviewChecklist /> },
+  const tools: Tool[] = [
+    {
+      key: "dashboard",
+      label: "Mapa de estudio",
+      group: "Plan de recu",
+      icon: "target",
+      verb: "Ver progreso",
+      desc: "Tu punto de partida: cuánto dominás cada unidad, qué tan listo estás para el recu y dónde conviene enfocar.",
+      node: <StudyDashboard />,
+    },
+    {
+      key: "flashcards",
+      label: "Flashcards",
+      group: "Aprender",
+      icon: "cards",
+      verb: "Repasar",
+      desc: "Memorizá los conceptos clave con recuerdo activo y repetición espaciada: la app te trae lo que más te cuesta.",
+      node: <Flashcards />,
+    },
+    {
+      key: "tradeoffs",
+      label: "Trade-offs",
+      group: "Aprender",
+      icon: "scale",
+      verb: "Entrenar",
+      desc: "Toda decisión de arquitectura cede algo a cambio de otra cosa. Entrená qué se gana y qué se resigna en cada una.",
+      node: <TradeoffTrainer />,
+    },
+    {
+      key: "quiz",
+      label: "Banco de preguntas",
+      group: "Practicar",
+      icon: "question",
+      verb: "Practicar",
+      desc: "Cientos de preguntas filtrables por unidad y dificultad, con explicación, para medir qué sabés de verdad.",
+      node: <QuizBank />,
+    },
+    {
+      key: "mechanism",
+      label: "¿Qué mecanismo?",
+      group: "Practicar",
+      icon: "gears",
+      verb: "Decidir",
+      desc: "Te damos un problema de diseño y elegís el mecanismo que lo resuelve: entrená el criterio que toman en el parcial.",
+      node: <MechanismPicker />,
+    },
+    {
+      key: "antipatterns",
+      label: "Anti-patrones",
+      group: "Practicar",
+      icon: "warning",
+      verb: "Detectar",
+      desc: "Aprendé a oler el mal diseño: leé un caso y detectá el anti-patrón antes de que se vuelva un problema.",
+      node: <AntipatternDrill />,
+    },
+    {
+      key: "parcial",
+      label: "Parcial simulado",
+      group: "Práctica de parcial",
+      icon: "clipboard",
+      verb: "Rendir",
+      desc: "Un parcial completo con el formato real, caso por caso, para ponerte a prueba en condiciones de examen.",
+      node: <ParcialSimulado />,
+    },
+    {
+      key: "scenarios",
+      label: "Escenarios de calidad",
+      group: "Resolver",
+      icon: "list",
+      verb: "Resolver",
+      desc: "Escribí escenarios de atributos de calidad (rendimiento, seguridad…) con la plantilla estímulo–respuesta–medida.",
+      node: <QualityAttributeScenarios />,
+    },
+    {
+      key: "add",
+      label: "ADD: caso resuelto",
+      group: "Resolver",
+      icon: "blueprint",
+      verb: "Recorrer",
+      desc: "Recorré un diseño guiado por atributos (ADD) paso a paso sobre un caso real, decisión por decisión.",
+      node: <AddWalkthrough />,
+    },
+    {
+      key: "cap",
+      label: "CAP / PACELC",
+      group: "Resolver",
+      icon: "triangle",
+      verb: "Clasificar",
+      desc: "Ante una partición de red, ¿el sistema elige consistencia o disponibilidad? Clasificá casos con CAP y PACELC.",
+      node: <CapClassifier />,
+    },
+    {
+      key: "availability",
+      label: "Disponibilidad",
+      group: "Resolver",
+      icon: "pulse",
+      verb: "Calcular",
+      desc: 'Cuántos "nueves" da tu sistema: calculá disponibilidad en serie, en paralelo y el tiempo caído al año.',
+      node: <AvailabilityCalculator />,
+    },
+    {
+      key: "board",
+      label: "Pizarra de diagramas",
+      group: "Dibujar",
+      icon: "pen",
+      verb: "Dibujar",
+      desc: "Una pizarra para bocetar diagramas de componentes y despliegue, como los que tenés que dibujar en el parcial.",
+      node: <DiagramBoard />,
+    },
+    {
+      key: "styles",
+      label: "Estilos",
+      group: "Referencia",
+      icon: "blocks",
+      verb: "Explorar",
+      desc: "Catálogo de estilos arquitectónicos (capas, microservicios, eventos…): cuándo usar cada uno y qué implica.",
+      node: <StyleCatalog />,
+    },
+    {
+      key: "security",
+      label: "Seguridad",
+      group: "Referencia",
+      icon: "lock",
+      verb: "Explorar",
+      desc: "Tácticas de seguridad y las amenazas que mitigan: autenticación, cifrado, auditoría y compañía, a mano.",
+      node: <SecurityCatalog />,
+    },
+    {
+      key: "patterns",
+      label: "Patrones GoF",
+      group: "Referencia",
+      icon: "blocks",
+      verb: "Explorar",
+      desc: "Los 23 patrones de diseño clásicos explicados con su intención, estructura y ejemplo de uso.",
+      node: <PatternCatalog />,
+    },
+    {
+      key: "decision",
+      label: "¿Qué patrón?",
+      group: "Referencia",
+      icon: "branch",
+      verb: "Decidir",
+      desc: "Describí tu problema y la guía te lleva al patrón GoF indicado: una brújula para no quedarte en blanco.",
+      node: <WhichPattern />,
+    },
+    {
+      key: "checklist",
+      label: "Review checklist",
+      group: "Referencia",
+      icon: "checklist",
+      verb: "Revisar",
+      desc: "La lista de control para repasar tu diseño antes de entregarlo y no perder puntos por descuidos típicos.",
+      node: <ReviewChecklist />,
+    },
   ];
 
   return (
     <ToolkitShell
-      intro="Toolkit de Ingeniería de Software II para estudiar la materia de punta a punta y llegar listo al recuperatorio. Arrancá por el mapa de estudio (tu progreso por unidad y dónde enfocar), aprendé con flashcards de recuerdo activo y el entrenador de trade-offs, practicá con el banco de preguntas, el drill de mecanismos y el de anti-patrones, y poné todo a prueba en un parcial simulado caso por caso. Sumá las herramientas de resolución (escenarios de calidad, ADD resuelto, CAP/PACELC, disponibilidad), la pizarra de diagramas y la referencia rápida (estilos, seguridad, patrones GoF y review pre-entrega)."
+      intro="Todo para llegar listo al recuperatorio de Ingeniería de Software II, ordenado como un plan de estudio: empezá por el mapa para ver dónde estás parado, aprendé y practicá los conceptos, ponete a prueba con un parcial simulado, y tené a mano las herramientas de resolución y la referencia. Cada tarjeta te dice de un vistazo para qué sirve."
       tools={tools}
     />
   );

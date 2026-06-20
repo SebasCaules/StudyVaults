@@ -12,7 +12,7 @@ import {
   Slider,
   Chip,
 } from "@studyvaults/ui";
-import ToolkitShell from "./ToolkitShell";
+import ToolkitShell, { type Tool } from "./ToolkitShell";
 import {
   binomial,
   poisson,
@@ -1357,15 +1357,39 @@ function RefTool() {
  * Export
  * ========================================================================== */
 
-const tools = [
+const tools: Tool[] = [
   {
     key: "distribuciones",
     label: "Distribuciones",
+    icon: "bell",
+    verb: "Calcular",
+    desc: "Elegí una distribución (binomial, Poisson, normal…), ajustá sus parámetros y mirá probabilidades y gráfico en vivo.",
     node: <DistribucionesTool />,
   },
-  { key: "normal", label: "Tabla Z", node: <NormalTool /> },
-  { key: "descriptiva", label: "Descriptiva", node: <DescriptivaTool /> },
-  { key: "ref", label: "Formulario", node: <RefTool /> },
+  {
+    key: "normal",
+    label: "Tabla Z",
+    icon: "matrix",
+    verb: "Buscar",
+    desc: "La tabla de la normal estándar interactiva: pasá de un valor z a su probabilidad y al revés, sin buscar a mano.",
+    node: <NormalTool />,
+  },
+  {
+    key: "descriptiva",
+    label: "Descriptiva",
+    icon: "bars",
+    verb: "Analizar",
+    desc: "Pegá tus datos y obtené media, desvío, cuartiles e histograma para resumir una muestra de un vistazo.",
+    node: <DescriptivaTool />,
+  },
+  {
+    key: "ref",
+    label: "Formulario",
+    icon: "formula",
+    verb: "Consultar",
+    desc: "Fórmulas, propiedades y definiciones del curso reunidas para repasar antes del parcial.",
+    node: <RefTool />,
+  },
 ];
 
 export default function ProbaTools() {

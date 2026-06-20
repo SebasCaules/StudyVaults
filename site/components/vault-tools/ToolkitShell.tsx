@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { cn } from "@studyvaults/ui";
+import ToolIcon, { type ToolIconName } from "./ToolIcon";
 
 export interface Tool {
   key: string;
@@ -9,6 +10,12 @@ export interface Tool {
   node: ReactNode;
   /** Categoría opcional: agrupa la herramienta en la grilla (con encabezado). */
   group?: string;
+  /** Ícono que comunica de qué se trata la herramienta de un vistazo. */
+  icon?: ToolIconName;
+  /** Una línea en lenguaje llano: qué hace y para qué sirve (sin jerga). */
+  desc?: ReactNode;
+  /** Verbo de acción para el CTA: "Calcular", "Practicar", "Repasar"… */
+  verb?: string;
 }
 
 /**
@@ -106,18 +113,21 @@ export default function ToolkitShell({
                     key={tool.key}
                     id={cardId(tool.key)}
                     type="button"
-                    className="tk__card"
+                    className={cn("tk__card", !tool.desc && "tk__card--bare")}
                     onClick={() => open(tool.key)}
                   >
                     <span className="tk__card-top">
+                      <span className="tk__card-ico" aria-hidden="true">
+                        <ToolIcon name={tool.icon ?? "blocks"} />
+                      </span>
                       <span className="tk__card-num" aria-hidden="true">
                         {String(n).padStart(2, "0")}
                       </span>
-                      <span className="tk__card-eyebrow">Herramienta</span>
                     </span>
                     <span className="tk__card-label">{tool.label}</span>
+                    {tool.desc && <span className="tk__card-desc">{tool.desc}</span>}
                     <span className="tk__card-cta" aria-hidden="true">
-                      Abrir
+                      {tool.verb ?? "Abrir"}
                       <i className="tk__card-arrow">→</i>
                     </span>
                   </button>
@@ -174,12 +184,20 @@ export default function ToolkitShell({
           role="group"
           aria-label={activeTool.label}
         >
-          <span className="tk__open-idx" aria-hidden="true">
-            {String(activeIdx + 1).padStart(2, "0")}
-            <i>/{total}</i>
+          <span className="tk__open-ico" aria-hidden="true">
+            <ToolIcon name={activeTool.icon ?? "blocks"} size={20} />
           </span>
-          {activeTool.group && <span className="tk__open-group">{activeTool.group}</span>}
-          <span className="tk__open-title">{activeTool.label}</span>
+          <span className="tk__open-meta">
+            <span className="tk__open-line">
+              <span className="tk__open-idx" aria-hidden="true">
+                {String(activeIdx + 1).padStart(2, "0")}
+                <i>/{total}</i>
+              </span>
+              {activeTool.group && <span className="tk__open-group">{activeTool.group}</span>}
+              <span className="tk__open-title">{activeTool.label}</span>
+            </span>
+            {activeTool.desc && <span className="tk__open-desc">{activeTool.desc}</span>}
+          </span>
         </div>
 
         <div className="tk__open-body">{activeTool.node}</div>

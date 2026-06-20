@@ -9,7 +9,7 @@ import {
   Chip,
   TextInput,
 } from "@studyvaults/ui";
-import ToolkitShell from "./ToolkitShell";
+import ToolkitShell, { type Tool } from "./ToolkitShell";
 
 /* ------------------------------------------------------------------ *
  * Programación de Aplicaciones Web — study toolkit
@@ -1008,10 +1008,31 @@ function ReferenceTool() {
  * Toolkit assembly
  * =================================================================== */
 
-const tools = [
-  { key: "snippets", label: "Snippet cheatsheet", node: <SnippetTool /> },
-  { key: "lifecycle", label: "Request lifecycle", node: <LifecycleTool /> },
-  { key: "reference", label: "EL & JSTL reference", node: <ReferenceTool /> },
+const tools: Tool[] = [
+  {
+    key: "snippets",
+    label: "Snippet cheatsheet",
+    icon: "code",
+    verb: "Copiar",
+    desc: "Fragmentos de Spring MVC listos para copiar: controllers, validación, formularios y más, con un clic.",
+    node: <SnippetTool />,
+  },
+  {
+    key: "lifecycle",
+    label: "Request lifecycle",
+    icon: "cycle",
+    verb: "Recorrer",
+    desc: "Seguí una petición paso a paso, del navegador al servlet y de vuelta al JSP, para entender cómo viaja por Spring.",
+    node: <LifecycleTool />,
+  },
+  {
+    key: "reference",
+    label: "EL & JSTL reference",
+    icon: "braces",
+    verb: "Consultar",
+    desc: "Referencia rápida de Expression Language y etiquetas JSTL: la sintaxis que siempre se olvida, a mano.",
+    node: <ReferenceTool />,
+  },
 ];
 
 export default function PawTools() {

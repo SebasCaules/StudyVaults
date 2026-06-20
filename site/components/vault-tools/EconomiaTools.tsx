@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { TextInput, Select, Slider, Note } from "@studyvaults/ui";
-import ToolkitShell from "./ToolkitShell";
+import ToolkitShell, { type Tool } from "./ToolkitShell";
 import { fmt } from "./lib/stats";
 
 // Parcial 2 — Unidades 6/7/8 (cada calculadora en su archivo, math en economia/lib/finance)
@@ -817,36 +817,180 @@ function ElasticidadTool() {
 /* ================================================================== */
 
 export default function EconomiaTools() {
-  const tools = [
+  const tools: Tool[] = [
     // Práctica integradora
-    { key: "simulador", label: "Simulador Parcial 2", group: "Práctica de parcial", node: <SimuladorTool /> },
+    {
+      key: "simulador",
+      label: "Simulador Parcial 2",
+      group: "Práctica de parcial",
+      icon: "clipboard",
+      verb: "Rendir",
+      desc: "Un parcial completo simulado con el formato real: ejercicios de las tres unidades y corrección al terminar.",
+      node: <SimuladorTool />,
+    },
 
     // Unidad 7 — Cálculo financiero
-    { key: "tasas", label: "Tasas equivalentes", group: "Cálculo financiero · U7", node: <TasasTool /> },
-    { key: "valor-tiempo", label: "Valor tiempo del dinero", group: "Cálculo financiero · U7", node: <ValorTiempoTool /> },
-    { key: "anualidades", label: "Anualidades", group: "Cálculo financiero · U7", node: <AnualidadesTool /> },
-    { key: "perpetuidades", label: "Perpetuidades", group: "Cálculo financiero · U7", node: <PerpetuidadesTool /> },
-    { key: "prestamos", label: "Préstamos (francés/alemán/directo)", group: "Cálculo financiero · U7", node: <PrestamosTool /> },
-    { key: "descuento", label: "Descuento comercial y CFT", group: "Cálculo financiero · U7", node: <DescuentoCftTool /> },
+    {
+      key: "tasas",
+      label: "Tasas equivalentes",
+      group: "Cálculo financiero · U7",
+      icon: "percent",
+      verb: "Convertir",
+      desc: "Pasá entre tasa nominal, efectiva y de distintos períodos sin equivocarte con la capitalización.",
+      node: <TasasTool />,
+    },
+    {
+      key: "valor-tiempo",
+      label: "Valor tiempo del dinero",
+      group: "Cálculo financiero · U7",
+      icon: "clock",
+      verb: "Calcular",
+      desc: "Cuánto vale hoy un monto futuro (y al revés): traé capitales en el tiempo con valor actual y futuro.",
+      node: <ValorTiempoTool />,
+    },
+    {
+      key: "anualidades",
+      label: "Anualidades",
+      group: "Cálculo financiero · U7",
+      icon: "calendar",
+      verb: "Calcular",
+      desc: "Valuá una serie de pagos iguales y periódicos: cuotas, ahorros o rentas, a valor actual o futuro.",
+      node: <AnualidadesTool />,
+    },
+    {
+      key: "perpetuidades",
+      label: "Perpetuidades",
+      group: "Cálculo financiero · U7",
+      icon: "infinity",
+      verb: "Calcular",
+      desc: "El valor hoy de un flujo que se paga para siempre, con o sin crecimiento constante.",
+      node: <PerpetuidadesTool />,
+    },
+    {
+      key: "prestamos",
+      label: "Préstamos (francés/alemán/directo)",
+      group: "Cálculo financiero · U7",
+      icon: "bank",
+      verb: "Calcular",
+      desc: "Armá la tabla de amortización de un préstamo y compará los sistemas francés, alemán y directo.",
+      node: <PrestamosTool />,
+    },
+    {
+      key: "descuento",
+      label: "Descuento comercial y CFT",
+      group: "Cálculo financiero · U7",
+      icon: "tag",
+      verb: "Calcular",
+      desc: "Cuánto recibís al descontar un documento antes de su vencimiento y el costo financiero total real.",
+      node: <DescuentoCftTool />,
+    },
 
     // Unidad 8 — Evaluación de proyectos
-    { key: "flujo", label: "Constructor de flujo de fondos", group: "Evaluación de proyectos · U8", node: <FlujoProyectoTool /> },
-    { key: "van-tir", label: "VAN / TIR / criterios", group: "Evaluación de proyectos · U8", node: <VanTirTool /> },
-    { key: "escudo", label: "Escudo fiscal y amortización", group: "Evaluación de proyectos · U8", node: <EscudoFiscalTool /> },
-    { key: "cae", label: "Valor anual equivalente", group: "Evaluación de proyectos · U8", node: <CaeTool /> },
+    {
+      key: "flujo",
+      label: "Constructor de flujo de fondos",
+      group: "Evaluación de proyectos · U8",
+      icon: "flow",
+      verb: "Construir",
+      desc: "Armá el flujo de fondos de un proyecto año por año: la base para evaluarlo con VAN y TIR.",
+      node: <FlujoProyectoTool />,
+    },
+    {
+      key: "van-tir",
+      label: "VAN / TIR / criterios",
+      group: "Evaluación de proyectos · U8",
+      icon: "trending",
+      verb: "Evaluar",
+      desc: "Decidí si un proyecto conviene: valor actual neto, tasa interna de retorno y período de repago.",
+      node: <VanTirTool />,
+    },
+    {
+      key: "escudo",
+      label: "Escudo fiscal y amortización",
+      group: "Evaluación de proyectos · U8",
+      icon: "shield",
+      verb: "Calcular",
+      desc: "Cuánto impuesto ahorra la amortización de un bien y cómo ese escudo fiscal mejora el flujo del proyecto.",
+      node: <EscudoFiscalTool />,
+    },
+    {
+      key: "cae",
+      label: "Valor anual equivalente",
+      group: "Evaluación de proyectos · U8",
+      icon: "scale",
+      verb: "Comparar",
+      desc: "Compará proyectos de distinta duración llevándolos a un costo o beneficio anual equivalente.",
+      node: <CaeTool />,
+    },
 
     // Unidad 6 — Información contable
-    { key: "ratios", label: "Ratios financieros y DuPont", group: "Información contable · U6", node: <RatiosTool /> },
-    { key: "equilibrio", label: "Punto de equilibrio", group: "Información contable · U6", node: <EquilibrioTool /> },
-    { key: "capital-trabajo", label: "Capital de trabajo / NOF", group: "Información contable · U6", node: <CapitalTrabajoTool /> },
-    { key: "resultados", label: "Estado de resultados", group: "Información contable · U6", node: <ResultadosTool /> },
+    {
+      key: "ratios",
+      label: "Ratios financieros y DuPont",
+      group: "Información contable · U6",
+      icon: "pie",
+      verb: "Analizar",
+      desc: "Calculá liquidez, endeudamiento y rentabilidad de una empresa y abrí el ROE con el modelo DuPont.",
+      node: <RatiosTool />,
+    },
+    {
+      key: "equilibrio",
+      label: "Punto de equilibrio",
+      group: "Información contable · U6",
+      icon: "crossCurves",
+      verb: "Calcular",
+      desc: "Cuántas unidades hay que vender para no perder plata: punto de equilibrio en cantidad e ingresos.",
+      node: <EquilibrioTool />,
+    },
+    {
+      key: "capital-trabajo",
+      label: "Capital de trabajo / NOF",
+      group: "Información contable · U6",
+      icon: "wallet",
+      verb: "Calcular",
+      desc: "Cuánta plata necesita la empresa para operar día a día: capital de trabajo y necesidades operativas de fondos.",
+      node: <CapitalTrabajoTool />,
+    },
+    {
+      key: "resultados",
+      label: "Estado de resultados",
+      group: "Información contable · U6",
+      icon: "document",
+      verb: "Armar",
+      desc: "Construí el estado de resultados desde ventas hasta utilidad neta, viendo cada margen en el camino.",
+      node: <ResultadosTool />,
+    },
 
     // Referencia
-    { key: "formulario", label: "Formulario Parcial 2", group: "Referencia", node: <FormularioTool /> },
+    {
+      key: "formulario",
+      label: "Formulario Parcial 2",
+      group: "Referencia",
+      icon: "formula",
+      verb: "Consultar",
+      desc: "Todas las fórmulas de las Unidades 6, 7 y 8 reunidas para repasar antes del parcial.",
+      node: <FormularioTool />,
+    },
 
     // Parcial 1 — Microeconomía
-    { key: "mercado", label: "Oferta y demanda", group: "Parcial 1 · Microeconomía", node: <MercadoTool /> },
-    { key: "elasticidad", label: "Elasticidades", group: "Parcial 1 · Microeconomía", node: <ElasticidadTool /> },
+    {
+      key: "mercado",
+      label: "Oferta y demanda",
+      group: "Parcial 1 · Microeconomía",
+      icon: "crossCurves",
+      verb: "Simular",
+      desc: "Mové las curvas de oferta y demanda y mirá cómo se forman el precio y la cantidad de equilibrio.",
+      node: <MercadoTool />,
+    },
+    {
+      key: "elasticidad",
+      label: "Elasticidades",
+      group: "Parcial 1 · Microeconomía",
+      icon: "percent",
+      verb: "Calcular",
+      desc: "Cuánto reacciona la cantidad ante cambios de precio o ingreso: elasticidad y qué significa su valor.",
+      node: <ElasticidadTool />,
+    },
   ];
 
   return (

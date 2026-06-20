@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import { Panel, SubPanel, Note, Chip } from "@studyvaults/ui";
-import ToolkitShell from "./ToolkitShell";
+import ToolkitShell, { type Tool } from "./ToolkitShell";
 import {
   rows,
   isSquare,
@@ -945,11 +945,39 @@ function Reference() {
    ────────────────────────────────────────────────────────────────────────── */
 
 export default function MnaTools() {
-  const tools = [
-    { key: "matriz", label: "Calculadora", node: <MatrixCalc /> },
-    { key: "factor", label: "LU y QR", node: <Factorizations /> },
-    { key: "svd", label: "Autovalores y SVD", node: <EigenSvd /> },
-    { key: "ref", label: "Formulario", node: <Reference /> },
+  const tools: Tool[] = [
+    {
+      key: "matriz",
+      label: "Calculadora",
+      icon: "calculator",
+      verb: "Calcular",
+      desc: "Escribí una matriz y obtené al instante su determinante, inversa, rango y número de condición.",
+      node: <MatrixCalc />,
+    },
+    {
+      key: "factor",
+      label: "LU y QR",
+      icon: "layers",
+      verb: "Factorizar",
+      desc: "Descompone la matriz en factores LU y QR: el paso previo para resolver sistemas y mínimos cuadrados.",
+      node: <Factorizations />,
+    },
+    {
+      key: "svd",
+      label: "Autovalores y SVD",
+      icon: "sigma",
+      verb: "Descomponer",
+      desc: "Autovalores, autovectores y valores singulares: cómo una matriz estira y rota el espacio.",
+      node: <EigenSvd />,
+    },
+    {
+      key: "ref",
+      label: "Formulario",
+      icon: "formula",
+      verb: "Consultar",
+      desc: "Las fórmulas y definiciones clave del curso, a mano para repasar antes del parcial.",
+      node: <Reference />,
+    },
   ];
 
   return (
