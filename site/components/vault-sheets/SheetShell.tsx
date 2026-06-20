@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Sheet, SheetEntry, SheetGroup } from "./types";
 import { defaultKind, KIND_META, type EntryKind } from "./types";
-import { Math, RichText } from "./SheetMath";
+import { Math, FitMath, RichText } from "./SheetMath";
 import { toTex, toMd, downloadText } from "./exporters";
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -422,7 +422,7 @@ function Entry({
       </div>
       {entry.tex && !entry.inline && (
         <div className="sheet-entry__tex">
-          <Math tex={entry.tex} />
+          <FitMath tex={entry.tex} />
         </div>
       )}
       {entry.body && (

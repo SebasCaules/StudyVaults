@@ -330,7 +330,9 @@
   padding: 0 6px;
   line-height: 1.5;
 }
-.sheet-entry__tex { margin: 2px 0 0; overflow-x: auto; }
+.sheet-entry__tex { margin: 2px 0 0; overflow: hidden; }
+/* wrapper medible: shrink-to-fit por zoom (ver FitMath) */
+.sheet-math--fit { display: inline-block; vertical-align: top; }
 .sheet-entry__tex .katex-display { margin: 2px 0; text-align: left; }
 .sheet-entry__body {
   margin: 2px 0 0;
