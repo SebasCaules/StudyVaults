@@ -5,6 +5,24 @@ import { TextInput, Select, Slider, Note } from "@studyvaults/ui";
 import ToolkitShell from "./ToolkitShell";
 import { fmt } from "./lib/stats";
 
+// Parcial 2 — Unidades 6/7/8 (cada calculadora en su archivo, math en economia/lib/finance)
+import SimuladorTool from "./economia/SimuladorTool";
+import TasasTool from "./economia/TasasTool";
+import ValorTiempoTool from "./economia/ValorTiempoTool";
+import AnualidadesTool from "./economia/AnualidadesTool";
+import PerpetuidadesTool from "./economia/PerpetuidadesTool";
+import PrestamosTool from "./economia/PrestamosTool";
+import DescuentoCftTool from "./economia/DescuentoCftTool";
+import VanTirTool from "./economia/VanTirTool";
+import FlujoProyectoTool from "./economia/FlujoProyectoTool";
+import EscudoFiscalTool from "./economia/EscudoFiscalTool";
+import CaeTool from "./economia/CaeTool";
+import RatiosTool from "./economia/RatiosTool";
+import EquilibrioTool from "./economia/EquilibrioTool";
+import CapitalTrabajoTool from "./economia/CapitalTrabajoTool";
+import ResultadosTool from "./economia/ResultadosTool";
+import FormularioTool from "./economia/FormularioTool";
+
 /* ------------------------------------------------------------------ */
 /* Helpers de presentación (sin dependencias externas, cálculo inline) */
 /* ------------------------------------------------------------------ */
@@ -22,11 +40,6 @@ function num(s: string, fallback = NaN): number {
 function money(x: number, dp = 2): string {
   if (!Number.isFinite(x)) return "—";
   return fmt(x, dp);
-}
-
-function pct(x: number, dp = 2): string {
-  if (!Number.isFinite(x)) return "—";
-  return `${fmt(x * 100, dp)}%`;
 }
 
 /* ================================================================== */
@@ -800,476 +813,52 @@ function ElasticidadTool() {
 }
 
 /* ================================================================== */
-/* 3) VAN y TIR — flujos de fondos                                     */
-/* ================================================================== */
-
-function npv(rate: number, flows: number[]): number {
-  let acc = 0;
-  for (let t = 0; t < flows.length; t++) {
-    acc += flows[t] / Math.pow(1 + rate, t);
-  }
-  return acc;
-}
-
-// TIR por bisección robusta con barrido de signo en [-0.99, 10].
-function irr(flows: number[]): { rate: number | null; multiple: boolean } {
-  const f = (r: number) => npv(r, flows);
-  const lo0 = -0.99;
-  const hi0 = 10;
-  const steps = 400;
-  const brackets: [number, number][] = [];
-  let prevR = lo0;
-  let prevV = f(lo0);
-  for (let i = 1; i <= steps; i++) {
-    const r = lo0 + ((hi0 - lo0) * i) / steps;
-    const v = f(r);
-    if (Number.isFinite(prevV) && Number.isFinite(v) && prevV * v <= 0 && prevV !== 0) {
-      brackets.push([prevR, r]);
-    }
-    prevR = r;
-    prevV = v;
-  }
-  if (brackets.length === 0) return { rate: null, multiple: false };
-
-  const solveBisect = ([lo, hi]: [number, number]): number => {
-    let flo = f(lo);
-    let a = lo;
-    let b = hi;
-    for (let i = 0; i < 200; i++) {
-      const mid = (a + b) / 2;
-      const fmid = f(mid);
-      if (Math.abs(fmid) < 1e-10 || (b - a) / 2 < 1e-10) return mid;
-      if (flo * fmid < 0) {
-        b = mid;
-      } else {
-        a = mid;
-        flo = fmid;
-      }
-    }
-    return (a + b) / 2;
-  };
-
-  const root = solveBisect(brackets[0]);
-  return { rate: root, multiple: brackets.length > 1 };
-}
-
-function VanTirTool() {
-  const [flows, setFlows] = useState<string[]>([
-    "-1000",
-    "300",
-    "350",
-    "400",
-    "450",
-  ]);
-  const [rStr, setRStr] = useState("10"); // tasa en %
-
-  const r = num(rStr, 0) / 100;
-  const nums = flows.map((s) => num(s, NaN));
-  const valid = nums.every(Number.isFinite) && nums.length >= 2;
-
-  const result = useMemo(() => {
-    if (!valid) return null;
-    const van = npv(r, nums);
-    const { rate: tir, multiple } = irr(nums);
-
-    // Filas descontadas + acumulado
-    let cum = 0;
-    let cumDisc = 0;
-    let paybackSimple: number | null = null;
-    let paybackDisc: number | null = null;
-    const rows = nums.map((cf, t) => {
-      const disc = cf / Math.pow(1 + r, t);
-      const prevCum = cum;
-      const prevCumDisc = cumDisc;
-      cum += cf;
-      cumDisc += disc;
-      if (paybackSimple === null && prevCum < 0 && cum >= 0 && t > 0) {
-        // interpolación lineal dentro del período
-        paybackSimple = t - 1 + (0 - prevCum) / (cum - prevCum);
-      }
-      if (paybackDisc === null && prevCumDisc < 0 && cumDisc >= 0 && t > 0) {
-        paybackDisc = t - 1 + (0 - prevCumDisc) / (cumDisc - prevCumDisc);
-      }
-      return { t, cf, disc, cum, cumDisc };
-    });
-
-    return { van, tir, multiple, rows, paybackSimple, paybackDisc };
-  }, [valid, r, nums]);
-
-  const setFlow = (i: number, v: string) =>
-    setFlows((f) => f.map((x, j) => (j === i ? v : x)));
-  const addRow = () => setFlows((f) => [...f, "0"]);
-  const removeRow = (i: number) =>
-    setFlows((f) => (f.length > 2 ? f.filter((_, j) => j !== i) : f));
-
-  return (
-    <div className="vtool-panel">
-      <div className="vtool-head">
-        <span className="vtool-eyebrow">Finanzas</span>
-        <h3>VAN y TIR</h3>
-        <p>
-          Flujo de fondos por período (año 0 = inversión inicial). Calcula el VAN
-          a la tasa indicada, la TIR por bisección y los períodos de repago simple
-          y descontado.
-        </p>
-      </div>
-
-      <div className="vtool-grid vtool-grid--ctrl">
-        <div className="vtool-stack">
-          <div className="vtool-field">
-            <label className="vtool-label">
-              <b>Tasa de descuento r</b> · {fmt(r * 100, 2)}%
-            </label>
-            <Slider
-              min={0}
-              max={40}
-              step={0.5}
-              value={clamp(num(rStr, 0), 0, 40)}
-              onChange={(e) => setRStr(e.target.value)}
-            />
-            <TextInput
-              inputMode="decimal"
-              value={rStr}
-              onChange={(e) => setRStr(e.target.value)}
-            />
-          </div>
-
-          <div className="vtool-stack">
-            {flows.map((v, i) => (
-              <div className="vtool-row" key={i}>
-                <div className="vtool-field" style={{ flex: "0 0 auto", minWidth: 56 }}>
-                  <label className="vtool-label">
-                    <b>Año {i}</b>
-                  </label>
-                </div>
-                <div className="vtool-field">
-                  <TextInput
-                    inputMode="decimal"
-                    value={v}
-                    onChange={(e) => setFlow(i, e.target.value)}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="btn btn--sm btn--ghost"
-                  onClick={() => removeRow(i)}
-                  disabled={flows.length <= 2}
-                  aria-label={`Quitar año ${i}`}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-            <button type="button" className="btn btn--sm" onClick={addRow}>
-              + Agregar período
-            </button>
-          </div>
-        </div>
-
-        <div className="vtool-stack">
-          {!valid ? (
-            <p className="vtool-error">
-              Ingresá al menos 2 flujos numéricos válidos (año 0 y siguientes).
-            </p>
-          ) : result ? (
-            <>
-              <div className="vtool-bignum">
-                VAN = {money(result.van)}
-                <small>
-                  a r = {fmt(r * 100, 2)}% ·{" "}
-                  {result.van > 0
-                    ? "proyecto conviene (VAN > 0)"
-                    : result.van < 0
-                    ? "no conviene (VAN < 0)"
-                    : "indiferente (VAN = 0)"}
-                </small>
-              </div>
-
-              <div className="vtool-kv">
-                <span className="k">TIR</span>
-                <span className="v acc">
-                  {result.tir === null ? "—" : pct(result.tir, 3)}
-                </span>
-              </div>
-              <div className="vtool-kv">
-                <span className="k">Repago simple</span>
-                <span className="v">
-                  {result.paybackSimple === null
-                    ? "no se recupera"
-                    : `${fmt(result.paybackSimple, 2)} años`}
-                </span>
-              </div>
-              <div className="vtool-kv">
-                <span className="k">Repago descontado</span>
-                <span className="v">
-                  {result.paybackDisc === null
-                    ? "no se recupera"
-                    : `${fmt(result.paybackDisc, 2)} años`}
-                </span>
-              </div>
-
-              {result.tir === null && (
-                <Note>
-                  No hay cambio de signo en el VAN sobre [−99%, 1000%]: la TIR no
-                  está definida para este flujo (todos los signos iguales o sin
-                  raíz real en el rango).
-                </Note>
-              )}
-              {result.multiple && (
-                <Note>
-                  El flujo cambia de signo más de una vez: puede haber múltiples
-                  TIR. Se reporta la primera raíz; interpretá el VAN como criterio
-                  principal.
-                </Note>
-              )}
-            </>
-          ) : null}
-        </div>
-      </div>
-
-      {valid && result && (
-        <div className="vtool-sub" style={{ overflowX: "auto" }}>
-          <span className="vtool-eyebrow">Flujos descontados</span>
-          <table className="vtool-table">
-            <thead>
-              <tr>
-                <th>Año</th>
-                <th>Flujo</th>
-                <th>Factor</th>
-                <th>Descontado</th>
-                <th>Acum. simple</th>
-                <th>Acum. descont.</th>
-              </tr>
-            </thead>
-            <tbody>
-              {result.rows.map((row) => (
-                <tr key={row.t}>
-                  <td>
-                    <code>{row.t}</code>
-                  </td>
-                  <td>{money(row.cf)}</td>
-                  <td>{fmt(1 / Math.pow(1 + r, row.t), 4)}</td>
-                  <td>{money(row.disc)}</td>
-                  <td
-                    style={{
-                      color: row.cum >= 0 ? "var(--link)" : "var(--accent-text)",
-                    }}
-                  >
-                    {money(row.cum)}
-                  </td>
-                  <td
-                    style={{
-                      color:
-                        row.cumDisc >= 0 ? "var(--link)" : "var(--accent-text)",
-                    }}
-                  >
-                    {money(row.cumDisc)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ================================================================== */
-/* 4) FORMULARIO — referencia                                          */
-/* ================================================================== */
-
-function RefTool() {
-  return (
-    <div className="vtool-panel">
-      <div className="vtool-head">
-        <span className="vtool-eyebrow">Referencia</span>
-        <h3>Formulario</h3>
-        <p>
-          Fórmulas clave de microeconomía y finanzas para tener a mano durante la
-          cursada y los parciales.
-        </p>
-      </div>
-
-      <div className="vtool-sub">
-        <span className="vtool-eyebrow">Microeconomía</span>
-        <table className="vtool-table">
-          <thead>
-            <tr>
-              <th>Concepto</th>
-              <th>Fórmula</th>
-              <th>Notas</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Elasticidad-precio puntual</td>
-              <td>
-                <code>ε = (dQ/dP)·(P/Q)</code>
-              </td>
-              <td>|ε| {">"} 1 elástica; {"<"} 1 inelástica; = 1 unitaria</td>
-            </tr>
-            <tr>
-              <td>Elasticidad arco (punto medio)</td>
-              <td>
-                <code>ε = (ΔQ/Q̄) / (ΔP/P̄)</code>
-              </td>
-              <td>Q̄, P̄ = promedios de los dos puntos</td>
-            </tr>
-            <tr>
-              <td>Elasticidad cruzada</td>
-              <td>
-                <code>ε_xy = (%ΔQ_x) / (%ΔP_y)</code>
-              </td>
-              <td>{">"} 0 sustitutos; {"<"} 0 complementarios</td>
-            </tr>
-            <tr>
-              <td>Elasticidad-ingreso</td>
-              <td>
-                <code>η = (%ΔQ) / (%ΔY)</code>
-              </td>
-              <td>{">"} 0 normal; {"<"} 0 inferior; {">"} 1 de lujo</td>
-            </tr>
-            <tr>
-              <td>Excedente del consumidor</td>
-              <td>
-                <code>EC = ½·(a − P*)·Q*</code>
-              </td>
-              <td>Área bajo demanda y sobre el precio</td>
-            </tr>
-            <tr>
-              <td>Excedente del productor</td>
-              <td>
-                <code>EP = ½·(P* − c)·Q*</code>
-              </td>
-              <td>Área sobre oferta y bajo el precio</td>
-            </tr>
-            <tr>
-              <td>Peso muerto (impuesto t)</td>
-              <td>
-                <code>DWL = ½·t·(Q* − Q_t)</code>
-              </td>
-              <td>Triángulo de pérdida de eficiencia</td>
-            </tr>
-            <tr>
-              <td>Costo total</td>
-              <td>
-                <code>CT = CF + CV(Q)</code>
-              </td>
-              <td>Fijo + variable</td>
-            </tr>
-            <tr>
-              <td>Costo medio</td>
-              <td>
-                <code>CMe = CT / Q</code>
-              </td>
-              <td>También CMe = CFMe + CVMe</td>
-            </tr>
-            <tr>
-              <td>Costo marginal</td>
-              <td>
-                <code>CMg = dCT/dQ = ΔCT/ΔQ</code>
-              </td>
-              <td>Costo de la unidad adicional</td>
-            </tr>
-            <tr>
-              <td>Ingreso marginal</td>
-              <td>
-                <code>IMg = dIT/dQ</code>
-              </td>
-              <td>Óptimo del productor: IMg = CMg</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div className="vtool-sub">
-        <span className="vtool-eyebrow">Finanzas</span>
-        <table className="vtool-table">
-          <thead>
-            <tr>
-              <th>Concepto</th>
-              <th>Fórmula</th>
-              <th>Notas</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Valor presente</td>
-              <td>
-                <code>VP = CF / (1 + r)ⁿ</code>
-              </td>
-              <td>Descuenta un flujo futuro a hoy</td>
-            </tr>
-            <tr>
-              <td>Valor actual neto</td>
-              <td>
-                <code>VAN = Σ CFₜ / (1 + r)ᵗ</code>
-              </td>
-              <td>VAN {">"} 0 ⇒ conviene</td>
-            </tr>
-            <tr>
-              <td>Tasa interna de retorno</td>
-              <td>
-                <code>VAN(TIR) = 0</code>
-              </td>
-              <td>Tasa que anula el VAN</td>
-            </tr>
-            <tr>
-              <td>Anualidad (valor presente)</td>
-              <td>
-                <code>VP = C · [1 − (1+r)⁻ⁿ] / r</code>
-              </td>
-              <td>C pagos iguales durante n períodos</td>
-            </tr>
-            <tr>
-              <td>Anualidad (valor futuro)</td>
-              <td>
-                <code>VF = C · [(1+r)ⁿ − 1] / r</code>
-              </td>
-              <td>Acumulación de pagos iguales</td>
-            </tr>
-            <tr>
-              <td>Perpetuidad</td>
-              <td>
-                <code>VP = C / r</code>
-              </td>
-              <td>Pago constante infinito</td>
-            </tr>
-            <tr>
-              <td>Repago descontado</td>
-              <td>
-                <code>min t : Σ CFₖ/(1+r)ᵏ ≥ 0</code>
-              </td>
-              <td>Período en que se recupera la inversión</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-/* ================================================================== */
-/* Export                                                              */
+/* Export — toolkit completo, agrupado por unidad                      */
 /* ================================================================== */
 
 export default function EconomiaTools() {
   const tools = [
-    { key: "mercado", label: "Oferta y demanda", node: <MercadoTool /> },
-    { key: "elasticidad", label: "Elasticidades", node: <ElasticidadTool /> },
-    { key: "van-tir", label: "VAN y TIR", node: <VanTirTool /> },
-    { key: "ref", label: "Formulario", node: <RefTool /> },
+    // Práctica integradora
+    { key: "simulador", label: "Simulador Parcial 2", group: "Práctica de parcial", node: <SimuladorTool /> },
+
+    // Unidad 7 — Cálculo financiero
+    { key: "tasas", label: "Tasas equivalentes", group: "Cálculo financiero · U7", node: <TasasTool /> },
+    { key: "valor-tiempo", label: "Valor tiempo del dinero", group: "Cálculo financiero · U7", node: <ValorTiempoTool /> },
+    { key: "anualidades", label: "Anualidades", group: "Cálculo financiero · U7", node: <AnualidadesTool /> },
+    { key: "perpetuidades", label: "Perpetuidades", group: "Cálculo financiero · U7", node: <PerpetuidadesTool /> },
+    { key: "prestamos", label: "Préstamos (francés/alemán/directo)", group: "Cálculo financiero · U7", node: <PrestamosTool /> },
+    { key: "descuento", label: "Descuento comercial y CFT", group: "Cálculo financiero · U7", node: <DescuentoCftTool /> },
+
+    // Unidad 8 — Evaluación de proyectos
+    { key: "flujo", label: "Constructor de flujo de fondos", group: "Evaluación de proyectos · U8", node: <FlujoProyectoTool /> },
+    { key: "van-tir", label: "VAN / TIR / criterios", group: "Evaluación de proyectos · U8", node: <VanTirTool /> },
+    { key: "escudo", label: "Escudo fiscal y amortización", group: "Evaluación de proyectos · U8", node: <EscudoFiscalTool /> },
+    { key: "cae", label: "Valor anual equivalente", group: "Evaluación de proyectos · U8", node: <CaeTool /> },
+
+    // Unidad 6 — Información contable
+    { key: "ratios", label: "Ratios financieros y DuPont", group: "Información contable · U6", node: <RatiosTool /> },
+    { key: "equilibrio", label: "Punto de equilibrio", group: "Información contable · U6", node: <EquilibrioTool /> },
+    { key: "capital-trabajo", label: "Capital de trabajo / NOF", group: "Información contable · U6", node: <CapitalTrabajoTool /> },
+    { key: "resultados", label: "Estado de resultados", group: "Información contable · U6", node: <ResultadosTool /> },
+
+    // Referencia
+    { key: "formulario", label: "Formulario Parcial 2", group: "Referencia", node: <FormularioTool /> },
+
+    // Parcial 1 — Microeconomía
+    { key: "mercado", label: "Oferta y demanda", group: "Parcial 1 · Microeconomía", node: <MercadoTool /> },
+    { key: "elasticidad", label: "Elasticidades", group: "Parcial 1 · Microeconomía", node: <ElasticidadTool /> },
   ];
 
   return (
     <ToolkitShell
       intro={
         <>
-          Herramientas interactivas de <b>Economía para Ingenieros</b>:
-          equilibrio de mercado con impuestos, elasticidades y evaluación de
-          proyectos por VAN/TIR. Todo recalcula en vivo a medida que editás los
-          parámetros.
+          Herramientas interactivas de <b>Economía para Ingenieros</b>, centradas en
+          el <b>Parcial 2</b> (Unidades 6/7/8): cálculo financiero, evaluación de
+          proyectos por VAN/TIR e información contable. Arrancá por el{" "}
+          <b>Simulador</b> para practicar el formato real, o usá cada calculadora
+          como verificador paso a paso. Todo recalcula en vivo y la matemática está
+          validada contra las soluciones oficiales de parciales anteriores.
         </>
       }
       tools={tools}
