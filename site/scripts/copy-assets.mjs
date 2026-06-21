@@ -1,12 +1,13 @@
-// Copia los assets (imágenes) de cada vault → site/public/vault-assets/<id>/<relPath>.
-// Corre en prebuild/predev. Las rutas se preservan para que el resolver las mapee.
+// Copia los assets (imágenes + PDFs) de cada vault → site/public/vault-assets/<id>/<relPath>.
+// Corre en prebuild/predev. Las rutas se preservan para que el resolver las mapee
+// y para que la biblioteca (/[vault]/biblioteca) sirva los PDFs por su relPath.
 import fg from "fast-glob";
 import { mkdir, copyFile } from "node:fs/promises";
 import path from "node:path";
 
 const REPO = path.resolve(process.cwd(), "..");
 const OUT = path.join(process.cwd(), "public", "vault-assets");
-const EXTS = ["svg", "png", "jpg", "jpeg", "gif", "webp"];
+const EXTS = ["svg", "png", "jpg", "jpeg", "gif", "webp", "pdf"];
 
 // [id, dir] — debe coincidir con lib/content/vaults.ts
 const VAULTS = [

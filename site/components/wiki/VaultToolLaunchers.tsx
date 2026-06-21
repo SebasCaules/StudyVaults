@@ -23,14 +23,22 @@ const SheetIcon = (
   </svg>
 );
 
+const LibraryIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
+    <path d="M8 12h8M8 15h5" />
+  </svg>
+);
+
 // Cards-lanzador en la landing de la materia: el toolkit interactivo
 // (/[vault]/herramientas) y las apps estáticas propias (cfg.apps, servidas
 // bajo /apps/<vault>/). Server component — sin estado.
 export default function VaultToolLaunchers({ cfg }: { cfg: VaultConfig }) {
   const hasToolkit = !!cfg.toolkit;
   const hasSheets = !!cfg.sheets;
+  const hasLibrary = !!cfg.library;
   const apps = cfg.apps ?? [];
-  if (!hasToolkit && !hasSheets && apps.length === 0) return null;
+  if (!hasToolkit && !hasSheets && !hasLibrary && apps.length === 0) return null;
 
   const en = cfg.lang === "en";
 
@@ -70,6 +78,21 @@ export default function VaultToolLaunchers({ cfg }: { cfg: VaultConfig }) {
                 : "Hojas de fórmulas y conceptos densas y color-coded — imprimí a PDF o exportá a .tex / .md."
             }
             cta={en ? "Open sheets →" : "Abrir hojas →"}
+          />
+        )}
+
+        {hasLibrary && (
+          <ToolCard
+            href={`/${cfg.id}/biblioteca`}
+            icon={LibraryIcon}
+            kind={en ? "PDF" : "PDF"}
+            title={en ? "PDF library" : "Biblioteca de PDFs"}
+            description={
+              en
+                ? "Printable study material — notes, exam prompts, worked solutions and mock exams, organized like a drive."
+                : "Material imprimible — apuntes, enunciados, resoluciones y simulacros, ordenados como un drive."
+            }
+            cta={en ? "Open library →" : "Abrir biblioteca →"}
           />
         )}
 

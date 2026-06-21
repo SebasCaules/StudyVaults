@@ -18,16 +18,15 @@ export async function generateStaticParams() {
   const m = await getManifest();
   return m.notes
     .filter((n) => !n.isIndex)
-    // Guard: una nota con slug ["herramientas"] en una materia con toolkit
-    // colisionaría el path de salida con la ruta /[vault]/herramientas.
-    .filter(
-      (n) =>
-        !(
-          getVault(n.vault)?.toolkit &&
-          n.slug.length === 1 &&
-          n.slug[0] === "herramientas"
-        ),
-    )
+    // Guard: una nota cuyo slug colisione con una ruta dedicada de la materia
+    // (/herramientas, /biblioteca) pisaría el path de salida de esa ruta.
+    .filter((n) => {
+      const cfg = getVault(n.vault);
+      if (n.slug.length !== 1) return true;
+      if (cfg?.toolkit && n.slug[0] === "herramientas") return false;
+      if (cfg?.library && n.slug[0] === "biblioteca") return false;
+      return true;
+    })
     .map((n) => ({ vault: n.vault, slug: n.slug }));
 }
 

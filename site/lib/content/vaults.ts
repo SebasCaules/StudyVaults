@@ -33,6 +33,9 @@ export interface VaultConfig {
   // ¿tiene página /[vault]/hojas? (hojas de fórmulas/conceptos imprimibles)
   // Debe mantenerse en sync con SHEETS en components/vault-sheets/registry.ts.
   sheets?: boolean;
+  // ¿tiene página /[vault]/biblioteca? (PDFs de estudio organizados tipo drive)
+  // Debe mantenerse en sync con LIBRARIES en components/vault-library/registry.ts.
+  library?: boolean;
   // apps estáticas propias (HTML restilizado, servido bajo /apps/<vault>/)
   apps?: VaultApp[];
 }
@@ -149,6 +152,7 @@ export const VAULTS: VaultConfig[] = [
     lang: "en",
     toolkit: true,
     sheets: true,
+    library: true,
   },
 ];
 
