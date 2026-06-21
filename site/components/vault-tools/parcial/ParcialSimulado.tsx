@@ -60,6 +60,20 @@ interface PerAttr {
   breakingScenarios: string;
   diagram: DiagramState;
 }
+// Una cita = un fragmento del enunciado marcado como evidencia de un atributo
+// de calidad (QA). Guarda los spans por párrafo (para repintar la marca) y el
+// texto citado (para listarlo y exportarlo aun si cambiara el render).
+interface CitationSpan {
+  pIdx: number;
+  start: number;
+  end: number;
+}
+interface Citation {
+  id: string;
+  attrId: string;
+  spans: CitationSpan[];
+  text: string;
+}
 interface ExamState {
   step: number;
   attrs: AttrItem[];
@@ -67,6 +81,7 @@ interface ExamState {
   baseDiagram: DiagramState;
   perAttr: Record<string, PerAttr>;
   annotations: Record<number, Annotation>;
+  citations: Citation[];
   enunciadoCollapsed: boolean;
   tradeoffs: string;
   risks: string;
@@ -84,6 +99,7 @@ function defaultState(): ExamState {
     baseDiagram: { nodes: [], edges: [] },
     perAttr: {},
     annotations: {},
+    citations: [],
     enunciadoCollapsed: false,
     tradeoffs: "",
     risks: "",
@@ -128,6 +144,33 @@ function loadState(id: string): ExamState {
     }
     if (!obj.annotations || typeof obj.annotations !== "object")
       obj.annotations = {};
+    // Backfill de citas: estados viejos no las tenían; saneamos spans inválidos.
+    if (!Array.isArray(obj.citations)) obj.citations = [];
+    else
+      obj.citations = obj.citations
+        .filter(
+          (c) =>
+            c &&
+            typeof c.attrId === "string" &&
+            Array.isArray(c.spans) &&
+            c.spans.length > 0,
+        )
+        .map((c) => ({
+          id: c.id ?? "c" + Math.random().toString(36).slice(2, 9),
+          attrId: c.attrId,
+          spans: c.spans
+            .filter(
+              (s) =>
+                s &&
+                typeof s.pIdx === "number" &&
+                typeof s.start === "number" &&
+                typeof s.end === "number" &&
+                s.end > s.start,
+            )
+            .map((s) => ({ pIdx: s.pIdx, start: s.start, end: s.end })),
+          text: typeof c.text === "string" ? c.text : "",
+        }))
+        .filter((c) => c.spans.length > 0);
     if (typeof obj.enunciadoCollapsed !== "boolean")
       obj.enunciadoCollapsed = false;
     if (!obj.perAttr || typeof obj.perAttr !== "object") obj.perAttr = {};
@@ -259,19 +302,29 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-// HTML del párrafo con las marcas de anotación aplicadas al texto crudo.
-function annotatedParagraphHTML(text: string, anno?: Annotation): string {
+// Marca de cita aplicada a un span de un párrafo (id de la cita + etiqueta del
+// atributo, para el tooltip).
+interface CiteMark {
+  start: number;
+  end: number;
+  id: string;
+  label: string;
+}
+
+// HTML del párrafo con las marcas de anotación + citas aplicadas al texto crudo.
+function annotatedParagraphHTML(
+  text: string,
+  anno?: Annotation,
+  cites?: CiteMark[],
+): string {
   const hi = anno?.highlight ?? [];
   const un = anno?.underline ?? [];
-  if (!hi.length && !un.length) {
+  const ci = cites ?? [];
+  if (!hi.length && !un.length && !ci.length) {
     return escapeHtml(text).replace(/\n/g, "<br>");
   }
   const set = new Set<number>([0, text.length]);
-  hi.forEach((r) => {
-    set.add(r.start);
-    set.add(r.end);
-  });
-  un.forEach((r) => {
+  [...hi, ...un, ...ci].forEach((r) => {
     set.add(r.start);
     set.add(r.end);
   });
@@ -286,15 +339,22 @@ function annotatedParagraphHTML(text: string, anno?: Annotation): string {
     const seg = text.slice(s, e);
     const isHi = hi.some((r) => r.start <= s && r.end >= e);
     const isUn = un.some((r) => r.start <= s && r.end >= e);
+    const citeHit = ci.find((r) => r.start <= s && r.end >= e);
     const escaped = escapeHtml(seg).replace(/\n/g, "<br>");
-    if (!isHi && !isUn) {
+    if (!isHi && !isUn && !citeHit) {
       out.push(escaped);
       continue;
     }
     const classes: string[] = [];
     if (isHi) classes.push("enun-mark");
     if (isUn) classes.push("enun-uline");
-    out.push(`<span class="${classes.join(" ")}">${escaped}</span>`);
+    if (citeHit) classes.push("enun-cite");
+    const dataAttrs = citeHit
+      ? ` data-cite-id="${escapeHtml(citeHit.id)}" title="Cita · ${escapeHtml(
+          citeHit.label,
+        )}"`
+      : "";
+    out.push(`<span class="${classes.join(" ")}"${dataAttrs}>${escaped}</span>`);
   }
   return out.join("");
 }
@@ -680,26 +740,58 @@ function EnunciadoDock({
 }) {
   const bodyRef = useRef<HTMLDivElement | null>(null);
   const savedRangeRef = useRef<globalThis.Range | null>(null);
+  const citeControlRef = useRef<HTMLDivElement | null>(null);
   const [annoEnabled, setAnnoEnabled] = useState(false);
+  const [citeMenuOpen, setCiteMenuOpen] = useState(false);
+  const [flashCiteId, setFlashCiteId] = useState<string | null>(null);
   const paragraphs = ENUNCIADOS[exercise.id] ?? null;
   const collapsed = state.enunciadoCollapsed;
+
+  // Atributos elegidos, en el orden de priorización: targets posibles de cita.
+  const orderedAttrs = state.attrOrder
+    .map((x) => state.attrs.find((a) => a.id === x))
+    .filter((a): a is AttrItem => !!a);
+  const attrName = (attrId: string) =>
+    state.attrs.find((a) => a.id === attrId)?.name ?? attrId;
+
+  // Spans de cita por párrafo (id + etiqueta del atributo para el tooltip).
+  const citeMarksByParagraph = useCallback((): Record<number, CiteMark[]> => {
+    const map: Record<number, CiteMark[]> = {};
+    (state.citations || []).forEach((c) => {
+      const label = attrName(c.attrId);
+      c.spans.forEach((s) => {
+        (map[s.pIdx] ??= []).push({
+          start: s.start,
+          end: s.end,
+          id: c.id,
+          label,
+        });
+      });
+    });
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   // Re-pintar los párrafos in-place tras una marca (sin remontar React).
   const repaint = useCallback(() => {
     const root = bodyRef.current;
     if (!root) return;
+    const cites = citeMarksByParagraph();
     root.querySelectorAll<HTMLElement>("p[data-p-idx]").forEach((p) => {
       const idx = parseInt(p.dataset.pIdx ?? "0", 10);
       const src = (ENUNCIADOS[exercise.id] ?? [])[idx] ?? "";
-      p.innerHTML = annotatedParagraphHTML(src, state.annotations[idx]);
+      p.innerHTML = annotatedParagraphHTML(src, state.annotations[idx], cites[idx]);
     });
-  }, [exercise.id, state]);
+  }, [exercise.id, state, citeMarksByParagraph]);
 
-  // Pintar al montar y cada vez que el dock se expande (al expandir, los <p>
-  // del enunciado se remontan vacíos y hay que reinyectar su HTML con marcas).
+  // Pintar al montar, al expandir (al expandir, los <p> del enunciado se
+  // remontan vacíos y hay que reinyectar su HTML con marcas) y cuando cambia el
+  // conjunto de citas — incluido el caso externo del paso 1, que al
+  // deseleccionar un atributo descarta sus citas sin repintar acá.
+  const citeSig = (state.citations || []).map((c) => c.id).join(",");
   useEffect(() => {
     if (!collapsed) repaint();
-  }, [repaint, collapsed]);
+  }, [repaint, collapsed, citeSig]);
 
   // Tracking de selección dentro del enunciado.
   useEffect(() => {
@@ -727,6 +819,22 @@ function EnunciadoDock({
       document.removeEventListener("selectionchange", onSelectionChange);
   }, [paragraphs]);
 
+  // El menú de citas se cierra al perder la selección.
+  useEffect(() => {
+    if (!annoEnabled) setCiteMenuOpen(false);
+  }, [annoEnabled]);
+
+  // …y al hacer click fuera del control.
+  useEffect(() => {
+    if (!citeMenuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (!citeControlRef.current?.contains(e.target as Node))
+        setCiteMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [citeMenuOpen]);
+
   const applyToSelection = (kind: "highlight" | "underline" | "erase") => {
     const root = bodyRef.current;
     const range = savedRangeRef.current;
@@ -750,6 +858,114 @@ function EnunciadoDock({
     savedRangeRef.current = null;
     setAnnoEnabled(false);
   };
+
+  // Marca la selección actual como cita (evidencia) de un atributo de calidad.
+  const createCitation = (attrId: string) => {
+    const root = bodyRef.current;
+    const range = savedRangeRef.current;
+    if (!root || !range) return;
+    const spans = rangeToParagraphSpans(range, root);
+    if (spans.length === 0) return;
+    const src = ENUNCIADOS[exercise.id] ?? [];
+    const text = spans
+      .map((s) => (src[s.pIdx] ?? "").slice(s.start, s.end))
+      .join(" … ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!text) return;
+    const cite: Citation = {
+      id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      attrId,
+      spans: spans.map((s) => ({ pIdx: s.pIdx, start: s.start, end: s.end })),
+      text,
+    };
+    if (!Array.isArray(state.citations)) state.citations = [];
+    state.citations.push(cite);
+    save();
+    repaint();
+    window.getSelection()?.removeAllRanges();
+    savedRangeRef.current = null;
+    setAnnoEnabled(false);
+    setCiteMenuOpen(false);
+    rerender(); // refresca la lista de citas (citeGroups se recalcula al render)
+  };
+
+  const removeCitation = (cid: string) => {
+    state.citations = (state.citations || []).filter((c) => c.id !== cid);
+    save();
+    repaint();
+    rerender();
+  };
+
+  // Resalta brevemente en el enunciado los spans de una cita.
+  const locateInText = (cid: string) => {
+    const root = bodyRef.current;
+    if (!root) return;
+    const els = root.querySelectorAll<HTMLElement>(
+      `[data-cite-id="${cid}"]`,
+    );
+    if (!els.length) return;
+    els.forEach((el) => el.classList.add("enun-cite--flash"));
+    els[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(
+      () => els.forEach((el) => el.classList.remove("enun-cite--flash")),
+      1400,
+    );
+  };
+
+  // Click sobre una cita en el texto → destella su entrada en la lista.
+  const onBodyClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = (e.target as HTMLElement)?.closest?.(
+      "[data-cite-id]",
+    ) as HTMLElement | null;
+    const id = el?.getAttribute("data-cite-id");
+    if (!id) return;
+    setFlashCiteId(id);
+    window.setTimeout(
+      () => setFlashCiteId((cur) => (cur === id ? null : cur)),
+      1400,
+    );
+  };
+
+  // Citas agrupadas por atributo (orden de priorización; huérfanas al final).
+  const citations = state.citations || [];
+  const citeGroups: {
+    attrId: string;
+    name: string;
+    rank: number | null;
+    orphan: boolean;
+    items: Citation[];
+  }[] = [];
+  if (citations.length) {
+    const byAttr = new Map<string, Citation[]>();
+    citations.forEach((c) => {
+      const list = byAttr.get(c.attrId);
+      if (list) list.push(c);
+      else byAttr.set(c.attrId, [c]);
+    });
+    orderedAttrs.forEach((a, i) => {
+      const items = byAttr.get(a.id);
+      if (items) {
+        citeGroups.push({
+          attrId: a.id,
+          name: a.name,
+          rank: i + 1,
+          orphan: false,
+          items,
+        });
+        byAttr.delete(a.id);
+      }
+    });
+    byAttr.forEach((items, attrId) => {
+      citeGroups.push({
+        attrId,
+        name: attrName(attrId),
+        rank: null,
+        orphan: true,
+        items,
+      });
+    });
+  }
 
   const clearAll = () => {
     if (!Object.keys(state.annotations).length) return;
@@ -833,6 +1049,51 @@ function EnunciadoDock({
                 >
                   ✕ Borrar marcas
                 </button>
+                <div className="parcial-cite-control" ref={citeControlRef}>
+                  <button
+                    type="button"
+                    className={
+                      "parcial-anno parcial-anno--cite" +
+                      (citeMenuOpen ? " is-open" : "")
+                    }
+                    disabled={!annoEnabled || orderedAttrs.length === 0}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setCiteMenuOpen((o) => !o)}
+                    aria-haspopup="menu"
+                    aria-expanded={citeMenuOpen}
+                    title={
+                      orderedAttrs.length === 0
+                        ? "Elegí atributos de calidad en el paso 1 para poder citar"
+                        : "Marcar la selección como cita de un atributo de calidad"
+                    }
+                  >
+                    <span className="parcial-anno-swatch is-cite" />
+                    Citar para QA
+                  </button>
+                  {citeMenuOpen && orderedAttrs.length > 0 && (
+                    <div className="parcial-cite-menu" role="menu">
+                      <div className="parcial-cite-menu-head">
+                        ¿Evidencia de qué atributo?
+                      </div>
+                      {orderedAttrs.map((a, i) => (
+                        <button
+                          key={a.id}
+                          type="button"
+                          role="menuitem"
+                          className="parcial-cite-menu-item"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => createCitation(a.id)}
+                        >
+                          <span className="parcial-cite-menu-rank">{i + 1}</span>
+                          <span className="parcial-cite-menu-name">{a.name}</span>
+                          {a.custom && (
+                            <span className="parcial-pill-tag">custom</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <button
                   type="button"
                   className="parcial-anno"
@@ -843,15 +1104,78 @@ function EnunciadoDock({
                   Limpiar todo
                 </button>
                 <span className="parcial-enunciado-toolbar-hint">
-                  Seleccioná texto y aplicá una marca.
+                  Resaltá o subrayá; o citá la selección como evidencia de un QA.
                 </span>
               </div>
-              <div className="parcial-enunciado-body" ref={bodyRef}>
+              <div
+                className="parcial-enunciado-body"
+                ref={bodyRef}
+                onClick={onBodyClick}
+              >
                 {paragraphs.map((_, i) => (
                   // El contenido se inyecta en repaint() (innerHTML con las marcas).
                   <p key={i} data-p-idx={i} />
                 ))}
               </div>
+
+              {citeGroups.length > 0 && (
+                <div className="parcial-cites">
+                  <div className="parcial-cites-head">
+                    <span className="parcial-cites-title">
+                      Citas del enunciado
+                    </span>
+                    <span className="parcial-cites-count">
+                      {citations.length}
+                    </span>
+                  </div>
+                  {citeGroups.map((g) => (
+                    <div className="parcial-cites-group" key={g.attrId}>
+                      <div className="parcial-cites-attr">
+                        {g.rank != null && (
+                          <span className="parcial-cites-attr-rank">
+                            {g.rank}
+                          </span>
+                        )}
+                        <span className="parcial-cites-attr-name">{g.name}</span>
+                        {g.orphan && (
+                          <span className="parcial-cites-orphan">
+                            atributo no seleccionado
+                          </span>
+                        )}
+                      </div>
+                      <ul className="parcial-cites-list">
+                        {g.items.map((c) => (
+                          <li
+                            key={c.id}
+                            className={
+                              "parcial-cites-item" +
+                              (flashCiteId === c.id ? " is-flash" : "")
+                            }
+                          >
+                            <button
+                              type="button"
+                              className="parcial-cites-quote"
+                              onClick={() => locateInText(c.id)}
+                              title="Resaltar en el enunciado"
+                            >
+                              “{c.text}”
+                            </button>
+                            <button
+                              type="button"
+                              className="parcial-cites-remove"
+                              onClick={() => removeCitation(c.id)}
+                              title="Quitar cita"
+                              aria-label="Quitar cita"
+                            >
+                              ✕
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>
@@ -879,6 +1203,9 @@ function Step1({
       state.attrs = state.attrs.filter((a) => a.id !== attrId);
       state.attrOrder = state.attrOrder.filter((x) => x !== attrId);
       delete state.perAttr[attrId];
+      state.citations = (state.citations || []).filter(
+        (c) => c.attrId !== attrId,
+      );
     } else {
       state.attrs.push({
         id: attrId,
@@ -1630,6 +1957,36 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
     });
   }
   lines.push("");
+
+  // Citas del enunciado (evidencia por atributo)
+  const citations = state.citations || [];
+  if (citations.length) {
+    lines.push(`## Evidencia citada del enunciado`);
+    const byAttr = new Map<string, Citation[]>();
+    citations.forEach((c) => {
+      const list = byAttr.get(c.attrId);
+      if (list) list.push(c);
+      else byAttr.set(c.attrId, [c]);
+    });
+    const emit = (name: string, items: Citation[]) => {
+      lines.push("");
+      lines.push(`**${name}**`);
+      lines.push("");
+      items.forEach((c) => lines.push(`> “${c.text}”`));
+    };
+    ordered.forEach((a) => {
+      const items = byAttr.get(a.id);
+      if (items) {
+        emit(a.name, items);
+        byAttr.delete(a.id);
+      }
+    });
+    byAttr.forEach((items, attrId) => {
+      const name = state.attrs.find((a) => a.id === attrId)?.name ?? attrId;
+      emit(`${name} _(atributo no seleccionado)_`, items);
+    });
+    lines.push("");
+  }
 
   // Diagrama base
   lines.push(`## Arquitectura inicial`);
