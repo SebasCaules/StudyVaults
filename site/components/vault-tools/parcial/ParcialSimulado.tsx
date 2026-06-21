@@ -428,6 +428,7 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
   const rerender = useCallback(() => force((n) => n + 1), []);
   const [hydrated, setHydrated] = useState(false);
   const [savedLabel, setSavedLabel] = useState("Sin cambios");
+  const [focus, setFocus] = useState(false);
 
   // Editores de diagramas vivos del paso actual; se vuelcan al estado al salir.
   const editorsRef = useRef<Record<string, DiagramInstance>>({});
@@ -467,6 +468,25 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
     );
     rerender();
   }, [id, rerender]);
+
+  // Modo focus: oculta navbar + sidebar + chrome del toolkit para concentrarse
+  // sólo en el parcial. Static-export safe: togglea una clase en <html> dentro
+  // de un efecto y la limpia al apagarlo o al desmontar el caso.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("parcial-focus", focus);
+    return () => root.classList.remove("parcial-focus");
+  }, [focus]);
+
+  // Esc sale del modo focus.
+  useEffect(() => {
+    if (!focus) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFocus(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [focus]);
 
   const goStep = useCallback(
     (n: number) => {
@@ -531,6 +551,20 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
         </div>
         <div className="parcial-toolbar-right">
           <span className="parcial-autosave">{savedLabel}</span>
+          <button
+            type="button"
+            className={"btn btn--sm btn--ghost parcial-focus-btn" + (focus ? " is-on" : "")}
+            onClick={() => setFocus((f) => !f)}
+            aria-pressed={focus}
+            title={
+              focus
+                ? "Salir del modo focus (Esc)"
+                : "Modo focus — ocultar navegación y enfocar el parcial"
+            }
+          >
+            <FocusIcon />
+            {focus ? "Salir de focus" : "Focus"}
+          </button>
           <button
             type="button"
             className="btn btn--sm btn--ghost"
@@ -1710,6 +1744,22 @@ function FlaskIcon() {
         stroke="currentColor"
         fill="none"
         strokeWidth={1.4}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// Cuatro esquinas: glifo de "encuadre/focus" (entrar y salir del modo focus).
+function FocusIcon() {
+  return (
+    <svg width={14} height={14} viewBox="0 0 16 16" aria-hidden="true">
+      <path
+        d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"
+        stroke="currentColor"
+        fill="none"
+        strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -201,6 +201,49 @@
   color: #fff;
 }
 
+/* ============================================================
+   FOCUS MODE — oculta navbar + sidebar + chrome del toolkit
+   para concentrarse sólo en el parcial. La clase `.parcial-focus`
+   la togglea ParcialSimulado sobre <html> (static-export safe).
+   ============================================================ */
+.parcial-focus-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.parcial-focus-btn svg { display: block; }
+.parcial-focus-btn.is-on {
+  background: color-mix(in srgb, var(--vault-tint, var(--accent)) 16%, transparent);
+  border-color: var(--vault-tint, var(--accent));
+  color: var(--ink-strong);
+}
+
+/* Oculta el cromo que rodea al parcial. */
+html.parcial-focus .nav { display: none; }
+html.parcial-focus .rail { display: none; }
+html.parcial-focus .crumbs,
+html.parcial-focus .wiki__head,
+html.parcial-focus .tk__bar,
+html.parcial-focus .tk__open-head { display: none; }
+
+/* El contenido pasa a ocupar todo el ancho, sin el hueco del navbar. */
+html.parcial-focus .wiki {
+  padding-top: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+html.parcial-focus .wiki__main { padding-top: 22px; }
+
+/* La toolbar del parcial queda pegada arriba para salir de focus en cualquier
+   momento (el botón Focus y "← Banco" siempre a mano). */
+html.parcial-focus .parcial-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--background);
+  padding-top: 8px;
+}
+
 /* ---- stepper ---- */
 .parcial-stepper {
   display: grid;
