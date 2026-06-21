@@ -1,3 +1,4 @@
+import type { DiscoveredAsset } from "./discover";
 import type { Manifest } from "./manifest";
 import type { Note } from "./parse";
 import { withBase } from "./slug";
@@ -6,9 +7,11 @@ import { getVault, type VaultId } from "./vaults";
 export type Resolved =
   | { kind: "note"; note: Note }
   | { kind: "asset"; url: string; alt: string }
+  | { kind: "file"; url: string; name: string }
   | null;
 
 const IMG_RE = /\.(svg|png|jpe?g|gif|webp)$/i;
+const DOC_RE = /\.pdf$/i;
 
 /** Normaliza un path con segmentos "." y ".." (sin tocar el fs). */
 function normalizeJoin(baseDir: string, target: string): string {
@@ -46,11 +49,17 @@ export function resolveTarget(
   const cfg = getVault(vault);
   const contentRoot = cfg?.contentRoot ? `${cfg.contentRoot}/` : "";
 
-  // ---- asset (termina en extensión de imagen) ----
-  if (IMG_RE.test(target)) {
+  // ---- asset: imagen (→ <img>) o documento PDF (→ <a>) ----
+  const isImg = IMG_RE.test(target);
+  const isDoc = DOC_RE.test(target);
+  if (isImg || isDoc) {
     const aR = m.assetByRelPath.get(vault);
     const aB = m.assetByBasename.get(vault);
     const basename = target.split("/").pop() || target;
+    const make = (a: DiscoveredAsset): Resolved =>
+      isImg
+        ? { kind: "asset", url: assetUrl(vault, a.relPath), alt: basename }
+        : { kind: "file", url: assetUrl(vault, a.relPath), name: basename };
     // intentar por ruta (varias bases) y luego por basename
     const candidates = [
       target,
@@ -59,10 +68,10 @@ export function resolveTarget(
     ];
     for (const c of candidates) {
       const hit = aR?.get(c);
-      if (hit) return { kind: "asset", url: assetUrl(vault, hit.relPath), alt: basename };
+      if (hit) return make(hit);
     }
     const byName = aB?.get(basename);
-    if (byName) return { kind: "asset", url: assetUrl(vault, byName.relPath), alt: basename };
+    if (byName) return make(byName);
     return null;
   }
 

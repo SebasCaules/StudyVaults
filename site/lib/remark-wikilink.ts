@@ -79,6 +79,26 @@ export function remarkWikilink() {
               url: resolved.url,
               alt: alias?.trim() || resolved.alt,
             });
+          } else if (resolved && resolved.kind === "file") {
+            // documento (PDF): siempre <a> en pestaña nueva, nunca <img>,
+            // tanto para [[doc.pdf]] como para el embed ![[doc.pdf]].
+            const name = resolved.name;
+            const dot = name.lastIndexOf(".");
+            const ext = dot >= 0 ? name.slice(dot + 1).toUpperCase() : "";
+            const label = alias?.trim() || (dot > 0 ? name.slice(0, dot) : name);
+            out.push({
+              type: "link",
+              url: resolved.url,
+              data: {
+                hProperties: {
+                  className: ["wikilink", "filelink"],
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  ...(ext ? { dataExt: ext } : {}),
+                },
+              },
+              children: [{ type: "text", value: label }],
+            });
           } else if (resolved && resolved.kind === "note") {
             const label = alias?.trim() || resolved.note.title || target;
             out.push({

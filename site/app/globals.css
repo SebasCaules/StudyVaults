@@ -424,6 +424,18 @@
   padding: 1px 8px;
   background: var(--primary-soft);
 }
+.prose-sv a.filelink::after {
+  content: attr(data-ext);
+  margin-left: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  border: 1px solid var(--primary-line);
+  border-radius: 4px;
+  padding: 0 4px;
+  vertical-align: 1px;
+}
 .prose-sv .broken-link {
   color: var(--text-secondary);
   border-bottom: 1px dashed var(--accent-line);

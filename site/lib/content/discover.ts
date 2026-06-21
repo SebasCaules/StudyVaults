@@ -17,6 +17,10 @@ export interface DiscoveredAsset {
 }
 
 const IMG_EXTS = ["svg", "png", "jpg", "jpeg", "gif", "webp"];
+// Documentos servibles (copiados a public/ por copy-assets.mjs): el resolver los
+// enlaza como <a> en vez de <img>. Mantener en sync con EXTS de copy-assets.mjs.
+const DOC_EXTS = ["pdf"];
+const ASSET_EXTS = [...IMG_EXTS, ...DOC_EXTS];
 
 /** Notas .md publicables del vault (excluye CLAUDE.md y carpetas de editor). */
 export async function discoverNoteFiles(
@@ -34,13 +38,13 @@ export async function discoverNoteFiles(
   }));
 }
 
-/** Imágenes/assets del vault (svg de Economia, png de PAW, etc.). */
+/** Assets del vault: imágenes (svg de Economia, png de PAW, …) + documentos PDF. */
 export async function discoverAssets(
   vault: VaultConfig,
 ): Promise<DiscoveredAsset[]> {
   const cwd = path.join(REPO_ROOT, vault.dir);
   const entries = await fg(
-    IMG_EXTS.map((e) => `**/*.${e}`),
+    ASSET_EXTS.map((e) => `**/*.${e}`),
     { cwd, ignore: ["**/.obsidian/**", "**/node_modules/**"], dot: false },
   );
   return entries.map((relPath) => ({
