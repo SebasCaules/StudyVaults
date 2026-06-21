@@ -343,29 +343,17 @@ function RoadmapStop({
 function Recommendations({
   start,
   elecTotal,
+  recs,
   onPreview,
   preview,
 }: {
   start: PlanStart;
   elecTotal: number;
+  recs: Recommendation[];
   onPreview: (code: string | null) => void;
   preview: string | null;
 }) {
-  const { state, dispatch } = usePlanner();
-  // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
-  // rankeadas. Las agrupamos abajo según si alargan o no la carrera.
-  const recs = useMemo(
-    () => recommendElectives(state.plan, state.approved, Infinity),
-    [
-      state.plan.pool,
-      state.plan.fixed,
-      state.plan.start,
-      state.plan.maxCred,
-      state.plan.maxMat,
-      state.plan.avoid,
-      state.approved,
-    ],
-  );
+  const { dispatch } = usePlanner();
 
   if (!recs.length) return null;
   const faltan = Math.max(0, ELEC_REQ - elecTotal);
@@ -674,6 +662,15 @@ export default function PlanView() {
     "roadmap",
   );
   const [minorsOpen, setMinorsOpen] = useState(false);
+  const [recsHidden, setRecsHidden] = useState(false);
+
+  // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
+  // rankeadas. Recommendations las agrupa según si alargan o no la carrera.
+  const recs = useMemo(
+    () => recommendElectives(PL, approved, Infinity),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved],
+  );
 
   const baseR = useMemo(
     () => optimizePlan(PL, approved),
@@ -938,7 +935,12 @@ export default function PlanView() {
       )}
 
       {used.length > 0 ? (
-        <div className="plan2-split">
+        <div
+          className={
+            "plan2-split" +
+            (recsHidden || !recs.length ? " plan2-split--solo" : "")
+          }
+        >
           <div className="plan2-split__main">
             <div className="plan2-boardbar">
               <div
@@ -989,6 +991,16 @@ export default function PlanView() {
                 </span>
                 Minors por cuatrimestre
               </button>
+              {recs.length > 0 && (
+                <button
+                  type="button"
+                  className="plan2-recs-toggle"
+                  aria-pressed={recsHidden}
+                  onClick={() => setRecsHidden((v) => !v)}
+                >
+                  {recsHidden ? "Mostrar electivas" : "Ocultar electivas"}
+                </button>
+              )}
             </div>
 
             <div className="plan2-board">
@@ -1023,14 +1035,17 @@ export default function PlanView() {
             </div>
           </div>
 
-          <aside className="plan2-split__side">
-            <Recommendations
-              start={PL.start}
-              elecTotal={elecCommitted}
-              onPreview={setPreview}
-              preview={preview}
-            />
-          </aside>
+          {!recsHidden && recs.length > 0 && (
+            <aside className="plan2-split__side">
+              <Recommendations
+                start={PL.start}
+                elecTotal={elecCommitted}
+                recs={recs}
+                onPreview={setPreview}
+                preview={preview}
+              />
+            </aside>
+          )}
         </div>
       ) : (
         <div className="plan2-board">

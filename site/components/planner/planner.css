@@ -84,6 +84,8 @@
 .planner.side-collapsed .side{display:none}
 .planner .sidetoggle{width:34px;height:34px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink-soft);cursor:pointer;display:inline-grid;place-items:center;flex:none;transition:.15s}
 .planner .sidetoggle:hover{border-color:var(--line-2);color:var(--ink)}
+.planner .panelshow{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 13px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink-soft);font-family:var(--f-b);font-weight:500;font-size:13px;cursor:pointer;flex:none;transition:.15s}
+.planner .panelshow:hover{border-color:var(--line-2);color:var(--ink)}
 .planner .icon-btn{border:1px solid var(--line);background:var(--panel-2);color:var(--ink-soft);border-radius:3px;font-family:var(--f-b);font-size:11px;padding:4px 9px;cursor:pointer;transition:.15s}
 .planner .icon-btn:hover{border-color:var(--line-2);color:var(--ink)}
 .planner .qg-actions{display:flex;align-items:center;gap:9px}
@@ -884,6 +886,7 @@
   display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,30%,400px);
   gap:18px;align-items:start;margin-top:4px;
 }
+.planner .plan2-split--solo{grid-template-columns:1fr}
 .planner .plan2-split__main{min-width:0;container-type:inline-size}
 .planner .plan2-split__side{
   position:sticky;top:calc(var(--nav-h) + 88px);
@@ -1257,6 +1260,19 @@
 }
 .planner .plan2-minors-btn__dots{display:inline-flex;gap:2px}
 .planner .plan2-minors-btn__dots i{width:7px;height:7px;border-radius:999px}
+.planner .plan2-recs-toggle{
+  display:inline-flex;align-items:center;cursor:pointer;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  padding:5px 13px;font-family:var(--f-m);font-size:11.5px;font-weight:600;
+  letter-spacing:.02em;color:var(--ink-soft);transition:.16s var(--ease,ease);
+}
+.planner .plan2-recs-toggle:hover{
+  border-color:color-mix(in srgb,var(--brass) 45%,var(--line));
+  color:var(--ink);box-shadow:0 1px 0 color-mix(in srgb,var(--brass) 18%,transparent);
+}
+.planner .plan2-recs-toggle[aria-pressed="true"]{
+  background:var(--brass-soft);border-color:color-mix(in srgb,var(--brass) 40%,var(--line));color:var(--ink);
+}
 
 /* grilla compacta: 3 por fila si entran, si no 2, y 1 en pantallas chicas.
    Reacciona al ancho real de la columna (.plan2-split__main), no del viewport. */
