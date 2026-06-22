@@ -932,3 +932,257 @@
 @media (max-width: 860px) {
   .wiki[data-wide="1"] .wiki__inner { padding: 0 18px; }
 }
+
+/* ============================================================
+   VAULT LANDING (.vl-*) — masthead + onboarding de la materia
+   Header rico, explainer "cómo funciona la wiki", panel "descargá
+   para Claude Code" y wrap del catálogo. Estilos de página (viven
+   acá, no en @studyvaults/ui): los componentes solo emiten clases.
+   ============================================================ */
+
+/* ---- masthead del header ---- */
+.vl-head {
+  margin-bottom: 0;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--hairline);
+}
+.vl-head__meta {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+.vl-head__stat b {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--ink-strong);
+  margin-right: 5px;
+}
+.vl-head__statsep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hairline-strong);
+  flex: 0 0 auto;
+}
+.vl-head__chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.vl-head__chip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--vault-tint) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--vault-tint) 32%, transparent);
+  border-radius: var(--r-pill);
+  padding: 2px 9px;
+}
+.vl-head__actions {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ---- cabecera de sección compartida (how / claude / catálogo) ---- */
+.vl-sec__head { margin: 0 0 20px; }
+.vl-sec__kicker {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  margin-bottom: 10px;
+}
+.vl-sec__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(22px, 3vw, 27px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--text-primary);
+}
+.vl-sec__lead {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 64ch;
+}
+
+/* ---- explainer: cómo funciona la wiki ---- */
+.vl-how { margin-top: 48px; }
+.vl-how__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.vl-how__card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 22px 22px 24px;
+  box-shadow: var(--shadow-sm);
+}
+.vl-how__ico {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  margin-bottom: 14px;
+}
+.vl-how__ico svg { width: 19px; height: 19px; }
+.vl-how__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.2;
+  margin: 0 0 8px;
+  color: var(--ink-strong);
+}
+.vl-how__desc {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* ---- panel: descargá para Claude Code (la feature) ---- */
+.vl-claude {
+  margin-top: 52px;
+  padding: clamp(24px, 4vw, 40px);
+  background:
+    radial-gradient(
+      120% 150% at 100% 0%,
+      color-mix(in srgb, var(--vault-tint) 10%, transparent),
+      transparent 58%
+    ),
+    var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-sm);
+}
+.vl-claude__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 22px 30px;
+}
+.vl-claude__col { min-width: 0; }
+.vl-claude__step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.vl-claude__col .vl-claude__step-head:not(:first-child) { margin-top: 24px; }
+.vl-claude__step-n {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 7px;
+}
+.vl-claude__step-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  margin: 0;
+  color: var(--ink-strong);
+}
+.vl-claude__prompts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vl-claude__prompt {
+  position: relative;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--surface-3);
+  border: 1px solid var(--hairline);
+  border-left: 2px solid var(--primary-line);
+  border-radius: 0 6px 6px 0;
+  padding: 9px 13px 9px 30px;
+}
+.vl-claude__prompt::before {
+  content: "›";
+  position: absolute;
+  left: 13px;
+  top: 8px;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+.vl-claude__foot {
+  margin: 16px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ---- bloque de comando con botón copiar ---- */
+.vl-cmd { position: relative; }
+.vl-cmd__code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: #adbac7;
+  background: #1b1f24;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 14px 16px;
+  padding-right: 86px;
+  overflow-x: auto;
+  margin: 0;
+  white-space: pre;
+}
+.vl-cmd__copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* ---- wrap del catálogo (index.md) ---- */
+.toollaunch { margin: 52px 0 0; }
+.vl-catalog {
+  margin-top: 52px;
+  padding-top: 36px;
+  border-top: 1px solid var(--hairline);
+}
+.vl-catalog .prose-sv { margin-top: 22px; }
+
+@media (max-width: 560px) {
+  .vl-head__actions .btn { width: 100%; justify-content: center; }
+}
