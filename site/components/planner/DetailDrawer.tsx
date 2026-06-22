@@ -27,6 +27,7 @@ function Prose({ text }: { text: string }) {
 
 /** Apartado "Programa analítico" con la ficha oficial del ITBA (PDF parseado). */
 function FichaSection({ ficha }: { ficha: Ficha }) {
+  const { dispatch } = usePlanner();
   const ch = ficha.cargaHoraria;
   const totales = [
     ch.teoricas != null ? `${ch.teoricas} teóricas` : null,
@@ -131,14 +132,26 @@ function FichaSection({ ficha }: { ficha: Ficha }) {
         </details>
       ) : null}
 
-      <a
-        className="dr-pdf"
-        href={withBase(ficha.pdf)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Ver programa analítico completo (PDF)
-      </a>
+      <div className="dr-ficha__acts">
+        <button
+          type="button"
+          className="dr-pdf dr-pdf--primary"
+          onClick={() => {
+            dispatch({ type: "OPEN_FICHA", code: ficha.codigo });
+            dispatch({ type: "CLOSE_DRAWER" });
+          }}
+        >
+          Leer ficha completa ↗
+        </button>
+        <a
+          className="dr-pdf"
+          href={withBase(ficha.pdf)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          PDF
+        </a>
+      </div>
     </div>
   );
 }

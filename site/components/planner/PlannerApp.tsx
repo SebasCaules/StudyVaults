@@ -15,6 +15,7 @@ import {
 import Topbar from "./Topbar";
 import Sidebar from "./Sidebar";
 import DetailDrawer from "./DetailDrawer";
+import FichaReader from "./FichaReader";
 import CuatriView from "./views/CuatriView";
 import ElectivasView from "./views/ElectivasView";
 import CombinadorView from "./views/CombinadorView";
@@ -87,6 +88,7 @@ function PlannerInner() {
         </main>
       </div>
       <DetailDrawer />
+      <FichaReader />
     </div>
   );
 }

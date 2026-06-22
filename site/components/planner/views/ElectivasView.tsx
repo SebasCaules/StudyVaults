@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { PLAN, AREA_COLOR, hasHorario } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
+import { FICHAS } from "@/lib/planner/fichas";
 import type { Materia } from "@/lib/planner/types";
 
 export default function ElectivasView() {
@@ -52,6 +53,8 @@ export default function ElectivasView() {
     const avail = isAvailable(m, approved);
     const inCombo = combo.has(m.codigo);
     const hor = hasHorario(m.codigo);
+    // Solo las electivas con programa analítico tienen ficha completa.
+    const hasFicha = !!FICHAS[m.codigo];
     return (
       <article
         className={"card t-electiva" + (appr ? " appr" : "")}
@@ -106,6 +109,15 @@ export default function ElectivasView() {
             {inCombo ? "combinar ✓" : "combinar"}
           </button>
         </div>
+        {hasFicha ? (
+          <button
+            className="card__read"
+            onClick={(e) => { e.stopPropagation(); dispatch({ type: "OPEN_FICHA", code: m.codigo }); }}
+            aria-label={`Leer ficha de ${m.nombre}`}
+          >
+            Leer ficha ↗
+          </button>
+        ) : null}
       </article>
     );
   }

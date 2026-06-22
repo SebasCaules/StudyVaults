@@ -129,7 +129,8 @@ export default function CombinadorView() {
         } else {
           if (seenB.has(key)) return;
           seenB.add(key);
-          blocks.push({ ...s, abbr: x.m.abbr, nombre: x.m.nombre, color });
+          // codigo permite que el bloque sea clickeable (abre el drawer de specs)
+          blocks.push({ ...s, abbr: x.m.abbr, nombre: x.m.nombre, color, codigo: x.m.codigo });
         }
       });
     });
@@ -471,7 +472,11 @@ export default function CombinadorView() {
               )}
 
               <div className="cmbcal-wrap" key={safeIdx}>
-                <CursadaCalendar blocks={grid.blocks} days={DAYS6} />
+                <CursadaCalendar
+                  blocks={grid.blocks}
+                  days={DAYS6}
+                  onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
+                />
                 {grid.asyncs.length > 0 && (
                   <div className="async-row">
                     <span className="lbl">Asincrónico / otros</span>

@@ -12,10 +12,13 @@ export default function CursadaCalendar({
   blocks,
   days,
   compact = false,
+  onBlockClick,
 }: {
   blocks: WeekBlock[];
   days: string[];
   compact?: boolean;
+  // Click en un bloque con código → abre la materia (drawer/ficha) en el caller.
+  onBlockClick?: (code: string) => void;
 }) {
   const PX = compact ? 0.44 : 0.82;
   let minM = 8 * 60;
@@ -77,10 +80,16 @@ export default function CursadaCalendar({
                 const top = (toMin(b.desde) - minM) * PX;
                 const h = (toMin(b.hasta) - toMin(b.desde)) * PX;
                 const idx = order++;
+                // Interactivo solo si hay código y el caller pasó handler.
+                const clickable = Boolean(b.codigo && onBlockClick);
                 return (
                   <div
                     key={i}
-                    className={"cmbcal-blk" + (b.conf ? " is-conf" : "")}
+                    className={
+                      "cmbcal-blk" +
+                      (b.conf ? " is-conf" : "") +
+                      (clickable ? " is-clickable" : "")
+                    }
                     style={
                       {
                         top,
@@ -90,6 +99,19 @@ export default function CursadaCalendar({
                       } as React.CSSProperties
                     }
                     title={`${b.nombre}${b.sala ? " · " + b.sala : ""}${b.modalidad ? " · " + b.modalidad : ""}`}
+                    {...(clickable
+                      ? {
+                          role: "button",
+                          tabIndex: 0,
+                          onClick: () => onBlockClick!(b.codigo!),
+                          onKeyDown: (e: React.KeyboardEvent) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              if (e.key === " ") e.preventDefault();
+                              onBlockClick!(b.codigo!);
+                            }
+                          },
+                        }
+                      : {})}
                   >
                     <span className="cmbcal-blk__abbr">{b.abbr}</span>
                     {/* En compacto omitimos el rango horario: ya lo da el eje de

@@ -160,6 +160,7 @@ export interface PlannerState {
   plan: PlanState;
   sideCollapsed: boolean;
   drawerCode: string | null;
+  fichaCode: string | null; // electiva abierta en el lector full-screen (efímero, sin persistir)
   hydrated: boolean;
 }
 
@@ -170,6 +171,7 @@ export interface WeekBlock {
   hasta: string;
   abbr: string;
   nombre?: string;
+  codigo?: string; // código de la materia → permite click al drawer desde el calendario
   sala?: string;
   sede?: string;
   modalidad?: string;

@@ -49,6 +49,7 @@ export function initialState(): PlannerState {
     },
     sideCollapsed: false,
     drawerCode: null,
+    fichaCode: null,
     hydrated: false,
   };
 }
@@ -78,7 +79,9 @@ export type Action =
   | { type: "RESET_APPROVED" }
   | { type: "TOGGLE_SIDEBAR" }
   | { type: "OPEN_DRAWER"; code: string }
-  | { type: "CLOSE_DRAWER" };
+  | { type: "CLOSE_DRAWER" }
+  | { type: "OPEN_FICHA"; code: string }
+  | { type: "CLOSE_FICHA" };
 
 export function reducer(s: PlannerState, a: Action): PlannerState {
   switch (a.type) {
@@ -211,6 +214,10 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return { ...s, drawerCode: a.code };
     case "CLOSE_DRAWER":
       return { ...s, drawerCode: null };
+    case "OPEN_FICHA":
+      return { ...s, fichaCode: a.code };
+    case "CLOSE_FICHA":
+      return { ...s, fichaCode: null };
     default:
       return s;
   }

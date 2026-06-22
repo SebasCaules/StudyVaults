@@ -169,7 +169,7 @@ function computeCuatriBlocks(it: PlacedMateria[]) {
         campus.add(s.dia);
         if (seenB.has(key)) return;
         seenB.add(key);
-        blocks.push({ ...s, abbr: x.m.abbr, nombre: x.m.nombre, color });
+        blocks.push({ ...s, abbr: x.m.abbr, nombre: x.m.nombre, codigo: x.m.codigo, color });
       }
     });
   });
@@ -211,6 +211,7 @@ function CuatriCalCard({
   start: PlanStart;
   previewCode: string | null;
 }) {
+  const { dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
   const { blocks, asyncs, campusDays } = useMemo(
     () => computeCuatriBlocks(it),
@@ -237,7 +238,12 @@ function CuatriCalCard({
         </span>
       </div>
       {blocks.length ? (
-        <CursadaCalendar blocks={blocks} days={DAYS} compact />
+        <CursadaCalendar
+          blocks={blocks}
+          days={DAYS}
+          compact
+          onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
+        />
       ) : (
         <p className="muted" style={{ padding: "10px 4px" }}>
           Sólo materias sin grilla semanal.
@@ -267,6 +273,12 @@ function RoadmapStop({
   const { dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
 
+  // Drag & drop para mover materias entre cuatrimestres. El código de la materia
+  // arrastrada viaja por dataTransfer (cross-stop); el estado local sólo pinta
+  // la materia en curso (is-dragging) y resalta este stop como destino (drop-over).
+  const [draggingCode, setDraggingCode] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
   // sólo necesitamos los días de campus para el ledger; la grilla semanal
   // detallada vive en la pestaña "Calendarios".
   const { campusDays } = useMemo(() => computeCuatriBlocks(it), [it]);
@@ -277,8 +289,34 @@ function RoadmapStop({
   const hasPreview = it.some((x) => x.m.codigo === previewCode);
 
   return (
-    <li className={"rmap-stop" + (hasPreview ? " has-preview" : "")}>
-      <div className="rmap-stop__card">
+    <li
+      className={
+        "rmap-stop" +
+        (hasPreview ? " has-preview" : "") +
+        (dragOver ? " drop-over" : "")
+      }
+    >
+      <div
+        className="rmap-stop__card"
+        onDragOver={(e: React.DragEvent) => {
+          // permite el drop y marca este cuatrimestre como destino activo
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          if (!dragOver) setDragOver(true);
+        }}
+        onDragLeave={(e: React.DragEvent) => {
+          // sólo apagamos el resalte al salir de la tarjeta (no en los hijos)
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setDragOver(false);
+          }
+        }}
+        onDrop={(e: React.DragEvent) => {
+          e.preventDefault();
+          const code = e.dataTransfer.getData("text/plain");
+          if (code) dispatch({ type: "PLAN_SET_FIXED", code, idx: i });
+          setDragOver(false);
+        }}
+      >
         <div className="rmap-stop__head">
           <div className="rmap-stop__when">
             <span className="rmap-stop__tag">{cuatriLabel(cu)}</span>
@@ -286,6 +324,9 @@ function RoadmapStop({
           </div>
           <span className="rmap-stop__step" aria-hidden="true">
             {i + 1}
+          </span>
+          <span className="rmap-drophint">
+            arrastrá para mover de cuatrimestre
           </span>
         </div>
 
@@ -314,11 +355,22 @@ function RoadmapStop({
               <button
                 type="button"
                 key={x.m.codigo}
-                className={"rmap-mat" + (isPrev ? " is-preview" : "")}
+                className={
+                  "rmap-mat" +
+                  (isPrev ? " is-preview" : "") +
+                  (draggingCode === x.m.codigo ? " is-dragging" : "")
+                }
                 style={
                   { "--blk": PALETTE[k % PALETTE.length] } as React.CSSProperties
                 }
-                title={`${x.m.codigo} · ${x.m.nombre}`}
+                title={`${x.m.codigo} · ${x.m.nombre} — arrastrá para mover de cuatrimestre`}
+                draggable
+                onDragStart={(e: React.DragEvent) => {
+                  e.dataTransfer.setData("text/plain", x.m.codigo);
+                  e.dataTransfer.effectAllowed = "move";
+                  setDraggingCode(x.m.codigo);
+                }}
+                onDragEnd={() => setDraggingCode(null)}
                 onClick={() => dispatch({ type: "OPEN_DRAWER", code: x.m.codigo })}
               >
                 <span className="rmap-mat__abbr">{x.m.abbr}</span>

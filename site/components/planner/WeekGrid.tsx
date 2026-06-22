@@ -15,10 +15,13 @@ export default function WeekGrid({
   blocks,
   days = DAYS,
   compact = false,
+  onBlockClick,
 }: {
   blocks: WeekBlock[];
   days?: string[];
   compact?: boolean;
+  // Click en un bloque con código → abre la materia (drawer/ficha) en el caller.
+  onBlockClick?: (code: string) => void;
 }) {
   const PX = compact ? 0.5 : 0.86;
   let minM = 8 * 60;
@@ -63,12 +66,27 @@ export default function WeekGrid({
                 {dayB.map((b, i) => {
                   const top = (toMin(b.desde) - minM) * PX;
                   const h = (toMin(b.hasta) - toMin(b.desde)) * PX;
+                  // Interactivo solo si hay código y el caller pasó handler.
+                  const clickable = Boolean(b.codigo && onBlockClick);
                   return (
                     <div
                       key={i}
-                      className={`gblock${b.conf ? " conf" : ""}`}
+                      className={`gblock${b.conf ? " conf" : ""}${clickable ? " is-clickable" : ""}`}
                       style={{ top, height: h, background: b.color }}
                       title={`${b.nombre} · ${b.modalidad || ""} ${b.sala || ""}`}
+                      {...(clickable
+                        ? {
+                            role: "button",
+                            tabIndex: 0,
+                            onClick: () => onBlockClick!(b.codigo!),
+                            onKeyDown: (e: React.KeyboardEvent) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                if (e.key === " ") e.preventDefault();
+                                onBlockClick!(b.codigo!);
+                              }
+                            },
+                          }
+                        : {})}
                     >
                       <b>
                         {b.abbr}
