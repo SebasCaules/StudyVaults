@@ -324,7 +324,12 @@
 @media (max-width:1080px){
   .planner .shell{grid-template-columns:1fr}
   .planner .side{position:static;max-height:none;flex-direction:row;flex-wrap:wrap;align-items:stretch}
-  .planner .side>*{flex:1;min-width:210px}
+  /* bloques de contenido reparten el ancho parejo; toggle/búsqueda comparten
+     la primera fila; reset y nota van a fila completa (no estirados sueltos) */
+  .planner .side>*{flex:1 1 240px}
+  .planner .side .sidetoggle{flex:0 0 auto}
+  .planner .side .field{flex:1 1 260px}
+  .planner .side .reset,.planner .side .foot{flex:1 1 100%}
   .planner .views{flex-direction:row;flex-wrap:wrap}.planner .view{flex:1;border-bottom:none;border-right:1px solid var(--line)}
   .planner .combo-layout{grid-template-columns:1fr}.planner .combo-pick{position:static}
 }
@@ -332,6 +337,7 @@
   .planner .stats{width:100%;display:grid;grid-template-columns:1fr 1fr}
   .planner .stat{border-bottom:1px solid var(--line)}
   .planner .stat:nth-child(odd){border-right:1px solid var(--line)}
+  .planner .panelshow{width:100%;justify-content:center}
   .planner .pool-cols{grid-template-columns:1fr}.planner .pool-col:first-child{border-right:none;border-bottom:1px solid var(--line)}
 }
 
@@ -896,7 +902,10 @@
 .planner .plan2-split__side::-webkit-scrollbar{width:8px}
 .planner .plan2-split__side::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:20px}
 .planner .plan2-split__side .plan2-recs{margin-top:0}
-@media (max-width:980px){
+/* mismo umbral que el sidebar principal (.shell/.side, 1080px): así todo el
+   layout pasa a una columna a la vez y no queda el board apretado en la franja
+   981–1080 con el panel principal ya apilado arriba */
+@media (max-width:1080px){
   .planner .plan2-split{grid-template-columns:1fr}
   .planner .plan2-split__side{
     position:static;max-height:none;overflow:visible;padding-right:0;
@@ -1146,6 +1155,19 @@
 .planner .plan2-recgrp__hint{font-family:var(--f-m);font-size:11px;color:var(--muted);letter-spacing:.02em}
 .planner .plan2-recgrp .plan2-recs__grid{padding:14px 16px}
 
+/* "ver más": el resto del grupo detrás de un desplegable, sin estado */
+.planner .plan2-recmore>summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:0 16px 14px;padding:8px 12px;border:1px dashed var(--line-2);border-radius:var(--r);
+  font-family:var(--f-m);font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-soft);
+  transition:.15s;
+}
+.planner .plan2-recmore>summary::-webkit-details-marker{display:none}
+.planner .plan2-recmore>summary::after{content:"▸";color:var(--brass);font-size:10px}
+.planner .plan2-recmore[open]>summary::after{content:"▾"}
+.planner .plan2-recmore>summary:hover{border-color:color-mix(in srgb,var(--brass) 50%,var(--line));color:var(--ink)}
+.planner .plan2-recmore .plan2-recs__grid{padding-top:0}
+
 .planner .rec-card{
   display:flex;flex-direction:column;gap:8px;padding:13px 14px;min-width:0;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
@@ -1182,7 +1204,7 @@
 /* sin horario → mínima prioridad: atenuada hasta que la mirás de cerca */
 .planner .rec-card.is-nohor{opacity:.66}
 .planner .rec-card.is-nohor:hover,.planner .rec-card.is-nohor.is-active{opacity:1}
-.planner .rec-card__area{font-family:var(--f-m);font-size:10px;color:var(--muted);margin-left:auto}
+.planner .rec-card__area{font-family:var(--f-m);font-size:10px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .planner .rec-card__acts{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
 .planner .rec-card__add{
   flex:1;border:1px solid color-mix(in srgb,var(--brass) 40%,transparent);background:var(--brass-soft);

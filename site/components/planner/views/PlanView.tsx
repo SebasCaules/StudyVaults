@@ -379,7 +379,9 @@ function Recommendations({
         <span className="rec-card__abbr">{r.m.abbr}</span>
         <span className="rec-card__cr">{r.m.creditos} cr</span>
       </div>
-      <p className="rec-card__name">{r.m.nombre}</p>
+      <p className="rec-card__name" title={r.m.nombre}>
+        {r.m.nombre}
+      </p>
       <div className="rec-card__fit">
         {r.conflict ? (
           <span className="rec-fit rec-fit--bad">no entra sin conflictos</span>
@@ -429,6 +431,10 @@ function Recommendations({
     </div>
   );
 
+  // No volcamos todas las electivas de un grupo de golpe (con 0 aprobadas
+  // "No alargan la carrera" trae ~88 → un muro infinito). Mostramos las
+  // primeras y el resto detrás de un "ver más" (sin estado: <details>).
+  const HEAD = 12;
   const group = (
     title: string,
     hint: string,
@@ -447,7 +453,13 @@ function Recommendations({
           <span className="plan2-recgrp__count">{items.length}</span>
           <span className="plan2-recgrp__hint">{hint}</span>
         </summary>
-        <div className="plan2-recs__grid">{items.map(card)}</div>
+        <div className="plan2-recs__grid">{items.slice(0, HEAD).map(card)}</div>
+        {items.length > HEAD && (
+          <details className="plan2-recmore">
+            <summary>Ver {items.length - HEAD} electivas más</summary>
+            <div className="plan2-recs__grid">{items.slice(HEAD).map(card)}</div>
+          </details>
+        )}
       </details>
     ) : null;
 
