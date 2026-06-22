@@ -49,6 +49,48 @@ export interface Materia {
 /** Materia con su horario resuelto (lo que vive en el map byId). */
 export type MateriaM = Materia & { horario: Horario | null };
 
+// ---- ficha (programa analítico) de una electiva ----
+// Extraída del PDF oficial del ITBA ("Programas Analíticos - GRADO") por
+// scripts/build-fichas-data.mjs → lib/planner/fichas.ts. Indexada por código.
+
+/** Una unidad del temario (fila de la tabla "Contenidos" del programa). */
+export interface FichaUnidad {
+  titulo: string;
+  descripcion: string;
+}
+
+/** Desglose de carga horaria del programa analítico. */
+export interface FichaCargaHoraria {
+  total: number | null; // horas totales del cuatrimestre
+  teoricas: number | null;
+  practicas: number | null;
+  laboratorio: number | null;
+  semanales: number | null; // horas semanales
+  presencial: number | null;
+  distancia: number | null;
+}
+
+/** Programa analítico oficial de una electiva (el "ficha" del PDF del ITBA). */
+export interface Ficha {
+  codigo: string;
+  materia: string;
+  creditos: number | null;
+  departamento: string;
+  anio: string; // año del programa, p. ej. "2023"
+  carrera: string; // carreras a las que aplica
+  actualizado: string; // fecha de última actualización del programa
+  cargaHoraria: FichaCargaHoraria;
+  contenidosMinimos: string;
+  presentacion: string;
+  objetivos: string;
+  programa: FichaUnidad[]; // temario (tabla "Contenidos")
+  estrategias: string;
+  evaluacion: string;
+  bibliografiaObligatoria: string[];
+  bibliografiaComplementaria: string[];
+  pdf: string; // ruta pública SIN basePath (envolver con withBase), p. ej. "/electivas-fichas/10.07.pdf"
+}
+
 export interface Edge {
   from: string;
   to: string;

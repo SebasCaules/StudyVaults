@@ -7,6 +7,141 @@
 import { byId, AREA_COLOR } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
 import { usePlanner } from "@/components/planner/state";
+import { FICHAS } from "@/lib/planner/fichas";
+import { withBase } from "@/lib/content/slug";
+import type { Ficha } from "@/lib/planner/types";
+
+/** Render de un texto multi-párrafo (separado por "\n\n") como <p> apilados. */
+function Prose({ text }: { text: string }) {
+  if (!text) return null;
+  return (
+    <>
+      {text.split("\n\n").map((p, i) => (
+        <p key={i} className="dr-prose">
+          {p}
+        </p>
+      ))}
+    </>
+  );
+}
+
+/** Apartado "Programa analítico" con la ficha oficial del ITBA (PDF parseado). */
+function FichaSection({ ficha }: { ficha: Ficha }) {
+  const ch = ficha.cargaHoraria;
+  const totales = [
+    ch.teoricas != null ? `${ch.teoricas} teóricas` : null,
+    ch.practicas != null ? `${ch.practicas} prácticas` : null,
+    ch.laboratorio ? `${ch.laboratorio} laboratorio` : null,
+  ].filter(Boolean);
+  const semanales = [
+    ch.presencial != null ? `${ch.presencial} presencial` : null,
+    ch.distancia ? `${ch.distancia} a distancia` : null,
+  ].filter(Boolean);
+
+  return (
+    <div className="dr-sec dr-ficha">
+      <h4>Programa analítico</h4>
+
+      <p className="dr-ficha__meta">
+        {[ficha.departamento, ficha.anio && `Programa ${ficha.anio}`]
+          .filter(Boolean)
+          .join(" · ")}
+      </p>
+
+      {ch.total != null || totales.length ? (
+        <div className="dr-carga">
+          {ch.total != null ? (
+            <div>
+              <b>{ch.total} hs</b> totales
+              {totales.length ? ` · ${totales.join(" · ")}` : ""}
+            </div>
+          ) : null}
+          {ch.semanales != null ? (
+            <div>
+              <b>{ch.semanales} hs</b> semanales
+              {semanales.length ? ` · ${semanales.join(" · ")}` : ""}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {ficha.objetivos ? (
+        <div className="dr-ficha__block">
+          <h5>Objetivos de aprendizaje</h5>
+          <Prose text={ficha.objetivos} />
+        </div>
+      ) : null}
+
+      {ficha.contenidosMinimos ? (
+        <div className="dr-ficha__block">
+          <h5>Contenidos mínimos</h5>
+          <Prose text={ficha.contenidosMinimos} />
+        </div>
+      ) : null}
+
+      {ficha.programa.length ? (
+        <details className="dr-details">
+          <summary>Temario · {ficha.programa.length} unidades</summary>
+          <ul className="dr-units">
+            {ficha.programa.map((u, i) => (
+              <li key={i}>
+                <b>{u.titulo}</b>
+                {u.descripcion ? <span> — {u.descripcion}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+
+      {ficha.evaluacion ? (
+        <details className="dr-details">
+          <summary>Modalidad de evaluación</summary>
+          <div className="dr-details__body">
+            <Prose text={ficha.evaluacion} />
+          </div>
+        </details>
+      ) : null}
+
+      {ficha.bibliografiaObligatoria.length ||
+      ficha.bibliografiaComplementaria.length ? (
+        <details className="dr-details">
+          <summary>Bibliografía</summary>
+          <div className="dr-details__body">
+            {ficha.bibliografiaObligatoria.length ? (
+              <>
+                <h5>Obligatoria</h5>
+                <ul className="dr-biblio">
+                  {ficha.bibliografiaObligatoria.map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+            {ficha.bibliografiaComplementaria.length ? (
+              <>
+                <h5>Complementaria</h5>
+                <ul className="dr-biblio">
+                  {ficha.bibliografiaComplementaria.map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+          </div>
+        </details>
+      ) : null}
+
+      <a
+        className="dr-pdf"
+        href={withBase(ficha.pdf)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Ver programa analítico completo (PDF)
+      </a>
+    </div>
+  );
+}
 
 export default function DetailDrawer() {
   const { state, dispatch } = usePlanner();
@@ -34,6 +169,11 @@ export default function DetailDrawer() {
 
   const areas = m.areas || [];
   const correlativas = m.correlativas || [];
+  const ficha = FICHAS[code];
+  // descripción inline: presentación de la materia (o contenidos mínimos como fallback)
+  const descInline = ficha
+    ? ficha.presentacion || ficha.contenidosMinimos
+    : "";
 
   return (
     <div className="drawer open">
@@ -70,6 +210,7 @@ export default function DetailDrawer() {
             </button>
           ) : null}
         </div>
+        {descInline ? <p className="dr-desc">{descInline}</p> : null}
         {ob ? null : (
           <div className="dr-sec">
             <h4>Áreas · Minor</h4>
@@ -162,6 +303,7 @@ export default function DetailDrawer() {
             <p className="muted">Sin horario publicado para 1C 2026.</p>
           )}
         </div>
+        {ficha ? <FichaSection ficha={ficha} /> : null}
       </aside>
     </div>
   );
