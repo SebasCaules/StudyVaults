@@ -275,7 +275,7 @@ export default function DetailDrawer() {
         </div>
         <div className="dr-sec">
           <h4>
-            Horario 1C 2026{" "}
+            Horario 2C 2026{" "}
             {avail && !appr ? (
               <span className="tag tag--ok" style={{ marginLeft: 6 }}>
                 disponible
@@ -313,7 +313,7 @@ export default function DetailDrawer() {
               </div>
             ))
           ) : (
-            <p className="muted">Sin horario publicado para 1C 2026.</p>
+            <p className="muted">Sin horario publicado para 2C 2026.</p>
           )}
         </div>
         {ficha ? <FichaSection ficha={ficha} /> : null}

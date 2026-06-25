@@ -319,7 +319,7 @@
       ]
     },
     {
-      "codigo": "72.60",
+      "codigo": "72.18",
       "nombre": "Programación Funcional",
       "creditos": 3,
       "creditos_requeridos": 0,
@@ -1029,6 +1029,45 @@
       "creditos_requeridos": 0,
       "correlativas": [],
       "areas": []
+    },
+    {
+      "codigo": "73.69",
+      "nombre": "Large Language Models",
+      "creditos": 3,
+      "creditos_requeridos": 0,
+      "correlativas": [],
+      "areas": [
+        "Inteligencia Artificial"
+      ]
+    },
+    {
+      "codigo": "73.70",
+      "nombre": "Análisis de Datos en Neurociencias",
+      "creditos": 3,
+      "creditos_requeridos": 0,
+      "correlativas": [],
+      "areas": [
+        "Ciencia de Datos"
+      ]
+    },
+    {
+      "codigo": "74.60",
+      "nombre": "Visión por Computadora",
+      "creditos": 3,
+      "creditos_requeridos": 0,
+      "correlativas": [],
+      "areas": [
+        "Imágenes y Realidad Virtual",
+        "Inteligencia Artificial"
+      ]
+    },
+    {
+      "codigo": "81.76",
+      "nombre": "Tecnología para las Finanzas",
+      "creditos": 3,
+      "creditos_requeridos": 0,
+      "correlativas": [],
+      "areas": []
     }
   ],
   "aristas_correlativas": [
@@ -1150,7 +1189,7 @@
     },
     {
       "from": "72.34",
-      "to": "72.60"
+      "to": "72.18"
     },
     {
       "from": "72.34",

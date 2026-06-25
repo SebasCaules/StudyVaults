@@ -1252,5 +1252,125 @@
 				"cupo": "0 / Ilimitado"
 			}
 		]
+	},
+	{
+		"codigo": "72.18",
+		"nombre": "Programación Funcional",
+		"depto": "Sistemas Digitales y Datos",
+		"periodo": "Segundo Cuat.",
+		"anio": "2026",
+		"comienzo": "26/07/2026",
+		"fin": "31/12/2026",
+		"comisiones": [
+			{
+				"comision": "S",
+				"slots": [
+					{
+						"dia": "Lunes",
+						"desde": "19:00",
+						"hasta": "22:00",
+						"aula": "Sede Rectorado Aula externa: Presencial"
+					}
+				],
+				"profesores": "",
+				"cupo": "0 / Ilimitado"
+			}
+		]
+	},
+	{
+		"codigo": "73.69",
+		"nombre": "Large Language Models",
+		"depto": "Sistemas Digitales y Datos",
+		"periodo": "Segundo Cuat.",
+		"anio": "2026",
+		"comienzo": "26/07/2026",
+		"fin": "31/12/2026",
+		"comisiones": [
+			{
+				"comision": "S",
+				"slots": [
+					{
+						"dia": "Miércoles",
+						"desde": "19:00",
+						"hasta": "22:00",
+						"aula": "Aula externa: Virtual sincrónica"
+					}
+				],
+				"profesores": "",
+				"cupo": "0 / Ilimitado"
+			}
+		]
+	},
+	{
+		"codigo": "73.70",
+		"nombre": "Análisis de Datos en Neurociencias",
+		"depto": "Sistemas Digitales y Datos",
+		"periodo": "Segundo Cuat.",
+		"anio": "2026",
+		"comienzo": "26/07/2026",
+		"fin": "31/12/2026",
+		"comisiones": [
+			{
+				"comision": "S",
+				"slots": [
+					{
+						"dia": "Viernes",
+						"desde": "13:00",
+						"hasta": "16:00",
+						"aula": "Sede Rectorado Aula externa: Presencial"
+					}
+				],
+				"profesores": "",
+				"cupo": "0 / Ilimitado"
+			}
+		]
+	},
+	{
+		"codigo": "74.60",
+		"nombre": "Visión por Computadora",
+		"depto": "Sistemas Digitales y Datos",
+		"periodo": "Segundo Cuat.",
+		"anio": "2026",
+		"comienzo": "26/07/2026",
+		"fin": "31/12/2026",
+		"comisiones": [
+			{
+				"comision": "S",
+				"slots": [
+					{
+						"dia": "Jueves",
+						"desde": "16:00",
+						"hasta": "19:00",
+						"aula": "Sede Distrito Financiero Aula externa: Presencial"
+					}
+				],
+				"profesores": "",
+				"cupo": "0 / Ilimitado"
+			}
+		]
+	},
+	{
+		"codigo": "81.76",
+		"nombre": "Tecnología para las Finanzas",
+		"depto": "Economía y Negocios",
+		"periodo": "Segundo Cuat.",
+		"anio": "2026",
+		"comienzo": "26/07/2026",
+		"fin": "31/12/2026",
+		"comisiones": [
+			{
+				"comision": "S",
+				"slots": [
+					{
+						"dia": "Martes",
+						"desde": "19:00",
+						"hasta": "22:00",
+						"aula": "Sede Distrito Financiero Aula externa: Presencial"
+					}
+				],
+				"profesores": "",
+				"cupo": "0 / Ilimitado"
+			}
+		]
 	}
 ]

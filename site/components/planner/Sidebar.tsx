@@ -149,7 +149,7 @@ export default function Sidebar() {
               dispatch({ type: "SET_FILTER", key: "fHor", value: e.target.checked })
             }
           />
-          <span>Solo con horario 1C&nbsp;2026</span>
+          <span>Solo con horario 2C&nbsp;2026</span>
         </label>
       </section>
 
@@ -225,7 +225,7 @@ export default function Sidebar() {
       </button>
 
       <p className="foot">
-        Horarios del SGA, 1.<sup>er</sup> cuatrimestre 2026. El progreso se guarda
+        Horarios del SGA, 2.<sup>do</sup> cuatrimestre 2026. El progreso se guarda
         en este navegador.
       </p>
     </aside>

@@ -1094,7 +1094,7 @@ window.PLAN = {
    "tipo": "electiva"
   },
   {
-   "codigo": "72.60",
+   "codigo": "72.18",
    "nombre": "Programación Funcional",
    "abbr": "ProgFunc",
    "creditos": 3,
@@ -1987,6 +1987,57 @@ window.PLAN = {
    "codigo": "94.92",
    "nombre": "Escritura Académica",
    "abbr": "EA",
+   "creditos": 3,
+   "creditosReq": 0,
+   "correlativas": [],
+   "areas": [],
+   "parity": null,
+   "tipo": "electiva"
+  },
+  {
+   "codigo": "73.69",
+   "nombre": "Large Language Models",
+   "abbr": "LLM",
+   "creditos": 3,
+   "creditosReq": 0,
+   "correlativas": [],
+   "areas": [
+    "Inteligencia Artificial"
+   ],
+   "parity": null,
+   "tipo": "electiva"
+  },
+  {
+   "codigo": "73.70",
+   "nombre": "Análisis de Datos en Neurociencias",
+   "abbr": "ADNeuro",
+   "creditos": 3,
+   "creditosReq": 0,
+   "correlativas": [],
+   "areas": [
+    "Ciencia de Datos"
+   ],
+   "parity": null,
+   "tipo": "electiva"
+  },
+  {
+   "codigo": "74.60",
+   "nombre": "Visión por Computadora",
+   "abbr": "Visión",
+   "creditos": 3,
+   "creditosReq": 0,
+   "correlativas": [],
+   "areas": [
+    "Imágenes y Realidad Virtual",
+    "Inteligencia Artificial"
+   ],
+   "parity": null,
+   "tipo": "electiva"
+  },
+  {
+   "codigo": "81.76",
+   "nombre": "Tecnología para las Finanzas",
+   "abbr": "TecFin",
    "creditos": 3,
    "creditosReq": 0,
    "correlativas": [],
@@ -3455,6 +3506,136 @@ window.PLAN = {
      "cupo": "0 / Ilimitado"
     }
    ]
+  },
+  "72.18": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Sistemas Digitales y Datos",
+   "comisiones": [
+    {
+     "comision": "S",
+     "slots": [
+      {
+       "dia": "Lunes",
+       "desde": "19:00",
+       "hasta": "22:00",
+       "aula": "Sede Rectorado Aula externa: Presencial",
+       "sala": "",
+       "sede": "Rectorado",
+       "modalidad": "Presencial",
+       "async": false
+      }
+     ],
+     "profesores": "",
+     "cupo": "0 / Ilimitado"
+    }
+   ]
+  },
+  "73.69": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Sistemas Digitales y Datos",
+   "comisiones": [
+    {
+     "comision": "S",
+     "slots": [
+      {
+       "dia": "Miércoles",
+       "desde": "19:00",
+       "hasta": "22:00",
+       "aula": "Aula externa: Virtual sincrónica",
+       "sala": "",
+       "sede": "",
+       "modalidad": "Virtual",
+       "async": false
+      }
+     ],
+     "profesores": "",
+     "cupo": "0 / Ilimitado"
+    }
+   ]
+  },
+  "73.70": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Sistemas Digitales y Datos",
+   "comisiones": [
+    {
+     "comision": "S",
+     "slots": [
+      {
+       "dia": "Viernes",
+       "desde": "13:00",
+       "hasta": "16:00",
+       "aula": "Sede Rectorado Aula externa: Presencial",
+       "sala": "",
+       "sede": "Rectorado",
+       "modalidad": "Presencial",
+       "async": false
+      }
+     ],
+     "profesores": "",
+     "cupo": "0 / Ilimitado"
+    }
+   ]
+  },
+  "74.60": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Sistemas Digitales y Datos",
+   "comisiones": [
+    {
+     "comision": "S",
+     "slots": [
+      {
+       "dia": "Jueves",
+       "desde": "16:00",
+       "hasta": "19:00",
+       "aula": "Sede Distrito Financiero Aula externa: Presencial",
+       "sala": "",
+       "sede": "Distrito Financiero",
+       "modalidad": "Presencial",
+       "async": false
+      }
+     ],
+     "profesores": "",
+     "cupo": "0 / Ilimitado"
+    }
+   ]
+  },
+  "81.76": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Economía y Negocios",
+   "comisiones": [
+    {
+     "comision": "S",
+     "slots": [
+      {
+       "dia": "Martes",
+       "desde": "19:00",
+       "hasta": "22:00",
+       "aula": "Sede Distrito Financiero Aula externa: Presencial",
+       "sala": "",
+       "sede": "Distrito Financiero",
+       "modalidad": "Presencial",
+       "async": false
+      }
+     ],
+     "profesores": "",
+     "cupo": "0 / Ilimitado"
+    }
+   ]
   }
  },
  "edges": [
@@ -3748,7 +3929,7 @@ window.PLAN = {
   },
   {
    "from": "72.34",
-   "to": "72.60"
+   "to": "72.18"
   },
   {
    "from": "72.34",

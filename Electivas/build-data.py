@@ -33,9 +33,10 @@ ABBR = {
     "94.65": "PPS", "94.64": "PExp", "73.66": "PIS", "82.18": "NLP",
     "23.15": "RV", "73.63": "REq", "16.57": "RobBio", "72.79": "SMA",
     "73.64": "DL", "72.74": "VisInfo",
-    "72.50": "DevJueg", "72.53": "Visión3D", "72.54": "OLAP", "72.60": "ProgFunc",
+    "72.50": "DevJueg", "72.53": "Visión3D", "72.54": "OLAP", "72.18": "ProgFunc",
     "72.66": "Embeb", "72.72": "AVMC", "72.77": "Testing", "72.85": "WebSem",
     "72.92": "Grafos", "73.89": "Blockchain", "72.96": "AppMóvil", "73.21": "AppMP",
+    "73.69": "LLM", "73.70": "ADNeuro", "74.60": "Visión", "81.76": "TecFin",
 }
 
 STOP = {"de","la","el","y","en","a","para","los","las","del","e","al","con","un","una"}
@@ -121,13 +122,10 @@ for c in hor:
         "depto": c.get("depto", ""), "comisiones": coms,
     }
 
-aprobadas_default = [
-    "31.08","72.03","93.26","93.58","94.24","72.31","93.28","93.41","93.59",
-    "12.09","72.32","72.33","93.35","93.42","72.08","72.34","93.24","93.43",
-    "72.11","72.35","72.36","72.37","72.07","72.38","72.39","93.07","94.21","94.51",
-    "61.32","61.23","72.25","72.40",
-    "93.75","94.52",
-]
+# Build divulgable / despersonalizado: el planner se publica SIN materias pre-aprobadas
+# (cada compañero arranca limpio y persiste su propio progreso en localStorage). Mantener []
+# acá para que data.js sea reproducible y no reintroduzca un historial académico personal.
+aprobadas_default = []
 
 edges = []; seen_e = set()
 for src in (obl, ele):

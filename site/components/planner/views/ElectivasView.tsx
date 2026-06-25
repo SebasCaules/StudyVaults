@@ -31,9 +31,9 @@ export default function ElectivasView() {
       <div className="panel-head">
         <h2>Materias electivas</h2>
         <p>
-          91 materias. Filtrá por área para orientar un minor. La marca{" "}
-          <span className="hor-dot"></span> indica horario publicado este
-          cuatrimestre.
+          {PLAN.electivas.length} materias. Filtrá por área para orientar un
+          minor. La marca <span className="hor-dot"></span> indica horario
+          publicado este cuatrimestre.
         </p>
       </div>
       <div className="card-grid">

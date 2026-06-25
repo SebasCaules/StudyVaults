@@ -651,84 +651,8 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "pdf": "/electivas-fichas/61.50.pdf"
   },
-  "72.58": {
-    "codigo": "72.58",
-    "materia": "Computación Gráfica",
-    "creditos": 3,
-    "departamento": "Sistemas Digitales y Datos",
-    "anio": "2026",
-    "carrera": "Ingeniería en Informática",
-    "actualizado": "7/4/2026 12:14:43",
-    "cargaHoraria": {
-      "total": 51,
-      "teoricas": 39,
-      "practicas": 12,
-      "laboratorio": 0,
-      "semanales": 3,
-      "presencial": 3,
-      "distancia": 0
-    },
-    "contenidosMinimos": "Fundamentos de la computación gráfica. Funcionamiento del pipeline de renderizado. Transformaciones geométricas con coordenadas homogéneas. Representación geométrica mediante buffers, generación de superficies procedurales, curvas paramétricas y técnicas de mapeo de texturas. Modelos de iluminación, materiales y teoría del color. Sombreadores (shaders). Control visual de aplicaciones interactivas. Revisión de tecnologías emergentes (Realidad Virtual y Aumentada).",
-    "presentacion": "La asignatura Computación Gráfica introduce a los estudiantes en los fundamentos teóricos y prácticos de la generación y manipulación de imágenes digitales mediante técnicas computacionales, abordando el desarrollo de aplicaciones gráficas interactivas en tiempo real. La materia propone una articulación entre conceptos matemáticos, algoritmos y herramientas tecnológicas orientadas a la visualización tridimensional.\n\nA lo largo del curso se estudian los principios del pipeline gráfico moderno, la representación geométrica de objetos, transformaciones espaciales, proyecciones, iluminación, materiales y técnicas de rendering contemporáneas. Asimismo, se introducen conceptos de programación en GPU, simulación física e interacción, permitiendo comprender cómo los sistemas gráficos actuales integran procesamiento visual, cálculo numérico e interacción en tiempo real.\n\nLa materia busca desarrollar habilidades analíticas y técnicas vinculadas al modelado, visualización y simulación de entornos tridimensionales, promoviendo un enfoque experimental basado en la implementación práctica y la\n\nexploración de tecnologías emergentes como realidad virtual y aumentada",
-    "objetivos": "1. Comprender los fundamentos teóricos de la computación gráfica y el funcionamiento del pipeline de rendering moderno. 2. Aplicar transformaciones geométricas para el diseño y la manipulación de escenas tridimensionales. 3. Utilizar técnicas de modelado, texturizado, iluminación y materiales para la generación de imágenes digitales en tiempo real. 4. Desarrollar aplicaciones gráficas interactivas mediante programación, el uso eficiente de la GPU y los shaders.",
-    "programa": [
-      {
-        "titulo": "Unidad 1 — Fundamentos de Computación Gráfica y Pipeline de Rendering",
-        "descripcion": "Introducción a la computación gráfica interactiva y estructura de aplicaciones 3D en tiempo real. Componentes de una escena tridimensional: modelos, cámaras y luces. Pipeline gráfico moderno y etapas del rendering. Transformación de datos geométricos en imágenes digitales. Conceptos básicos de programación aplicados al desarrollo gráfico"
-      },
-      {
-        "titulo": "Unidad 2 — Transformaciones y grafo de la escena",
-        "descripcion": "Sistemas de coordenadas y transformaciones geométricas en el espacio tridimensional. Matrices de traslación, rotación y escala. Coordenadas homogéneas y composición de transformaciones. Organización jerárquica de escenas y relaciones espaciales entre objetos."
-      },
-      {
-        "titulo": "Unidad 3 — Representación Geométrica y Modelado 3D",
-        "descripcion": "Primitivas geométricas y representación digital de superficies. Atributos geométricos: posiciones, normales y coordenadas asociadas. Buffers de vértices e índices. Integración de modelos externos y navegación en entornos tridimensionales."
-      },
-      {
-        "titulo": "Unidad 4 — Geometría Procedural y Curvas Paramétricas",
-        "descripcion": "Generación algorítmica de geometría. Superficies de revolución, extrusión y barrido. Curvas paramétricas, interpolación y suavizado. Discretización y evaluación de trayectorias aplicadas al modelado y la animación."
-      },
-      {
-        "titulo": "Unidad 5 — Cámaras, Proyecciones y Texturizado",
-        "descripcion": "Modelos de cámara perspectiva y ortográfica. Matrices de vista y proyección. Coordenadas de textura y técnicas de mapeo. Filtrado, repetición y renderizado fuera de pa"
-      },
-      {
-        "titulo": "Unidad 6 —",
-        "descripcion": "Modelos de iluminación y comportamiento de la luz sobre superficies. Propiedades materiales,"
-      },
-      {
-        "titulo": "Iluminación, Materiales y Colo",
-        "descripcion": "reflexión y transparencia. Mapas de textura. Fundamentos de teoría del color y percepción visual aplicada a gráficos digitales."
-      },
-      {
-        "titulo": "Unidad 7 — Programación de Shaders",
-        "descripcion": "Arquitectura de procesamiento gráfico. Lenguajes de sombreado. Control programable del pipeline gráfico. Generación de efectos visuales procedurales y cálculo de iluminación en GPU"
-      },
-      {
-        "titulo": "Unidad 8 — Técnicas Avanzadas",
-        "descripcion": "Sombras y reflexiones dinámicas, efectos de post-procesamiento, partículas, motores de física,"
-      },
-      {
-        "titulo": "Unidad 9 — Realidad Virtual y Tecnologías Emergentes",
-        "descripcion": "Fundamentos de realidad virtual, aumentada y mixta. Dispositivos de interacción y visualización inmersiva. APIs gráficas modernas orientadas a experiencias interactivas avanzada"
-      }
-    ],
-    "estrategias": "La materia se organiza en clases teórico-prácticas donde se presentarán los temas teóricos, y luego se trabaja sobre programas prediseñados para ejercitar los conceptos aprendidos. Se utilizará un repositorio de código en github de dónde los alumnos podrán descargar ejemplos demos y material práctico. Durante el curso se plantea el desarrollo de un trabajo práctico integrador que combine todos los conceptos desarrollados en la materia, este trabajo tendrá la forma de una aplicación 3D interactiva que deberá ser implementada y entregada al final del cuatrimestre. La plataforma de trabajo utilizar es web, programando en Javascript, Html y utilizando la biblioteca Three.js (basada en WebGL AP",
-    "evaluacion": "Modalidad de evaluación: La evaluación consiste de un parcial que se realizará en la mitad del cuatrimestre incluyendo temas de las unidades 1 a 4. Al final del cuatrimestre se realiza el coloquio en donde se evalúan temas teóricos de las unidades restantes junto con la evaluación del trabajo práctico\n\nRequisitos de aprobación: Para aprobar la cursada es necesaria la aprobación del parcial y el trabajo práctico.",
-    "bibliografiaObligatoria": [
-      "Introduction to Computer Graphics, autor David J. Eck, versión 1.4 (August 2023), Hobart and William Smith Colleges, libro gratuito online open textbook con licencia que permite distribución no modificada para fines no comerciales, sitio oficial https://math.hws.edu/graphicsbook/, descarga PDF oficial https://math.hws.edu/eck/cs424/downloads/graphicsbook.pdf.",
-      "Fundamentals of Computer Graphics, 5th Edition, autores Steve Marschner y Peter Shirley, editorial A K Peters / CRC Press (Routledge), ISBN-13 9780367505035, ISBN-10 0367505037, página oficial de la editorial https://www.routledge.com/Fundamentals-of-Computer-Graphics/Marschner-Shirley/p/book/9780367505035.",
-      "Computer Graphics from Scratch: A Programmer's Introduction to 3D Rendering, autor Gabriel Gambetta, editorial No Starch Press, publicado en April 2021, 248 páginas, ISBN-13 edición impresa 9781718500761, ISBN-13 ebook 9781718500778, página oficial de la editorial https://nostarch.com/computer-graphics-scratch , página del autor https://gabrielgambetta.com/computer-graphics-from-scratch/.",
-      "Learn Three.js: Program 3D animations and visualizations for the web with JavaScript and WebGL, 4th Edition, autor Jos Dirksen, editorial Packt Publishing, publicación February 2023, ISBN-13 ebook 9781803235868, ISBN-13 edición impresa 9781803233871, página oficial https://www.packtpub.com/en-us/product/learn-threejs-9781803235868.",
-      "Computer Graphics: Principles and Practice, 3rd Edition, autores John F. Hughes, Andries van Dam, Morgan McGuire, David F. Sklar, James D. Foley, Steven K. Feiner y Kurt Akeley, editorial Addison-Wesley Professional (Pearson), ISBN-13 9780321399526, ISBN-10 0321399528, página oficial https://www.pearson.com/en-us/subject-catalog/p/computer-graphics-principles-and-practice/P200000000336 /9780321399526. 6"
-    ],
-    "bibliografiaComplementaria": [
-      "OpenGL 4.0 Shading Language Cookbook, autor David Wolff, 1st Edition, editorial Packt Publishing, publicado en July 2011, ISBN-13 9781849514767, ISBN-10 1849514763, página oficial https://www.packtpub.com/en-cl/product/opengl-40-shading-language-cookbook-9781849514767. 2 3 4 5 6"
-    ],
-    "pdf": "/electivas-fichas/72.58.pdf"
-  },
-  "72.60": {
-    "codigo": "72.60",
+  "72.18": {
+    "codigo": "72.18",
     "materia": "Programación Funcional",
     "creditos": 3,
     "departamento": "Sistemas Digitales y Datos",
@@ -813,7 +737,83 @@ export const FICHAS: Record<string, Ficha> = {
       "Bragilevsky, Vitaly. Haskell in depth. Manning, 2021.",
       "Bird, Richard. Pearls of functional programming design. Cambridge University Press, 2010."
     ],
-    "pdf": "/electivas-fichas/72.60.pdf"
+    "pdf": "/electivas-fichas/72.18.pdf"
+  },
+  "72.58": {
+    "codigo": "72.58",
+    "materia": "Computación Gráfica",
+    "creditos": 3,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2026",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "7/4/2026 12:14:43",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 39,
+      "practicas": 12,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Fundamentos de la computación gráfica. Funcionamiento del pipeline de renderizado. Transformaciones geométricas con coordenadas homogéneas. Representación geométrica mediante buffers, generación de superficies procedurales, curvas paramétricas y técnicas de mapeo de texturas. Modelos de iluminación, materiales y teoría del color. Sombreadores (shaders). Control visual de aplicaciones interactivas. Revisión de tecnologías emergentes (Realidad Virtual y Aumentada).",
+    "presentacion": "La asignatura Computación Gráfica introduce a los estudiantes en los fundamentos teóricos y prácticos de la generación y manipulación de imágenes digitales mediante técnicas computacionales, abordando el desarrollo de aplicaciones gráficas interactivas en tiempo real. La materia propone una articulación entre conceptos matemáticos, algoritmos y herramientas tecnológicas orientadas a la visualización tridimensional.\n\nA lo largo del curso se estudian los principios del pipeline gráfico moderno, la representación geométrica de objetos, transformaciones espaciales, proyecciones, iluminación, materiales y técnicas de rendering contemporáneas. Asimismo, se introducen conceptos de programación en GPU, simulación física e interacción, permitiendo comprender cómo los sistemas gráficos actuales integran procesamiento visual, cálculo numérico e interacción en tiempo real.\n\nLa materia busca desarrollar habilidades analíticas y técnicas vinculadas al modelado, visualización y simulación de entornos tridimensionales, promoviendo un enfoque experimental basado en la implementación práctica y la\n\nexploración de tecnologías emergentes como realidad virtual y aumentada",
+    "objetivos": "1. Comprender los fundamentos teóricos de la computación gráfica y el funcionamiento del pipeline de rendering moderno. 2. Aplicar transformaciones geométricas para el diseño y la manipulación de escenas tridimensionales. 3. Utilizar técnicas de modelado, texturizado, iluminación y materiales para la generación de imágenes digitales en tiempo real. 4. Desarrollar aplicaciones gráficas interactivas mediante programación, el uso eficiente de la GPU y los shaders.",
+    "programa": [
+      {
+        "titulo": "Unidad 1 — Fundamentos de Computación Gráfica y Pipeline de Rendering",
+        "descripcion": "Introducción a la computación gráfica interactiva y estructura de aplicaciones 3D en tiempo real. Componentes de una escena tridimensional: modelos, cámaras y luces. Pipeline gráfico moderno y etapas del rendering. Transformación de datos geométricos en imágenes digitales. Conceptos básicos de programación aplicados al desarrollo gráfico"
+      },
+      {
+        "titulo": "Unidad 2 — Transformaciones y grafo de la escena",
+        "descripcion": "Sistemas de coordenadas y transformaciones geométricas en el espacio tridimensional. Matrices de traslación, rotación y escala. Coordenadas homogéneas y composición de transformaciones. Organización jerárquica de escenas y relaciones espaciales entre objetos."
+      },
+      {
+        "titulo": "Unidad 3 — Representación Geométrica y Modelado 3D",
+        "descripcion": "Primitivas geométricas y representación digital de superficies. Atributos geométricos: posiciones, normales y coordenadas asociadas. Buffers de vértices e índices. Integración de modelos externos y navegación en entornos tridimensionales."
+      },
+      {
+        "titulo": "Unidad 4 — Geometría Procedural y Curvas Paramétricas",
+        "descripcion": "Generación algorítmica de geometría. Superficies de revolución, extrusión y barrido. Curvas paramétricas, interpolación y suavizado. Discretización y evaluación de trayectorias aplicadas al modelado y la animación."
+      },
+      {
+        "titulo": "Unidad 5 — Cámaras, Proyecciones y Texturizado",
+        "descripcion": "Modelos de cámara perspectiva y ortográfica. Matrices de vista y proyección. Coordenadas de textura y técnicas de mapeo. Filtrado, repetición y renderizado fuera de pa"
+      },
+      {
+        "titulo": "Unidad 6 —",
+        "descripcion": "Modelos de iluminación y comportamiento de la luz sobre superficies. Propiedades materiales,"
+      },
+      {
+        "titulo": "Iluminación, Materiales y Colo",
+        "descripcion": "reflexión y transparencia. Mapas de textura. Fundamentos de teoría del color y percepción visual aplicada a gráficos digitales."
+      },
+      {
+        "titulo": "Unidad 7 — Programación de Shaders",
+        "descripcion": "Arquitectura de procesamiento gráfico. Lenguajes de sombreado. Control programable del pipeline gráfico. Generación de efectos visuales procedurales y cálculo de iluminación en GPU"
+      },
+      {
+        "titulo": "Unidad 8 — Técnicas Avanzadas",
+        "descripcion": "Sombras y reflexiones dinámicas, efectos de post-procesamiento, partículas, motores de física,"
+      },
+      {
+        "titulo": "Unidad 9 — Realidad Virtual y Tecnologías Emergentes",
+        "descripcion": "Fundamentos de realidad virtual, aumentada y mixta. Dispositivos de interacción y visualización inmersiva. APIs gráficas modernas orientadas a experiencias interactivas avanzada"
+      }
+    ],
+    "estrategias": "La materia se organiza en clases teórico-prácticas donde se presentarán los temas teóricos, y luego se trabaja sobre programas prediseñados para ejercitar los conceptos aprendidos. Se utilizará un repositorio de código en github de dónde los alumnos podrán descargar ejemplos demos y material práctico. Durante el curso se plantea el desarrollo de un trabajo práctico integrador que combine todos los conceptos desarrollados en la materia, este trabajo tendrá la forma de una aplicación 3D interactiva que deberá ser implementada y entregada al final del cuatrimestre. La plataforma de trabajo utilizar es web, programando en Javascript, Html y utilizando la biblioteca Three.js (basada en WebGL AP",
+    "evaluacion": "Modalidad de evaluación: La evaluación consiste de un parcial que se realizará en la mitad del cuatrimestre incluyendo temas de las unidades 1 a 4. Al final del cuatrimestre se realiza el coloquio en donde se evalúan temas teóricos de las unidades restantes junto con la evaluación del trabajo práctico\n\nRequisitos de aprobación: Para aprobar la cursada es necesaria la aprobación del parcial y el trabajo práctico.",
+    "bibliografiaObligatoria": [
+      "Introduction to Computer Graphics, autor David J. Eck, versión 1.4 (August 2023), Hobart and William Smith Colleges, libro gratuito online open textbook con licencia que permite distribución no modificada para fines no comerciales, sitio oficial https://math.hws.edu/graphicsbook/, descarga PDF oficial https://math.hws.edu/eck/cs424/downloads/graphicsbook.pdf.",
+      "Fundamentals of Computer Graphics, 5th Edition, autores Steve Marschner y Peter Shirley, editorial A K Peters / CRC Press (Routledge), ISBN-13 9780367505035, ISBN-10 0367505037, página oficial de la editorial https://www.routledge.com/Fundamentals-of-Computer-Graphics/Marschner-Shirley/p/book/9780367505035.",
+      "Computer Graphics from Scratch: A Programmer's Introduction to 3D Rendering, autor Gabriel Gambetta, editorial No Starch Press, publicado en April 2021, 248 páginas, ISBN-13 edición impresa 9781718500761, ISBN-13 ebook 9781718500778, página oficial de la editorial https://nostarch.com/computer-graphics-scratch , página del autor https://gabrielgambetta.com/computer-graphics-from-scratch/.",
+      "Learn Three.js: Program 3D animations and visualizations for the web with JavaScript and WebGL, 4th Edition, autor Jos Dirksen, editorial Packt Publishing, publicación February 2023, ISBN-13 ebook 9781803235868, ISBN-13 edición impresa 9781803233871, página oficial https://www.packtpub.com/en-us/product/learn-threejs-9781803235868.",
+      "Computer Graphics: Principles and Practice, 3rd Edition, autores John F. Hughes, Andries van Dam, Morgan McGuire, David F. Sklar, James D. Foley, Steven K. Feiner y Kurt Akeley, editorial Addison-Wesley Professional (Pearson), ISBN-13 9780321399526, ISBN-10 0321399528, página oficial https://www.pearson.com/en-us/subject-catalog/p/computer-graphics-principles-and-practice/P200000000336 /9780321399526. 6"
+    ],
+    "bibliografiaComplementaria": [
+      "OpenGL 4.0 Shading Language Cookbook, autor David Wolff, 1st Edition, editorial Packt Publishing, publicado en July 2011, ISBN-13 9781849514767, ISBN-10 1849514763, página oficial https://www.packtpub.com/en-cl/product/opengl-40-shading-language-cookbook-9781849514767. 2 3 4 5 6"
+    ],
+    "pdf": "/electivas-fichas/72.58.pdf"
   },
   "72.74": {
     "codigo": "72.74",
