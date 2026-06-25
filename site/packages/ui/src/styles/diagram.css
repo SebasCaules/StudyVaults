@@ -145,6 +145,13 @@
 .de-node-package-body { fill: none !important; stroke: var(--text-secondary) !important; stroke-width: 1.4 !important; stroke-dasharray: 6 4; }
 .de-node-type-package .de-node-label-text { align-items: flex-start !important; padding-top: 6px; font-weight: 600; color: var(--text-secondary); }
 .de-node-highlight { fill: rgba(255, 255, 255, 0.4); pointer-events: none; }
+/* cylinder top lid — a touch lighter than the body so the dome reads as 3D */
+.de-node-type-db .de-node-db-lid { fill: color-mix(in srgb, #8b5cf6 6%, var(--surface-2)); stroke: #5b21b6; }
+/* free-text label node: invisible box, dashed outline only on hover/selection */
+.de-node-text-box { fill: transparent; stroke: transparent; stroke-width: 1.4; }
+.de-node-type-text:hover .de-node-text-box { stroke: color-mix(in srgb, var(--accent) 45%, transparent); stroke-dasharray: 4 3; }
+.de-node-type-text.is-selected .de-node-text-box { stroke: var(--accent); stroke-dasharray: 4 3; }
+.de-node-type-text .de-node-label-text { font-weight: 500; color: var(--text-primary); }
 
 /* En dark, los strokes oscuros calibrados para canvas claro casi no se ven sobre
    el marrón. Variantes más claras del mismo matiz (>3:1) + fill un poco más
@@ -152,6 +159,7 @@
 [data-theme="dark"] .de-node-type-circle  .de-node-body { fill: color-mix(in srgb, #f59e0b 18%, var(--surface-2)); stroke: #fbbf24; }
 [data-theme="dark"] .de-node-type-cloud   .de-node-body { fill: color-mix(in srgb, #0ea5e9 18%, var(--surface-2)); stroke: #38bdf8; }
 [data-theme="dark"] .de-node-type-db      .de-node-body { fill: color-mix(in srgb, #8b5cf6 18%, var(--surface-2)); stroke: #a78bfa; }
+[data-theme="dark"] .de-node-type-db      .de-node-db-lid { fill: color-mix(in srgb, #8b5cf6 30%, var(--surface-2)); stroke: #a78bfa; }
 [data-theme="dark"] .de-node-type-actor   .de-node-body { fill: color-mix(in srgb, #ec4899 18%, var(--surface-2)); stroke: #f472b6; }
 [data-theme="dark"] .de-node-type-stack   .de-node-body { fill: color-mix(in srgb, #16a34a 16%, var(--surface-2)); stroke: #4ade80; }
 [data-theme="dark"] .de-node-type-hexagon .de-node-body { fill: color-mix(in srgb, #f97316 16%, var(--surface-2)); stroke: #fb923c; }
@@ -201,10 +209,32 @@
 
 /* ---- edges ---- */
 .de-edge { color: var(--text-secondary); cursor: pointer; }
-.de-edge line { stroke: currentColor; stroke-width: 1.6; }
-.de-edge.is-selected line { stroke: var(--accent); stroke-width: 2.5; }
+.de-edge .de-edge-line { stroke: currentColor; stroke-width: 1.6; fill: none; }
+.de-edge.is-selected .de-edge-line { stroke: var(--accent); stroke-width: 2.5; }
 .de-edge-label { font-family: var(--de-sans); font-size: 11px; fill: var(--text-secondary); pointer-events: none; }
-.de-edge-hit { stroke: transparent; stroke-width: 14; fill: none; }
+.de-edge-hit { stroke: transparent; stroke-width: 16; fill: none; }
+
+/* edge waypoint handles (selected edge): solid = existing bend, hollow = add */
+.de-wp {
+  fill: var(--accent);
+  stroke: var(--surface-2);
+  stroke-width: 2;
+  cursor: grab;
+  pointer-events: all;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+}
+.de-wp:hover { fill: color-mix(in srgb, var(--accent) 80%, #fff); }
+.de-wp-add {
+  fill: var(--surface-2);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2.5 2;
+  opacity: 0.65;
+  cursor: copy;
+  pointer-events: all;
+  transition: opacity 120ms ease, r 120ms ease;
+}
+.de-wp-add:hover { opacity: 1; fill: color-mix(in srgb, var(--accent) 22%, var(--surface-2)); }
 
 /* ghost line during connect */
 .de-ghost-line {

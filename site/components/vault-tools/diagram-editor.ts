@@ -45,7 +45,8 @@
     stack:   { w: 130, h: 90,  label: 'Capas',          description: 'Arquitectura por capas / layered' },
     hexagon: { w: 120, h: 110, label: 'Servicio',       description: 'Arquitectura hexagonal / microservicio' },
     queue:   { w: 170, h: 56,  label: 'Cola',           description: 'Cola FIFO / event broker' },
-    package: { w: 220, h: 140, label: 'Bounded context',description: 'Paquete / bounded context — agrupa shapes' }
+    package: { w: 220, h: 140, label: 'Bounded context',description: 'Paquete / bounded context — agrupa shapes' },
+    text:    { w: 120, h: 34,  label: 'Etiqueta',       description: 'Texto / etiqueta libre' }
   };
 
   const TOOLBAR_ITEMS = [
@@ -58,6 +59,7 @@
     { id: 'hexagon', label: 'Hexágono',  hint: 'Hexagonal / microservicio' },
     { id: 'queue',   label: 'Cola',      hint: 'Cola FIFO / event broker' },
     { id: 'package', label: 'Paquete',   hint: 'Bounded context / módulo agrupador' },
+    { id: 'text',    label: 'Texto',     hint: 'Etiqueta de texto libre, en cualquier lado' },
     { id: 'connect', label: 'Conexión',  hint: 'Click dos formas para conectarlas' },
   ];
 
@@ -77,6 +79,7 @@
       case 'hexagon':return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M4 2 L12 2 L15 8 L12 14 L4 14 L1 8 Z" ${c}/></svg>`;
       case 'queue':  return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="1" y="5" width="14" height="6" rx="0.5" ${c}/><line x1="5" y1="5" x2="5" y2="11" ${c}/><line x1="9" y1="5" x2="9" y2="11" ${c}/><line x1="13" y1="5" x2="13" y2="11" ${c}/></svg>`;
       case 'package':return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1" stroke="currentColor" fill="none" stroke-width="1.4" stroke-dasharray="2 1.5"/></svg>`;
+      case 'text':   return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M3 4h10M8 4v9M6 13h4" ${c}/></svg>`;
       case 'connect':return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><line x1="2" y1="8" x2="13" y2="8" ${c}/><polyline points="10,5 13,8 10,11" ${c}/></svg>`;
       case 'trash':  return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><polyline points="2,4 14,4" ${c}/><path d="M4 4v9a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4" ${c}/><line x1="7" y1="7" x2="7" y2="12" ${c}/><line x1="9" y1="7" x2="9" y2="12" ${c}/></svg>`;
       case 'clear':  return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M3 6h10M5 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M4 6l1 7a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1l1-7" ${c}/></svg>`;
@@ -210,11 +213,55 @@
       g.appendChild(r);
       return;
     }
-    // Default: SVG path string from shapeBodyPath (cloud, db, actor)
+    if (type === 'db') {
+      // Cylinder = filled body (side walls + bottom cap) + a fully-filled top
+      // lid ellipse on top. The lid's own stroke draws both the top dome and the
+      // front seam, so the whole top section is covered with colour.
+      const rx = w / 2, ry = 11;
+      const body = document.createElementNS(NS, 'path');
+      body.setAttribute('d', `M 0 ${ry} L 0 ${h - ry} a ${rx} ${ry} 0 0 0 ${w} 0 L ${w} ${ry} Z`);
+      body.setAttribute('class', 'de-node-body');
+      g.appendChild(body);
+      const lid = document.createElementNS(NS, 'ellipse');
+      lid.setAttribute('cx', rx); lid.setAttribute('cy', ry);
+      lid.setAttribute('rx', rx); lid.setAttribute('ry', ry);
+      lid.setAttribute('class', 'de-node-body de-node-db-lid');
+      g.appendChild(lid);
+      return;
+    }
+    if (type === 'text') {
+      // Free-floating label: an invisible hit rect (so it can be clicked/dragged)
+      // plus a dashed outline that only shows on hover/selection (via CSS).
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', 0); r.setAttribute('y', 0);
+      r.setAttribute('width', w); r.setAttribute('height', h);
+      r.setAttribute('rx', 6);
+      r.setAttribute('class', 'de-node-text-box');
+      g.appendChild(r);
+      return;
+    }
+    // Default: SVG path string from shapeBodyPath (cloud, actor)
     const path = document.createElementNS(NS, 'path');
     path.setAttribute('d', shapeBodyPath(type, w, h) || '');
     path.setAttribute('class', 'de-node-body');
     g.appendChild(path);
+  }
+
+  // Label placement is tuned per shape to sit on the figure's *visual* mass, not
+  // the bounding-box centre — e.g. below the actor's body, inside the cylinder
+  // wall (below its lid), in the hexagon's flat middle band. Both renderShape and
+  // startInlineEdit use this so the static label and the edit box always align.
+  function labelBox(type, w, h) {
+    switch (type) {
+      case 'actor':   return { x: -w * 0.35, y: h + 1,            w: w * 1.7,        h: 30 };
+      case 'db':      return { x: 6,         y: (h + 22) / 2 - 15, w: w - 12,        h: 30 };
+      case 'cloud':   return { x: w * 0.12,  y: h * 0.58 - 15,     w: w * 0.76,      h: 30 };
+      case 'stack':   return { x: 4,         y: (h - 16) / 2 - 15, w: (w - 16) - 6,  h: 30 };
+      case 'hexagon': return { x: w * 0.18,  y: h / 2 - 15,        w: w * 0.64,      h: 30 };
+      case 'queue':   return { x: 6,         y: h / 2 - 15,        w: w - 12,        h: 30 };
+      case 'text':    return { x: 1,         y: 1,                 w: w - 2,         h: h - 2 };
+      default:        return { x: 4,         y: h / 2 - 16,        w: w - 8,         h: 32 };
+    }
   }
 
   function renderShape(svg, node, isSelected) {
@@ -236,16 +283,16 @@
       g.appendChild(hl);
     }
 
-    // Label
-    const labelY = node.type === 'actor' ? h + 14 : (node.type === 'db' ? h / 2 + 6 : h / 2);
+    // Label — geometry tuned per shape (see labelBox).
+    const lb = labelBox(node.type, w, h);
     const fo = document.createElementNS(NS, 'foreignObject');
-    fo.setAttribute('x', 4);
-    fo.setAttribute('y', labelY - 16);
-    fo.setAttribute('width', w - 8);
-    fo.setAttribute('height', 32);
+    fo.setAttribute('x', lb.x);
+    fo.setAttribute('y', lb.y);
+    fo.setAttribute('width', lb.w);
+    fo.setAttribute('height', lb.h);
     fo.setAttribute('class', 'de-node-label-host');
     const div = document.createElement('div');
-    div.setAttribute('class', 'de-node-label-text');
+    div.setAttribute('class', 'de-node-label-text' + (node.type === 'text' ? ' is-free-text' : ''));
     div.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
     div.textContent = node.label;
     fo.appendChild(div);
@@ -301,38 +348,96 @@
     return { x: cx + dx * scale, y: cy + dy * scale };
   }
 
+  // Full geometry of an edge: [startOnA, ...waypoints, endOnB]. Endpoints are
+  // intersected with each shape's outline toward the adjacent point (first/last
+  // waypoint, or the opposite centre when straight) — so the arrow meets the
+  // shapes cleanly with any number of bends and follows moves/resizes.
+  function edgeGeometry(a, b, edge) {
+    const ac = { x: a.x + a.w / 2, y: a.y + a.h / 2 };
+    const bc = { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+    const wps = Array.isArray(edge.points) ? edge.points : [];
+    if (!wps.length) {
+      let p1 = edgePoint(a, bc.x, bc.y);
+      let p2 = edgePoint(b, p1.x, p1.y);
+      p1 = edgePoint(a, p2.x, p2.y);
+      return [p1, p2];
+    }
+    const p1 = edgePoint(a, wps[0].x, wps[0].y);
+    const p2 = edgePoint(b, wps[wps.length - 1].x, wps[wps.length - 1].y);
+    return [p1, ...wps.map(w => ({ x: w.x, y: w.y })), p2];
+  }
+
+  // Path data: straight polyline, or a Catmull-Rom → cubic-Bézier smooth curve
+  // through every point when edge.curved is set.
+  function edgePathD(pts, curved) {
+    if (pts.length < 2) return '';
+    if (!curved || pts.length === 2) {
+      return 'M ' + pts.map(p => `${p.x} ${p.y}`).join(' L ');
+    }
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || pts[i + 1];
+      const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${c1x} ${c1y} ${c2x} ${c2y} ${p2.x} ${p2.y}`;
+    }
+    return d;
+  }
+
+  // Point at half the total polyline length (where the edge label sits).
+  function polylineMidpoint(pts) {
+    if (!pts.length) return { x: 0, y: 0 };
+    if (pts.length === 1) return pts[0];
+    const segs = [];
+    let total = 0;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const dlen = Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y);
+      segs.push(dlen); total += dlen;
+    }
+    let target = total / 2, acc = 0;
+    for (let i = 0; i < segs.length; i++) {
+      if (acc + segs[i] >= target) {
+        const t = segs[i] ? (target - acc) / segs[i] : 0;
+        return {
+          x: pts[i].x + (pts[i + 1].x - pts[i].x) * t,
+          y: pts[i].y + (pts[i + 1].y - pts[i].y) * t,
+        };
+      }
+      acc += segs[i];
+    }
+    return pts[pts.length - 1];
+  }
+
   function renderEdge(svg, edge, nodeById, isSelected) {
     const a = nodeById[edge.from];
     const b = nodeById[edge.to];
     if (!a || !b) return;
-    // Endpoints are always recomputed toward the *current* opposite-node center
-    // and intersected with each shape's outline — so arrows follow moves/resizes
-    // and never float off a circle or cylinder. Two passes converge on a clean
-    // mutual endpoint. (Legacy stored cardinal anchors are intentionally ignored.)
-    const ac = { x: a.x + a.w / 2, y: a.y + a.h / 2 };
-    const bc = { x: b.x + b.w / 2, y: b.y + b.h / 2 };
-    let p1 = edgePoint(a, bc.x, bc.y);
-    let p2 = edgePoint(b, p1.x, p1.y);
-    p1 = edgePoint(a, p2.x, p2.y);
+    const pts = edgeGeometry(a, b, edge);
+    const d = edgePathD(pts, edge.curved);
     const g = document.createElementNS(NS, 'g');
     g.setAttribute('class', 'de-edge' + (isSelected ? ' is-selected' : ''));
     g.setAttribute('data-id', edge.id);
-    const line = document.createElementNS(NS, 'line');
-    line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
-    line.setAttribute('x2', p2.x); line.setAttribute('y2', p2.y);
-    line.setAttribute('marker-end', 'url(#de-arrow)');
-    g.appendChild(line);
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('class', 'de-edge-line');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('marker-end', 'url(#de-arrow)');
+    g.appendChild(path);
     // Wider invisible hit area for selection
-    const hit = document.createElementNS(NS, 'line');
-    hit.setAttribute('x1', p1.x); hit.setAttribute('y1', p1.y);
-    hit.setAttribute('x2', p2.x); hit.setAttribute('y2', p2.y);
+    const hit = document.createElementNS(NS, 'path');
     hit.setAttribute('class', 'de-edge-hit');
+    hit.setAttribute('d', d);
+    hit.setAttribute('fill', 'none');
     g.appendChild(hit);
     if (edge.label) {
+      const m = polylineMidpoint(pts);
       const lt = document.createElementNS(NS, 'text');
       lt.setAttribute('class', 'de-edge-label');
-      lt.setAttribute('x', (p1.x + p2.x) / 2);
-      lt.setAttribute('y', (p1.y + p2.y) / 2 - 4);
+      lt.setAttribute('x', m.x);
+      lt.setAttribute('y', m.y - 5);
       lt.setAttribute('text-anchor', 'middle');
       lt.textContent = edge.label;
       g.appendChild(lt);
@@ -349,6 +454,7 @@
     let selectedEdgeId = null;     // id of selected edge (mutually exclusive with nodes)
     let dragging = null;         // { primaryId, startMouseX, startMouseY, startPositions: {id->{x,y}}, moved, snapGuides }
     let resizing = null;         // { id, corner, startX, startY, start: {x,y,w,h} } while dragging a corner handle
+    let edgeDrag = null;         // { edgeId, wpIndex } while dragging an edge waypoint
     let marquee = null;          // { startX, startY, curX, curY, shift, initialNodes }
     let connectFrom = null;      // node id while in connect mode (toolbar option)
     let ghostLine = null;        // SVG line element preview during connect
@@ -428,6 +534,7 @@
           <g data-nodes></g>
           <g data-anchors></g>
           <g data-resize></g>
+          <g data-edge-handles></g>
           <g data-snap></g>
           <g data-marquee></g>
         </svg>
@@ -447,6 +554,7 @@
     const gGhost = svg.querySelector('[data-ghost]');
     const gAnchors = svg.querySelector('[data-anchors]');
     const gResize = svg.querySelector('[data-resize]');
+    const gEdgeHandles = svg.querySelector('[data-edge-handles]');
     const gSnap = svg.querySelector('[data-snap]');
     const gMarquee = svg.querySelector('[data-marquee]');
     const hint = container.querySelector('[data-de-hint]');
@@ -792,7 +900,9 @@
       });
       if (mode && mode.startsWith('place:')) {
         const type = mode.split(':')[1];
-        hint.innerHTML = `<strong>Modo colocar.</strong> Click en el lienzo para insertar: ${SHAPE_DEFS[type].description}. <kbd>Esc</kbd> cancela.`;
+        hint.innerHTML = type === 'text'
+          ? `<strong>Modo texto.</strong> Click donde quieras una etiqueta libre. <kbd>Esc</kbd> cancela.`
+          : `<strong>Modo colocar.</strong> Click en el lienzo para insertar: ${SHAPE_DEFS[type].description}. Click <em>sobre una flecha</em> para intercalarlo en el medio. <kbd>Esc</kbd> cancela.`;
       } else if (mode === 'connect') {
         hint.innerHTML = `<strong>Modo conexión.</strong> Click la forma origen y luego la de destino. <kbd>Esc</kbd> cancela.`;
       } else {
@@ -803,7 +913,7 @@
         } else if (sel?.kind === 'multi') {
           hint.innerHTML = `<strong>${sel.count} formas seleccionadas.</strong> Arrastrá para moverlas juntas · <kbd>Supr</kbd> borra · click para deseleccionar.`;
         } else if (sel?.kind === 'edge') {
-          hint.innerHTML = `Flecha seleccionada. Doble-click para etiquetar (opcional) · <kbd>Supr</kbd> borra.`;
+          hint.innerHTML = `Flecha seleccionada. Arrastrá los puntos huecos para crear quiebres · doble-click en un quiebre lo borra · <kbd>C</kbd> curva/recta · doble-click etiqueta · <kbd>Supr</kbd> borra.`;
         } else {
           hint.innerHTML = 'Arrastrá en vacío para seleccionar varios · click en forma para seleccionar · shift+click para sumar a la selección.';
         }
@@ -825,6 +935,7 @@
       });
       renderAnchors();
       renderResizeHandles();
+      renderEdgeHandles();
     }
 
     // Cardinal-anchor handles around the hovered / selected node. Mousedown on
@@ -841,6 +952,7 @@
       ids.forEach(id => {
         const n = state.nodes.find(x => x.id === id);
         if (!n) return;
+        if (n.type === 'text') return; // free-text labels aren't connectable
         ['n', 'e', 's', 'w'].forEach(a => {
           const p = anchorPoint(n, a);
           const ring = document.createElementNS(NS, 'circle');
@@ -929,6 +1041,78 @@
       };
     });
 
+    // ---- Edge waypoint handles (for the selected edge) ----
+    // Solid dots = existing bends (drag to move, double-click to remove).
+    // Hollow dots at each segment midpoint = "add a bend here" (drag to create).
+    function renderEdgeHandles() {
+      gEdgeHandles.innerHTML = '';
+      if (mode || dragging || resizing) return;
+      if (!selectedEdgeId) return;
+      const edge = state.edges.find(e => e.id === selectedEdgeId);
+      if (!edge) return;
+      const a = state.nodes.find(n => n.id === edge.from);
+      const b = state.nodes.find(n => n.id === edge.to);
+      if (!a || !b) return;
+      const pts = edgeGeometry(a, b, edge);
+      const wps = Array.isArray(edge.points) ? edge.points : [];
+      wps.forEach((w, i) => {
+        const dot = document.createElementNS(NS, 'circle');
+        dot.setAttribute('class', 'de-wp');
+        dot.setAttribute('cx', w.x); dot.setAttribute('cy', w.y);
+        dot.setAttribute('r', 6);
+        dot.setAttribute('data-edge-id', edge.id);
+        dot.setAttribute('data-wp-index', String(i));
+        gEdgeHandles.appendChild(dot);
+      });
+      for (let s = 0; s < pts.length - 1; s++) {
+        const mx = (pts[s].x + pts[s + 1].x) / 2;
+        const my = (pts[s].y + pts[s + 1].y) / 2;
+        const add = document.createElementNS(NS, 'circle');
+        add.setAttribute('class', 'de-wp-add');
+        add.setAttribute('cx', mx); add.setAttribute('cy', my);
+        add.setAttribute('r', 5);
+        add.setAttribute('data-edge-id', edge.id);
+        add.setAttribute('data-seg-index', String(s));
+        gEdgeHandles.appendChild(add);
+      }
+    }
+    // Mousedown on a waypoint moves it; on an "add" handle inserts a bend there
+    // and immediately drags it. stopPropagation keeps it off node-drag/marquee.
+    gEdgeHandles.addEventListener('mousedown', (evt) => {
+      const moveH = evt.target.closest('.de-wp');
+      const addH = evt.target.closest('.de-wp-add');
+      if (!moveH && !addH) return;
+      evt.preventDefault();
+      evt.stopPropagation();
+      const id = (moveH || addH).getAttribute('data-edge-id');
+      const edge = state.edges.find(e => e.id === id);
+      if (!edge) return;
+      if (!Array.isArray(edge.points)) edge.points = [];
+      let wpIndex;
+      if (moveH) {
+        wpIndex = parseInt(moveH.getAttribute('data-wp-index'), 10);
+      } else {
+        const segIndex = parseInt(addH.getAttribute('data-seg-index'), 10);
+        const p = svgPoint(evt);
+        edge.points.splice(segIndex, 0, { x: p.x, y: p.y });
+        wpIndex = segIndex;
+      }
+      edgeDrag = { edgeId: id, wpIndex };
+      render();
+    });
+    // Double-click a waypoint removes it.
+    gEdgeHandles.addEventListener('dblclick', (evt) => {
+      const moveH = evt.target.closest('.de-wp');
+      if (!moveH) return;
+      evt.preventDefault();
+      evt.stopPropagation();
+      const edge = state.edges.find(e => e.id === moveH.getAttribute('data-edge-id'));
+      if (!edge || !Array.isArray(edge.points)) return;
+      edge.points.splice(parseInt(moveH.getAttribute('data-wp-index'), 10), 1);
+      render();
+      onChange(state);
+    });
+
     function setHovered(id) {
       if (hoverClearTimer) { clearTimeout(hoverClearTimer); hoverClearTimer = null; }
       if (hoveredNodeId !== id) {
@@ -964,13 +1148,13 @@
       // Remove any existing inline editor
       svg.querySelectorAll('.de-inline-editor').forEach(el => el.remove());
 
-      const labelY = node.type === 'actor' ? node.h + 14 : (node.type === 'db' ? node.h / 2 + 6 : node.h / 2);
+      const lb = labelBox(node.type, node.w, node.h);
       const fo = document.createElementNS(NS, 'foreignObject');
       fo.setAttribute('class', 'de-inline-editor');
-      fo.setAttribute('x', node.x + 2);
-      fo.setAttribute('y', node.y + labelY - 16);
-      fo.setAttribute('width', node.w - 4);
-      fo.setAttribute('height', 32);
+      fo.setAttribute('x', node.x + lb.x);
+      fo.setAttribute('y', node.y + lb.y);
+      fo.setAttribute('width', Math.max(60, lb.w));
+      fo.setAttribute('height', Math.max(30, lb.h));
 
       const input = document.createElement('input');
       input.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
@@ -1102,6 +1286,43 @@
       setMode(null);
     }
 
+    // Duplicate the selected node(s) (offset a touch), plus any edge that lives
+    // entirely within the selection; the copies become the new selection.
+    function duplicateSelection() {
+      if (!selectedNodes.size) return;
+      const OFF = 24;
+      const idMap = {};
+      const newNodes = [];
+      state.nodes.forEach(n => {
+        if (!selectedNodes.has(n.id)) return;
+        const nid = uid();
+        idMap[n.id] = nid;
+        newNodes.push({
+          ...n,
+          id: nid,
+          x: Math.max(0, Math.min(CANVAS_W - n.w, n.x + OFF)),
+          y: Math.max(0, Math.min(CANVAS_H - n.h, n.y + OFF)),
+        });
+      });
+      const newEdges = [];
+      state.edges.forEach(e => {
+        if (!idMap[e.from] || !idMap[e.to]) return;
+        newEdges.push({
+          ...e,
+          id: uid(),
+          from: idMap[e.from],
+          to: idMap[e.to],
+          points: Array.isArray(e.points) ? e.points.map(p => ({ x: p.x + OFF, y: p.y + OFF })) : [],
+        });
+      });
+      state.nodes.push(...newNodes);
+      state.edges.push(...newEdges);
+      selectedNodes = new Set(newNodes.map(n => n.id));
+      selectedEdgeId = null;
+      render();
+      onChange(state);
+    }
+
     // ---- Anchor drag-to-connect (no toolbar needed) ----
     gAnchors.addEventListener('mousedown', (evt) => {
       const handle = evt.target.closest('.de-anchor-ring, .de-anchor');
@@ -1147,32 +1368,50 @@
     svg.addEventListener('click', (evt) => {
       if (dragging && dragging.moved) return;
       if (marquee) return;
-      if (evt.target.closest('.de-anchor, .de-anchor-ring, .de-resize')) return;
+      if (evt.target.closest('.de-anchor, .de-anchor-ring, .de-resize, .de-wp, .de-wp-add')) return;
       const p = svgPoint(evt);
       const nodeEl = evt.target.closest('.de-node');
 
-      if (mode && mode.startsWith('place:') && !nodeEl) {
+      if (mode && mode.startsWith('place:')) {
         const type = mode.split(':')[1];
         const def = SHAPE_DEFS[type];
-        const node = {
+        const makeNode = () => ({
           id: uid(),
           type,
           x: Math.max(8, Math.min(CANVAS_W - def.w - 8, p.x - def.w / 2)),
           y: Math.max(8, Math.min(CANVAS_H - def.h - 8, p.y - def.h / 2)),
           w: def.w, h: def.h,
           label: def.label
+        });
+        const finishPlace = (node) => {
+          state.nodes.push(node);
+          selectedNodes = new Set([node.id]);
+          selectedEdgeId = null;
+          setMode(null);
+          render();
+          onChange(state);
+          inlineTimer = setTimeout(() => { if (!destroyed) startInlineEdit(node.id); }, 30);
         };
-        state.nodes.push(node);
-        selectedNodes = new Set([node.id]);
-        selectedEdgeId = null;
-        setMode(null);
-        render();
-        onChange(state);
-        inlineTimer = setTimeout(() => { if (!destroyed) startInlineEdit(node.id); }, 30);
-        return;
+        // Insert-on-edge: dropping a (non-text) shape onto an arrow splits it,
+        // re-wiring from → new → to.
+        const edgeEl = !nodeEl ? evt.target.closest('.de-edge') : null;
+        if (edgeEl && type !== 'text') {
+          const old = state.edges.find(e => e.id === edgeEl.dataset.id);
+          if (old) {
+            const node = makeNode();
+            state.edges = state.edges.filter(e => e.id !== old.id);
+            state.edges.push({ id: uid(), from: old.from, to: node.id, label: '', curved: !!old.curved });
+            state.edges.push({ id: uid(), from: node.id, to: old.to, label: '', curved: !!old.curved });
+            finishPlace(node);
+            return;
+          }
+        }
+        if (!nodeEl) { finishPlace(makeNode()); return; }
       }
       if (mode === 'connect' && nodeEl) {
         const id = nodeEl.dataset.id;
+        const targetNode = state.nodes.find(n => n.id === id);
+        if (targetNode && targetNode.type === 'text') return; // text isn't connectable
         if (!connectFrom) {
           connectFrom = id;
           hint.innerHTML = `<strong>Origen elegido.</strong> Ahora click en la forma de destino.`;
@@ -1251,6 +1490,8 @@
       if (targetNodeEl && targetNodeEl.dataset.id !== pendingConnect.fromId) {
         const toId = targetNodeEl.dataset.id;
         const toNode = state.nodes.find(n => n.id === toId);
+        if (toNode && toNode.type === 'text') { /* not connectable */ }
+        else {
         const p = svgPoint(evt);
         const toAnchor = toNode ? nearestAnchor(toNode, p.x, p.y) : 'n';
         state.edges.push({
@@ -1262,6 +1503,7 @@
           label: ''
         });
         onChange(state);
+        }
       }
       pendingConnect = null;
       gGhost.innerHTML = '';
@@ -1288,7 +1530,7 @@
         return;
       }
       if (mode) return;
-      if (evt.target.closest('.de-anchor, .de-anchor-ring, .de-resize')) return;
+      if (evt.target.closest('.de-anchor, .de-anchor-ring, .de-resize, .de-wp, .de-wp-add')) return;
       if (evt.button !== 0) return; // left button only
       const nodeEl = evt.target.closest('.de-node');
       const edgeEl = evt.target.closest('.de-edge');
@@ -1395,6 +1637,17 @@
         }
         return;
       }
+      if (edgeDrag) {
+        const edge = state.edges.find(e => e.id === edgeDrag.edgeId);
+        if (edge && Array.isArray(edge.points) && edge.points[edgeDrag.wpIndex]) {
+          edge.points[edgeDrag.wpIndex] = {
+            x: Math.max(0, Math.min(CANVAS_W, p.x)),
+            y: Math.max(0, Math.min(CANVAS_H, p.y)),
+          };
+          render();
+        }
+        return;
+      }
       if (marquee) {
         marquee.curX = p.x;
         marquee.curY = p.y;
@@ -1465,6 +1718,11 @@
         resizing = null;
         render();
       }
+      if (edgeDrag) {
+        onChange(state);
+        edgeDrag = null;
+        render();
+      }
       const wasDragging = !!dragging;
       if (dragging && dragging.moved) onChange(state);
       dragging = null;
@@ -1519,6 +1777,17 @@
         selectedEdgeId = null;
         render();
       }
+      // C toggles the selected edge between straight and curved.
+      if ((evt.key === 'c' || evt.key === 'C') && !evt.metaKey && !evt.ctrlKey && selectedEdgeId) {
+        evt.preventDefault();
+        const edge = state.edges.find(e => e.id === selectedEdgeId);
+        if (edge) { edge.curved = !edge.curved; render(); onChange(state); }
+      }
+      // Ctrl/Cmd+D duplicates the selected node(s) and any edges between them.
+      if ((evt.key === 'd' || evt.key === 'D') && (evt.metaKey || evt.ctrlKey) && selectedNodes.size > 0) {
+        evt.preventDefault();
+        duplicateSelection();
+      }
       // Arrow keys nudge the selected node(s): 1px, or 10px with Shift.
       if (/^Arrow(Up|Down|Left|Right)$/.test(evt.key) && selectedNodes.size > 0) {
         evt.preventDefault();
@@ -1547,7 +1816,7 @@
 
     function toSVG() {
       const cl = svg.cloneNode(true);
-      cl.querySelectorAll('.de-inline-editor, .de-edge-hit, [data-ghost], [data-anchors], [data-resize], [data-snap], [data-marquee], .de-canvas-bg, .de-canvas-bounds').forEach(el => el.remove());
+      cl.querySelectorAll('.de-inline-editor, .de-edge-hit, [data-ghost], [data-anchors], [data-resize], [data-edge-handles], [data-snap], [data-marquee], .de-canvas-bg, .de-canvas-bounds').forEach(el => el.remove());
       cl.setAttribute('xmlns', NS);
       // Frame the export on the actual content (or a sensible default if empty).
       const bb = nodesBoundingBox();
@@ -1569,6 +1838,7 @@
         .de-node-type-circle  .de-node-body { fill: #FEF3C7; stroke: #B45309; stroke-width: 1.6; }
         .de-node-type-cloud   .de-node-body { fill: #ECFEFF; stroke: #0E7490; stroke-width: 1.6; }
         .de-node-type-db      .de-node-body { fill: #EDE9FE; stroke: #5B21B6; stroke-width: 1.6; }
+        .de-node-type-db      .de-node-db-lid { fill: #F3F0FE; stroke: #5B21B6; stroke-width: 1.6; }
         .de-node-type-actor   .de-node-body { fill: #FDF2F8; stroke: #9D174D; stroke-width: 1.6; }
         .de-node-type-stack   .de-node-body { fill: #F0FDF4; stroke: #166534; stroke-width: 1.4; }
         .de-node-type-hexagon .de-node-body { fill: #FFF7ED; stroke: #C2410C; stroke-width: 1.6; }
@@ -1576,10 +1846,11 @@
         .de-node-type-queue   .de-node-divider  { stroke: #1D4ED8; stroke-width: 1; opacity: 0.5; }
         .de-node-type-queue   .de-node-queue-cap { fill: #1D4ED8; }
         .de-node-package-body { fill: none; stroke: #6B7280; stroke-width: 1.4; stroke-dasharray: 6 4; }
+        .de-node-text-box { fill: none; stroke: none; }
         .de-node-highlight { fill: rgba(255,255,255,0.5); }
         .de-node-label-text { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.2; color: #0B0D10; text-align: center; display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 4px; box-sizing: border-box; }
         .de-edge { color: #0E7C66; }
-        .de-edge line { stroke: #0E7C66; stroke-width: 1.6; }
+        .de-edge .de-edge-line { stroke: #0E7C66; stroke-width: 1.6; fill: none; }
         .de-edge-label { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; fill: #585B63; }
       `;
       cl.insertBefore(style, cl.firstChild);
