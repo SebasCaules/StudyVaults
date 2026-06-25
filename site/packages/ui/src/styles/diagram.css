@@ -91,7 +91,7 @@
   width: min(330px, 64%);
   display: flex;
   flex-direction: column;
-  background: var(--surface);
+  background: var(--surface-2);
   border: 1px solid var(--hairline-strong);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-lg);

@@ -593,7 +593,7 @@ html.parcial-focus .parcial-toolbar {
   min-width: 230px;
   max-width: 300px;
   padding: 6px;
-  background: var(--surface);
+  background: var(--surface-2);
   border: 1px solid var(--hairline-strong);
   border-radius: var(--r-ctrl);
   box-shadow: var(--shadow-lg);
@@ -649,7 +649,7 @@ html.parcial-focus .parcial-toolbar {
   align-items: center;
   gap: 4px;
   padding: 5px;
-  background: var(--surface);
+  background: var(--surface-2);
   border: 1px solid var(--hairline-strong);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-lg);
@@ -666,7 +666,7 @@ html.parcial-focus .parcial-toolbar {
   width: 10px;
   height: 10px;
   transform: translateX(-50%) rotate(45deg);
-  background: var(--surface);
+  background: var(--surface-2);
   border-right: 1px solid var(--hairline-strong);
   border-bottom: 1px solid var(--hairline-strong);
 }
@@ -1292,7 +1292,7 @@ html.parcial-focus .parcial-toolbar {
 }
 .parcial-func-input.vtool-input:hover { border-color: var(--hairline); }
 .parcial-func-input.vtool-input:focus {
-  background: var(--surface);
+  background: var(--surface-2);
   border-color: var(--ring);
 }
 .parcial-func-actions { display: inline-flex; flex-direction: column; gap: 2px; }
