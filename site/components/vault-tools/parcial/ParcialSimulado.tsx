@@ -764,13 +764,34 @@ function EnunciadoDock({
   rerender: () => void;
 }) {
   const bodyRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const savedRangeRef = useRef<globalThis.Range | null>(null);
   const citeControlRef = useRef<HTMLDivElement | null>(null);
   const [annoEnabled, setAnnoEnabled] = useState(false);
   const [citeMenuOpen, setCiteMenuOpen] = useState(false);
   const [flashCiteId, setFlashCiteId] = useState<string | null>(null);
+  // Posición del toolbox flotante (relativa a la sección del enunciado).
+  const [floatPos, setFloatPos] = useState<{
+    left: number;
+    top: number;
+    below: boolean;
+  } | null>(null);
   const paragraphs = ENUNCIADOS[exercise.id] ?? null;
   const collapsed = state.enunciadoCollapsed;
+
+  // Atributos ya seleccionados (para marcar el menú de citas) + nombre de
+  // cualquier QA (del catálogo o de los custom ya elegidos).
+  const selectedIds = new Set(state.attrs.map((a) => a.id));
+  const customSelectedAttrs = state.attrs.filter((a) => a.custom);
+  const attrNameFor = (id: string): string => {
+    const inState = state.attrs.find((a) => a.id === id);
+    if (inState) return inState.name;
+    for (const g of QA_CATALOG.groups) {
+      const f = g.attrs.find((a) => a.id === id);
+      if (f) return f.name;
+    }
+    return id;
+  };
 
   // Atributos elegidos, en el orden de priorización: targets posibles de cita.
   const orderedAttrs = state.attrOrder
@@ -828,16 +849,32 @@ function EnunciadoDock({
       if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
         savedRangeRef.current = null;
         setAnnoEnabled(false);
+        setFloatPos(null);
         return;
       }
       const range = sel.getRangeAt(0);
       if (!root.contains(range.commonAncestorContainer)) {
         savedRangeRef.current = null;
         setAnnoEnabled(false);
+        setFloatPos(null);
         return;
       }
       savedRangeRef.current = range.cloneRange();
       setAnnoEnabled(true);
+      // Posicionar el toolbox flotante sobre la selección, relativo a la sección
+      // (que es position:relative). Como es absolute dentro de la sección,
+      // acompaña el scroll del contenido sin listeners extra.
+      const sec = containerRef.current;
+      const r = range.getBoundingClientRect();
+      if (sec && (r.width || r.height)) {
+        const secRect = sec.getBoundingClientRect();
+        const above = r.top - secRect.top;
+        const below = r.bottom - secRect.top;
+        const centerX = r.left - secRect.left + r.width / 2;
+        const placeBelow = above < 54;
+        const left = Math.max(72, Math.min(secRect.width - 72, centerX));
+        setFloatPos({ left, top: placeBelow ? below : above, below: placeBelow });
+      }
     };
     document.addEventListener("selectionchange", onSelectionChange);
     return () =>
@@ -882,9 +919,12 @@ function EnunciadoDock({
     window.getSelection()?.removeAllRanges();
     savedRangeRef.current = null;
     setAnnoEnabled(false);
+    setFloatPos(null);
   };
 
-  // Marca la selección actual como cita (evidencia) de un atributo de calidad.
+  // Marca la selección como cita de un atributo de calidad. Se puede citar a
+  // CUALQUIER QA (esté o no elegida): si no está, la agrega (la selecciona) en
+  // el punto b, y además usa la cita como justificación de esa QA.
   const createCitation = (attrId: string) => {
     const root = bodyRef.current;
     const range = savedRangeRef.current;
@@ -898,6 +938,19 @@ function EnunciadoDock({
       .replace(/\s+/g, " ")
       .trim();
     if (!text) return;
+    // 1) Asegurar que la QA esté seleccionada (si no, agregarla al punto b).
+    let attr = state.attrs.find((a) => a.id === attrId);
+    if (!attr) {
+      attr = {
+        id: attrId,
+        name: attrNameFor(attrId),
+        justification: "",
+        custom: attrId.startsWith("custom-"),
+      };
+      state.attrs.push(attr);
+      if (!state.attrOrder.includes(attrId)) state.attrOrder.push(attrId);
+    }
+    // 2) Crear la cita.
     const cite: Citation = {
       id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       attrId,
@@ -906,13 +959,19 @@ function EnunciadoDock({
     };
     if (!Array.isArray(state.citations)) state.citations = [];
     state.citations.push(cite);
+    // 3) La cita también es justificación de la QA (se acumula si ya había).
+    const quoted = `“${text}”`;
+    attr.justification = attr.justification?.trim()
+      ? `${attr.justification.trim()} · ${quoted}`
+      : quoted;
     save();
     repaint();
     window.getSelection()?.removeAllRanges();
     savedRangeRef.current = null;
     setAnnoEnabled(false);
+    setFloatPos(null);
     setCiteMenuOpen(false);
-    rerender(); // refresca la lista de citas (citeGroups se recalcula al render)
+    rerender(); // refresca atributos elegidos + lista de citas
   };
 
   const removeCitation = (cid: string) => {
@@ -1007,7 +1066,11 @@ function EnunciadoDock({
   };
 
   return (
-    <section className="parcial-enunciado" data-collapsed={collapsed}>
+    <section
+      className="parcial-enunciado"
+      data-collapsed={collapsed}
+      ref={containerRef}
+    >
       <header className="parcial-enunciado-head">
         <div className="parcial-enunciado-head-left">
           <span className="parcial-enunciado-eyebrow">Enunciado</span>
@@ -1045,83 +1108,6 @@ function EnunciadoDock({
                 <button
                   type="button"
                   className="parcial-anno"
-                  disabled={!annoEnabled}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => applyToSelection("highlight")}
-                  title="Resaltar selección"
-                >
-                  <span className="parcial-anno-swatch is-highlight" />
-                  Resaltar
-                </button>
-                <button
-                  type="button"
-                  className="parcial-anno"
-                  disabled={!annoEnabled}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => applyToSelection("underline")}
-                  title="Subrayar selección"
-                >
-                  <span className="parcial-anno-swatch is-underline" />
-                  Subrayar
-                </button>
-                <button
-                  type="button"
-                  className="parcial-anno"
-                  disabled={!annoEnabled}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => applyToSelection("erase")}
-                  title="Quitar marcas de la selección"
-                >
-                  ✕ Borrar marcas
-                </button>
-                <div className="parcial-cite-control" ref={citeControlRef}>
-                  <button
-                    type="button"
-                    className={
-                      "parcial-anno parcial-anno--cite" +
-                      (citeMenuOpen ? " is-open" : "")
-                    }
-                    disabled={!annoEnabled || orderedAttrs.length === 0}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => setCiteMenuOpen((o) => !o)}
-                    aria-haspopup="menu"
-                    aria-expanded={citeMenuOpen}
-                    title={
-                      orderedAttrs.length === 0
-                        ? "Elegí atributos de calidad en el paso 1 para poder citar"
-                        : "Marcar la selección como cita de un atributo de calidad"
-                    }
-                  >
-                    <span className="parcial-anno-swatch is-cite" />
-                    Citar para QA
-                  </button>
-                  {citeMenuOpen && orderedAttrs.length > 0 && (
-                    <div className="parcial-cite-menu" role="menu">
-                      <div className="parcial-cite-menu-head">
-                        ¿Evidencia de qué atributo?
-                      </div>
-                      {orderedAttrs.map((a, i) => (
-                        <button
-                          key={a.id}
-                          type="button"
-                          role="menuitem"
-                          className="parcial-cite-menu-item"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => createCitation(a.id)}
-                        >
-                          <span className="parcial-cite-menu-rank">{i + 1}</span>
-                          <span className="parcial-cite-menu-name">{a.name}</span>
-                          {a.custom && (
-                            <span className="parcial-pill-tag">custom</span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  className="parcial-anno"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={clearAll}
                   title="Quitar todas las marcas"
@@ -1129,7 +1115,8 @@ function EnunciadoDock({
                   Limpiar todo
                 </button>
                 <span className="parcial-enunciado-toolbar-hint">
-                  Resaltá o subrayá; o citá la selección como evidencia de un QA.
+                  Seleccioná texto y usá el <strong>toolbox flotante</strong>:
+                  resaltar, subrayar o citarlo a un atributo de calidad.
                 </span>
               </div>
               <div
@@ -1142,6 +1129,129 @@ function EnunciadoDock({
                   <p key={i} data-p-idx={i} />
                 ))}
               </div>
+
+              {/* Toolbox flotante: aparece sobre la selección de texto. */}
+              {floatPos && annoEnabled && (
+                <div
+                  className={
+                    "parcial-anno-float" + (floatPos.below ? " is-below" : "")
+                  }
+                  style={{ left: floatPos.left, top: floatPos.top }}
+                  role="toolbar"
+                  aria-label="Acciones sobre la selección"
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  <button
+                    type="button"
+                    className="parcial-anno"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyToSelection("highlight")}
+                    title="Resaltar selección"
+                  >
+                    <span className="parcial-anno-swatch is-highlight" />
+                    Resaltar
+                  </button>
+                  <button
+                    type="button"
+                    className="parcial-anno"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyToSelection("underline")}
+                    title="Subrayar selección"
+                  >
+                    <span className="parcial-anno-swatch is-underline" />
+                    Subrayar
+                  </button>
+                  <button
+                    type="button"
+                    className="parcial-anno"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyToSelection("erase")}
+                    title="Quitar marcas de la selección"
+                  >
+                    ✕ Borrar
+                  </button>
+                  <div className="parcial-cite-control" ref={citeControlRef}>
+                    <button
+                      type="button"
+                      className={
+                        "parcial-anno parcial-anno--cite" +
+                        (citeMenuOpen ? " is-open" : "")
+                      }
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => setCiteMenuOpen((o) => !o)}
+                      aria-haspopup="menu"
+                      aria-expanded={citeMenuOpen}
+                      title="Citar la selección a un atributo de calidad (lo selecciona y queda como justificación)"
+                    >
+                      <span className="parcial-anno-swatch is-cite" />
+                      Citar QA
+                    </button>
+                    {citeMenuOpen && (
+                      <div
+                        className="parcial-cite-menu parcial-cite-menu--all"
+                        role="menu"
+                      >
+                        <div className="parcial-cite-menu-head">
+                          ¿Evidencia / justificación de qué atributo?
+                        </div>
+                        {QA_CATALOG.groups.map((g) => (
+                          <div className="parcial-cite-menu-group" key={g.id}>
+                            <div className="parcial-cite-menu-grouplabel">
+                              {g.name}
+                            </div>
+                            {g.attrs.map((a) => {
+                              const sel = selectedIds.has(a.id);
+                              return (
+                                <button
+                                  key={a.id}
+                                  type="button"
+                                  role="menuitem"
+                                  className={
+                                    "parcial-cite-menu-item" +
+                                    (sel ? " is-selected" : "")
+                                  }
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() => createCitation(a.id)}
+                                >
+                                  <span className="parcial-cite-menu-check">
+                                    {sel ? "✓" : "+"}
+                                  </span>
+                                  <span className="parcial-cite-menu-name">
+                                    {a.name}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ))}
+                        {customSelectedAttrs.length > 0 && (
+                          <div className="parcial-cite-menu-group">
+                            <div className="parcial-cite-menu-grouplabel">
+                              Propios
+                            </div>
+                            {customSelectedAttrs.map((a) => (
+                              <button
+                                key={a.id}
+                                type="button"
+                                role="menuitem"
+                                className="parcial-cite-menu-item is-selected"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => createCitation(a.id)}
+                              >
+                                <span className="parcial-cite-menu-check">✓</span>
+                                <span className="parcial-cite-menu-name">
+                                  {a.name}
+                                </span>
+                                <span className="parcial-pill-tag">custom</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {citeGroups.length > 0 && (
                 <div className="parcial-cites">
@@ -1517,6 +1627,10 @@ function AttrPicker({
                           Justificación
                         </span>
                         <textarea
+                          // Remonta cuando la justificación cambia desde afuera
+                          // (p. ej. al citar una QA desde el enunciado); al tipear
+                          // no hay re-render, así que no salta el cursor.
+                          key={`j:${a.id}:${(selectedMap[a.id].justification || "").length}`}
                           className="vtool-textarea"
                           rows={2}
                           placeholder="¿Por qué este atributo aplica acá? Una oración alcanza."
@@ -1581,6 +1695,7 @@ function AttrPicker({
                 <div className="parcial-pill-just">
                   <span className="parcial-pill-just-label">Justificación</span>
                   <textarea
+                    key={`jc:${a.id}:${(a.justification || "").length}`}
                     className="vtool-textarea"
                     rows={2}
                     placeholder="¿Por qué este atributo aplica acá?"

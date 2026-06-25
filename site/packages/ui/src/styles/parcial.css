@@ -640,6 +640,80 @@ html.parcial-focus .parcial-toolbar {
 }
 .parcial-cite-menu-name { flex: 1; }
 
+/* toolbox flotante sobre la selección del enunciado */
+.parcial-anno-float {
+  position: absolute;
+  z-index: 40;
+  transform: translate(-50%, calc(-100% - 10px));
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-lg);
+  white-space: nowrap;
+  animation: parcialFloatIn 120ms var(--ease);
+}
+.parcial-anno-float.is-below { transform: translate(-50%, 10px); }
+.parcial-anno-float .parcial-anno { padding: 6px 10px; }
+.parcial-anno-float::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%) rotate(45deg);
+  background: var(--surface);
+  border-right: 1px solid var(--hairline-strong);
+  border-bottom: 1px solid var(--hairline-strong);
+}
+.parcial-anno-float.is-below::after {
+  bottom: auto;
+  top: -5px;
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 1px solid var(--hairline-strong);
+  border-top: 1px solid var(--hairline-strong);
+}
+@keyframes parcialFloatIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* menú de citas con TODAS las QA (agrupadas, marca las ya elegidas) */
+.parcial-cite-menu--all { max-height: 300px; overflow-y: auto; min-width: 248px; }
+.parcial-cite-menu-group { display: flex; flex-direction: column; }
+.parcial-cite-menu-group + .parcial-cite-menu-group {
+  margin-top: 2px;
+  padding-top: 2px;
+  border-top: 1px dashed var(--hairline);
+}
+.parcial-cite-menu-grouplabel {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  padding: 6px 8px 3px;
+}
+.parcial-cite-menu-item.is-selected {
+  background: color-mix(in srgb, var(--vault-tint, var(--accent)) 8%, transparent);
+}
+.parcial-cite-menu-check {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.parcial-cite-menu-item.is-selected .parcial-cite-menu-check { color: var(--accent-text); }
+
 /* lista de citas debajo del enunciado */
 .parcial-cites {
   margin-top: 18px;
