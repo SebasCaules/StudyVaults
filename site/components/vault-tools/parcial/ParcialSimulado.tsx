@@ -11,23 +11,30 @@ import {
 } from "./data";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Parcial simulado — práctica fiel al enunciado, portada del wizard vanilla de
-   la app de estudio de Inge2 (js/tools/exam.js). Componente client-only:
+   Parcial simulado — práctica fiel al enunciado, con el esquema de puntaje real
+   del parcial de Inge de Software (a/b/c/d, 10 pts). Componente client-only:
    todo acceso a window/document/localStorage va dentro de useEffect o de
    handlers de evento (static-export safe).
 
-   Wizard de 5 pasos:
-     1. Enunciado (texto plano + anotaciones) + picker de atributos de calidad
-     2. Priorizar — sólo los primeros 4 (TOP_N) operan en los pasos siguientes
-     3. Arquitectura base — diagrama editable
-     4. Escenarios y refinamiento — por cada uno de los top-4
-     5. Trade-offs y riesgos + export .md
+   Wizard de 4 puntos (refleja la grilla del parcial):
+     a [1p] · Punteo de funcionalidades de alto nivel ordenadas por importancia
+              (al menos 5 ítems).
+     b [2p] · Atributos de calidad principales (elegir 4) con justificación,
+              ordenados por importancia — los 4 primeros son los drivers de
+              arquitectura del punto c.
+     c [5p] · Arquitectura candidata y justificación (texto + gráficos): diagrama
+              base, justificación que la relaciona con los atributos del punto b,
+              y escenarios que rompen + refinamiento por cada uno de los top-4.
+     d [2p] · Riesgos / no-riesgos / supuestos / trade-offs (2 de cada uno) +
+              export .md.
 
-   Storage key: 'exam-practice-v2-<exerciseId>'
+   Storage key: 'exam-practice-v2-<exerciseId>' (forward-compatible: el modelo
+   nuevo agrega campos; los estados viejos se backfillean en loadState).
    ────────────────────────────────────────────────────────────────────────── */
 
 const STORE_PREFIX = "exam-practice-v2-";
 const TOP_N = 4;
+const NUM_STEPS = 4;
 
 /* ── Tipos del estado ───────────────────────────────────────────────────── */
 
@@ -42,6 +49,12 @@ interface DiagramInstance {
   destroy: () => void;
 }
 
+// Una funcionalidad de alto nivel del punto (a). El orden en el array ES la
+// prioridad: el primero es el más importante.
+interface FuncItem {
+  id: string;
+  text: string;
+}
 interface AttrItem {
   id: string;
   name: string;
@@ -76,15 +89,19 @@ interface Citation {
 }
 interface ExamState {
   step: number;
-  attrs: AttrItem[];
-  attrOrder: string[];
-  baseDiagram: DiagramState;
-  perAttr: Record<string, PerAttr>;
+  functionalities: FuncItem[]; // punto (a)
+  attrs: AttrItem[]; // punto (b)
+  attrOrder: string[]; // punto (b) — orden de importancia
+  baseDiagram: DiagramState; // punto (c)
+  archJustification: string; // punto (c) — justificación que relaciona arq ↔ QA
+  perAttr: Record<string, PerAttr>; // punto (c) — escenarios + refinamiento top-4
   annotations: Record<number, Annotation>;
   citations: Citation[];
   enunciadoCollapsed: boolean;
-  tradeoffs: string;
-  risks: string;
+  risks: string; // punto (d) — riesgos
+  nonRisks: string; // punto (d) — no-riesgos
+  assumptions: string; // punto (d) — supuestos
+  tradeoffs: string; // punto (d) — trade-offs
   notes: string;
   updatedAt: string;
 }
@@ -94,15 +111,19 @@ const EMPTY_DIAGRAM: DiagramState = { nodes: [], edges: [] };
 function defaultState(): ExamState {
   return {
     step: 1,
+    functionalities: [],
     attrs: [],
     attrOrder: [],
     baseDiagram: { nodes: [], edges: [] },
+    archJustification: "",
     perAttr: {},
     annotations: {},
     citations: [],
     enunciadoCollapsed: false,
-    tradeoffs: "",
     risks: "",
+    nonRisks: "",
+    assumptions: "",
+    tradeoffs: "",
     notes: "",
     updatedAt: new Date().toISOString(),
   };
@@ -115,11 +136,10 @@ function loadState(id: string): ExamState {
     const raw = window.localStorage.getItem(STORE_PREFIX + id);
     if (!raw) return defaultState();
     const obj = { ...defaultState(), ...JSON.parse(raw) } as ExamState;
-    // Migrar el modelo viejo de 6 pasos (PDF + Atributos eran 1 y 2) al nuevo
-    // de 5: old ≤2 → 1; old N≥3 → N-1.
+    // El modelo nuevo tiene 4 puntos (a/b/c/d). Estados viejos (5–6 pasos)
+    // conservan todos sus datos; sólo se reencuadra el paso al rango [1, 4].
     if (typeof obj.step === "number") {
-      if (obj.step <= 2) obj.step = 1;
-      else obj.step = Math.max(1, Math.min(5, obj.step - 1));
+      obj.step = Math.max(1, Math.min(NUM_STEPS, obj.step));
     } else {
       obj.step = 1;
     }
@@ -174,6 +194,22 @@ function loadState(id: string): ExamState {
     if (typeof obj.enunciadoCollapsed !== "boolean")
       obj.enunciadoCollapsed = false;
     if (!obj.perAttr || typeof obj.perAttr !== "object") obj.perAttr = {};
+    // Backfill de campos del modelo nuevo (punto a y punto d/c).
+    obj.functionalities = (Array.isArray(obj.functionalities)
+      ? obj.functionalities
+      : []
+    )
+      .filter((f) => f && typeof f === "object")
+      .map((f) => {
+        const raw = f as Partial<FuncItem>;
+        return {
+          id: raw.id ?? "f" + Math.random().toString(36).slice(2, 9),
+          text: typeof raw.text === "string" ? raw.text : "",
+        };
+      });
+    if (typeof obj.archJustification !== "string") obj.archJustification = "";
+    if (typeof obj.nonRisks !== "string") obj.nonRisks = "";
+    if (typeof obj.assumptions !== "string") obj.assumptions = "";
     return obj;
   } catch {
     return defaultState();
@@ -207,12 +243,11 @@ function relTime(iso: string): string {
   return d.toLocaleDateString("es-AR");
 }
 
-const STEP_DEFS = [
-  "Enunciado + atributos",
-  "Priorizar",
-  "Arquitectura base",
-  "Escenarios + refinamiento",
-  "Trade-offs y export",
+const STEP_DEFS: { key: string; label: string; pts: number }[] = [
+  { key: "a", label: "Funcionalidades", pts: 1 },
+  { key: "b", label: "Atributos de calidad", pts: 2 },
+  { key: "c", label: "Arquitectura candidata", pts: 5 },
+  { key: "d", label: "Riesgos y trade-offs", pts: 2 },
 ];
 
 /* ── Utilidades de rangos para las anotaciones ──────────────────────────── */
@@ -392,8 +427,7 @@ function CaseList({ onOpen }: { onOpen: (id: string) => void }) {
         }
         const parsed = JSON.parse(raw);
         let step = typeof parsed.step === "number" ? parsed.step : 1;
-        if (step <= 2) step = 1;
-        else step = Math.max(1, Math.min(5, step));
+        step = Math.max(1, Math.min(NUM_STEPS, step));
         next[e.id] = step;
       } catch {
         next[e.id] = 1;
@@ -414,27 +448,30 @@ function CaseList({ onOpen }: { onOpen: (id: string) => void }) {
         <h3>Práctica fiel al enunciado</h3>
         <p>
           {Object.keys(EXERCISES).length} casos. Enunciado en texto plano — sin
-          pistas durante la práctica. Cinco pasos guiados: atributos,
-          priorización, arquitectura base, escenarios que rompen y refinamiento
-          por atributo, y export a .md.
+          pistas durante la práctica. Cuatro puntos con el puntaje real del
+          parcial (a/b/c/d, 10 pts): funcionalidades, atributos de calidad,
+          arquitectura candidata, y riesgos/trade-offs, con export a .md.
         </p>
       </div>
 
       <ol className="parcial-howto">
         <li>
-          Paso 1: leés el enunciado y elegís los atributos relevantes, con una
-          breve justificación por atributo.
+          <strong>a [1p].</strong> Punteo de funcionalidades de alto nivel
+          ordenadas por importancia (al menos 5 ítems).
         </li>
         <li>
-          Paso 2: priorizás. Sólo los primeros 4 entran a los pasos de
-          refinamiento.
+          <strong>b [2p].</strong> Atributos de calidad principales (elegí 4) con
+          justificación, ordenados por importancia.
         </li>
-        <li>Paso 3: arquitectura base con shapes y flechas.</li>
         <li>
-          Paso 4: por cada uno de los top-4, escenarios que rompen la base +
-          diagrama refinado.
+          <strong>c [5p].</strong> Arquitectura candidata y justificación (texto
+          + gráficos), relacionándola con los atributos del punto b; escenarios y
+          refinamiento por cada uno de los 4 drivers.
         </li>
-        <li>Paso 5: trade-offs y riesgos, después Exportar y guardar.</li>
+        <li>
+          <strong>d [2p].</strong> Riesgos / no-riesgos, supuestos y trade-offs (2
+          de cada uno). Después Exportar y guardar.
+        </li>
       </ol>
 
       {Object.entries(grouped).map(([key, list]) => {
@@ -464,7 +501,7 @@ function CaseList({ onOpen }: { onOpen: (id: string) => void }) {
                       <span className="parcial-entry-desc">{e.domain}</span>
                     </span>
                     <span className="parcial-entry-meta">
-                      {p ? `paso ${p}/5` : "sin empezar"}
+                      {p ? `punto ${p}/${NUM_STEPS}` : "sin empezar"}
                     </span>
                   </button>
                 );
@@ -551,7 +588,7 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
   const goStep = useCallback(
     (n: number) => {
       flushEditors();
-      stateRef.current.step = Math.max(1, Math.min(5, n));
+      stateRef.current.step = Math.max(1, Math.min(NUM_STEPS, n));
       save();
       rerender();
     },
@@ -644,13 +681,14 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
         rerender={rerender}
       />
 
-      {/* Stepper */}
-      <nav className="parcial-stepper" aria-label="Pasos">
-        {STEP_DEFS.map((label, i) => {
+      {/* Stepper — refleja la grilla del parcial (a/b/c/d con sus puntos) */}
+      <nav className="parcial-stepper" aria-label="Puntos del parcial">
+        {STEP_DEFS.map((def, i) => {
           const n = i + 1;
+          const ptsLabel = `${def.pts} pt${def.pts === 1 ? "" : "s"}`;
           return (
             <button
-              key={label}
+              key={def.key}
               type="button"
               className={
                 "parcial-step" +
@@ -658,40 +696,30 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
                 (n < step ? " is-done" : "")
               }
               onClick={() => goStep(n)}
-              title={label}
+              title={`${def.key}) ${def.label} · ${ptsLabel}`}
             >
-              <span className="parcial-step-num">{n}</span>
-              <span className="parcial-step-label">{label}</span>
+              <span className="parcial-step-num">{def.key}</span>
+              <span className="parcial-step-label">{def.label}</span>
+              <span className="parcial-step-pts">{ptsLabel}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* Cuerpo del paso */}
+      {/* Cuerpo del punto (a/b/c/d) */}
       <div className="parcial-step-body">
-        {step === 1 && (
-          <Step1
-            state={state}
-            save={save}
-            rerender={rerender}
-          />
-        )}
-        {step === 2 && (
-          <Step2 state={state} save={save} rerender={rerender} />
-        )}
+        {step === 1 && <StepA state={state} save={save} rerender={rerender} />}
+        {step === 2 && <StepB state={state} save={save} rerender={rerender} />}
         {step === 3 && (
-          <Step3 state={state} save={save} editorsRef={editorsRef} />
-        )}
-        {step === 4 && (
-          <Step4
+          <StepC
             state={state}
             save={save}
             flushEditors={flushEditors}
             editorsRef={editorsRef}
           />
         )}
-        {step === 5 && (
-          <Step5
+        {step === 4 && (
+          <StepD
             state={state}
             save={save}
             onExport={() => exportAndSave(exercise, state, flushEditors)}
@@ -709,16 +737,18 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
         >
           ← Volver
         </button>
-        <div className="parcial-nav-progress">Paso {step} de 5</div>
+        <div className="parcial-nav-progress">
+          Punto {STEP_DEFS[step - 1]?.key ?? ""} · {step} de {NUM_STEPS}
+        </div>
         <button
           type="button"
           className="btn btn--sm parcial-btn-primary"
           onClick={() => {
-            if (step < 5) goStep(step + 1);
+            if (step < NUM_STEPS) goStep(step + 1);
             else exportAndSave(exercise, state, flushEditors);
           }}
         >
-          {step < 5 ? "Continuar →" : "Finalizar ✓"}
+          {step < NUM_STEPS ? "Continuar →" : "Finalizar ✓"}
         </button>
       </nav>
     </div>
@@ -1184,9 +1214,229 @@ function EnunciadoDock({
   );
 }
 
-/* ── Paso 1 — Atributos de calidad ──────────────────────────────────────── */
+/* ── Punto (a) — Funcionalidades de alto nivel ──────────────────────────── */
 
-function Step1({
+function StepA({
+  state,
+  save,
+  rerender,
+}: {
+  state: ExamState;
+  save: () => void;
+  rerender: () => void;
+}) {
+  const dragId = useRef<string | null>(null);
+  const [draft, setDraft] = useState("");
+
+  const add = () => {
+    const v = draft.trim();
+    if (!v) return;
+    state.functionalities.push({
+      id: "f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      text: v,
+    });
+    setDraft("");
+    save();
+    rerender();
+  };
+
+  const update = (fid: string, value: string) => {
+    const f = state.functionalities.find((x) => x.id === fid);
+    if (f) {
+      f.text = value;
+      save();
+    }
+  };
+
+  const remove = (fid: string) => {
+    state.functionalities = state.functionalities.filter((f) => f.id !== fid);
+    save();
+    rerender();
+  };
+
+  const move = (fid: string, dir: "up" | "down") => {
+    const arr = state.functionalities;
+    const idx = arr.findIndex((f) => f.id === fid);
+    if (idx < 0) return;
+    const swap = dir === "up" ? idx - 1 : idx + 1;
+    if (swap < 0 || swap >= arr.length) return;
+    const tmp = arr[idx];
+    arr[idx] = arr[swap];
+    arr[swap] = tmp;
+    save();
+    rerender();
+  };
+
+  const onDrop = (targetId: string) => {
+    const from = dragId.current;
+    if (!from || from === targetId) return;
+    const arr = state.functionalities;
+    const fromIdx = arr.findIndex((f) => f.id === from);
+    const toIdx = arr.findIndex((f) => f.id === targetId);
+    if (fromIdx < 0 || toIdx < 0) return;
+    const moved = arr.splice(fromIdx, 1)[0];
+    arr.splice(toIdx, 0, moved);
+    dragId.current = null;
+    save();
+    rerender();
+  };
+
+  const items = state.functionalities;
+  const filled = items.filter((f) => f.text.trim()).length;
+  const enough = filled >= 5;
+
+  return (
+    <div className="parcial-step-card">
+      <div className="parcial-step-intro">
+        <h4>a · Funcionalidades de alto nivel</h4>
+        <p>
+          Puntealas <strong>en orden de importancia</strong> (la primera, la más
+          importante). El parcial pide <strong>al menos 5 ítems</strong>.
+          Arrastrá o usá las flechas para reordenar.
+        </p>
+      </div>
+
+      {items.length > 0 && (
+        <ol className="parcial-func-list">
+          {items.map((f, i) => (
+            <li
+              key={f.id}
+              className="parcial-func-item"
+              draggable
+              onDragStart={(e) => {
+                dragId.current = f.id;
+                e.dataTransfer.effectAllowed = "move";
+                e.currentTarget.classList.add("is-dragging");
+              }}
+              onDragEnd={(e) => e.currentTarget.classList.remove("is-dragging")}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                onDrop(f.id);
+              }}
+            >
+              <span className="parcial-func-handle" aria-hidden="true">
+                ⋮⋮
+              </span>
+              <span className="parcial-func-num">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <input
+                type="text"
+                className="vtool-input parcial-func-input"
+                defaultValue={f.text}
+                placeholder="Funcionalidad de alto nivel…"
+                onChange={(e) => update(f.id, e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.currentTarget.blur();
+                }}
+              />
+              <div className="parcial-func-actions">
+                <button
+                  type="button"
+                  className="parcial-rank-btn"
+                  disabled={i === 0}
+                  onClick={() => move(f.id, "up")}
+                  title="Subir"
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  className="parcial-rank-btn"
+                  disabled={i === items.length - 1}
+                  onClick={() => move(f.id, "down")}
+                  title="Bajar"
+                >
+                  ▼
+                </button>
+              </div>
+              <button
+                type="button"
+                className="parcial-func-remove"
+                onClick={() => remove(f.id)}
+                title="Quitar"
+                aria-label="Quitar funcionalidad"
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      <div className="parcial-func-add">
+        <input
+          type="text"
+          className="vtool-input"
+          placeholder="Nueva funcionalidad de alto nivel…"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              add();
+            }
+          }}
+        />
+        <button type="button" className="btn btn--sm btn--ghost" onClick={add}>
+          + Agregar
+        </button>
+      </div>
+
+      <div className={"parcial-rank-footnote" + (enough ? " is-ok" : "")}>
+        {items.length === 0 ? (
+          <>Todavía no cargaste funcionalidades. El parcial pide al menos 5.</>
+        ) : enough ? (
+          <>
+            {filled} funcionalidades — suficiente. Revisá el orden de
+            importancia.
+          </>
+        ) : (
+          <>
+            {filled} de 5 mínimas. Agregá {Math.max(0, 5 - filled)} más.
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Punto (b) — Atributos de calidad principales (elegir 4) ─────────────── */
+
+function StepB({
+  state,
+  save,
+  rerender,
+}: {
+  state: ExamState;
+  save: () => void;
+  rerender: () => void;
+}) {
+  return (
+    <div className="parcial-step-card">
+      <div className="parcial-step-intro">
+        <h4>b · Atributos de calidad principales</h4>
+        <p>
+          Elegí los atributos relevantes con una justificación breve y{" "}
+          <strong>ordenalos por importancia</strong>. Los{" "}
+          <strong>4 primeros</strong> son los drivers de arquitectura del punto
+          c.
+        </p>
+      </div>
+
+      <AttrPicker state={state} save={save} rerender={rerender} />
+      <AttrRank state={state} save={save} rerender={rerender} />
+    </div>
+  );
+}
+
+/* ── Punto (b) · sección de selección + justificación ───────────────────── */
+
+function AttrPicker({
   state,
   save,
   rerender,
@@ -1245,16 +1495,7 @@ function Step1({
   const customAttrs = state.attrs.filter((a) => a.custom);
 
   return (
-    <div className="parcial-step-card">
-      <div className="parcial-step-intro">
-        <h4>Atributos de calidad</h4>
-        <p>
-          Tocá los nombres que correspondan a este caso. Al seleccionar uno, se
-          despliega un campo de justificación breve. Sin descripciones —
-          recordás lo que ya estudiaste.
-        </p>
-      </div>
-
+    <div className="parcial-attr-pick">
       <div className="parcial-qa-pills">
         {QA_CATALOG.groups.map((g) => (
           <div className="parcial-qa-group" key={g.id}>
@@ -1373,9 +1614,9 @@ function Step1({
   );
 }
 
-/* ── Paso 2 — Priorizar ─────────────────────────────────────────────────── */
+/* ── Punto (b) · sección de orden de importancia ────────────────────────── */
 
-function Step2({
+function AttrRank({
   state,
   save,
   rerender,
@@ -1388,10 +1629,9 @@ function Step2({
 
   if (state.attrs.length === 0) {
     return (
-      <div className="parcial-step-card">
-        <h4>Paso 2 · Priorizar</h4>
-        <p className="vtool-note">No elegiste atributos. Volvé al paso 1.</p>
-      </div>
+      <p className="vtool-note parcial-attr-rank-empty">
+        Elegí atributos arriba para ordenarlos por importancia.
+      </p>
     );
   }
 
@@ -1432,14 +1672,13 @@ function Step2({
   };
 
   return (
-    <div className="parcial-step-card">
-      <div className="parcial-step-intro">
-        <h4>Paso 2 · Priorizar</h4>
-        <p>
-          Ordená por importancia para este caso. <strong>Sólo los primeros{" "}
-          {TOP_N}</strong> entran a los pasos de arquitectura y refinamiento. El
-          resto queda como nota.
-        </p>
+    <div className="parcial-attr-rank">
+      <div className="parcial-attr-rank-head">
+        <span className="parcial-field-label">Orden de importancia</span>
+        <span className="parcial-muted-small">
+          Arrastrá o usá las flechas. Los <strong>primeros {TOP_N}</strong> son
+          los drivers de arquitectura del punto c.
+        </span>
       </div>
 
       <ol className="parcial-rank">
@@ -1521,9 +1760,9 @@ function Step2({
           </>
         ) : (
           <>
-            Los <strong>primeros {TOP_N}</strong> de tu ranking pasan a los pasos
-            3–5. Los {ordered.length - TOP_N} restantes quedan registrados en el
-            export como atributos secundarios.
+            Los <strong>primeros {TOP_N}</strong> de tu ranking son los drivers
+            del punto c (arquitectura). Los {ordered.length - TOP_N} restantes
+            quedan registrados en el export como atributos secundarios.
           </>
         )}
       </div>
@@ -1531,7 +1770,7 @@ function Step2({
   );
 }
 
-/* ── Paso 3 — Arquitectura base ─────────────────────────────────────────── */
+/* ── Punto (c) — Arquitectura candidata ─────────────────────────────────── */
 
 function topAttrs(state: ExamState): AttrItem[] {
   return state.attrOrder
@@ -1540,7 +1779,74 @@ function topAttrs(state: ExamState): AttrItem[] {
     .filter((a): a is AttrItem => !!a);
 }
 
-function Step3({
+function StepC({
+  state,
+  save,
+  flushEditors,
+  editorsRef,
+}: {
+  state: ExamState;
+  save: () => void;
+  flushEditors: () => void;
+  editorsRef: React.MutableRefObject<Record<string, DiagramInstance>>;
+}) {
+  const top = topAttrs(state);
+
+  return (
+    <div className="parcial-step-card">
+      <div className="parcial-step-intro">
+        <h4>c · Arquitectura candidata y justificación</h4>
+        <p>
+          Diagramá tu arquitectura candidata y justificala (texto + gráficos),{" "}
+          <strong>relacionándola con los atributos del punto b</strong>. Después
+          generá escenarios que la rompan y refinala por cada uno de los {TOP_N}{" "}
+          drivers.
+        </p>
+      </div>
+
+      <BaseDiagramSection state={state} save={save} editorsRef={editorsRef} />
+
+      <div className="parcial-field">
+        <span className="parcial-field-label">
+          Justificación — por qué esta arquitectura y cómo cubre cada atributo
+        </span>
+        <span className="parcial-muted-small parcial-field-hint">
+          Relacioná cada decisión con los atributos priorizados en el punto b.
+        </span>
+        <textarea
+          className="vtool-textarea"
+          rows={4}
+          placeholder="ej. Pipe-and-filter para el sensado → frecuencia y precisión; agregación horaria + cache de lecturas → performance de reportes; driver por sensor → portabilidad ante cambio de hardware…"
+          defaultValue={state.archJustification || ""}
+          onChange={(e) => {
+            state.archJustification = e.target.value;
+            save();
+          }}
+        />
+      </div>
+
+      {top.length ? (
+        <RefinementSection
+          state={state}
+          save={save}
+          flushEditors={flushEditors}
+          editorsRef={editorsRef}
+        />
+      ) : (
+        <div className="parcial-step-footnote">
+          <span className="parcial-muted-small">
+            ⚠ Sin atributos priorizados. Volvé al punto b para elegir tus {TOP_N}{" "}
+            drivers de arquitectura.
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Punto (c) · diagrama base ──────────────────────────────────────────── */
+
+function BaseDiagramSection({
   state,
   save,
   editorsRef,
@@ -1576,20 +1882,20 @@ function Step3({
   }, []);
 
   return (
-    <div className="parcial-step-card">
-      <div className="parcial-step-intro">
-        <h4>Paso 3 · Arquitectura inicial</h4>
-        <p>
-          Diagramá tu primera propuesta. Cuadrado, círculo, nube, BD, actor +
-          flechas. <strong>Doble-click</strong> para renombrar; al colocar una
-          forma nueva, el cursor se posa en el nombre automáticamente.
-        </p>
-      </div>
+    <div className="parcial-arch-base">
+      <span className="parcial-field-label">
+        Diagrama base · arquitectura candidata
+      </span>
+      <span className="parcial-muted-small parcial-field-hint">
+        Cuadrado, círculo, nube, BD, actor + flechas.{" "}
+        <strong>Doble-click</strong> para renombrar; al colocar una forma nueva,
+        el cursor se posa en el nombre automáticamente.
+      </span>
       <div className="parcial-diagram-wrap" ref={hostRef} />
-      {top.length ? (
+      {top.length > 0 && (
         <div className="parcial-step-footnote">
           <span className="parcial-muted-small">
-            Vas a estresar la base contra estos atributos (top {TOP_N}):
+            Vas a estresar la base contra estos {TOP_N} drivers:
           </span>
           <div className="parcial-step-chips">
             {top.map((a, i) => (
@@ -1600,20 +1906,14 @@ function Step3({
             ))}
           </div>
         </div>
-      ) : (
-        <div className="parcial-step-footnote">
-          <span className="parcial-muted-small">
-            ⚠ Sin atributos priorizados. Volvé al paso 1/2.
-          </span>
-        </div>
       )}
     </div>
   );
 }
 
-/* ── Paso 4 — Escenarios y refinamiento (solo top 4) ────────────────────── */
+/* ── Punto (c) · escenarios que rompen + refinamiento (solo top 4) ──────── */
 
-function Step4({
+function RefinementSection({
   state,
   save,
   flushEditors,
@@ -1627,26 +1927,18 @@ function Step4({
   const top = topAttrs(state);
   const [activeId, setActiveId] = useState<string | null>(top[0]?.id ?? null);
 
-  if (!top.length) {
-    return (
-      <div className="parcial-step-card">
-        <h4>Paso 4 · Escenarios y refinamiento</h4>
-        <p className="vtool-note">
-          No hay atributos priorizados. Volvé al paso 1/2.
-        </p>
-      </div>
-    );
-  }
+  if (!top.length) return null;
 
   return (
-    <div className="parcial-step-card">
-      <div className="parcial-step-intro">
-        <h4>Paso 4 · Escenarios que rompen y refinamiento</h4>
-        <p>
-          Para cada uno de los <strong>top {TOP_N}</strong>: identificá los
-          escenarios que rompen tu base y refiná el diagrama. Arranca clonado del
-          paso 3.
-        </p>
+    <div className="parcial-refine">
+      <div className="parcial-refine-head">
+        <span className="parcial-field-label">
+          Escenarios que rompen y refinamiento · {TOP_N} drivers
+        </span>
+        <span className="parcial-muted-small">
+          Por cada driver: escenarios que rompen tu base y diagrama refinado
+          (arranca como clon del base).
+        </span>
       </div>
 
       <div className="parcial-attr-tabs" role="tablist">
@@ -1736,7 +2028,11 @@ function Step4Panel({
   if (!attr || !pa) return null;
 
   const resetFromBase = () => {
-    if (!window.confirm("¿Restablecer este diagrama a una copia exacta del paso 3?"))
+    if (
+      !window.confirm(
+        "¿Restablecer este diagrama a una copia exacta del diagrama base?",
+      )
+    )
       return;
     pa.diagram = cloneDiagram(state.baseDiagram) as DiagramState;
     edRef.current?.setState(pa.diagram);
@@ -1770,7 +2066,7 @@ function Step4Panel({
           Diagrama refinado para {attr.name}
         </span>
         <span className="parcial-muted-small parcial-field-hint">
-          Arranca como clon del paso 3. Editá libremente.
+          Arranca como clon del diagrama base. Editá libremente.
         </span>
         <div className="parcial-diagram-wrap" ref={hostRef} />
         <div className="parcial-attr-panel-actions">
@@ -1787,9 +2083,9 @@ function Step4Panel({
   );
 }
 
-/* ── Paso 5 — Trade-offs y export ───────────────────────────────────────── */
+/* ── Punto (d) — Riesgos / no-riesgos / supuestos / trade-offs ──────────── */
 
-function Step5({
+function StepD({
   state,
   save,
   onExport,
@@ -1801,40 +2097,86 @@ function Step5({
   return (
     <div className="parcial-step-card">
       <div className="parcial-step-intro">
-        <h4>Paso 5 · Trade-offs, riesgos y exportar</h4>
+        <h4>d · Riesgos, supuestos y trade-offs</h4>
         <p>
-          Compromisos y riesgos al final. Después bajá el <strong>.md</strong> —
-          incluye todo (atributos con justificación, ranking, diagramas como SVG,
-          escenarios, etc.).
+          Indicá <strong>2 de cada uno</strong>: riesgos, no-riesgos, supuestos y
+          trade-offs tomados. Después bajá el <strong>.md</strong> con toda tu
+          resolución (a/b/c/d, diagramas incluidos).
         </p>
       </div>
 
-      <div className="parcial-field">
-        <span className="parcial-field-label">Trade-offs explícitos</span>
-        <textarea
-          className="vtool-textarea"
-          placeholder="ej. CP sobre AP en el matching: ganamos consistencia a costa de tolerancia a particiones. Mitigado con replicación sincrónica activa-pasiva."
-          defaultValue={state.tradeoffs || ""}
-          onChange={(e) => {
-            state.tradeoffs = e.target.value;
-            save();
-          }}
-        />
-      </div>
+      <div className="parcial-dgrid">
+        <div className="parcial-field">
+          <span className="parcial-field-label">Riesgos (2)</span>
+          <span className="parcial-muted-small parcial-field-hint">
+            Decisiones que podrían no cumplir un atributo — con su mitigación.
+          </span>
+          <textarea
+            className="vtool-textarea"
+            placeholder={
+              "ej. SPOF en el motor de matching → failover activo-pasivo < 5s.\nSaturación del bus de eventos en pico → backpressure + DLQ."
+            }
+            defaultValue={state.risks || ""}
+            onChange={(e) => {
+              state.risks = e.target.value;
+              save();
+            }}
+          />
+        </div>
 
-      <div className="parcial-field">
-        <span className="parcial-field-label">
-          Riesgos arquitectónicos + mitigaciones
-        </span>
-        <textarea
-          className="vtool-textarea"
-          placeholder="ej. SPOF en el motor → failover sincrónico < 5s. Saturación de bus → backpressure + DLQ."
-          defaultValue={state.risks || ""}
-          onChange={(e) => {
-            state.risks = e.target.value;
-            save();
-          }}
-        />
+        <div className="parcial-field">
+          <span className="parcial-field-label">No-riesgos (2)</span>
+          <span className="parcial-muted-small parcial-field-hint">
+            Decisiones que NO son riesgo y por qué (descartadas con fundamento).
+          </span>
+          <textarea
+            className="vtool-textarea"
+            placeholder={
+              "ej. Elegir SQL OLTP no es riesgo: el volumen y la consistencia encajan.\nConsistencia eventual en el catálogo no es riesgo: el dominio la tolera."
+            }
+            defaultValue={state.nonRisks || ""}
+            onChange={(e) => {
+              state.nonRisks = e.target.value;
+              save();
+            }}
+          />
+        </div>
+
+        <div className="parcial-field">
+          <span className="parcial-field-label">Supuestos (2)</span>
+          <span className="parcial-muted-small parcial-field-hint">
+            Lo que asumís del contexto y que, de cambiar, cambiaría el diseño.
+          </span>
+          <textarea
+            className="vtool-textarea"
+            placeholder={
+              "ej. El proveedor de GPS garantiza latencia < 2s.\nEl pico de tráfico no supera 10× la media sostenida."
+            }
+            defaultValue={state.assumptions || ""}
+            onChange={(e) => {
+              state.assumptions = e.target.value;
+              save();
+            }}
+          />
+        </div>
+
+        <div className="parcial-field">
+          <span className="parcial-field-label">Trade-offs (2)</span>
+          <span className="parcial-muted-small parcial-field-hint">
+            Qué ganás y qué resignás en cada compromiso explícito.
+          </span>
+          <textarea
+            className="vtool-textarea"
+            placeholder={
+              "ej. CP sobre AP en el matching: consistencia a costa de tolerancia a particiones.\nCache agresivo: performance a costa de frescura del dato."
+            }
+            defaultValue={state.tradeoffs || ""}
+            onChange={(e) => {
+              state.tradeoffs = e.target.value;
+              save();
+            }}
+          />
+        </div>
       </div>
 
       <div className="parcial-field">
@@ -1842,7 +2184,7 @@ function Step5({
         <textarea
           className="vtool-textarea"
           rows={3}
-          placeholder="Stakeholders, supuestos, decisiones pendientes…"
+          placeholder="Stakeholders, decisiones pendientes, alcance dejado afuera…"
           defaultValue={state.notes || ""}
           onChange={(e) => {
             state.notes = e.target.value;
@@ -1852,7 +2194,11 @@ function Step5({
       </div>
 
       <div className="parcial-final-actions">
-        <button type="button" className="btn btn--sm parcial-btn-primary" onClick={onExport}>
+        <button
+          type="button"
+          className="btn btn--sm parcial-btn-primary"
+          onClick={onExport}
+        >
           ↓ Exportar y guardar respuesta
         </button>
         <span className="parcial-muted-small">
@@ -1930,30 +2276,27 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
   lines.push(exercise.domain || "");
   lines.push("");
 
-  // Atributos con justificación
-  lines.push(`## Atributos de calidad`);
-  if (state.attrs.length === 0) lines.push("_(sin atributos seleccionados)_");
-  else {
-    state.attrs.forEach((a) => {
-      const just = a.justification?.trim();
-      lines.push(
-        `- **${a.name}**${a.custom ? " _(custom)_" : ""}${just ? ` — ${just}` : ""}`,
-      );
-    });
-  }
+  // a) Funcionalidades de alto nivel (orden del array = importancia)
+  lines.push(`## a) Funcionalidades de alto nivel`);
+  const funcs = (state.functionalities || []).filter((f) => f.text.trim());
+  if (funcs.length === 0) lines.push("_(sin funcionalidades cargadas)_");
+  else funcs.forEach((f, i) => lines.push(`${i + 1}. ${f.text.trim()}`));
   lines.push("");
 
-  // Ranking
-  lines.push(`## Priorización`);
+  // b) Atributos de calidad con justificación, ordenados por importancia
+  lines.push(`## b) Atributos de calidad`);
   const ordered = state.attrOrder
     .map((x) => state.attrs.find((a) => a.id === x))
     .filter((a): a is AttrItem => !!a);
-  if (ordered.length === 0) lines.push("_(sin ranking)_");
+  if (ordered.length === 0) lines.push("_(sin atributos seleccionados)_");
   else {
     ordered.forEach((a, i) => {
+      const just = a.justification?.trim();
       const marker = i < TOP_N ? `**${i + 1}.**` : `${i + 1}.`;
-      const tail = i < TOP_N ? " _(top — entra al refinamiento)_" : "";
-      lines.push(`${marker} ${a.name}${tail}`);
+      const tail = i < TOP_N ? " _(driver de arquitectura)_" : "";
+      lines.push(
+        `${marker} **${a.name}**${a.custom ? " _(custom)_" : ""}${tail}${just ? ` — ${just}` : ""}`,
+      );
     });
   }
   lines.push("");
@@ -1961,7 +2304,7 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
   // Citas del enunciado (evidencia por atributo)
   const citations = state.citations || [];
   if (citations.length) {
-    lines.push(`## Evidencia citada del enunciado`);
+    lines.push(`### Evidencia citada del enunciado`);
     const byAttr = new Map<string, Citation[]>();
     citations.forEach((c) => {
       const list = byAttr.get(c.attrId);
@@ -1988,8 +2331,10 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
     lines.push("");
   }
 
-  // Diagrama base
-  lines.push(`## Arquitectura inicial`);
+  // c) Arquitectura candidata: diagrama base + justificación + refinamiento
+  lines.push(`## c) Arquitectura candidata`);
+  lines.push("");
+  lines.push(`### Diagrama base`);
   if (
     state.baseDiagram &&
     (state.baseDiagram.nodes.length || state.baseDiagram.edges.length)
@@ -2002,9 +2347,16 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
     lines.push(diagramTextSummary(state.baseDiagram));
   } else lines.push("_(sin diagrama)_");
   lines.push("");
+  lines.push(`### Justificación (relación con los atributos del punto b)`);
+  lines.push(
+    state.archJustification?.trim()
+      ? state.archJustification
+      : "_(sin contenido)_",
+  );
+  lines.push("");
 
   // Por atributo (solo top 4)
-  lines.push(`## Escenarios y refinamiento (top ${TOP_N})`);
+  lines.push(`### Escenarios que rompen + refinamiento (top ${TOP_N})`);
   const top = topAttrs(state);
   if (top.length === 0) lines.push("_(sin atributos priorizados)_");
   else
@@ -2014,7 +2366,7 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
         diagram: { nodes: [], edges: [] },
       };
       lines.push("");
-      lines.push(`### ${i + 1}. ${a.name}`);
+      lines.push(`#### ${i + 1}. ${a.name}`);
       if (a.justification?.trim()) lines.push(`> ${a.justification.trim()}`);
       lines.push("");
       lines.push(`**Escenarios que rompen la base:**`);
@@ -2039,15 +2391,20 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
       lines.push("");
     });
 
-  // Trade-offs
-  lines.push(`## Trade-offs explícitos`);
-  lines.push(state.tradeoffs?.trim() ? state.tradeoffs : "_(sin contenido)_");
+  // d) Riesgos / no-riesgos / supuestos / trade-offs (2 de cada uno)
+  lines.push(`## d) Riesgos, supuestos y trade-offs`);
   lines.push("");
-  lines.push(`## Riesgos y mitigaciones`);
-  lines.push(state.risks?.trim() ? state.risks : "_(sin contenido)_");
-  if (state.notes?.trim()) {
+  const dBlock = (title: string, value: string) => {
+    lines.push(`### ${title}`);
+    lines.push(value?.trim() ? value : "_(sin contenido)_");
     lines.push("");
-    lines.push(`## Notas`);
+  };
+  dBlock("Riesgos", state.risks);
+  dBlock("No-riesgos", state.nonRisks);
+  dBlock("Supuestos", state.assumptions);
+  dBlock("Trade-offs", state.tradeoffs);
+  if (state.notes?.trim()) {
+    lines.push(`### Notas`);
     lines.push(state.notes);
   }
   lines.push("");
