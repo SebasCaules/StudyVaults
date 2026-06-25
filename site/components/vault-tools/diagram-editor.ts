@@ -66,6 +66,10 @@
   function uid() { return 'n' + Math.random().toString(36).slice(2, 9); }
   function clone(s) { return JSON.parse(JSON.stringify(s || { nodes: [], edges: [] })); }
 
+  // Clipboard de formas, a nivel módulo: persiste entre montajes y permite
+  // copiar/pegar incluso entre instancias del editor en la misma sesión.
+  let DE_CLIPBOARD = null;  // { nodes: [...], edges: [...] }
+
   function shapeIconSVG(type, size = 14) {
     const s = size;
     const c = `stroke="currentColor" fill="none" stroke-width="1.6" stroke-linejoin="round"`;
@@ -85,6 +89,9 @@
       case 'clear':  return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M3 6h10M5 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M4 6l1 7a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1l1-7" ${c}/></svg>`;
       case 'edit':   return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M11 2l3 3-8 8H3v-3l8-8z" ${c}/></svg>`;
       case 'autolayout': return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="1" y="6" width="4" height="4" rx="0.5" ${c}/><rect x="11" y="2" width="4" height="4" rx="0.5" ${c}/><rect x="11" y="10" width="4" height="4" rx="0.5" ${c}/><path d="M5 8h3M8 8v-4M8 4h3M8 8v4M8 12h3" ${c}/></svg>`;
+      case 'undo':   return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M6 4 L2.5 7 L6 10 M2.5 7 H10 a3.5 3.5 0 0 1 0 7 H7" ${c}/></svg>`;
+      case 'redo':   return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M10 4 L13.5 7 L10 10 M13.5 7 H6 a3.5 3.5 0 0 0 0 7 H9" ${c}/></svg>`;
+      case 'log':    return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M3 3h10M3 6h10M3 9h7M3 12h5" ${c}/></svg>`;
       default: return '';
     }
   }
@@ -462,6 +469,19 @@
     let hoverClearTimer = null;
     let pendingConnect = null;   // { fromId, fromAnchor } while dragging from an anchor
 
+    // ---- Historial (undo/redo) + bitácora (trazabilidad) ----
+    // undo/redo guardan snapshots completos del estado (incluye trace). El
+    // `committedSnapshot` es la línea base del último commit: cada commitChange
+    // lo apila para deshacer y luego lo reemplaza. La trazabilidad vive en
+    // state.trace, así que viaja con el estado (persistencia + export + undo).
+    const HISTORY_LIMIT = 120;
+    let undoStack = [];
+    let redoStack = [];
+    let committedSnapshot = null;
+    let lastCommit = { kind: null, ts: 0 };
+    if (!Array.isArray(state.trace)) state.trace = [];
+    committedSnapshot = clone(state);
+
     // Viewport: visible window into the larger canvas. Mutating it and calling
     // updateViewBox() re-aims the camera. svgPoint() picks up CTM changes
     // automatically so all downstream math still works.
@@ -513,6 +533,20 @@
           <span class="de-tool-icon">${shapeIconSVG('autolayout', 14)}</span>
           <span class="de-tool-label">Reacomodar</span>
         </button>
+        <div class="de-toolbar-sep" aria-hidden="true"></div>
+        <button type="button" class="de-tool de-tool-secondary" data-action="undo" title="Deshacer (Ctrl+Z)" disabled>
+          <span class="de-tool-icon">${shapeIconSVG('undo', 14)}</span>
+          <span class="de-tool-label">Deshacer</span>
+        </button>
+        <button type="button" class="de-tool de-tool-secondary" data-action="redo" title="Rehacer (Ctrl+Shift+Z)" disabled>
+          <span class="de-tool-icon">${shapeIconSVG('redo', 14)}</span>
+          <span class="de-tool-label">Rehacer</span>
+        </button>
+        <button type="button" class="de-tool de-tool-secondary" data-action="trace" title="Bitácora de ediciones — trazabilidad de cada cambio">
+          <span class="de-tool-icon">${shapeIconSVG('log', 14)}</span>
+          <span class="de-tool-label">Bitácora</span>
+          <span class="de-trace-count" data-trace-count>0</span>
+        </button>
       </div>
       <div class="de-hint" data-de-hint></div>
       <div class="de-canvas-wrap">
@@ -545,6 +579,17 @@
           <div class="de-zoom-sep" aria-hidden="true"></div>
           <button type="button" class="de-zoom-btn" data-zoom="fit" title="Ver todo el lienzo">⤢</button>
         </div>
+        <div class="de-trace-panel" data-trace-panel hidden>
+          <div class="de-trace-head">
+            <span class="de-trace-title">Bitácora de ediciones</span>
+            <div class="de-trace-head-actions">
+              <button type="button" class="de-trace-clear" data-action="trace-clear" title="Vaciar la bitácora">Limpiar</button>
+              <button type="button" class="de-trace-close" data-action="trace-close" title="Cerrar" aria-label="Cerrar bitácora">✕</button>
+            </div>
+          </div>
+          <ol class="de-trace-list" data-trace-list></ol>
+          <div class="de-trace-empty" data-trace-empty>Todavía no hay ediciones registradas. Cada cambio que hagas queda acá.</div>
+        </div>
       </div>
     `;
 
@@ -560,6 +605,154 @@
     const hint = container.querySelector('[data-de-hint]');
     const zoomControls = container.querySelector('[data-zoom-controls]');
     const zoomPercentBtn = zoomControls.querySelector('[data-zoom="reset"]');
+    const undoBtn = container.querySelector('[data-action="undo"]');
+    const redoBtn = container.querySelector('[data-action="redo"]');
+    const traceBtn = container.querySelector('[data-action="trace"]');
+    const traceCountEl = container.querySelector('[data-trace-count]');
+    const tracePanel = container.querySelector('[data-trace-panel]');
+    const traceListEl = container.querySelector('[data-trace-list]');
+    const traceEmptyEl = container.querySelector('[data-trace-empty]');
+
+    function snapshot() { return clone(state); }
+    function addTrace(kind, label) {
+      if (!Array.isArray(state.trace)) state.trace = [];
+      state.trace.push({ kind, label, ts: Date.now() });
+      if (state.trace.length > 300) state.trace.splice(0, state.trace.length - 300);
+    }
+    // Commit central: el cambio YA está aplicado a `state`; acá lo registramos en
+    // el historial (undo) y en la bitácora (trace), persistimos y refrescamos UI.
+    // `opts.coalesce` funde repeticiones rápidas (p. ej. empujar con flechas) en
+    // un solo paso de undo y una sola entrada de bitácora.
+    function commitChange(kind, label, opts) {
+      const now = Date.now();
+      const coalesce = opts && opts.coalesce && lastCommit.kind === kind &&
+        (now - lastCommit.ts) < 700 && state.trace.length > 0;
+      if (coalesce) {
+        const last = state.trace[state.trace.length - 1];
+        last.label = label; last.ts = now;
+      } else {
+        undoStack.push(committedSnapshot);
+        if (undoStack.length > HISTORY_LIMIT) undoStack.shift();
+        redoStack = [];
+        addTrace(kind, label);
+      }
+      committedSnapshot = snapshot();
+      lastCommit = { kind, ts: now };
+      onChange(state);
+      updateHistoryUI();
+    }
+    function restore(snap) {
+      state = snap;
+      committedSnapshot = clone(state);
+      lastCommit = { kind: null, ts: 0 };
+      selectedNodes = new Set([...selectedNodes].filter(id => state.nodes.some(n => n.id === id)));
+      if (selectedEdgeId && !state.edges.some(e => e.id === selectedEdgeId)) selectedEdgeId = null;
+      setMode(null);
+      render();
+      onChange(state);
+      updateHistoryUI();
+    }
+    function undo() {
+      if (!undoStack.length) return;
+      redoStack.push(snapshot());
+      restore(undoStack.pop());
+    }
+    function redo() {
+      if (!redoStack.length) return;
+      undoStack.push(snapshot());
+      restore(redoStack.pop());
+    }
+    function copySelection() {
+      if (!selectedNodes.size) return;
+      const nodes = state.nodes.filter(n => selectedNodes.has(n.id)).map(n => clone(n));
+      const ids = new Set(nodes.map(n => n.id));
+      const edges = state.edges.filter(e => ids.has(e.from) && ids.has(e.to)).map(e => clone(e));
+      DE_CLIPBOARD = { nodes, edges };
+      hint.innerHTML = `Copiadas <strong>${nodes.length}</strong> forma${nodes.length === 1 ? '' : 's'} · <kbd>Ctrl+V</kbd> para pegar.`;
+    }
+    function cutSelection() {
+      if (!selectedNodes.size) return;
+      copySelection();
+      const n = selectedNodes.size;
+      const dead = new Set(selectedNodes);
+      state.nodes = state.nodes.filter(x => !dead.has(x.id));
+      state.edges = state.edges.filter(e => !dead.has(e.from) && !dead.has(e.to));
+      clearSelection();
+      render();
+      commitChange('cut', `Cortó ${n} forma${n === 1 ? '' : 's'}`);
+      setMode(null);
+    }
+    function pasteClipboard() {
+      if (!DE_CLIPBOARD || !DE_CLIPBOARD.nodes.length) return;
+      const OFF = 28;
+      const idMap = {};
+      const newNodes = DE_CLIPBOARD.nodes.map(n => {
+        const nid = uid(); idMap[n.id] = nid;
+        return {
+          ...clone(n), id: nid,
+          x: Math.max(0, Math.min(CANVAS_W - n.w, n.x + OFF)),
+          y: Math.max(0, Math.min(CANVAS_H - n.h, n.y + OFF)),
+        };
+      });
+      const newEdges = DE_CLIPBOARD.edges
+        .filter(e => idMap[e.from] && idMap[e.to])
+        .map(e => ({
+          ...clone(e), id: uid(), from: idMap[e.from], to: idMap[e.to],
+          points: Array.isArray(e.points) ? e.points.map(p => ({ x: p.x + OFF, y: p.y + OFF })) : [],
+        }));
+      state.nodes.push(...newNodes);
+      state.edges.push(...newEdges);
+      selectedNodes = new Set(newNodes.map(n => n.id));
+      selectedEdgeId = null;
+      render();
+      commitChange('paste', `Pegó ${newNodes.length} forma${newNodes.length === 1 ? '' : 's'}`);
+    }
+    function traceRelTime(ts) {
+      const diff = (Date.now() - ts) / 1000;
+      if (diff < 5) return 'ahora';
+      if (diff < 60) return `hace ${Math.floor(diff)}s`;
+      if (diff < 3600) return `hace ${Math.floor(diff / 60)}min`;
+      return `hace ${Math.floor(diff / 3600)}h`;
+    }
+    const TRACE_GLYPH = {
+      add: '＋', insert: '⥂', connect: '→', delete: '␡', cut: '✂', paste: '⎘',
+      duplicate: '⧉', rename: '✎', label: '🏷', move: '✥', nudge: '✥', resize: '⤡',
+      bend: '∿', curve: '∿', layout: '▦', clear: '🗑',
+    };
+    function renderTrace() {
+      if (!traceListEl) return;
+      const items = state.trace || [];
+      traceListEl.innerHTML = '';
+      if (traceEmptyEl) traceEmptyEl.hidden = items.length > 0;
+      items.forEach((t, i) => {
+        const li = document.createElement('li');
+        li.className = 'de-trace-item de-trace-kind-' + t.kind;
+        li.innerHTML =
+          `<span class="de-trace-n">${i + 1}</span>` +
+          `<span class="de-trace-glyph" aria-hidden="true">${TRACE_GLYPH[t.kind] || '•'}</span>` +
+          `<span class="de-trace-label"></span>` +
+          `<span class="de-trace-time"></span>`;
+        li.querySelector('.de-trace-label').textContent = t.label || t.kind;
+        li.querySelector('.de-trace-time').textContent = traceRelTime(t.ts);
+        traceListEl.appendChild(li);
+      });
+      traceListEl.scrollTop = traceListEl.scrollHeight;
+    }
+    function updateHistoryUI() {
+      if (undoBtn) undoBtn.disabled = undoStack.length === 0;
+      if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+      const n = (state.trace || []).length;
+      if (traceCountEl) traceCountEl.textContent = String(n);
+      if (traceBtn) traceBtn.classList.toggle('has-entries', n > 0);
+      if (tracePanel && !tracePanel.hidden) renderTrace();
+    }
+    function toggleTrace(force) {
+      if (!tracePanel) return;
+      const show = typeof force === 'boolean' ? force : tracePanel.hidden;
+      tracePanel.hidden = !show;
+      if (traceBtn) traceBtn.classList.toggle('is-active', show);
+      if (show) renderTrace();
+    }
 
     function updateViewBox() {
       svg.setAttribute('viewBox', `${viewport.x} ${viewport.y} ${viewport.w} ${viewport.h}`);
@@ -877,13 +1070,13 @@
           });
           render();
           if (t < 1) rafId = requestAnimationFrame(tick);
-          else { rafId = null; onChange(state); }
+          else { rafId = null; commitChange('layout', 'Reacomodó el diagrama'); }
         }
         rafId = requestAnimationFrame(tick);
       } else {
         nodes.forEach(n => { const p = positions[n.id]; n.x = p.x; n.y = p.y; });
         render();
-        onChange(state);
+        commitChange('layout', 'Reacomodó el diagrama');
       }
     }
 
@@ -1037,6 +1230,7 @@
         corner: handle.getAttribute('data-corner'),
         startX: p.x,
         startY: p.y,
+        moved: false,
         start: { x: node.x, y: node.y, w: node.w, h: node.h }
       };
     });
@@ -1097,7 +1291,10 @@
         edge.points.splice(segIndex, 0, { x: p.x, y: p.y });
         wpIndex = segIndex;
       }
-      edgeDrag = { edgeId: id, wpIndex };
+      // `added` = se insertó un quiebre nuevo (mutación real aunque no se
+      // arrastre); `moved` se marca en onMove si el puntero efectivamente lo
+      // desplaza. Así un click seco sobre un quiebre existente no genera commit.
+      edgeDrag = { edgeId: id, wpIndex, added: !moveH, moved: false };
       render();
     });
     // Double-click a waypoint removes it.
@@ -1110,7 +1307,7 @@
       if (!edge || !Array.isArray(edge.points)) return;
       edge.points.splice(parseInt(moveH.getAttribute('data-wp-index'), 10), 1);
       render();
-      onChange(state);
+      commitChange('bend', 'Quitó un quiebre de una flecha');
     });
 
     function setHovered(id) {
@@ -1178,8 +1375,9 @@
         committed = true;
         const next = input.value.trim();
         if (save && next && next !== node.label) {
+          const old = node.label;
           node.label = next;
-          onChange(state);
+          commitChange('rename', `Renombró "${old}" → "${next}"`);
         }
         fo.remove();
         if (g) g.classList.remove('is-editing');
@@ -1228,7 +1426,10 @@
         committed = true;
         if (save) {
           const next = input.value.trim();
-          if (next !== (edge.label || '')) { edge.label = next; onChange(state); }
+          if (next !== (edge.label || '')) {
+            edge.label = next;
+            commitChange('label', next ? `Etiquetó una flecha: "${next}"` : 'Quitó la etiqueta de una flecha');
+          }
         }
         fo.remove();
         render();
@@ -1262,27 +1463,45 @@
     });
     container.querySelector('[data-action="clear"]').addEventListener('click', () => {
       if (!state.nodes.length && !state.edges.length) return;
-      if (!confirm('¿Vaciar el diagrama completo? No se puede deshacer.')) return;
-      state = { nodes: [], edges: [] };
+      if (!confirm('¿Vaciar el diagrama completo? Podés deshacerlo con Ctrl+Z.')) return;
+      state.nodes = [];
+      state.edges = [];
       clearSelection();
       render();
-      onChange(state);
+      commitChange('clear', 'Vació el diagrama');
       setMode(null);
+    });
+    undoBtn.addEventListener('click', undo);
+    redoBtn.addEventListener('click', redo);
+    traceBtn.addEventListener('click', () => toggleTrace());
+    container.querySelector('[data-action="trace-close"]').addEventListener('click', () => toggleTrace(false));
+    container.querySelector('[data-action="trace-clear"]').addEventListener('click', () => {
+      if (!(state.trace || []).length) return;
+      if (!confirm('¿Vaciar la bitácora de ediciones? El diagrama no se toca.')) return;
+      state.trace = [];
+      committedSnapshot = snapshot();
+      onChange(state);
+      updateHistoryUI();
+      renderTrace();
     });
 
     function deleteSelected() {
+      let label;
       if (selectedNodes.size > 0) {
+        const n = selectedNodes.size;
         const dead = new Set(selectedNodes);
-        state.nodes = state.nodes.filter(n => !dead.has(n.id));
+        state.nodes = state.nodes.filter(x => !dead.has(x.id));
         state.edges = state.edges.filter(e => !dead.has(e.from) && !dead.has(e.to));
+        label = `Borró ${n} forma${n === 1 ? '' : 's'}`;
       } else if (selectedEdgeId) {
         state.edges = state.edges.filter(e => e.id !== selectedEdgeId);
+        label = 'Borró una flecha';
       } else {
         return;
       }
       clearSelection();
       render();
-      onChange(state);
+      commitChange('delete', label);
       setMode(null);
     }
 
@@ -1320,7 +1539,7 @@
       selectedNodes = new Set(newNodes.map(n => n.id));
       selectedEdgeId = null;
       render();
-      onChange(state);
+      commitChange('duplicate', `Duplicó ${newNodes.length} forma${newNodes.length === 1 ? '' : 's'}`);
     }
 
     // ---- Anchor drag-to-connect (no toolbar needed) ----
@@ -1383,13 +1602,13 @@
           w: def.w, h: def.h,
           label: def.label
         });
-        const finishPlace = (node) => {
+        const finishPlace = (node, kind, label) => {
           state.nodes.push(node);
           selectedNodes = new Set([node.id]);
           selectedEdgeId = null;
           setMode(null);
           render();
-          onChange(state);
+          commitChange(kind, label);
           inlineTimer = setTimeout(() => { if (!destroyed) startInlineEdit(node.id); }, 30);
         };
         // Insert-on-edge: dropping a (non-text) shape onto an arrow splits it,
@@ -1402,11 +1621,11 @@
             state.edges = state.edges.filter(e => e.id !== old.id);
             state.edges.push({ id: uid(), from: old.from, to: node.id, label: '', curved: !!old.curved });
             state.edges.push({ id: uid(), from: node.id, to: old.to, label: '', curved: !!old.curved });
-            finishPlace(node);
+            finishPlace(node, 'insert', `Intercaló ${def.label} en una flecha`);
             return;
           }
         }
-        if (!nodeEl) { finishPlace(makeNode()); return; }
+        if (!nodeEl) { finishPlace(makeNode(), 'add', `Agregó ${def.label}`); return; }
       }
       if (mode === 'connect' && nodeEl) {
         const id = nodeEl.dataset.id;
@@ -1417,12 +1636,14 @@
           hint.innerHTML = `<strong>Origen elegido.</strong> Ahora click en la forma de destino.`;
           nodeEl.classList.add('is-connect-source');
         } else if (connectFrom !== id) {
+          const fromN = state.nodes.find(n => n.id === connectFrom);
+          const toN = state.nodes.find(n => n.id === id);
           state.edges.push({ id: uid(), from: connectFrom, to: id, label: '' });
           connectFrom = null;
           setMode(null);
           clearSelection();
           render();
-          onChange(state);
+          commitChange('connect', `Conectó ${fromN?.label || 'forma'} → ${toN?.label || 'forma'}`);
         }
         return;
       }
@@ -1502,7 +1723,8 @@
           toAnchor,
           label: ''
         });
-        onChange(state);
+        const fromN = state.nodes.find(n => n.id === pendingConnect.fromId);
+        commitChange('connect', `Conectó ${fromN?.label || 'forma'} → ${toNode?.label || 'forma'}`);
         }
       }
       pendingConnect = null;
@@ -1632,6 +1854,7 @@
       if (resizing) {
         const node = state.nodes.find(n => n.id === resizing.id);
         if (node) {
+          resizing.moved = true;
           applyResize(node, resizing.corner, p.x - resizing.startX, p.y - resizing.startY, resizing.start);
           render();
         }
@@ -1640,6 +1863,7 @@
       if (edgeDrag) {
         const edge = state.edges.find(e => e.id === edgeDrag.edgeId);
         if (edge && Array.isArray(edge.points) && edge.points[edgeDrag.wpIndex]) {
+          edgeDrag.moved = true;
           edge.points[edgeDrag.wpIndex] = {
             x: Math.max(0, Math.min(CANVAS_W, p.x)),
             y: Math.max(0, Math.min(CANVAS_H, p.y)),
@@ -1714,17 +1938,27 @@
         render();
       }
       if (resizing) {
-        onChange(state);
+        const rn = state.nodes.find(n => n.id === resizing.id);
+        const moved = resizing.moved;
         resizing = null;
         render();
+        if (moved) commitChange('resize', `Redimensionó ${rn?.label || 'una forma'}`);
       }
       if (edgeDrag) {
-        onChange(state);
+        const changed = edgeDrag.added || edgeDrag.moved;
+        const label = edgeDrag.added ? 'Agregó un quiebre a una flecha' : 'Movió un quiebre de una flecha';
         edgeDrag = null;
         render();
+        if (changed) commitChange('bend', label);
       }
       const wasDragging = !!dragging;
-      if (dragging && dragging.moved) onChange(state);
+      if (dragging && dragging.moved) {
+        const ids = Object.keys(dragging.startPositions);
+        const label = ids.length === 1
+          ? `Movió ${state.nodes.find(n => n.id === ids[0])?.label || 'una forma'}`
+          : `Movió ${ids.length} formas`;
+        commitChange('move', label);
+      }
       dragging = null;
       gSnap.innerHTML = '';
       // Re-render after release so the resize handles (suppressed while a press
@@ -1781,7 +2015,31 @@
       if ((evt.key === 'c' || evt.key === 'C') && !evt.metaKey && !evt.ctrlKey && selectedEdgeId) {
         evt.preventDefault();
         const edge = state.edges.find(e => e.id === selectedEdgeId);
-        if (edge) { edge.curved = !edge.curved; render(); onChange(state); }
+        if (edge) {
+          edge.curved = !edge.curved;
+          render();
+          commitChange('curve', edge.curved ? 'Flecha → curva' : 'Flecha → recta');
+        }
+      }
+      const mod = evt.metaKey || evt.ctrlKey;
+      // Deshacer / rehacer.
+      if (mod && (evt.key === 'z' || evt.key === 'Z')) {
+        evt.preventDefault();
+        if (evt.shiftKey) redo(); else undo();
+      }
+      if (mod && (evt.key === 'y' || evt.key === 'Y')) { evt.preventDefault(); redo(); }
+      // Copiar / cortar / pegar formas (clipboard interno del editor).
+      if (mod && (evt.key === 'c' || evt.key === 'C') && selectedNodes.size > 0) {
+        evt.preventDefault();
+        copySelection();
+      }
+      if (mod && (evt.key === 'x' || evt.key === 'X') && selectedNodes.size > 0) {
+        evt.preventDefault();
+        cutSelection();
+      }
+      if (mod && (evt.key === 'v' || evt.key === 'V')) {
+        evt.preventDefault();
+        pasteClipboard();
       }
       // Ctrl/Cmd+D duplicates the selected node(s) and any edges between them.
       if ((evt.key === 'd' || evt.key === 'D') && (evt.metaKey || evt.ctrlKey) && selectedNodes.size > 0) {
@@ -1804,7 +2062,10 @@
           n.y = Math.max(0, Math.min(CANVAS_H - n.h, n.y + dy));
         });
         render();
-        onChange(state);
+        const moveLabel = selectedNodes.size === 1
+          ? `Movió ${state.nodes.find(n => selectedNodes.has(n.id))?.label || 'una forma'}`
+          : `Movió ${selectedNodes.size} formas`;
+        commitChange('nudge', moveLabel, { coalesce: true });
       }
     }
     document.addEventListener('keydown', onKey);
@@ -1813,6 +2074,7 @@
     // Frame the existing content (or stay centered for an empty canvas).
     resetView();
     render();
+    updateHistoryUI();
 
     function toSVG() {
       const cl = svg.cloneNode(true);
@@ -1859,7 +2121,20 @@
 
     return {
       getState: () => clone(state),
-      setState: (s) => { state = clone(s || { nodes: [], edges: [] }); clearSelection(); setMode(null); resetView(); render(); },
+      setState: (s) => {
+        state = clone(s || { nodes: [], edges: [] });
+        if (!Array.isArray(state.trace)) state.trace = [];
+        undoStack = [];
+        redoStack = [];
+        committedSnapshot = clone(state);
+        lastCommit = { kind: null, ts: 0 };
+        clearSelection();
+        setMode(null);
+        resetView();
+        render();
+        updateHistoryUI();
+        toggleTrace(false);
+      },
       toSVG,
       startInlineEdit,
       destroy: () => {

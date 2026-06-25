@@ -2234,6 +2234,17 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
   );
   lines.push("");
 
+  // Bitácora de ediciones del diagrama (trazabilidad), si la hay.
+  const trace = (state.baseDiagram as { trace?: { label?: string; kind?: string }[] })
+    ?.trace;
+  if (Array.isArray(trace) && trace.length) {
+    lines.push(`### Bitácora de ediciones del diagrama`);
+    trace.forEach((t, i) => {
+      lines.push(`${i + 1}. ${t.label || t.kind || "edición"}`);
+    });
+    lines.push("");
+  }
+
   // d) Riesgos / no-riesgos / supuestos / trade-offs (2 de cada uno)
   lines.push(`## d) Riesgos, supuestos y trade-offs`);
   lines.push("");
