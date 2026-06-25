@@ -70,6 +70,20 @@
   // copiar/pegar incluso entre instancias del editor en la misma sesión.
   let DE_CLIPBOARD = null;  // { nodes: [...], edges: [...] }
 
+  // Paleta de color por nodo. La key se guarda en node.color y se pinta vía
+  // data-color + CSS (tema-aware con color-mix). '' = sin color → usa el del tipo.
+  const DE_PALETTE = [
+    { key: '',       name: 'Por tipo' },
+    { key: 'slate',  name: 'Pizarra' },
+    { key: 'coral',  name: 'Coral' },
+    { key: 'amber',  name: 'Ámbar' },
+    { key: 'green',  name: 'Verde' },
+    { key: 'teal',   name: 'Teal' },
+    { key: 'blue',   name: 'Azul' },
+    { key: 'violet', name: 'Violeta' },
+    { key: 'pink',   name: 'Rosa' },
+  ];
+
   function shapeIconSVG(type, size = 14) {
     const s = size;
     const c = `stroke="currentColor" fill="none" stroke-width="1.6" stroke-linejoin="round"`;
@@ -92,6 +106,10 @@
       case 'undo':   return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M6 4 L2.5 7 L6 10 M2.5 7 H10 a3.5 3.5 0 0 1 0 7 H7" ${c}/></svg>`;
       case 'redo':   return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M10 4 L13.5 7 L10 10 M13.5 7 H6 a3.5 3.5 0 0 0 0 7 H9" ${c}/></svg>`;
       case 'log':    return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><path d="M3 3h10M3 6h10M3 9h7M3 12h5" ${c}/></svg>`;
+      case 'palette':return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1" ${c}/><rect x="9" y="2" width="5" height="5" rx="1" ${c}/><rect x="2" y="9" width="5" height="5" rx="1" ${c}/><rect x="9" y="9" width="5" height="5" rx="1" ${c}/></svg>`;
+      case 'group':  return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="8.5" height="8.5" rx="1.5" ${c}/><rect x="6" y="6" width="8.5" height="8.5" rx="1.5" ${c}/></svg>`;
+      case 'ungroup':return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="7" height="7" rx="1.5" ${c}/><rect x="7.5" y="7.5" width="7" height="7" rx="1.5" stroke="currentColor" fill="none" stroke-width="1.6" stroke-dasharray="2 1.6"/></svg>`;
+      case 'preset': return `<svg width="${s}" height="${s}" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1" ${c}/><rect x="9" y="2" width="5" height="5" rx="1" ${c}/><rect x="2" y="9" width="12" height="5" rx="1" ${c}/></svg>`;
       default: return '';
     }
   }
@@ -275,6 +293,7 @@
     const g = document.createElementNS(NS, 'g');
     g.setAttribute('class', 'de-node de-node-type-' + node.type + (isSelected ? ' is-selected' : ''));
     g.setAttribute('data-id', node.id);
+    if (node.color) g.setAttribute('data-color', node.color);
     g.setAttribute('transform', `translate(${node.x},${node.y})`);
 
     const w = node.w, h = node.h;
@@ -547,8 +566,13 @@
           <span class="de-tool-label">Bitácora</span>
           <span class="de-trace-count" data-trace-count>0</span>
         </button>
+        <button type="button" class="de-tool de-tool-secondary" data-action="presets" title="Plantillas — bloques y grupos prearmados">
+          <span class="de-tool-icon">${shapeIconSVG('preset', 14)}</span>
+          <span class="de-tool-label">Plantillas</span>
+        </button>
       </div>
       <div class="de-hint" data-de-hint></div>
+      <div class="de-selbar" data-selbar hidden></div>
       <div class="de-canvas-wrap">
         <svg class="de-canvas" role="application" tabindex="0" aria-label="Pizarra de diagramas — colocá, arrastrá y conectá formas con el mouse" viewBox="${(CANVAS_W - VIEW_W0) / 2} ${(CANVAS_H - VIEW_H0) / 2} ${VIEW_W0} ${VIEW_H0}" preserveAspectRatio="xMidYMid meet" xmlns="${NS}">
           <defs>
@@ -563,6 +587,7 @@
                pan/zoom never reveals a hard edge mid-drag. -->
           <rect class="de-canvas-bg" x="-80" y="-80" width="${CANVAS_W + 160}" height="${CANVAS_H + 160}" fill="url(#de-grid)" />
           <rect class="de-canvas-bounds" x="0" y="0" width="${CANVAS_W}" height="${CANVAS_H}" fill="none" stroke-width="1"/>
+          <g data-groups></g>
           <g data-edges></g>
           <g data-ghost></g>
           <g data-nodes></g>
@@ -590,11 +615,19 @@
           <ol class="de-trace-list" data-trace-list></ol>
           <div class="de-trace-empty" data-trace-empty>Todavía no hay ediciones registradas. Cada cambio que hagas queda acá.</div>
         </div>
+        <div class="de-preset-panel" data-preset-panel hidden>
+          <div class="de-trace-head">
+            <span class="de-trace-title">Plantillas</span>
+            <button type="button" class="de-trace-close" data-action="presets-close" title="Cerrar" aria-label="Cerrar plantillas">✕</button>
+          </div>
+          <div class="de-preset-list" data-preset-list></div>
+        </div>
       </div>
     `;
 
     const svg = container.querySelector('.de-canvas');
     const gNodes = svg.querySelector('[data-nodes]');
+    const gGroups = svg.querySelector('[data-groups]');
     const gEdges = svg.querySelector('[data-edges]');
     const gGhost = svg.querySelector('[data-ghost]');
     const gAnchors = svg.querySelector('[data-anchors]');
@@ -612,6 +645,10 @@
     const tracePanel = container.querySelector('[data-trace-panel]');
     const traceListEl = container.querySelector('[data-trace-list]');
     const traceEmptyEl = container.querySelector('[data-trace-empty]');
+    const selbar = container.querySelector('[data-selbar]');
+    const presetBtn = container.querySelector('[data-action="presets"]');
+    const presetPanel = container.querySelector('[data-preset-panel]');
+    const presetListEl = container.querySelector('[data-preset-list]');
 
     function snapshot() { return clone(state); }
     function addTrace(kind, label) {
@@ -718,6 +755,7 @@
       add: '＋', insert: '⥂', connect: '→', delete: '␡', cut: '✂', paste: '⎘',
       duplicate: '⧉', rename: '✎', label: '🏷', move: '✥', nudge: '✥', resize: '⤡',
       bend: '∿', curve: '∿', layout: '▦', clear: '🗑',
+      color: '◑', group: '▢', ungroup: '▢', preset: '▦',
     };
     function renderTrace() {
       if (!traceListEl) return;
@@ -751,7 +789,14 @@
       const show = typeof force === 'boolean' ? force : tracePanel.hidden;
       tracePanel.hidden = !show;
       if (traceBtn) traceBtn.classList.toggle('is-active', show);
-      if (show) renderTrace();
+      if (show) {
+        renderTrace();
+        // mutuamente excluyente con el panel de plantillas (mismo rincón)
+        if (presetPanel && !presetPanel.hidden) {
+          presetPanel.hidden = true;
+          if (presetBtn) presetBtn.classList.remove('is-active');
+        }
+      }
     }
 
     function updateViewBox() {
@@ -1118,6 +1163,7 @@
     function render() {
       gNodes.innerHTML = '';
       gEdges.innerHTML = '';
+      renderGroups();
       const byId = {};
       state.nodes.forEach(n => byId[n.id] = n);
       state.edges.forEach(e => {
@@ -1129,6 +1175,7 @@
       renderAnchors();
       renderResizeHandles();
       renderEdgeHandles();
+      renderSelbar();
     }
 
     // Cardinal-anchor handles around the hovered / selected node. Mousedown on
@@ -1542,6 +1589,209 @@
       commitChange('duplicate', `Duplicó ${newNodes.length} forma${newNodes.length === 1 ? '' : 's'}`);
     }
 
+    // ---- Color por nodo ----
+    function setSelectedColor(key) {
+      if (!selectedNodes.size) return;
+      let changed = 0;
+      state.nodes.forEach(n => {
+        if (!selectedNodes.has(n.id)) return;
+        const next = key || undefined;
+        if ((n.color || undefined) !== next) {
+          if (next) n.color = next; else delete n.color;
+          changed++;
+        }
+      });
+      if (!changed) return;
+      render();
+      const name = (DE_PALETTE.find(c => c.key === key) || {}).name || 'Por tipo';
+      commitChange('color', key
+        ? `Pintó ${changed} forma${changed === 1 ? '' : 's'} (${name})`
+        : `Quitó el color de ${changed} forma${changed === 1 ? '' : 's'}`);
+    }
+
+    // ---- Agrupar / desagrupar ----
+    function groupSelection() {
+      if (selectedNodes.size < 2) return;
+      const gid = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+      state.nodes.forEach(n => { if (selectedNodes.has(n.id)) n.group = gid; });
+      render();
+      commitChange('group', `Agrupó ${selectedNodes.size} formas`);
+    }
+    function ungroupSelection() {
+      const gids = new Set();
+      state.nodes.forEach(n => { if (selectedNodes.has(n.id) && n.group) gids.add(n.group); });
+      if (!gids.size) return;
+      let n = 0;
+      state.nodes.forEach(node => { if (node.group && gids.has(node.group)) { delete node.group; n++; } });
+      render();
+      commitChange('ungroup', `Desagrupó ${n} forma${n === 1 ? '' : 's'}`);
+    }
+    function selectionHasGroup() {
+      for (const n of state.nodes) if (selectedNodes.has(n.id) && n.group) return true;
+      return false;
+    }
+
+    // ---- Frames de grupo (capa data-groups, detrás de todo) ----
+    function renderGroups() {
+      gGroups.innerHTML = '';
+      const byGroup = {};
+      state.nodes.forEach(n => { if (n.group) (byGroup[n.group] ??= []).push(n); });
+      Object.values(byGroup).forEach(members => {
+        if (members.length < 2) return;
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        members.forEach(n => {
+          minX = Math.min(minX, n.x); minY = Math.min(minY, n.y);
+          maxX = Math.max(maxX, n.x + n.w); maxY = Math.max(maxY, n.y + n.h);
+        });
+        const PAD = 16;
+        const rect = document.createElementNS(NS, 'rect');
+        rect.setAttribute('class', 'de-group-frame');
+        rect.setAttribute('x', minX - PAD); rect.setAttribute('y', minY - PAD);
+        rect.setAttribute('width', (maxX - minX) + 2 * PAD);
+        rect.setAttribute('height', (maxY - minY) + 2 * PAD);
+        rect.setAttribute('rx', 12);
+        gGroups.appendChild(rect);
+      });
+    }
+
+    // ---- Barra contextual: aparece SOLO con nodos seleccionados (color + grupo) ----
+    function renderSelbar() {
+      if (!selbar) return;
+      const show = !mode && !dragging && !resizing && selectedNodes.size >= 1;
+      selbar.hidden = !show;
+      if (!show) { selbar.innerHTML = ''; return; }
+      const colors = new Set();
+      state.nodes.forEach(n => { if (selectedNodes.has(n.id)) colors.add(n.color || ''); });
+      const cur = colors.size === 1 ? [...colors][0] : null;
+      const swatches = DE_PALETTE.map(c =>
+        `<button type="button" class="de-swatch de-swatch-${c.key || 'none'}${cur === c.key ? ' is-current' : ''}" data-color="${c.key}" title="${c.name}" aria-label="${c.name}"></button>`
+      ).join('');
+      const canGroup = selectedNodes.size >= 2;
+      const groupBtn = selectionHasGroup()
+        ? `<button type="button" class="de-selbar-btn" data-selaction="ungroup" title="Desagrupar (Ctrl+Shift+G)"><span class="de-tool-icon">${shapeIconSVG('ungroup', 13)}</span>Desagrupar</button>`
+        : `<button type="button" class="de-selbar-btn" data-selaction="group" title="Agrupar (Ctrl+G)"${canGroup ? '' : ' disabled'}><span class="de-tool-icon">${shapeIconSVG('group', 13)}</span>Agrupar</button>`;
+      selbar.innerHTML =
+        `<span class="de-selbar-label">${selectedNodes.size} sel.</span>` +
+        `<div class="de-swatches" role="group" aria-label="Color de la selección">${swatches}</div>` +
+        `<div class="de-selbar-sep" aria-hidden="true"></div>` + groupBtn;
+    }
+    selbar?.addEventListener('click', (evt) => {
+      const sw = evt.target.closest('.de-swatch');
+      if (sw) { setSelectedColor(sw.getAttribute('data-color')); return; }
+      const act = evt.target.closest('[data-selaction]')?.getAttribute('data-selaction');
+      if (act === 'group') groupSelection();
+      else if (act === 'ungroup') ungroupSelection();
+    });
+
+    // ---- Presets: bloques y grupos prearmados ----
+    const DE_PRESETS = [
+      { key: 'req', name: 'Cliente → API → BD', desc: 'Flujo de request básico', build: () => ({
+        nodes: [
+          { type: 'actor', x: 0, y: 30, label: 'Cliente' },
+          { type: 'rect', x: 130, y: 22, label: 'API' },
+          { type: 'db', x: 320, y: 18, label: 'Base de datos' },
+        ], links: [[0, 1], [1, 2]],
+      }) },
+      { key: 'micro', name: 'Microservicio', desc: 'API + BD + cola, agrupado', group: true, build: () => ({
+        nodes: [
+          { type: 'rect', x: 60, y: 0, label: 'Servicio', color: 'blue' },
+          { type: 'db', x: 0, y: 110, label: 'BD', color: 'violet' },
+          { type: 'queue', x: 170, y: 120, label: 'Eventos', color: 'amber' },
+        ], links: [[0, 1], [0, 2]],
+      }) },
+      { key: 'layers', name: '3 capas', desc: 'Presentación / Lógica / Datos', group: true, build: () => ({
+        nodes: [
+          { type: 'stack', x: 0, y: 0, label: 'Presentación', color: 'teal' },
+          { type: 'stack', x: 0, y: 130, label: 'Lógica', color: 'blue' },
+          { type: 'stack', x: 0, y: 260, label: 'Datos', color: 'violet' },
+        ], links: [[0, 1], [1, 2]],
+      }) },
+      { key: 'lb', name: 'Balanceo de carga', desc: 'LB → N servidores', build: () => ({
+        nodes: [
+          { type: 'rect', x: 110, y: 0, label: 'Load Balancer', color: 'coral' },
+          { type: 'rect', x: 0, y: 130, label: 'Server 1' },
+          { type: 'rect', x: 180, y: 130, label: 'Server 2' },
+          { type: 'rect', x: 360, y: 130, label: 'Server 3' },
+        ], links: [[0, 1], [0, 2], [0, 3]],
+      }) },
+      { key: 'pubsub', name: 'Pub / Sub', desc: 'Publisher → tópico → subs', build: () => ({
+        nodes: [
+          { type: 'rect', x: 0, y: 60, label: 'Publisher', color: 'green' },
+          { type: 'queue', x: 180, y: 64, label: 'Tópico', color: 'amber' },
+          { type: 'rect', x: 400, y: 0, label: 'Suscriptor A' },
+          { type: 'rect', x: 400, y: 120, label: 'Suscriptor B' },
+        ], links: [[0, 1], [1, 2], [1, 3]],
+      }) },
+      { key: 'cache', name: 'Cache-aside', desc: 'App ↔ cache ↔ BD', build: () => ({
+        nodes: [
+          { type: 'rect', x: 0, y: 40, label: 'App' },
+          { type: 'rect', x: 180, y: 0, label: 'Cache', color: 'coral' },
+          { type: 'db', x: 180, y: 130, label: 'BD', color: 'violet' },
+        ], links: [[0, 1], [0, 2]],
+      }) },
+    ];
+    function insertPreset(preset) {
+      const built = preset.build();
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      built.nodes.forEach(n => {
+        const def = SHAPE_DEFS[n.type];
+        minX = Math.min(minX, n.x); minY = Math.min(minY, n.y);
+        maxX = Math.max(maxX, n.x + (n.w || def.w)); maxY = Math.max(maxY, n.y + (n.h || def.h));
+      });
+      const bw = maxX - minX, bh = maxY - minY;
+      const cx = viewport.x + viewport.w / 2, cy = viewport.y + viewport.h / 2;
+      const ox = Math.max(8, Math.min(CANVAS_W - bw - 8, cx - bw / 2 - minX));
+      const oy = Math.max(8, Math.min(CANVAS_H - bh - 8, cy - bh / 2 - minY));
+      const gid = preset.group ? ('g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5)) : null;
+      const ids = [];
+      const newNodes = built.nodes.map(n => {
+        const def = SHAPE_DEFS[n.type];
+        const id = uid(); ids.push(id);
+        const node = {
+          id, type: n.type,
+          x: ox + n.x, y: oy + n.y,
+          w: n.w || def.w, h: n.h || def.h,
+          label: n.label != null ? n.label : def.label,
+        };
+        if (n.color) node.color = n.color;
+        if (gid) node.group = gid;
+        return node;
+      });
+      const newEdges = (built.links || []).map(([f, t]) => ({
+        id: uid(), from: ids[f], to: ids[t], label: '',
+      }));
+      state.nodes.push(...newNodes);
+      state.edges.push(...newEdges);
+      selectedNodes = new Set(ids);
+      selectedEdgeId = null;
+      togglePresets(false);
+      render();
+      commitChange('preset', `Insertó plantilla "${preset.name}"`);
+    }
+    function renderPresetList() {
+      if (!presetListEl) return;
+      presetListEl.innerHTML = '';
+      DE_PRESETS.forEach(p => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'de-preset-item';
+        btn.innerHTML = `<span class="de-preset-name"></span><span class="de-preset-desc"></span>`;
+        btn.querySelector('.de-preset-name').textContent = p.name;
+        btn.querySelector('.de-preset-desc').textContent = p.desc;
+        btn.addEventListener('click', () => insertPreset(p));
+        presetListEl.appendChild(btn);
+      });
+    }
+    function togglePresets(force) {
+      if (!presetPanel) return;
+      const show = typeof force === 'boolean' ? force : presetPanel.hidden;
+      presetPanel.hidden = !show;
+      if (presetBtn) presetBtn.classList.toggle('is-active', show);
+      if (show) { renderPresetList(); toggleTrace(false); }
+    }
+    presetBtn?.addEventListener('click', () => togglePresets());
+    container.querySelector('[data-action="presets-close"]')?.addEventListener('click', () => togglePresets(false));
+
     // ---- Anchor drag-to-connect (no toolbar needed) ----
     gAnchors.addEventListener('mousedown', (evt) => {
       const handle = evt.target.closest('.de-anchor-ring, .de-anchor');
@@ -1773,8 +2023,18 @@
         // else: plain click on already-selected node keeps multi-selection intact
 
         if (selectedNodes.has(id)) {
-          const startPositions = {};
+          // Conjunto de arrastre = selección + compañeros de grupo (mover juntos).
+          const dragSet = new Set(selectedNodes);
+          const groups = new Set();
           selectedNodes.forEach(nid => {
+            const nn = state.nodes.find(n => n.id === nid);
+            if (nn && nn.group) groups.add(nn.group);
+          });
+          if (groups.size) {
+            state.nodes.forEach(n => { if (n.group && groups.has(n.group)) dragSet.add(n.id); });
+          }
+          const startPositions = {};
+          dragSet.forEach(nid => {
             const nn = state.nodes.find(n => n.id === nid);
             if (nn) startPositions[nid] = { x: nn.x, y: nn.y };
           });
@@ -2046,6 +2306,12 @@
         evt.preventDefault();
         duplicateSelection();
       }
+      // Ctrl/Cmd+G agrupa; con Shift, desagrupa.
+      if ((evt.key === 'g' || evt.key === 'G') && (evt.metaKey || evt.ctrlKey)) {
+        evt.preventDefault();
+        if (evt.shiftKey) ungroupSelection();
+        else groupSelection();
+      }
       // Arrow keys nudge the selected node(s): 1px, or 10px with Shift.
       if (/^Arrow(Up|Down|Left|Right)$/.test(evt.key) && selectedNodes.size > 0) {
         evt.preventDefault();
@@ -2109,6 +2375,15 @@
         .de-node-type-queue   .de-node-queue-cap { fill: #1D4ED8; }
         .de-node-package-body { fill: none; stroke: #6B7280; stroke-width: 1.4; stroke-dasharray: 6 4; }
         .de-node-text-box { fill: none; stroke: none; }
+        .de-node[data-color="slate"]  .de-node-body { fill: #F1F5F9; stroke: #475569; }
+        .de-node[data-color="coral"]  .de-node-body { fill: #FFF1EC; stroke: #C2410C; }
+        .de-node[data-color="amber"]  .de-node-body { fill: #FEF3C7; stroke: #B45309; }
+        .de-node[data-color="green"]  .de-node-body { fill: #ECFDF3; stroke: #15803D; }
+        .de-node[data-color="teal"]   .de-node-body { fill: #EFFCF9; stroke: #0F766E; }
+        .de-node[data-color="blue"]   .de-node-body { fill: #EFF6FF; stroke: #1D4ED8; }
+        .de-node[data-color="violet"] .de-node-body { fill: #F5F3FF; stroke: #6D28D9; }
+        .de-node[data-color="pink"]   .de-node-body { fill: #FDF2F8; stroke: #BE185D; }
+        .de-group-frame { fill: rgba(244,124,89,0.05); stroke: #C97A5E; stroke-width: 1.4; stroke-dasharray: 7 5; }
         .de-node-highlight { fill: rgba(255,255,255,0.5); }
         .de-node-label-text { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.2; color: #0B0D10; text-align: center; display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 4px; box-sizing: border-box; }
         .de-edge { color: #0E7C66; }
@@ -2134,6 +2409,7 @@
         render();
         updateHistoryUI();
         toggleTrace(false);
+        togglePresets(false);
       },
       toSVG,
       startInlineEdit,
