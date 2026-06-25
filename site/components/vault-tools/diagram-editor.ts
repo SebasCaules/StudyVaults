@@ -572,7 +572,7 @@
         </button>
       </div>
       <div class="de-hint" data-de-hint></div>
-      <div class="de-selbar" data-selbar hidden></div>
+      <div class="de-selbar" data-selbar></div>
       <div class="de-canvas-wrap">
         <svg class="de-canvas" role="application" tabindex="0" aria-label="Pizarra de diagramas — colocá, arrastrá y conectá formas con el mouse" viewBox="${(CANVAS_W - VIEW_W0) / 2} ${(CANVAS_H - VIEW_H0) / 2} ${VIEW_W0} ${VIEW_H0}" preserveAspectRatio="xMidYMid meet" xmlns="${NS}">
           <defs>
@@ -1654,24 +1654,31 @@
       });
     }
 
-    // ---- Barra contextual: aparece SOLO con nodos seleccionados (color + grupo) ----
+    // ---- Barra contextual (color + grupo): SIEMPRE presente (no salta el
+    // layout); se activa con selección y se atenúa/inhabilita sin ella. ----
     function renderSelbar() {
       if (!selbar) return;
-      const show = !mode && !dragging && !resizing && selectedNodes.size >= 1;
-      selbar.hidden = !show;
-      if (!show) { selbar.innerHTML = ''; return; }
+      const active = !mode && !dragging && !resizing && selectedNodes.size >= 1;
+      selbar.classList.toggle('is-inactive', !active);
       const colors = new Set();
-      state.nodes.forEach(n => { if (selectedNodes.has(n.id)) colors.add(n.color || ''); });
-      const cur = colors.size === 1 ? [...colors][0] : null;
+      if (active) state.nodes.forEach(n => { if (selectedNodes.has(n.id)) colors.add(n.color || ''); });
+      const cur = active && colors.size === 1 ? [...colors][0] : null;
+      const dis = active ? '' : ' disabled';
       const swatches = DE_PALETTE.map(c =>
-        `<button type="button" class="de-swatch de-swatch-${c.key || 'none'}${cur === c.key ? ' is-current' : ''}" data-color="${c.key}" title="${c.name}" aria-label="${c.name}"></button>`
+        `<button type="button" class="de-swatch de-swatch-${c.key || 'none'}${cur === c.key ? ' is-current' : ''}" data-color="${c.key}" title="${c.name}" aria-label="${c.name}"${dis}></button>`
       ).join('');
-      const canGroup = selectedNodes.size >= 2;
-      const groupBtn = selectionHasGroup()
-        ? `<button type="button" class="de-selbar-btn" data-selaction="ungroup" title="Desagrupar (Ctrl+Shift+G)"><span class="de-tool-icon">${shapeIconSVG('ungroup', 13)}</span>Desagrupar</button>`
-        : `<button type="button" class="de-selbar-btn" data-selaction="group" title="Agrupar (Ctrl+G)"${canGroup ? '' : ' disabled'}><span class="de-tool-icon">${shapeIconSVG('group', 13)}</span>Agrupar</button>`;
+      let groupBtn;
+      if (active && selectionHasGroup()) {
+        groupBtn = `<button type="button" class="de-selbar-btn" data-selaction="ungroup" title="Desagrupar (Ctrl+Shift+G)"><span class="de-tool-icon">${shapeIconSVG('ungroup', 13)}</span>Desagrupar</button>`;
+      } else {
+        const canGroup = active && selectedNodes.size >= 2;
+        groupBtn = `<button type="button" class="de-selbar-btn" data-selaction="group" title="Agrupar (Ctrl+G)"${canGroup ? '' : ' disabled'}><span class="de-tool-icon">${shapeIconSVG('group', 13)}</span>Agrupar</button>`;
+      }
+      const label = active
+        ? `${selectedNodes.size} sel.`
+        : 'Color / grupo';
       selbar.innerHTML =
-        `<span class="de-selbar-label">${selectedNodes.size} sel.</span>` +
+        `<span class="de-selbar-label">${label}</span>` +
         `<div class="de-swatches" role="group" aria-label="Color de la selección">${swatches}</div>` +
         `<div class="de-selbar-sep" aria-hidden="true"></div>` + groupBtn;
     }

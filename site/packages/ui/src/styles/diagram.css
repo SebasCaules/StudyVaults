@@ -515,12 +515,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 31px;
   padding: 6px 12px;
   background: var(--surface-2);
   border-bottom: 1px solid var(--hairline);
   flex-wrap: wrap;
+  transition: opacity var(--dur-fast) var(--ease);
 }
-.de-selbar[hidden] { display: none; }
+/* sin selección: la barra queda pero atenuada e inhabilitada (no salta el layout) */
+.de-selbar.is-inactive { opacity: 0.62; }
 .de-selbar-label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -540,6 +543,7 @@
   transition: transform 100ms var(--ease), box-shadow 120ms var(--ease);
 }
 .de-swatch:hover { transform: scale(1.18); }
+.de-swatch:disabled { opacity: 0.45; cursor: default; pointer-events: none; }
 .de-swatch.is-current {
   box-shadow: 0 0 0 2px var(--surface-2), 0 0 0 3.5px var(--ring);
 }
