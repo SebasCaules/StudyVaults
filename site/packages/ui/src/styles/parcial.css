@@ -1283,6 +1283,55 @@ html.parcial-focus .parcial-toolbar {
   margin: 0 0 4px;
 }
 
+/* punto c · barra de plantillas + textarea grande de justificación */
+.parcial-tpl-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 8px;
+  padding: 8px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-ctrl);
+}
+.parcial-tpl-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
+  margin-right: 2px;
+}
+.parcial-tpl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+    transform 100ms var(--ease);
+}
+.parcial-tpl-btn:hover {
+  background: color-mix(in srgb, var(--vault-tint, var(--accent)) 14%, transparent);
+  border-color: var(--vault-tint, var(--accent));
+  color: var(--accent-text);
+  transform: translateY(-1px);
+}
+.parcial-arch-textarea {
+  min-height: 240px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
 /* ============================================================
    PUNTO (d) — grilla riesgos / no-riesgos / supuestos / trade-offs
    ============================================================ */

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createDiagramEditor, cloneDiagram } from "../diagram-editor";
+import { createDiagramEditor } from "../diagram-editor";
 import {
   EXERCISES,
   ENUNCIADOS,
@@ -22,9 +22,9 @@ import {
      b [2p] · Atributos de calidad principales (elegir 4) con justificación,
               ordenados por importancia — los 4 primeros son los drivers de
               arquitectura del punto c.
-     c [5p] · Arquitectura candidata y justificación (texto + gráficos): diagrama
-              base, justificación que la relaciona con los atributos del punto b,
-              y escenarios que rompen + refinamiento por cada uno de los top-4.
+     c [5p] · Arquitectura candidata: un diagrama + un textarea grande para
+              justificar todas las decisiones (con plantillas que insertan
+              estructura en el cursor, p. ej. los 4 atributos del punto b).
      d [2p] · Riesgos / no-riesgos / supuestos / trade-offs (2 de cada uno) +
               export .md.
 
@@ -464,9 +464,9 @@ function CaseList({ onOpen }: { onOpen: (id: string) => void }) {
           justificación, ordenados por importancia.
         </li>
         <li>
-          <strong>c [5p].</strong> Arquitectura candidata y justificación (texto
-          + gráficos), relacionándola con los atributos del punto b; escenarios y
-          refinamiento por cada uno de los 4 drivers.
+          <strong>c [5p].</strong> Arquitectura candidata: un diagrama y la
+          justificación de todas las decisiones en un texto, relacionándola con
+          los atributos del punto b (con plantillas para insertar estructura).
         </li>
         <li>
           <strong>d [2p].</strong> Riesgos / no-riesgos, supuestos y trade-offs (2
@@ -711,12 +711,7 @@ function CaseWizard({ id, onBack }: { id: string; onBack: () => void }) {
         {step === 1 && <StepA state={state} save={save} rerender={rerender} />}
         {step === 2 && <StepB state={state} save={save} rerender={rerender} />}
         {step === 3 && (
-          <StepC
-            state={state}
-            save={save}
-            flushEditors={flushEditors}
-            editorsRef={editorsRef}
-          />
+          <StepC state={state} save={save} editorsRef={editorsRef} />
         )}
         {step === 4 && (
           <StepD
@@ -1782,25 +1777,81 @@ function topAttrs(state: ExamState): AttrItem[] {
 function StepC({
   state,
   save,
-  flushEditors,
   editorsRef,
 }: {
   state: ExamState;
   save: () => void;
-  flushEditors: () => void;
   editorsRef: React.MutableRefObject<Record<string, DiagramInstance>>;
 }) {
   const top = topAttrs(state);
+  const taRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // Inserta una plantilla de texto donde está el cursor (o al final si el
+  // textarea no tiene foco). El editor es no controlado: seteamos value a mano,
+  // sincronizamos el estado y reposicionamos el caret tras el fragmento.
+  const insertTemplate = (text: string) => {
+    const ta = taRef.current;
+    if (!ta) return;
+    const focused = document.activeElement === ta;
+    const start = focused ? ta.selectionStart : ta.value.length;
+    const end = focused ? ta.selectionEnd : ta.value.length;
+    const before = ta.value.slice(0, start);
+    const after = ta.value.slice(end);
+    const lead = before && !before.endsWith("\n") ? "\n" : "";
+    const trail = after && !after.startsWith("\n") ? "\n" : "";
+    const snippet = lead + text + trail;
+    ta.value = before + snippet + after;
+    state.archJustification = ta.value;
+    save();
+    const caret = start + snippet.length;
+    ta.focus();
+    ta.setSelectionRange(caret, caret);
+  };
+
+  // Plantillas de justificación. La primera arma el esqueleto con los 4
+  // atributos de calidad reales elegidos en el punto b.
+  const TEMPLATES: { label: string; build: () => string }[] = [
+    {
+      label: "4 atributos de calidad",
+      build: () =>
+        "Cómo la arquitectura cubre cada atributo de calidad:\n" +
+        (top.length
+          ? top.map((a, i) => `${i + 1}. ${a.name}: `).join("\n")
+          : "1. : \n2. : \n3. : \n4. : "),
+    },
+    {
+      label: "Estilo arquitectónico",
+      build: () => "Estilo arquitectónico: … — lo elijo porque …",
+    },
+    {
+      label: "Componente → responsabilidad",
+      build: () => "· <Componente>: responsable de …",
+    },
+    {
+      label: "Atributo → táctica",
+      build: () =>
+        "Para <atributo> aplico <táctica> (cache / réplica / cola / balanceador / …).",
+    },
+    {
+      label: "Decisión + trade-off",
+      build: () => "Decisión: … · Gana: … · Resigna: …",
+    },
+    {
+      label: "Escenario de calidad",
+      build: () =>
+        "Escenario — estímulo: … · respuesta del sistema: … · medida: …",
+    },
+  ];
 
   return (
     <div className="parcial-step-card">
       <div className="parcial-step-intro">
         <h4>c · Arquitectura candidata y justificación</h4>
         <p>
-          Diagramá tu arquitectura candidata y justificala (texto + gráficos),{" "}
-          <strong>relacionándola con los atributos del punto b</strong>. Después
-          generá escenarios que la rompan y refinala por cada uno de los {TOP_N}{" "}
-          drivers.
+          Diagramá tu arquitectura candidata y justificá{" "}
+          <strong>todas las decisiones</strong> en el texto, relacionándolas con
+          los atributos del punto b. Usá las plantillas para insertar estructura
+          donde tengas el cursor.
         </p>
       </div>
 
@@ -1808,15 +1859,31 @@ function StepC({
 
       <div className="parcial-field">
         <span className="parcial-field-label">
-          Justificación — por qué esta arquitectura y cómo cubre cada atributo
+          Justificación de la arquitectura
         </span>
-        <span className="parcial-muted-small parcial-field-hint">
-          Relacioná cada decisión con los atributos priorizados en el punto b.
-        </span>
+        <div
+          className="parcial-tpl-bar"
+          role="toolbar"
+          aria-label="Plantillas de justificación"
+        >
+          <span className="parcial-tpl-label">Plantillas</span>
+          {TEMPLATES.map((t) => (
+            <button
+              key={t.label}
+              type="button"
+              className="parcial-tpl-btn"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => insertTemplate(t.build())}
+              title="Insertar en la posición del cursor"
+            >
+              + {t.label}
+            </button>
+          ))}
+        </div>
         <textarea
-          className="vtool-textarea"
-          rows={4}
-          placeholder="ej. Pipe-and-filter para el sensado → frecuencia y precisión; agregación horaria + cache de lecturas → performance de reportes; driver por sensor → portabilidad ante cambio de hardware…"
+          ref={taRef}
+          className="vtool-textarea parcial-arch-textarea"
+          placeholder="Justificá la arquitectura: estilo elegido, responsabilidad de cada componente, cómo cubrís cada atributo de calidad del punto b, decisiones y trade-offs tomados…"
           defaultValue={state.archJustification || ""}
           onChange={(e) => {
             state.archJustification = e.target.value;
@@ -1824,22 +1891,6 @@ function StepC({
           }}
         />
       </div>
-
-      {top.length ? (
-        <RefinementSection
-          state={state}
-          save={save}
-          flushEditors={flushEditors}
-          editorsRef={editorsRef}
-        />
-      ) : (
-        <div className="parcial-step-footnote">
-          <span className="parcial-muted-small">
-            ⚠ Sin atributos priorizados. Volvé al punto b para elegir tus {TOP_N}{" "}
-            drivers de arquitectura.
-          </span>
-        </div>
-      )}
     </div>
   );
 }
@@ -1895,7 +1946,7 @@ function BaseDiagramSection({
       {top.length > 0 && (
         <div className="parcial-step-footnote">
           <span className="parcial-muted-small">
-            Vas a estresar la base contra estos {TOP_N} drivers:
+            Atributos a cubrir con esta arquitectura (del punto b):
           </span>
           <div className="parcial-step-chips">
             {top.map((a, i) => (
@@ -1907,178 +1958,6 @@ function BaseDiagramSection({
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-/* ── Punto (c) · escenarios que rompen + refinamiento (solo top 4) ──────── */
-
-function RefinementSection({
-  state,
-  save,
-  flushEditors,
-  editorsRef,
-}: {
-  state: ExamState;
-  save: () => void;
-  flushEditors: () => void;
-  editorsRef: React.MutableRefObject<Record<string, DiagramInstance>>;
-}) {
-  const top = topAttrs(state);
-  const [activeId, setActiveId] = useState<string | null>(top[0]?.id ?? null);
-
-  if (!top.length) return null;
-
-  return (
-    <div className="parcial-refine">
-      <div className="parcial-refine-head">
-        <span className="parcial-field-label">
-          Escenarios que rompen y refinamiento · {TOP_N} drivers
-        </span>
-        <span className="parcial-muted-small">
-          Por cada driver: escenarios que rompen tu base y diagrama refinado
-          (arranca como clon del base).
-        </span>
-      </div>
-
-      <div className="parcial-attr-tabs" role="tablist">
-        {top.map((a, i) => (
-          <button
-            key={a.id}
-            type="button"
-            role="tab"
-            className={
-              "parcial-attr-tab" + (a.id === activeId ? " is-active" : "")
-            }
-            onClick={() => {
-              flushEditors();
-              setActiveId(a.id);
-            }}
-          >
-            <span className="parcial-attr-tab-rank">{i + 1}</span>
-            {a.name}
-          </button>
-        ))}
-      </div>
-
-      {activeId && (
-        <Step4Panel
-          key={activeId}
-          state={state}
-          attrId={activeId}
-          save={save}
-          editorsRef={editorsRef}
-        />
-      )}
-    </div>
-  );
-}
-
-function Step4Panel({
-  state,
-  attrId,
-  save,
-  editorsRef,
-}: {
-  state: ExamState;
-  attrId: string;
-  save: () => void;
-  editorsRef: React.MutableRefObject<Record<string, DiagramInstance>>;
-}) {
-  const hostRef = useRef<HTMLDivElement | null>(null);
-  const edRef = useRef<DiagramInstance | null>(null);
-  const attr = state.attrs.find((a) => a.id === attrId);
-
-  // Asegurar la entrada perAttr (clonada de la base) sin tocar localStorage en
-  // render: la persistencia ocurre dentro del efecto de montaje del editor.
-  if (attr && !state.perAttr[attrId]) {
-    state.perAttr[attrId] = {
-      breakingScenarios: "",
-      diagram: cloneDiagram(state.baseDiagram) as DiagramState,
-    };
-  }
-  const pa = state.perAttr[attrId];
-
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!host || !pa) return;
-    save(); // persiste la entrada perAttr recién clonada, si la hubiera.
-    const ed = createDiagramEditor(host, {
-      initialState: pa.diagram,
-      onChange: (s: DiagramState) => {
-        pa.diagram = s;
-        save();
-      },
-    }) as DiagramInstance;
-    edRef.current = ed;
-    editorsRef.current[attrId] = ed;
-    return () => {
-      try {
-        pa.diagram = ed.getState();
-      } catch {
-        /* ignore */
-      }
-      ed.destroy();
-      edRef.current = null;
-      delete editorsRef.current[attrId];
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [attrId]);
-
-  if (!attr || !pa) return null;
-
-  const resetFromBase = () => {
-    if (
-      !window.confirm(
-        "¿Restablecer este diagrama a una copia exacta del diagrama base?",
-      )
-    )
-      return;
-    pa.diagram = cloneDiagram(state.baseDiagram) as DiagramState;
-    edRef.current?.setState(pa.diagram);
-    save();
-  };
-
-  return (
-    <div className="parcial-attr-panel">
-      <h5 className="parcial-attr-panel-title">{attr.name}</h5>
-      {attr.justification && (
-        <div className="parcial-attr-panel-just">{attr.justification}</div>
-      )}
-
-      <div className="parcial-field">
-        <span className="parcial-field-label">
-          Escenarios que rompen la base (uno por línea)
-        </span>
-        <textarea
-          className="vtool-textarea"
-          placeholder="ej. Pico de 10× tráfico durante 15min — la base sirve 80% con timeout > 2s, requerimos < 200ms."
-          defaultValue={pa.breakingScenarios || ""}
-          onChange={(e) => {
-            pa.breakingScenarios = e.target.value;
-            save();
-          }}
-        />
-      </div>
-
-      <div className="parcial-field">
-        <span className="parcial-field-label">
-          Diagrama refinado para {attr.name}
-        </span>
-        <span className="parcial-muted-small parcial-field-hint">
-          Arranca como clon del diagrama base. Editá libremente.
-        </span>
-        <div className="parcial-diagram-wrap" ref={hostRef} />
-        <div className="parcial-attr-panel-actions">
-          <button
-            type="button"
-            className="btn btn--sm btn--ghost"
-            onClick={resetFromBase}
-          >
-            ↺ Restablecer desde la base
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -2354,42 +2233,6 @@ function buildMarkdown(exercise: Exercise, state: ExamState): string {
       : "_(sin contenido)_",
   );
   lines.push("");
-
-  // Por atributo (solo top 4)
-  lines.push(`### Escenarios que rompen + refinamiento (top ${TOP_N})`);
-  const top = topAttrs(state);
-  if (top.length === 0) lines.push("_(sin atributos priorizados)_");
-  else
-    top.forEach((a, i) => {
-      const pa = state.perAttr[a.id] || {
-        breakingScenarios: "",
-        diagram: { nodes: [], edges: [] },
-      };
-      lines.push("");
-      lines.push(`#### ${i + 1}. ${a.name}`);
-      if (a.justification?.trim()) lines.push(`> ${a.justification.trim()}`);
-      lines.push("");
-      lines.push(`**Escenarios que rompen la base:**`);
-      lines.push("");
-      if (pa.breakingScenarios?.trim()) {
-        pa.breakingScenarios.split(/\n+/).forEach((s) => {
-          const t = s.trim();
-          if (t) lines.push(`- ${t}`);
-        });
-      } else lines.push("_(sin escenarios)_");
-      lines.push("");
-      lines.push(`**Diagrama refinado:**`);
-      lines.push("");
-      if (pa.diagram && (pa.diagram.nodes.length || pa.diagram.edges.length)) {
-        const svg = renderDiagramSVG(pa.diagram);
-        if (svg) {
-          lines.push(`![Refinamiento — ${a.name}](${svgToDataUri(svg)})`);
-          lines.push("");
-        }
-        lines.push(diagramTextSummary(pa.diagram));
-      } else lines.push("_(sin diagrama)_");
-      lines.push("");
-    });
 
   // d) Riesgos / no-riesgos / supuestos / trade-offs (2 de cada uno)
   lines.push(`## d) Riesgos, supuestos y trade-offs`);
