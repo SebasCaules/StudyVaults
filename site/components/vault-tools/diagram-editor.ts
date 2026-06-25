@@ -32,6 +32,9 @@
   // Zoom limits (in viewBox width units — smaller w means more zoomed in).
   const VIEW_W_MIN = 200;     // ~ 3.8× zoom in
   const VIEW_W_MAX = 2200;    // shows the whole canvas + a margin
+  // Minimum shape size when resizing via the corner handles.
+  const MIN_W = 46;
+  const MIN_H = 34;
 
   const SHAPE_DEFS = {
     rect:    { w: 130, h: 60,  label: 'Componente',     description: 'Componente / servicio' },
@@ -273,6 +276,11 @@
     return best;
   }
 
+  // Point where the segment from the node's center toward (tx,ty) crosses the
+  // node's *outline*. Round shapes (circle) use an ellipse intersection so the
+  // arrowhead touches the silhouette instead of the bounding-box corner; the
+  // rest use the tight box. Recomputed on every render → arrows follow moves
+  // and resizes and always face the other shape.
   function edgePoint(node, tx, ty) {
     const cx = node.x + node.w / 2;
     const cy = node.y + node.h / 2;
@@ -280,6 +288,13 @@
     const dy = ty - cy;
     if (Math.abs(dx) < 0.0001 && Math.abs(dy) < 0.0001) return { x: cx, y: cy };
     const hw = node.w / 2, hh = node.h / 2;
+    if (node.type === 'circle') {
+      // Match the rendered ellipse, whose radii are inset by 2 for the stroke
+      // (see renderShapeBody) — so the arrowhead touches the visible outline.
+      const rx = Math.max(1, hw - 2), ry = Math.max(1, hh - 2);
+      const k = 1 / Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
+      return { x: cx + dx * k, y: cy + dy * k };
+    }
     const scaleX = hw / Math.abs(dx || 0.001);
     const scaleY = hh / Math.abs(dy || 0.001);
     const scale = Math.min(scaleX, scaleY);
@@ -290,14 +305,15 @@
     const a = nodeById[edge.from];
     const b = nodeById[edge.to];
     if (!a || !b) return;
-    // Endpoint resolution: explicit anchor first, otherwise bbox-edge intersection
-    // toward the other node's center (or the other resolved endpoint).
+    // Endpoints are always recomputed toward the *current* opposite-node center
+    // and intersected with each shape's outline — so arrows follow moves/resizes
+    // and never float off a circle or cylinder. Two passes converge on a clean
+    // mutual endpoint. (Legacy stored cardinal anchors are intentionally ignored.)
     const ac = { x: a.x + a.w / 2, y: a.y + a.h / 2 };
     const bc = { x: b.x + b.w / 2, y: b.y + b.h / 2 };
-    let p1 = edge.fromAnchor ? anchorPoint(a, edge.fromAnchor) : null;
-    let p2 = edge.toAnchor   ? anchorPoint(b, edge.toAnchor)   : null;
-    if (!p1) p1 = edgePoint(a, p2 ? p2.x : bc.x, p2 ? p2.y : bc.y);
-    if (!p2) p2 = edgePoint(b, p1.x, p1.y);
+    let p1 = edgePoint(a, bc.x, bc.y);
+    let p2 = edgePoint(b, p1.x, p1.y);
+    p1 = edgePoint(a, p2.x, p2.y);
     const g = document.createElementNS(NS, 'g');
     g.setAttribute('class', 'de-edge' + (isSelected ? ' is-selected' : ''));
     g.setAttribute('data-id', edge.id);
@@ -332,6 +348,7 @@
     let selectedNodes = new Set(); // ids of selected nodes (multi-selection)
     let selectedEdgeId = null;     // id of selected edge (mutually exclusive with nodes)
     let dragging = null;         // { primaryId, startMouseX, startMouseY, startPositions: {id->{x,y}}, moved, snapGuides }
+    let resizing = null;         // { id, corner, startX, startY, start: {x,y,w,h} } while dragging a corner handle
     let marquee = null;          // { startX, startY, curX, curY, shift, initialNodes }
     let connectFrom = null;      // node id while in connect mode (toolbar option)
     let ghostLine = null;        // SVG line element preview during connect
@@ -410,6 +427,7 @@
           <g data-ghost></g>
           <g data-nodes></g>
           <g data-anchors></g>
+          <g data-resize></g>
           <g data-snap></g>
           <g data-marquee></g>
         </svg>
@@ -428,6 +446,7 @@
     const gEdges = svg.querySelector('[data-edges]');
     const gGhost = svg.querySelector('[data-ghost]');
     const gAnchors = svg.querySelector('[data-anchors]');
+    const gResize = svg.querySelector('[data-resize]');
     const gSnap = svg.querySelector('[data-snap]');
     const gMarquee = svg.querySelector('[data-marquee]');
     const hint = container.querySelector('[data-de-hint]');
@@ -780,11 +799,11 @@
         const sel = activeSelection();
         if (sel?.kind === 'node') {
           const n = state.nodes.find(x => x.id === sel.id);
-          hint.innerHTML = `Seleccionado: <strong>${escapeText(n?.label || '')}</strong>. Doble-click para renombrar · Arrastrá para mover · <kbd>Supr</kbd> borra.`;
+          hint.innerHTML = `Seleccionado: <strong>${escapeText(n?.label || '')}</strong>. Doble-click renombra · arrastrá para mover · esquinas para redimensionar · flechas para empujar · <kbd>Supr</kbd> borra.`;
         } else if (sel?.kind === 'multi') {
           hint.innerHTML = `<strong>${sel.count} formas seleccionadas.</strong> Arrastrá para moverlas juntas · <kbd>Supr</kbd> borra · click para deseleccionar.`;
         } else if (sel?.kind === 'edge') {
-          hint.innerHTML = `Flecha seleccionada. Doble-click para etiquetar · <kbd>Supr</kbd> borra.`;
+          hint.innerHTML = `Flecha seleccionada. Doble-click para etiquetar (opcional) · <kbd>Supr</kbd> borra.`;
         } else {
           hint.innerHTML = 'Arrastrá en vacío para seleccionar varios · click en forma para seleccionar · shift+click para sumar a la selección.';
         }
@@ -805,13 +824,14 @@
         renderShape(gNodes, n, selectedNodes.has(n.id));
       });
       renderAnchors();
+      renderResizeHandles();
     }
 
     // Cardinal-anchor handles around the hovered / selected node. Mousedown on
     // a handle starts a drag-to-connect — no need to switch to "Conexión" mode.
     function renderAnchors() {
       gAnchors.innerHTML = '';
-      if (mode || dragging) return; // hide during placing / connecting / dragging
+      if (mode || dragging || resizing) return; // hide during placing / connecting / dragging / resizing
       const ids = new Set();
       // Anchors only show for single-node selection (multi-select hides them
       // to keep the canvas clean while moving groups).
@@ -840,6 +860,74 @@
         });
       });
     }
+
+    // ---- Resize handles (corners) for a single selected node ----
+    // Corners only: the edge-midpoints already host the connect anchors, so the
+    // two control sets never overlap (corners = resize, edges = connect).
+    const RESIZE_CORNERS = [
+      { c: 'nw', fx: n => n.x,         fy: n => n.y },
+      { c: 'ne', fx: n => n.x + n.w,   fy: n => n.y },
+      { c: 'se', fx: n => n.x + n.w,   fy: n => n.y + n.h },
+      { c: 'sw', fx: n => n.x,         fy: n => n.y + n.h },
+    ];
+    function renderResizeHandles() {
+      gResize.innerHTML = '';
+      if (mode || dragging || pendingConnect) return;
+      if (selectedNodes.size !== 1) return;
+      const n = state.nodes.find(x => x.id === [...selectedNodes][0]);
+      if (!n) return;
+      RESIZE_CORNERS.forEach(h => {
+        const r = document.createElementNS(NS, 'rect');
+        r.setAttribute('class', 'de-resize de-resize-' + h.c);
+        r.setAttribute('x', h.fx(n) - 5);
+        r.setAttribute('y', h.fy(n) - 5);
+        r.setAttribute('width', 10);
+        r.setAttribute('height', 10);
+        r.setAttribute('rx', 2);
+        r.setAttribute('data-corner', h.c);
+        r.setAttribute('data-node-id', n.id);
+        gResize.appendChild(r);
+      });
+    }
+    function applyResize(node, corner, dx, dy, s) {
+      let left = s.x, top = s.y, right = s.x + s.w, bottom = s.y + s.h;
+      if (corner.indexOf('w') >= 0) left = s.x + dx;
+      if (corner.indexOf('e') >= 0) right = s.x + s.w + dx;
+      if (corner.indexOf('n') >= 0) top = s.y + dy;
+      if (corner.indexOf('s') >= 0) bottom = s.y + s.h + dy;
+      // Enforce minimum size, anchored on the opposite (fixed) edge.
+      if (right - left < MIN_W) {
+        if (corner.indexOf('w') >= 0) left = right - MIN_W; else right = left + MIN_W;
+      }
+      if (bottom - top < MIN_H) {
+        if (corner.indexOf('n') >= 0) top = bottom - MIN_H; else bottom = top + MIN_H;
+      }
+      // Clamp to the canvas bounds.
+      left = Math.max(0, left); top = Math.max(0, top);
+      right = Math.min(CANVAS_W, right); bottom = Math.min(CANVAS_H, bottom);
+      node.x = left; node.y = top;
+      node.w = Math.max(MIN_W, right - left);
+      node.h = Math.max(MIN_H, bottom - top);
+    }
+    // Mousedown on a corner handle starts a resize (kept separate from node drag
+    // by stopping propagation, mirroring the connect-anchor handler).
+    gResize.addEventListener('mousedown', (evt) => {
+      const handle = evt.target.closest('.de-resize');
+      if (!handle) return;
+      evt.preventDefault();
+      evt.stopPropagation();
+      const id = handle.getAttribute('data-node-id');
+      const node = state.nodes.find(n => n.id === id);
+      if (!node) return;
+      const p = svgPoint(evt);
+      resizing = {
+        id,
+        corner: handle.getAttribute('data-corner'),
+        startX: p.x,
+        startY: p.y,
+        start: { x: node.x, y: node.y, w: node.w, h: node.h }
+      };
+    });
 
     function setHovered(id) {
       if (hoverClearTimer) { clearTimeout(hoverClearTimer); hoverClearTimer = null; }
@@ -922,11 +1010,52 @@
       input.addEventListener('blur', () => commit(true));
     }
 
+    // Inline, optional edge label: a centered <input> at the arrow midpoint.
+    // Empty value clears the label (tags are optional).
     function startEdgeLabelEdit(edgeId) {
       const edge = state.edges.find(e => e.id === edgeId);
       if (!edge) return;
-      const next = window.prompt('Etiqueta de la flecha (opcional):', edge.label || '');
-      if (next != null) { edge.label = next.trim(); onChange(state); render(); }
+      const a = state.nodes.find(n => n.id === edge.from);
+      const b = state.nodes.find(n => n.id === edge.to);
+      if (!a || !b) return;
+      const p1 = edgePoint(a, b.x + b.w / 2, b.y + b.h / 2);
+      const p2 = edgePoint(b, p1.x, p1.y);
+      const mx = (p1.x + p2.x) / 2;
+      const my = (p1.y + p2.y) / 2;
+      svg.querySelectorAll('.de-inline-editor').forEach(el => el.remove());
+      const fo = document.createElementNS(NS, 'foreignObject');
+      fo.setAttribute('class', 'de-inline-editor');
+      fo.setAttribute('x', mx - 80);
+      fo.setAttribute('y', my - 16);
+      fo.setAttribute('width', 160);
+      fo.setAttribute('height', 32);
+      const input = document.createElement('input');
+      input.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+      input.setAttribute('type', 'text');
+      input.setAttribute('class', 'de-inline-input de-edge-input');
+      input.setAttribute('placeholder', 'etiqueta (opcional)');
+      input.value = edge.label || '';
+      fo.appendChild(input);
+      svg.appendChild(fo);
+      requestAnimationFrame(() => { input.focus(); input.select(); });
+      let committed = false;
+      const commit = (save) => {
+        if (committed) return;
+        committed = true;
+        if (save) {
+          const next = input.value.trim();
+          if (next !== (edge.label || '')) { edge.label = next; onChange(state); }
+        }
+        fo.remove();
+        render();
+        setMode(null);
+      };
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') { ev.preventDefault(); commit(true); }
+        else if (ev.key === 'Escape') { ev.preventDefault(); commit(false); }
+        ev.stopPropagation();
+      });
+      input.addEventListener('blur', () => commit(true));
     }
 
     // ---- Toolbar ----
@@ -1018,7 +1147,7 @@
     svg.addEventListener('click', (evt) => {
       if (dragging && dragging.moved) return;
       if (marquee) return;
-      if (evt.target.closest('.de-anchor, .de-anchor-ring')) return;
+      if (evt.target.closest('.de-anchor, .de-anchor-ring, .de-resize')) return;
       const p = svgPoint(evt);
       const nodeEl = evt.target.closest('.de-node');
 
@@ -1159,7 +1288,7 @@
         return;
       }
       if (mode) return;
-      if (evt.target.closest('.de-anchor, .de-anchor-ring')) return;
+      if (evt.target.closest('.de-anchor, .de-anchor-ring, .de-resize')) return;
       if (evt.button !== 0) return; // left button only
       const nodeEl = evt.target.closest('.de-node');
       const edgeEl = evt.target.closest('.de-edge');
@@ -1258,6 +1387,14 @@
         return;
       }
       const p = svgPoint(evt);
+      if (resizing) {
+        const node = state.nodes.find(n => n.id === resizing.id);
+        if (node) {
+          applyResize(node, resizing.corner, p.x - resizing.startX, p.y - resizing.startY, resizing.start);
+          render();
+        }
+        return;
+      }
       if (marquee) {
         marquee.curX = p.x;
         marquee.curY = p.y;
@@ -1323,9 +1460,18 @@
         gMarquee.innerHTML = '';
         render();
       }
+      if (resizing) {
+        onChange(state);
+        resizing = null;
+        render();
+      }
+      const wasDragging = !!dragging;
       if (dragging && dragging.moved) onChange(state);
       dragging = null;
       gSnap.innerHTML = '';
+      // Re-render after release so the resize handles (suppressed while a press
+      // is held) reappear for a node selected by a plain click without a move.
+      if (wasDragging) render();
     }
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
@@ -1373,6 +1519,24 @@
         selectedEdgeId = null;
         render();
       }
+      // Arrow keys nudge the selected node(s): 1px, or 10px with Shift.
+      if (/^Arrow(Up|Down|Left|Right)$/.test(evt.key) && selectedNodes.size > 0) {
+        evt.preventDefault();
+        const step = evt.shiftKey ? 10 : 1;
+        let dx = 0, dy = 0;
+        if (evt.key === 'ArrowUp') dy = -step;
+        else if (evt.key === 'ArrowDown') dy = step;
+        else if (evt.key === 'ArrowLeft') dx = -step;
+        else if (evt.key === 'ArrowRight') dx = step;
+        selectedNodes.forEach(id => {
+          const n = state.nodes.find(x => x.id === id);
+          if (!n) return;
+          n.x = Math.max(0, Math.min(CANVAS_W - n.w, n.x + dx));
+          n.y = Math.max(0, Math.min(CANVAS_H - n.h, n.y + dy));
+        });
+        render();
+        onChange(state);
+      }
     }
     document.addEventListener('keydown', onKey);
 
@@ -1383,7 +1547,7 @@
 
     function toSVG() {
       const cl = svg.cloneNode(true);
-      cl.querySelectorAll('.de-inline-editor, .de-edge-hit, [data-ghost], [data-anchors], [data-snap], [data-marquee], .de-canvas-bg, .de-canvas-bounds').forEach(el => el.remove());
+      cl.querySelectorAll('.de-inline-editor, .de-edge-hit, [data-ghost], [data-anchors], [data-resize], [data-snap], [data-marquee], .de-canvas-bg, .de-canvas-bounds').forEach(el => el.remove());
       cl.setAttribute('xmlns', NS);
       // Frame the export on the actual content (or a sensible default if empty).
       const bb = nodesBoundingBox();

@@ -239,6 +239,24 @@
 .diagram-editor.is-connecting .de-canvas * { cursor: crosshair !important; }
 .diagram-editor.is-connecting .de-anchor { opacity: 0.4; }
 
+/* corner resize handles (shown for a single selected node) */
+.de-resize {
+  fill: var(--surface-2);
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  pointer-events: all;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.16));
+  transition: fill 120ms ease;
+}
+.de-resize:hover { fill: var(--accent); }
+.de-resize-nw, .de-resize-se { cursor: nwse-resize; }
+.de-resize-ne, .de-resize-sw { cursor: nesw-resize; }
+.diagram-editor.is-connecting .de-resize,
+.diagram-editor.is-placing .de-resize { display: none; }
+
+/* inline edge-label input reuses .de-inline-input, slightly lighter weight */
+.de-edge-input { font-weight: 500; }
+
 /* drop-target highlight while dragging an arrow */
 .de-node.is-drop-target .de-node-body {
   stroke-width: 2.5;
