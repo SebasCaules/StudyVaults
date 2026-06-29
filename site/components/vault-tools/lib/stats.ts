@@ -296,3 +296,355 @@ export function fmt(x: number, dp = 4): string {
   const r = Number(x.toFixed(dp));
   return Object.is(r, -0) ? "0" : String(r);
 }
+
+/* ============================================================================
+ * EXTENSIONES — toolkit ampliado de Proba (unidades 2–9)
+ *
+ * Funciones especiales (gamma/beta incompletas regularizadas), distribuciones
+ * adicionales del programa (Bernoulli, binomial negativa, hipergeométrica,
+ * gamma/Erlang, ji-cuadrado, t de Student), cuantiles por bisección y
+ * combinatoria de conteo. Todo funciones puras; correctitud > velocidad.
+ *
+ * Convenciones de la cátedra (ver wiki):
+ *  - geométrica y binomial negativa cuentan FRACASOS (soporte ℕ₀) por defecto;
+ *    `geometric` (arriba) es la versión "nº de ensayos" (ℕ). Acá sumamos
+ *    `geometricFailures` y `binomialNegative` con la convención de fracasos.
+ * ========================================================================== */
+
+/* ---------- funciones especiales: gamma y beta incompletas ---------- */
+
+const SF_ITMAX = 300;
+const SF_FPMIN = 1e-300;
+const SF_EPS = 1e-14;
+
+// Serie de potencias para P(a,x) — válida para x < a+1 (Numerical Recipes §6.2).
+function gammaPSeries(a: number, x: number): number {
+  if (x <= 0) return 0;
+  let ap = a;
+  let del = 1 / a;
+  let sum = del;
+  for (let n = 0; n < SF_ITMAX; n++) {
+    ap += 1;
+    del *= x / ap;
+    sum += del;
+    if (Math.abs(del) < Math.abs(sum) * SF_EPS) break;
+  }
+  return sum * Math.exp(-x + a * Math.log(x) - logGamma(a));
+}
+
+// Fracción continua para Q(a,x)=1−P(a,x) — válida para x ≥ a+1 (NR §6.2).
+function gammaQContinuedFraction(a: number, x: number): number {
+  let b = x + 1 - a;
+  let c = 1 / SF_FPMIN;
+  let d = 1 / b;
+  let h = d;
+  for (let i = 1; i < SF_ITMAX; i++) {
+    const an = -i * (i - a);
+    b += 2;
+    d = an * d + b;
+    if (Math.abs(d) < SF_FPMIN) d = SF_FPMIN;
+    c = b + an / c;
+    if (Math.abs(c) < SF_FPMIN) c = SF_FPMIN;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < SF_EPS) break;
+  }
+  return Math.exp(-x + a * Math.log(x) - logGamma(a)) * h;
+}
+
+/** P(a,x): gamma incompleta regularizada inferior γ(a,x)/Γ(a) (a>0, x≥0). */
+export function gammaPRegularized(a: number, x: number): number {
+  if (x <= 0 || a <= 0) return 0;
+  return x < a + 1 ? gammaPSeries(a, x) : 1 - gammaQContinuedFraction(a, x);
+}
+
+// Fracción continua de Lentz para I_x(a,b) (NR §6.4 betacf).
+function betaContinuedFraction(x: number, a: number, b: number): number {
+  const qab = a + b;
+  const qap = a + 1;
+  const qam = a - 1;
+  let c = 1;
+  let d = 1 - (qab * x) / qap;
+  if (Math.abs(d) < SF_FPMIN) d = SF_FPMIN;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m < SF_ITMAX; m++) {
+    const m2 = 2 * m;
+    let aa = (m * (b - m) * x) / ((qam + m2) * (a + m2));
+    d = 1 + aa * d;
+    if (Math.abs(d) < SF_FPMIN) d = SF_FPMIN;
+    c = 1 + aa / c;
+    if (Math.abs(c) < SF_FPMIN) c = SF_FPMIN;
+    d = 1 / d;
+    h *= d * c;
+    aa = (-(a + m) * (qab + m) * x) / ((a + m2) * (qap + m2));
+    d = 1 + aa * d;
+    if (Math.abs(d) < SF_FPMIN) d = SF_FPMIN;
+    c = 1 + aa / c;
+    if (Math.abs(c) < SF_FPMIN) c = SF_FPMIN;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < SF_EPS) break;
+  }
+  return h;
+}
+
+/** I_x(a,b): beta incompleta regularizada (x∈[0,1], a,b>0). */
+export function betaIRegularized(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const lfront =
+    logGamma(a + b) -
+    logGamma(a) -
+    logGamma(b) +
+    a * Math.log(x) +
+    b * Math.log(1 - x);
+  const front = Math.exp(lfront);
+  if (x < (a + 1) / (a + b + 2)) {
+    return (front * betaContinuedFraction(x, a, b)) / a;
+  }
+  return 1 - (front * betaContinuedFraction(1 - x, b, a)) / b;
+}
+
+// Bisección genérica sobre una CDF monótona: devuelve x con cdf(x)=p.
+function bisectQuantile(
+  cdf: (x: number) => number,
+  p: number,
+  lo: number,
+  hi: number,
+): number {
+  let a = lo;
+  let b = hi;
+  // expandir el extremo superior hasta cubrir p
+  for (let i = 0; i < 200 && cdf(b) < p; i++) b += b - a || 1;
+  for (let i = 0; i < 200; i++) {
+    const m = 0.5 * (a + b);
+    if (cdf(m) < p) a = m;
+    else b = m;
+  }
+  return 0.5 * (a + b);
+}
+
+/* ---------- ji-cuadrado, gamma/Erlang, t de Student (pdf/cdf/cuantil) ---------- */
+
+export const gammaPdf = (x: number, alpha: number, lambda: number) =>
+  x <= 0
+    ? 0
+    : Math.exp(
+        alpha * Math.log(lambda) +
+          (alpha - 1) * Math.log(x) -
+          lambda * x -
+          logGamma(alpha),
+      );
+export const gammaCdf = (x: number, alpha: number, lambda: number) =>
+  x <= 0 ? 0 : gammaPRegularized(alpha, lambda * x);
+
+export const chiSquarePdf = (x: number, k: number) => gammaPdf(x, k / 2, 0.5);
+export const chiSquareCdf = (x: number, k: number) =>
+  x <= 0 ? 0 : gammaPRegularized(k / 2, x / 2);
+
+export const studentTPdf = (t: number, df: number) =>
+  Math.exp(
+    logGamma((df + 1) / 2) -
+      logGamma(df / 2) -
+      0.5 * Math.log(df * Math.PI),
+  ) * Math.pow(1 + (t * t) / df, -(df + 1) / 2);
+export const studentTCdf = (t: number, df: number) => {
+  const x = df / (df + t * t);
+  const ib = 0.5 * betaIRegularized(x, df / 2, 0.5);
+  return t > 0 ? 1 - ib : ib;
+};
+
+/** Cuantil t de Student F⁻¹(p) con df g.l. (p∈(0,1)); simétrico en 0. */
+export function studentTQuantile(p: number, df: number): number {
+  if (p <= 0) return -Infinity;
+  if (p >= 1) return Infinity;
+  if (p === 0.5) return 0;
+  const cdf = (t: number) => studentTCdf(t, df);
+  let lo = -1;
+  let hi = 1;
+  while (cdf(lo) > p) lo *= 2;
+  while (cdf(hi) < p) hi *= 2;
+  for (let i = 0; i < 200; i++) {
+    const m = 0.5 * (lo + hi);
+    if (cdf(m) < p) lo = m;
+    else hi = m;
+  }
+  return 0.5 * (lo + hi);
+}
+
+/** Cuantil ji-cuadrado F⁻¹(p) con k g.l. (p∈(0,1)). */
+export function chiSquareQuantile(p: number, k: number): number {
+  if (p <= 0) return 0;
+  if (p >= 1) return Infinity;
+  return bisectQuantile((x) => chiSquareCdf(x, k), p, 0, Math.max(10, 2 * k));
+}
+
+/** Cuantil Gamma(α,λ) F⁻¹(p) (p∈(0,1)). */
+export function gammaQuantile(p: number, alpha: number, lambda: number): number {
+  if (p <= 0) return 0;
+  if (p >= 1) return Infinity;
+  return bisectQuantile(
+    (x) => gammaCdf(x, alpha, lambda),
+    p,
+    0,
+    Math.max(1, (alpha + 4 * Math.sqrt(alpha)) / lambda),
+  );
+}
+
+/* ---------- distribuciones adicionales (mismo shape {pmf|pdf,cdf,mean,…}) ---------- */
+
+// Bernoulli(p): un ensayo éxito/fracaso. Soporte {0,1}.
+export const bernoulli = (p: number) => ({
+  discrete: true,
+  pmf: (k: number) => (k === 0 ? 1 - p : k === 1 ? p : 0),
+  cdf: (k: number) => (k < 0 ? 0 : k < 1 ? 1 - p : 1),
+  mean: p,
+  variance: p * (1 - p),
+  support: [0, 1] as [number, number],
+});
+
+// Geométrica — convención "nº de fracasos" antes del 1.er éxito (ℕ₀): E=q/p.
+export const geometricFailures = (p: number) => ({
+  discrete: true,
+  pmf: (k: number) =>
+    k < 0 || !Number.isInteger(k) ? 0 : Math.pow(1 - p, k) * p,
+  cdf: (k: number) => (k < 0 ? 0 : 1 - Math.pow(1 - p, Math.floor(k) + 1)),
+  mean: (1 - p) / p,
+  variance: (1 - p) / (p * p),
+  support: [0, Math.max(10, Math.ceil(Math.log(0.01) / Math.log(1 - p)))] as [
+    number,
+    number,
+  ],
+});
+
+// Binomial negativa (Pascal) — "nº de fracasos" antes del r-ésimo éxito (ℕ₀).
+export const binomialNegative = (r: number, p: number) => {
+  const mean = (r * (1 - p)) / p;
+  const variance = (r * (1 - p)) / (p * p);
+  return {
+    discrete: true,
+    pmf: (k: number) =>
+      k < 0 || !Number.isInteger(k)
+        ? 0
+        : Math.exp(
+            logChoose(k + r - 1, k) + r * Math.log(p) + k * Math.log(1 - p),
+          ),
+    cdf: (k: number) => {
+      if (k < 0) return 0;
+      let s = 0;
+      const kk = Math.floor(k);
+      for (let i = 0; i <= kk; i++)
+        s += Math.exp(
+          logChoose(i + r - 1, i) + r * Math.log(p) + i * Math.log(1 - p),
+        );
+      return Math.min(1, s);
+    },
+    mean,
+    variance,
+    support: [0, Math.max(10, Math.ceil(mean + 4 * Math.sqrt(variance)))] as [
+      number,
+      number,
+    ],
+  };
+};
+
+// Hipergeométrica(N,K,n): muestreo SIN reposición. K éxitos en la población.
+export const hypergeometric = (N: number, K: number, n: number) => {
+  const lo = Math.max(0, n - (N - K));
+  const hi = Math.min(n, K);
+  return {
+    discrete: true,
+    pmf: (k: number) =>
+      k < lo || k > hi || !Number.isInteger(k)
+        ? 0
+        : Math.exp(
+            logChoose(K, k) + logChoose(N - K, n - k) - logChoose(N, n),
+          ),
+    cdf: (k: number) => {
+      if (k < lo) return 0;
+      let s = 0;
+      const kk = Math.min(hi, Math.floor(k));
+      for (let i = lo; i <= kk; i++)
+        s += Math.exp(
+          logChoose(K, i) + logChoose(N - K, n - i) - logChoose(N, n),
+        );
+      return Math.min(1, s);
+    },
+    mean: (n * K) / N,
+    variance: n * (K / N) * (1 - K / N) * ((N - n) / (N - 1)),
+    support: [lo, hi] as [number, number],
+  };
+};
+
+// Gamma(α,λ): forma α, tasa λ. cdf vía gamma incompleta regularizada.
+export const gamma = (alpha: number, lambda: number) => ({
+  discrete: false,
+  pdf: (x: number) => gammaPdf(x, alpha, lambda),
+  cdf: (x: number) => gammaCdf(x, alpha, lambda),
+  quantile: (p: number) => gammaQuantile(p, alpha, lambda),
+  mean: alpha / lambda,
+  variance: alpha / (lambda * lambda),
+  support: [0, (alpha + 5 * Math.sqrt(alpha) + 1) / lambda] as [number, number],
+});
+
+// Erlang(k,λ): Gamma de forma entera = tiempo de la k-ésima ocurrencia Poisson.
+export const erlang = (k: number, lambda: number) => gamma(k, lambda);
+
+// Ji-cuadrado con k grados de libertad = Gamma(k/2, 1/2).
+export const chiSquare = (k: number) => ({
+  discrete: false,
+  pdf: (x: number) => chiSquarePdf(x, k),
+  cdf: (x: number) => chiSquareCdf(x, k),
+  quantile: (p: number) => chiSquareQuantile(p, k),
+  mean: k,
+  variance: 2 * k,
+  support: [0, k + 5 * Math.sqrt(2 * k) + 2] as [number, number],
+});
+
+// t de Student con df grados de libertad. Simétrica; colas pesadas.
+export const studentT = (df: number) => ({
+  discrete: false,
+  pdf: (t: number) => studentTPdf(t, df),
+  cdf: (t: number) => studentTCdf(t, df),
+  quantile: (p: number) => studentTQuantile(p, df),
+  mean: df > 1 ? 0 : NaN,
+  variance: df > 2 ? df / (df - 2) : df > 1 ? Infinity : NaN,
+  support: [
+    -Math.max(4, studentTQuantile(0.999, df)),
+    Math.max(4, studentTQuantile(0.999, df)),
+  ] as [number, number],
+});
+
+/* ---------- combinatoria de conteo (unidad 2) ---------- */
+
+/** n! exacto (n entero ≥0); Infinity si n>170 (overflow de doble). */
+export function factorial(n: number): number {
+  if (n < 0 || !Number.isInteger(n)) return NaN;
+  if (n > 170) return Infinity;
+  let r = 1;
+  for (let i = 2; i <= n; i++) r *= i;
+  return r;
+}
+
+/** Variaciones (permutaciones de k de n, ORDEN importa, SIN repetición): n!/(n−k)!. */
+export function permutations(n: number, k: number): number {
+  if (n < 0 || k < 0 || k > n || !Number.isInteger(n) || !Number.isInteger(k))
+    return NaN;
+  return Math.round(Math.exp(logFactorial(n) - logFactorial(n - k)));
+}
+
+/** Variaciones CON repetición: nᵏ. */
+export function variationsWithRep(n: number, k: number): number {
+  if (n < 0 || k < 0) return NaN;
+  return Math.pow(n, k);
+}
+
+/** Combinaciones CON repetición: C(n+k−1, k). */
+export function combinationsWithRep(n: number, k: number): number {
+  if (n < 0 || k < 0 || !Number.isInteger(n) || !Number.isInteger(k))
+    return NaN;
+  return choose(n + k - 1, k);
+}
