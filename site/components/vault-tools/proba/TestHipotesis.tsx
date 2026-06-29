@@ -398,7 +398,7 @@ export default function TestHipotesisTool() {
                 showYGrid={false}
                 ariaLabel={`Densidad ${refName} con región de rechazo y estadístico observado`}
               >
-                  {({ sx, syTop, yBase, yTopPx }) => {
+                  {({ sx, syTop, yBase, yTopPx, fills, curve: drawCurve }) => {
                     // Sombreado de la región de rechazo según la cola.
                     const shadeRight =
                       critClamped !== null && (tail === "two" || tail === "right")
@@ -430,15 +430,13 @@ export default function TestHipotesisTool() {
                         {shadeRight.length > 1 && (
                           <path
                             d={areaPath(shadeRight, 1)}
-                            fill="var(--accent)"
-                            fillOpacity={0.22}
+                            fill={fills.areaAccent}
                           />
                         )}
                         {shadeLeft.length > 1 && (
                           <path
                             d={areaPath(shadeLeft, -1)}
-                            fill="var(--accent)"
-                            fillOpacity={0.22}
+                            fill={fills.areaAccent}
                           />
                         )}
 
@@ -453,6 +451,7 @@ export default function TestHipotesisTool() {
                           fill="none"
                           stroke="var(--vault-tint, var(--primary))"
                           strokeWidth={1.8}
+                          {...drawCurve()}
                         />
 
                         {/* límites críticos */}

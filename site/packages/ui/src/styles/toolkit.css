@@ -758,6 +758,86 @@
   .tk__card:hover { transform: none; }
 }
 
+/* ============================================================
+   PLOTS — sistema visual de los gráficos SVG (proba/plot.tsx y
+   demás). Profundidad del lienzo, animación de "dibujado" de las
+   curvas, y leyenda. Construido sobre tokens; se tinta por
+   --vault-tint y conmuta dark/light. Aditivo: no altera el resto.
+   ============================================================ */
+
+/* lienzo con un sutil lavado de tinte arriba para dar profundidad */
+.vtool-plot {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--vault-tint, var(--accent)) 5%, transparent),
+      transparent 42%
+    ),
+    var(--surface-3);
+  padding: 14px 14px 10px;
+}
+
+/* curva principal: trazo que se "dibuja" al montar (pathLength=1 normaliza) */
+.tk-plot-curve {
+  filter: drop-shadow(
+    0 1px 5px color-mix(in srgb, var(--vault-tint, var(--accent)) 30%, transparent)
+  );
+}
+.tk-plot-curve--accent {
+  filter: drop-shadow(
+    0 1px 5px color-mix(in srgb, var(--accent) 30%, transparent)
+  );
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tk-plot-curve {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: tkPlotDraw 0.9s var(--ease) forwards;
+  }
+}
+@keyframes tkPlotDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* leyenda del plot (reemplaza los swatches inline de antes) */
+.vtool-plot-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 11px;
+}
+.vtool-plot-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+.vtool-plot-legend__swatch {
+  width: 18px;
+  flex: 0 0 auto;
+  display: inline-block;
+  border-radius: 1px;
+}
+.vtool-plot-legend__swatch--area {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  opacity: 0.55;
+}
+
+/* refinamiento universal: dígitos tabulares para que los números no “bailen” */
+.vtool-kv .v,
+.vtool-bignum,
+.vtool-table td code,
+.vtool-matrix input,
+.vtool-mout td {
+  font-variant-numeric: tabular-nums;
+}
+.vtool-bignum { letter-spacing: -0.015em; }
+
 /* ---- responsive: grilla a 1 columna en pantallas chicas ---- */
 @media (max-width: 560px) {
   .tk__grid { grid-template-columns: 1fr; }

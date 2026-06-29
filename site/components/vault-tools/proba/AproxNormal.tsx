@@ -296,8 +296,7 @@ export default function AproxNormalTool() {
                                 s.yBase
                               } Z`
                             }
-                            fill="var(--accent)"
-                            fillOpacity={0.16}
+                            fill={s.fills.areaAccent}
                           />
                         )}
 
@@ -338,6 +337,7 @@ export default function AproxNormalTool() {
                           fill="none"
                           stroke="var(--accent)"
                           strokeWidth={1.8}
+                          {...s.curve(true)}
                         />
 
                         {/* Bordes del intervalo continuo */}

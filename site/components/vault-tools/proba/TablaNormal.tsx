@@ -394,8 +394,7 @@ export default function TablaNormalTool() {
                                 .join(" ") +
                               ` L ${s.sx(zClamped)} ${s.yBase} Z`
                             }
-                            fill="var(--vault-tint, var(--primary))"
-                            fillOpacity={0.22}
+                            fill={s.fills.area}
                           />
                         )}
                         {/* curva normal */}
@@ -409,6 +408,7 @@ export default function TablaNormalTool() {
                           fill="none"
                           stroke="var(--vault-tint, var(--primary))"
                           strokeWidth={1.8}
+                          {...s.curve()}
                         />
                         {/* línea vertical en z + etiqueta */}
                         {zClamped !== null && (
@@ -478,8 +478,7 @@ export default function TablaNormalTool() {
                                 .join(" ") +
                               ` L ${s.sx(xClamped)} ${s.yBase} Z`
                             }
-                            fill="var(--vault-tint, var(--primary))"
-                            fillOpacity={0.22}
+                            fill={s.fills.area}
                           />
                         )}
                         <path
@@ -492,6 +491,7 @@ export default function TablaNormalTool() {
                           fill="none"
                           stroke="var(--vault-tint, var(--primary))"
                           strokeWidth={1.8}
+                          {...s.curve()}
                         />
                         <line
                           x1={s.sx(xClamped)}
@@ -559,8 +559,7 @@ export default function TablaNormalTool() {
                                 .join(" ") +
                               ` L ${s.sx(bClamped)} ${s.yBase} Z`
                             }
-                            fill="var(--vault-tint, var(--primary))"
-                            fillOpacity={0.22}
+                            fill={s.fills.area}
                           />
                         )}
                         <path
@@ -573,6 +572,7 @@ export default function TablaNormalTool() {
                           fill="none"
                           stroke="var(--vault-tint, var(--primary))"
                           strokeWidth={1.8}
+                          {...s.curve()}
                         />
                         {/* líneas verticales en a y b + etiquetas */}
                         <line

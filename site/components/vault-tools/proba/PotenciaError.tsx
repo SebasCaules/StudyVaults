@@ -337,6 +337,7 @@ export default function PotenciaErrorTool() {
                         fill="none"
                         stroke="var(--vault-tint, var(--primary))"
                         strokeWidth={1.8}
+                        {...s.curve()}
                       />
                       {/* μ0 (referencia) */}
                       <line

@@ -207,8 +207,7 @@ export default function DescriptivaTool() {
                           y={PAD.t + innerH - hgt}
                           width={w}
                           height={hgt}
-                          fill="var(--vault-tint, var(--primary))"
-                          fillOpacity={0.5}
+                          fill={s.fills.area}
                           stroke="var(--vault-tint, var(--primary))"
                           strokeWidth={1}
                         />

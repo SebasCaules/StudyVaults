@@ -730,8 +730,7 @@ export default function DistribucionesTool() {
                                 s.yBase
                               } Z`
                             }
-                            fill="var(--vault-tint, var(--primary))"
-                            fillOpacity={0.14}
+                            fill={s.fills.area}
                           />
                           <path
                             d={polyline(
@@ -743,6 +742,7 @@ export default function DistribucionesTool() {
                             fill="none"
                             stroke="var(--vault-tint, var(--primary))"
                             strokeWidth={1.8}
+                            {...s.curve()}
                           />
                         </g>
                       )}
