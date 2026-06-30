@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+
+// useLayoutEffect avisa en SSR; en el prerender (sin window) cae a useEffect.
+const useIsoLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 // Riel lateral pegado al borde, colapsable. Persiste estado en localStorage.
 // En mobile el riel izquierdo es un drawer: scrim + bloqueo de scroll + cierre
@@ -19,6 +29,35 @@ export default function WikiRail({
   const [open, setOpen] = useState(true);
   const [mounted, setMounted] = useState(false);
   const scrollId = useRef(`wiki-rail-${side}`).current;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollKey = `${storageKey}-scroll`;
+  const rafPending = useRef(false);
+
+  // Restaurar la posición de scroll del riel ANTES del paint (sin salto). El
+  // riel se re-monta en cada navegación; sessionStorage la conserva por pestaña.
+  useIsoLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    try {
+      const y = sessionStorage.getItem(scrollKey);
+      if (y != null) el.scrollTop = parseInt(y, 10) || 0;
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Guardar la posición mientras se scrollea (throttle con rAF).
+  const onScroll = () => {
+    if (rafPending.current) return;
+    rafPending.current = true;
+    requestAnimationFrame(() => {
+      rafPending.current = false;
+      const el = scrollRef.current;
+      if (!el) return;
+      try {
+        sessionStorage.setItem(scrollKey, String(el.scrollTop));
+      } catch {}
+    });
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -89,7 +128,12 @@ export default function WikiRail({
           </svg>
           <span className="rail__toggle-label">{label}</span>
         </button>
-        <div className="rail__scroll" id={scrollId}>
+        <div
+          className="rail__scroll"
+          id={scrollId}
+          ref={scrollRef}
+          onScroll={onScroll}
+        >
           {children}
         </div>
       </aside>

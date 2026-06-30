@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+
+// useLayoutEffect avisa en SSR; en el prerender (sin window) cae a useEffect.
+const useIsoLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 import type { NavSection } from "@/lib/content/nav-tree";
 import { getVault } from "@/lib/content/vaults";
 import { withBase } from "@/lib/content/slug";
@@ -27,7 +31,9 @@ export default function Sidebar({
   const [openMap, setOpenMap] = useState<Record<string, boolean> | null>(null);
   const lsKey = `sv-secs-${vault}`;
 
-  useEffect(() => {
+  // Restaurar el estado abierto/cerrado ANTES del paint para que las secciones
+  // no parpadeen (cerrarse y reabrirse) en cada navegación.
+  useIsoLayoutEffect(() => {
     try {
       const raw = localStorage.getItem(lsKey);
       setOpenMap(raw ? JSON.parse(raw) : {});
