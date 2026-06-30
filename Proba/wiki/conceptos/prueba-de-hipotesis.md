@@ -80,6 +80,8 @@ con valor de referencia $\theta_0$):
 
 > **Intuición (tira y afloje entre los dos errores).** Bajar $\alpha$ (error tipo I) **sube $\beta$** (error tipo II), y viceversa: no se pueden minimizar los dos a la vez. En el extremo $\alpha\to 0$ no se rechaza $H_0$ nunca (ningún inocente condenado, pero todos los culpables absueltos); en el extremo $\beta\to 0$ se rechaza $H_0$ siempre (ningún culpable se escapa, pero todos los inocentes condenados). Por eso se fija $\alpha$ en un valor chico pero no nulo (típicamente $0.05$ o $0.01$) priorizando controlar el error tipo I, y se acepta el $\beta$ resultante o se lo controla vía el tamaño muestral $n$ (ver [[diseno-de-prueba-tamano-muestral]]).
 
+![[regiones-rechazo.svg]]
+
 ## Procedimiento (estilo parcial)
 
 1. Identificar el parámetro y plantear $H_0$ y $H_1$ (definir el tipo de cola).

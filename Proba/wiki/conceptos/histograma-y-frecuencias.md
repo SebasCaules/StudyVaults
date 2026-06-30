@@ -35,6 +35,8 @@ longitud**.
 El **histograma** es el gráfico de barras de $n_k$ (o $f_k$). El **polígono de
 frecuencias** une los puntos medios de las barras.
 
+![[histograma.svg]]
+
 > **Observación.** Las barras del histograma de una variable continua se dibujan **contiguas** (sin espacio entre ellas), porque representan un rango continuo de valores. Un intervalo con frecuencia cero no significa valores imposibles, sino infrecuentes: un dato podría caer en cualquier parte de ese rango, simplemente no lo hizo en esta muestra. Separar las barras transmitiría la idea incorrecta de un salto en los valores posibles (eso corresponde a una variable discreta).
 
 ## Función de frecuencia relativa acumulada

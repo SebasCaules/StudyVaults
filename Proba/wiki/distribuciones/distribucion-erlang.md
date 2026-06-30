@@ -46,6 +46,8 @@ y derivando la FDA $F_{T_k}(t)=1-P(T_k>t)$ (telescopiando la suma) se obtiene la
 **densidad**:
 $$ f_{T_k}(t)=\frac{\lambda^{k}\,t^{\,k-1}\,e^{-\lambda t}}{(k-1)!}\qquad (t>0). $$
 
+![[erlang-densidad.svg]]
+
 ## Esperanza y varianza
 
 Como $T_k$ es suma de $k$ exponenciales i.i.d. con $E[\tau_i]=1/\lambda$ y

@@ -37,6 +37,8 @@ envejecimiento:
 
 **Intuición.** $R(t)$ no es la probabilidad de fallar antes de $t$, sino el peligro **en este instante dado que llegaste vivo hasta acá**. Es la diferencia entre "¿qué chance tengo de morir alguna vez?" (eso es $F_T$) y "a mi edad actual, ¿qué tan riesgoso es el próximo ratito?" (eso es $R$). Un auto viejo tiene $R$ alta aunque ya haya sobrevivido mucho; una pieza recién fabricada con defectos de fábrica tiene $R$ alta al principio y luego baja.
 
+![[tasa-fallas-banera.svg]]
+
 ## Relación con la densidad y la supervivencia
 
 Como $\dfrac{d}{dt}\big[1-F_T(t)\big]=-f_T(t)$, la tasa de fallas es la derivada logarítmica

@@ -43,6 +43,8 @@ $$ \text{Var}(aX+bY)=a^2\text{Var}(X)+2ab\,\text{Cov}(X,Y)+b^2\text{Var}(Y). $$
 
 $$ \rho_{X,Y}=\frac{\text{Cov}(X,Y)}{\sigma_X\,\sigma_Y}. $$
 
+![[correlacion-scatter.svg]]
+
 ### Propiedad 1: $\rho_{X,Y}\in[-1,+1]$
 
 Demostración (según [[teorica-correlacion-entre-menos-uno-y-uno]]): el polinomio

@@ -22,6 +22,8 @@ los cálculos son **aproximaciones**.
 La clave es la **marca de clase** $x_i = \dfrac{L_i + L_{s,i}}{2}$ (punto medio del
 intervalo), que actúa como representante del intervalo.
 
+![[datos-agrupados-ojiva.svg]]
+
 > **Intuición.** Como no sabés dónde cayó cada dato dentro de su intervalo, hacés la
 > apuesta más neutral: suponés que todos están justo en el medio (la marca de clase)
 > y que se reparten **uniformemente** dentro del intervalo. Por eso los resultados son

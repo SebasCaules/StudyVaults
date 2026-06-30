@@ -30,11 +30,12 @@ usan uno tras otro). Es la suma de exponenciales independientes.
 
 Caso del curso (forma entera $n$), según [[teorica-suma-exponenciales]] y la
 tabla del [[tp7-suma-de-va]]:
-$$ f_{\Gamma(n,\lambda)}(x)=\frac{\lambda^{n}\,x^{\,n-1}\,e^{-\lambda x}}{(n-1)!}
-   =\frac{(\lambda x)^{n-1}}{(n-1)!}\,\lambda e^{-\lambda x}\qquad (x>0). $$
+$$ f_{\Gamma(n,\lambda)}(x)=\frac{\lambda^{n}\,x^{\,n-1}\,e^{-\lambda x}}{(n-1)!} =\frac{(\lambda x)^{n-1}}{(n-1)!}\,\lambda e^{-\lambda x}\qquad (x>0). $$
 
 Forma general (forma $\alpha$ real, reemplazando $(n-1)!$ por $\Gamma(\alpha)$):
 $$ f_X(x)=\frac{\lambda^{\alpha}\,x^{\,\alpha-1}\,e^{-\lambda x}}{\Gamma(\alpha)}\qquad (x>0). $$
+
+![[gamma-densidad.svg]]
 
 ## Esperanza y varianza
 
@@ -52,8 +53,7 @@ $$ f_X(x)=\frac{\lambda^{\alpha}\,x^{\,\alpha-1}\,e^{-\lambda x}}{\Gamma(\alpha)
 **Deducción (caso entero).** Como $X=\sum_{i=1}^n\tau_i$ con
 $\tau_i\sim\mathrm{Exp}(\lambda)$ i.i.d. ($E[\tau_i]=1/\lambda$,
 $V(\tau_i)=1/\lambda^2$) e independientes:
-$$ E[X]=\sum_{i=1}^n E[\tau_i]=\frac{n}{\lambda},\qquad
-   V(X)=\sum_{i=1}^n V(\tau_i)=\frac{n}{\lambda^{2}}. $$
+$$ E[X]=\sum_{i=1}^n E[\tau_i]=\frac{n}{\lambda},\qquad V(X)=\sum_{i=1}^n V(\tau_i)=\frac{n}{\lambda^{2}}. $$
 
 ## Función generadora de momentos
 

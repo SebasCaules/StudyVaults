@@ -49,6 +49,8 @@ Con $m$ grados de libertad (escrito $n$ en la teórica), según
 
 $$f_T(t) = \frac{1}{\sqrt{(m)\pi}}\;\frac{\Gamma\!\left(\frac{m+1}{2}\right)}{\Gamma\!\left(\frac{m}{2}\right)}\left(1+\frac{t^2}{m}\right)^{-\frac{m+1}{2}}.$$
 
+![[t-student-densidad.svg]]
+
 Es **simétrica** respecto de 0 ($f_T(-t)=f_T(t)$) y tiene **colas más pesadas**
 que la normal. La $\Gamma(\cdot)$ es la función gamma ($\Gamma(n+1)=n!$).
 
@@ -131,8 +133,7 @@ desconocer $\sigma$ y ser $n=10$ chico $\Rightarrow$ se usa $T\sim t_{n-1}=t_9$.
 Bilateral, $\gamma=0.9\Rightarrow\frac{1+\gamma}{2}=0.95$.
 
 **Cálculo.** Con $\sum x_i=9866$ y $\sum x_i^2=9\,734\,034$:
-$$\overline x_{10}=\frac{9866}{10}=986.6,\qquad
-S_{10}^2=\frac{1}{9}\left(9\,734\,034 - 10\cdot 986.6^2\right)\Rightarrow S_{10}=5.1467.$$
+$$\overline x_{10}=\frac{9866}{10}=986.6,\qquad S_{10}^2=\frac{1}{9}\left(9\,734\,034 - 10\cdot 986.6^2\right)\Rightarrow S_{10}=5.1467.$$
 De la tabla, $t_{9,0.95}=1.8331$. La semiamplitud:
 $$\Delta_B = t_{9,0.95}\cdot\frac{S_{10}}{\sqrt{10}}=1.8331\cdot\frac{5.1467}{\sqrt{10}}\approx 2.9834\approx 3.$$
 

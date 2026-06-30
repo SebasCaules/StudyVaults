@@ -48,6 +48,8 @@ $$ P(|X-\mu|\ge\varepsilon)\le\frac{\sigma_X^2}{\varepsilon^2}. $$
 **Idea de demostración:** aplicar Markov a la v.a. no negativa $(X-\mu)^2$ con $\alpha=\varepsilon^2$:
 $$ P(|X-\mu|\ge\varepsilon)=P\big((X-\mu)^2\ge\varepsilon^2\big)\le\frac{E[(X-\mu)^2]}{\varepsilon^2}=\frac{\sigma_X^2}{\varepsilon^2}. $$
 
+![[chebyshev-cota.svg]]
+
 ### Forma para promedios (i.i.d.)
 Si $\{X_k\}_{k=1}^n$ son i.i.d. y $\bar X_n=\tfrac1n\sum X_k$ ([[promedio-muestral]]),
 como $V(\bar X_n)=\sigma_X^2/n$:

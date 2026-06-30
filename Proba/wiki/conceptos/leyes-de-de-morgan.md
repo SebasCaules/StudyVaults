@@ -16,8 +16,7 @@ en "complemento de la unión", el truco que más aparece en parciales de
 
 Las **leyes de De Morgan** relacionan complemento, unión e intersección de eventos.
 Para dos eventos $C, D$:
-$$ \overline{C\cup D} = \overline{C}\cap\overline{D}, \qquad
-   \overline{C\cap D} = \overline{C}\cup\overline{D}. $$
+$$ \overline{C\cup D} = \overline{C}\cap\overline{D}, \qquad \overline{C\cap D} = \overline{C}\cup\overline{D}. $$
 En palabras: el complemento de "$C$ **o** $D$" es "**ni** $C$ **ni** $D$"; el
 complemento de "$C$ **y** $D$" es "no $C$ **o** no $D$".
 
@@ -27,8 +26,7 @@ complemento de "$C$ **y** $D$" es "no $C$ **o** no $D$".
 **da vuelta** el "y" en "o" y viceversa.
 
 **Versión general** (para $A_1,\dots,A_n$):
-$$ \overline{\bigcup_{i} A_i} = \bigcap_{i}\overline{A_i}, \qquad
-   \overline{\bigcap_{i} A_i} = \bigcup_{i}\overline{A_i}. $$
+$$ \overline{\bigcup_{i} A_i} = \bigcap_{i}\overline{A_i}, \qquad \overline{\bigcap_{i} A_i} = \bigcup_{i}\overline{A_i}. $$
 
 ## Consecuencias sobre probabilidades
 Combinando De Morgan con el [[axiomas-de-probabilidad|complemento]]
@@ -46,9 +44,7 @@ si no tiene **ninguno** de los tres antígenos $A$, $B$, $Rh$: el evento es
 $0^- = \overline{A}\cap\overline{B}\cap\overline{Rh}$.
 
 **Resolución.** Por De Morgan,
-$$ P(0^-) = P\!\left(\overline{A}\cap\overline{B}\cap\overline{Rh}\right)
-         = 1 - P\!\left(\overline{\,\overline{A}\cap\overline{B}\cap\overline{Rh}\,}\right)
-         = 1 - P(A\cup B\cup Rh). $$
+$$ P(0^-) = P\!\left(\overline{A}\cap\overline{B}\cap\overline{Rh}\right) = 1 - P\!\left(\overline{\,\overline{A}\cap\overline{B}\cap\overline{Rh}\,}\right) = 1 - P(A\cup B\cup Rh). $$
 Con [[tecnica-conteo-combinatoria|inclusión-exclusión]] de 3 eventos y los datos
 $P(A)=0.4$, $P(B)=0.5$, $P(Rh)=0.6$, $P(A\cap B)=0.2$, $P(A\cap Rh)=0.3$,
 $P(B\cap Rh)=0.3$, $P(A\cap B\cap Rh)=0.2$:

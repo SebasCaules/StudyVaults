@@ -30,8 +30,7 @@ $$\mathrm{mse}(\hat\theta) = E\!\left[(\hat\theta-\theta)^2\right].$$
 Sumando y restando $E[\hat\theta]$ adentro del cuadrado, el término cruzado se
 anula y queda la descomposición fundamental **sesgo–varianza**:
 
-$$\boxed{\;\mathrm{mse}(\hat\theta) = V(\hat\theta) + \mathrm{sesgo}^2(\hat\theta)\;}
-\qquad \mathrm{sesgo}(\hat\theta) = E[\hat\theta]-\theta.$$
+$$\boxed{\;\mathrm{mse}(\hat\theta) = V(\hat\theta) + \mathrm{sesgo}^2(\hat\theta)\;} \qquad \mathrm{sesgo}(\hat\theta) = E[\hat\theta]-\theta.$$
 
 - **Estimador insesgado:** $\mathrm{sesgo}(\hat\theta)=0 \iff E[\hat\theta]=\theta$.
   En promedio da en el blanco.
@@ -185,11 +184,9 @@ máxima verosimilitud de $\alpha$ con $X_i$ i.i.d. para
 (b) $X\sim\text{Uniforme}(3,\alpha)$; (c) $X\sim\text{Uniforme}(\alpha,2)$.
 
 **(a) Laplace — derivando.** La log-verosimilitud es
-$$\mathcal L(\alpha)=\sum_{i=1}^n\left[-\ln(2\alpha)-\frac{|x_i|}{\alpha}\right]
-=-n\ln 2 - n\ln\alpha - \frac{1}{\alpha}\sum_{i=1}^n|x_i|.$$
+$$\mathcal L(\alpha)=\sum_{i=1}^n\left[-\ln(2\alpha)-\frac{|x_i|}{\alpha}\right] =-n\ln 2 - n\ln\alpha - \frac{1}{\alpha}\sum_{i=1}^n|x_i|.$$
 Derivando e igualando a cero:
-$$\frac{d\mathcal L}{d\alpha}=-\frac{n}{\alpha}+\frac{1}{\alpha^2}\sum_{i=1}^n|x_i|=0
-\;\Rightarrow\; \boxed{\hat\alpha=\frac1n\sum_{i=1}^n |x_i|}.$$
+$$\frac{d\mathcal L}{d\alpha}=-\frac{n}{\alpha}+\frac{1}{\alpha^2}\sum_{i=1}^n|x_i|=0 \;\Rightarrow\; \boxed{\hat\alpha=\frac1n\sum_{i=1}^n |x_i|}.$$
 
 **(b) Uniforme$(3,\alpha)$ — por soporte.** La densidad es
 $f(x)=\frac{1}{\alpha-3}$ para $3<x<\alpha$. La verosimilitud
@@ -224,17 +221,14 @@ para $p\in(0,1)$, $\alpha,\beta>0$. Hallar el estimador MAP de $P$.
 **Planteo.** Con $s=\sum_{i=1}^n x_i$ (número de éxitos), la verosimilitud es
 $f(x\mid p)=p^{s}(1-p)^{n-s}$. La posterior es proporcional al producto
 verosimilitud $\times$ prior:
-$$g(p\mid x)\;\propto\; p^{s}(1-p)^{n-s}\cdot p^{\alpha-1}(1-p)^{\beta-1}
-= p^{\,s+\alpha-1}(1-p)^{\,n-s+\beta-1}.$$
+$$g(p\mid x)\;\propto\; p^{s}(1-p)^{n-s}\cdot p^{\alpha-1}(1-p)^{\beta-1} = p^{\,s+\alpha-1}(1-p)^{\,n-s+\beta-1}.$$
 
 **Cálculo.** Tomando logaritmo (la constante de normalización no depende de $p$):
 $$Q(p)=(s+\alpha-1)\ln p + (n-s+\beta-1)\ln(1-p).$$
 Derivando e igualando a cero:
-$$Q'(p)=\frac{s+\alpha-1}{p}-\frac{n-s+\beta-1}{1-p}=0
-\;\Rightarrow\; (s+\alpha-1)(1-p)=(n-s+\beta-1)\,p,$$
+$$Q'(p)=\frac{s+\alpha-1}{p}-\frac{n-s+\beta-1}{1-p}=0 \;\Rightarrow\; (s+\alpha-1)(1-p)=(n-s+\beta-1)\,p,$$
 y despejando $p$:
-$$\boxed{\hat p_{\text{MAP}}=\frac{s+\alpha-1}{n+\alpha+\beta-2}
-=\frac{\sum_i x_i+\alpha-1}{n+\alpha+\beta-2}.}$$
+$$\boxed{\hat p_{\text{MAP}}=\frac{s+\alpha-1}{n+\alpha+\beta-2} =\frac{\sum_i x_i+\alpha-1}{n+\alpha+\beta-2}.}$$
 
 **Resultado.** El prior Beta agrega $\alpha-1$ "éxitos" y $\beta-1$ "fracasos"
 virtuales. Con prior uniforme ($\alpha=\beta=1$) se recupera el estimador de MV
@@ -259,8 +253,7 @@ $$E[Y]=(a+b)\mu \stackrel{!}{=}\mu \;\Rightarrow\; \boxed{b=1-a}.$$
 $V(Y)=a^2\frac{\sigma^2}{n_1}+(1-a)^2\frac{\sigma^2}{n_2}
 =\frac{\sigma^2}{n_1}\left(a^2+\frac{(1-a)^2}{2}\right)$.
 Derivando respecto de $a$ e igualando a cero:
-$$\frac{d}{da}\!\left(a^2+\tfrac{(1-a)^2}{2}\right)=2a-(1-a)=3a-1=0
-\;\Rightarrow\; \boxed{a=\tfrac13},\quad b=\tfrac23.$$
+$$\frac{d}{da}\!\left(a^2+\tfrac{(1-a)^2}{2}\right)=2a-(1-a)=3a-1=0 \;\Rightarrow\; \boxed{a=\tfrac13},\quad b=\tfrac23.$$
 (La muestra más grande, $n_2=2n_1$, recibe el doble de peso — coherente.)
 
 **(c) Caso $n_1=n_2=n$.** Ahora

@@ -19,8 +19,7 @@ Soporte para [[variable-aleatoria-continua]] y [[funcion-de-densidad]].
 ## Puntos clave
 - **Tipo I — dominio de integración no acotado.** Se define como límite de una
   integral sobre un intervalo finito:
-  $$ \int_a^{+\infty} f(x)\,dx = \lim_{t\to\infty}\int_a^{t} f(x)\,dx,\qquad
-     \int_{-\infty}^{b} f(x)\,dx = \lim_{t\to-\infty}\int_t^{b} f(x)\,dx. $$
+  $$ \int_a^{+\infty} f(x)\,dx = \lim_{t\to\infty}\int_a^{t} f(x)\,dx,\qquad \int_{-\infty}^{b} f(x)\,dx = \lim_{t\to-\infty}\int_t^{b} f(x)\,dx. $$
   Para $\int_{-\infty}^{+\infty}$ se parte en dos: $\int_{-\infty}^{c}+\int_{c}^{+\infty}$.
 - **Dos condiciones para que valga:** (1ro) la integral ordinaria debe existir
   para cada $t$ finito; (2do) tiene que existir el límite.

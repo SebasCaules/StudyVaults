@@ -33,6 +33,8 @@ el **nivel de significación más chico** al cual todavía se rechazaría $H_0$.
 dice el apunte de [[apunte-media-desvio-desconocido|desvío desconocido]]:
 "se rechaza para todo $\alpha > \text{valor p}$".
 
+![[valor-p.svg]]
+
 > **Intuición (qué NO es).** El valor p **no** es la probabilidad de que $H_0$
 > sea verdadera: $H_0$ no es aleatoria, el parámetro tiene un valor fijo aunque
 > desconocido. Es una probabilidad sobre los **datos** condicionada a $H_0$, no

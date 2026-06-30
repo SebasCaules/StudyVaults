@@ -26,11 +26,9 @@ mínimo de las duraciones individuales ([[tp4-variables-aleatorias-continuas]] e
 La clave es trabajar con la [[funcion-de-distribucion-acumulada|FDA]] del mínimo a través de su
 **función de supervivencia** $P(T>t)$. El mínimo supera $t$ si y solo si **todos** lo superan;
 por independencia el producto se factoriza:
-$$ P(T>t)=P(X_1>t,\dots,X_n>t)=\prod_{i=1}^n P(X_i>t)=\prod_{i=1}^n e^{-\lambda_i t}
-=\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right). $$
+$$ P(T>t)=P(X_1>t,\dots,X_n>t)=\prod_{i=1}^n P(X_i>t)=\prod_{i=1}^n e^{-\lambda_i t} =\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right). $$
 Entonces
-$$ F_T(t)=1-P(T>t)=1-\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right),\qquad
-f_T(t)=F_T'(t)=\Big(\textstyle\sum_i \lambda_i\Big)\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right), $$
+$$ F_T(t)=1-P(T>t)=1-\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right),\qquad f_T(t)=F_T'(t)=\Big(\textstyle\sum_i \lambda_i\Big)\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right), $$
 que es exactamente la distribución de una $\text{Expo}\big(\sum_i \lambda_i\big)$. Por lo tanto
 $$ E[T]=\frac{1}{\sum_i \lambda_i}. $$
 

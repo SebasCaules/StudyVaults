@@ -28,6 +28,8 @@ posibles, según [[tp9-pruebas-de-hipotesis|TP9]]:
 - **Error tipo II:** aceptar $H_0$ siendo **falsa**. Su probabilidad se denota
   $\beta$ y depende de **cuán falsa** sea $H_0$ (del valor real del parámetro).
 
+![[error-i-ii.svg]]
+
 > **Intuición (por qué son asimétricos).** $\alpha$ es **un solo número** que
 > fijamos de antemano: bajo $H_0$ el parámetro vale $\theta_0$ y ahí calculamos
 > la probabilidad de rechazar. En cambio $\beta$ es **una función**: "$H_0$ falsa"

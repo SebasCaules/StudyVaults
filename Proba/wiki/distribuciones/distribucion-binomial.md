@@ -34,6 +34,8 @@ número de caras en $n$ tiros de una moneda.
 ## Función de masa
 $$ p_X(k) = P(X=k) = \binom{n}{k}\,p^k\,q^{\,n-k}, \qquad k \in \{0,1,\dots,n\} $$
 
+![[binomial-pmf.svg]]
+
 > Idea ([[binomial-apunte]]): cada secuencia concreta con $k$ éxitos y $n-k$
 > fracasos tiene probabilidad $p^k q^{n-k}$, y hay $\binom{n}{k}$ formas de elegir
 > en qué posiciones caen los éxitos. La normalización sale del binomio de Newton:

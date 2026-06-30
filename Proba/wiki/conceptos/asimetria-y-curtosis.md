@@ -26,6 +26,8 @@ $$ \gamma = \frac{\sum_{i=1}^n (x_i - \bar{x})^3}{n\, s^3} $$
 - $\gamma < 0$ → **asimétrica a izquierda**.
 - Cuanto más lejos de 0, más asimétrica.
 
+![[asimetria.svg]]
+
 > **Intuición.** El cubo $(x_i-\bar x)^3$ **conserva el signo** del desvío: una cola
 > larga a la derecha mete unos pocos términos positivos muy grandes que no se
 > compensan, y la suma da $\gamma>0$. Es la misma cola que separa la media de la
@@ -40,6 +42,8 @@ la media). El $-3$ usa como referencia la [[distribucion-normal|distribución no
 - $\kappa \approx 0$ → colas similares a la normal.
 - $\kappa < 0$ → colas **más livianas** que la normal (datos más concentrados) *(convención usual; la teórica la invierte, ver nota)*.
 - $\kappa > 0$ → colas **más pesadas** que la normal *(convención usual; ver nota)*.
+
+![[curtosis.svg]]
 
 > ⚠️ Nota de signo (cuidado en parcial): la teórica define el caso $\kappa<0$ como
 > "peso de las colas **mayor**" y $\kappa>0$ como "**menor**", lo cual es opuesto a

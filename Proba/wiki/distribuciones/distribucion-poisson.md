@@ -26,6 +26,8 @@ emitidas por una sustancia radioactiva, pasajeros que llegan a una parada por ho
 ## Función de masa
 $$ p_X(k) = P(X=k) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}, \qquad k \in \mathbb{N}_0 $$
 
+![[poisson-pmf.svg]]
+
 > Normaliza con la serie de la exponencial:
 > $\sum_{k=0}^\infty \tfrac{\lambda^k}{k!}e^{-\lambda} = e^{-\lambda}\,e^{\lambda} = e^0 = 1$.
 

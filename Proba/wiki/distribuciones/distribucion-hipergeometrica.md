@@ -29,6 +29,8 @@ paso.
 ## Función de masa
 $$ p_X(k) = P(X=k) = \frac{\dbinom{M}{k}\dbinom{N-M}{\,n-k\,}}{\dbinom{N}{n}}, \qquad k \in \mathcal{R}_X $$
 
+![[hipergeometrica-pmf.svg]]
+
 > Idea: hay $\binom{N}{n}$ muestras equiprobables; las favorables eligen $k$ de los
 > $M$ especiales y $n-k$ de los $N-M$ restantes.
 

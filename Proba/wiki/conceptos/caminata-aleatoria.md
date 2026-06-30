@@ -32,6 +32,8 @@ discreto** ($\mathbb{E}=\mathbb{Z}$). Recorrido de $X_n$: $\{-n,-n+2,\dots,n-2,n
 
 Caso **simétrico**: $p=1/2$.
 
+![[caminata-aleatoria.svg]]
+
 ## Propiedades (qué cumple y qué no)
 - **Es un [[procesos-estocasticos#Proceso de Markov|proceso de Markov]]:** el dinero
   tras $n$ jugadas depende solo del dinero tras $n-1$ y del resultado de la jugada

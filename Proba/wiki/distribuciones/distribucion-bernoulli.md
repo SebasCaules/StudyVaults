@@ -27,6 +27,8 @@ experimento del que solo interesa si ocurre o no un evento de probabilidad $p$
 ## Función de masa
 $$ p_X(0) = P(X=0) = q = 1-p, \qquad p_X(1) = P(X=1) = p $$
 
+![[bernoulli-pmf.svg]]
+
 ## Esperanza y varianza
 - $E[X] = \mu_X = p$
 - $V(X) = \sigma_X^2 = p\,q = p(1-p)$
@@ -105,15 +107,7 @@ $$P(X=2)=P(F_I)P(F_{II})=0{,}99\cdot 0{,}81=0{,}8019$$
 | $p_X(x)$ | 0,0019 | 0,1962 | 0,8019 |
 
 [[funcion-de-distribucion-acumulada|FDA]] escalonada:
-$$
-F_X(x)=
-\begin{cases}
-0 & x<0\\
-0{,}0019 & 0\le x<1\\
-0{,}1981 & 1\le x<2\\
-1 & x\ge 2
-\end{cases}
-$$
+$$ F_X(x)= \begin{cases} 0 & x<0\\ 0{,}0019 & 0\le x<1\\ 0{,}1981 & 1\le x<2\\ 1 & x\ge 2 \end{cases} $$
 Valor esperado (por linealidad de la esperanza, $E[X]=E[F_I]+E[F_{II}]$):
 $$E[X]=0\cdot 0{,}0019 + 1\cdot 0{,}1962 + 2\cdot 0{,}8019 = 0{,}99+0{,}81 = 1{,}80.$$
 

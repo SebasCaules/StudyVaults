@@ -63,8 +63,7 @@ $$ V(X) = \sigma_X^2 = E\!\left[(X-\mu_X)^2\right] = E[X^2] - (E[X])^2 $$
 - **Momentos**: $E[X^k] = \sum_x x^k p_X(x)$. **Momentos centrados**:
   $E[(X-E[X])^k]$.
 - **Asimetría y curtosis** (ver [[asimetria-y-curtosis]]):
-  $$ \gamma(X) = \frac{E[(X-\mu_X)^3]}{\sigma_X^3}, \qquad
-     \kappa(X) = \frac{E[(X-\mu_X)^4]}{\sigma_X^4} - 3 $$
+  $$ \gamma(X) = \frac{E[(X-\mu_X)^3]}{\sigma_X^3}, \qquad \kappa(X) = \frac{E[(X-\mu_X)^4]}{\sigma_X^4} - 3 $$
 
 > Estas fórmulas son la versión "probabilística" de las de
 > [[datos-agrupados|datos agrupados]]: la frecuencia relativa $f_i/n$ converge a
@@ -105,9 +104,7 @@ constante $C$, $E[D]$ y $V(D)$.
 **Planteo.** Usamos la condición de normalización $\sum_{r} p_D(r) = 1$.
 
 **Cálculo.**
-$$ C\left(\frac{2^1}{1!} + \frac{2^2}{2!} + \frac{2^3}{3!} + \frac{2^4}{4!}\right)
-   = C\left(2 + 2 + \tfrac{8}{6} + \tfrac{16}{24}\right) = C\cdot 6 = 1
-   \;\Rightarrow\; C = \tfrac{1}{6} $$
+$$ C\left(\frac{2^1}{1!} + \frac{2^2}{2!} + \frac{2^3}{3!} + \frac{2^4}{4!}\right) = C\left(2 + 2 + \tfrac{8}{6} + \tfrac{16}{24}\right) = C\cdot 6 = 1 \;\Rightarrow\; C = \tfrac{1}{6} $$
 Las probabilidades quedan $p_D(1)=\tfrac13,\ p_D(2)=\tfrac13,\ p_D(3)=\tfrac29,\ p_D(4)=\tfrac19$.
 $$ E[D] = 1\cdot\tfrac13 + 2\cdot\tfrac13 + 3\cdot\tfrac29 + 4\cdot\tfrac19 = \tfrac{19}{9} $$
 $$ V(D) = E[D^2] - (E[D])^2 = \left(1^2\tfrac13 + 2^2\tfrac13 + 3^2\tfrac29 + 4^2\tfrac19\right) - \left(\tfrac{19}{9}\right)^2 = \tfrac{80}{81} $$

@@ -164,8 +164,7 @@ $$ H_0: p = 0.25, \qquad H_1: p \ne 0.25. $$
 Por TCL, $\hat p \sim \mathcal{N}\!\left(p, \sqrt{p(1-p)/n}\right)$. Como es de
 dos colas con $\alpha=0.06$, los valores críticos usan $z_{0.97}\approx 1.8808$ y
 $\sqrt{0.25\cdot 0.75/400}\approx 0.02165$:
-$$ p_{c_1} = 0.25 - z_{0.97}\sqrt{\tfrac{0.25\cdot 0.75}{400}}\approx 0.2093,
-\quad p_{c_2} = 0.25 + z_{0.97}\sqrt{\tfrac{0.25\cdot 0.75}{400}}\approx 0.2907. $$
+$$ p_{c_1} = 0.25 - z_{0.97}\sqrt{\tfrac{0.25\cdot 0.75}{400}}\approx 0.2093, \quad p_{c_2} = 0.25 + z_{0.97}\sqrt{\tfrac{0.25\cdot 0.75}{400}}\approx 0.2907. $$
 
 > ⚠️ Discrepancia con el raw: `2025_12_05_Final_..._TemaA_RES.pdf` Ej. 4 escribe
 > $p_{c_2}\approx 0.2407$, valor **aritméticamente imposible** (el crítico superior
@@ -255,15 +254,13 @@ por continuidad**:
 $$ P(X_n\ge 10(K+3)) \approx 1 - \Phi\!\left(\frac{10(K+3)-0.5-np}{\sqrt{np(1-p)}}\right). $$
 
 **Planteo (b) — proporción muestral.** Misma información leída como proporción:
-$$ \hat p = \frac{X_n}{n}\overset{(a)}{\sim}\mathcal{N}\!\left(p,\ \sqrt{\tfrac{p(1-p)}{n}}\right)
-   \ \Rightarrow\ P(\hat p\ge 0.34) = 1 - \Phi\!\left(\frac{0.34-p}{\sqrt{p(1-p)/n}}\right). $$
+$$ \hat p = \frac{X_n}{n}\overset{(a)}{\sim}\mathcal{N}\!\left(p,\ \sqrt{\tfrac{p(1-p)}{n}}\right) \ \Rightarrow\ P(\hat p\ge 0.34) = 1 - \Phi\!\left(\frac{0.34-p}{\sqrt{p(1-p)/n}}\right). $$
 
 **Planteo (c) — despejar $n$ (lo distinto del Ej. 3).** Acá $n$ es la incógnita y
 aparece **solo** dentro de la raíz (no en el cuantil, porque el estadístico es
 $\hat p$ y se usa $z$, no $t$), así que se despeja de forma cerrada. Con umbral
 $u=\frac{29K+87}{100(K+2)}$ (y $u>p$, cola derecha):
-$$ P(\hat p\ge u) = 1-\Phi\!\left(\frac{u-p}{\sqrt{p(1-p)/n}}\right)\ge 0.9
-   \ \Rightarrow\ \frac{u-p}{\sqrt{p(1-p)/n}}\le \Phi^{-1}(0.1) = -z_{0.9}. $$
+$$ P(\hat p\ge u) = 1-\Phi\!\left(\frac{u-p}{\sqrt{p(1-p)/n}}\right)\ge 0.9 \ \Rightarrow\ \frac{u-p}{\sqrt{p(1-p)/n}}\le \Phi^{-1}(0.1) = -z_{0.9}. $$
 Despejando (y como $u>p$ el numerador es positivo, hay que cuidar el sentido de la
 desigualdad al pasar la raíz):
 $$ \boxed{\,n \ge \frac{p(1-p)\,\big(\Phi^{-1}(0.1)\big)^2}{(u-p)^2}\,}. $$

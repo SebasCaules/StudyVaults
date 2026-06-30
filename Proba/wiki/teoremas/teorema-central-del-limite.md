@@ -27,17 +27,13 @@ Entonces
 $$ \lim_{n\to\infty} P(Z_n\le z)=\Phi(z), $$
 donde $\Phi$ es la FDA de una [[distribucion-normal|Normal estándar]] $\mathcal N(0,1)$.
 
+![[tcl-convergencia.svg]]
+
 > **Nota.** Si las propias $X_k$ son normales, el resultado deja de ser una aproximación: la suma (o el promedio) de normales independientes es **exactamente** normal para cualquier $n$, sin necesidad del TCL. El teorema resulta útil precisamente cuando la distribución de origen es desconocida o no es normal.
 
 ## Aproximaciones prácticas (para $n$ grande, regla usual $n>20$)
 A partir de $Z_n\approx\mathcal N(0,1)$:
-$$
-\begin{aligned}
-P(Z_n\le z)&\approx\Phi(z),\\[2pt]
-P(\bar X_n\le x)&\approx\Phi\!\left(\frac{x-\mu}{\sigma/\sqrt n}\right),\\[2pt]
-P(S_n\le s)&\approx\Phi\!\left(\frac{s-n\mu}{\sqrt n\,\sigma}\right).
-\end{aligned}
-$$
+$$ \begin{aligned} P(Z_n\le z)&\approx\Phi(z),\\[2pt] P(\bar X_n\le x)&\approx\Phi\!\left(\frac{x-\mu}{\sigma/\sqrt n}\right),\\[2pt] P(S_n\le s)&\approx\Phi\!\left(\frac{s-n\mu}{\sqrt n\,\sigma}\right). \end{aligned} $$
 Es decir: $\;\bar X_n\overset{\text{aprox}}{\sim}\mathcal N\!\big(\mu,\tfrac{\sigma}{\sqrt n}\big)$
 y $\;S_n\overset{\text{aprox}}{\sim}\mathcal N\!\big(n\mu,\sqrt n\,\sigma\big)$.
 

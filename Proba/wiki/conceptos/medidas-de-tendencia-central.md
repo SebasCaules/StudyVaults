@@ -48,14 +48,15 @@ Cuando los datos están agrupados, primero se identifica el **intervalo modal**
 1. **Punto medio:** $M = (L_I + L_D)/2$ (la marca de clase del intervalo modal).
 2. **Interpolación** según las frecuencias **vecinas** $f_I$ (izquierda) y $f_D$
    (derecha), repartiendo el exceso proporcionalmente:
-   $$ (M - L_I)(f_M - f_D) = (L_D - M)(f_M - f_I) \ \Rightarrow\
-      M = \frac{L_D(f_M - f_I) + L_I(f_M - f_D)}{(f_M - f_I)+(f_M - f_D)}. $$
+   $$ (M - L_I)(f_M - f_D) = (L_D - M)(f_M - f_I) \ \Rightarrow\ M = \frac{L_D(f_M - f_I) + L_I(f_M - f_D)}{(f_M - f_I)+(f_M - f_D)}. $$
    La interpolación corre la moda hacia el vecino más frecuente. Procedimiento y
    ejemplo (TP1 ej. 4: $M\approx 167.79$ vs. $180$) en
    **[[tecnica-datos-agrupados-interpolacion]]**.
 
 ## Mediana vs. media: robustez
 La **mediana es robusta** ante [[boxplot|outliers]]; la media no.
+
+![[tendencia-central.svg]]
 
 > **Intuición.** La media *suma* el aporte de cada dato, así que un solo valor enorme
 > arrastra el promedio entero; la mediana solo mira *qué dato queda en el medio*, sin

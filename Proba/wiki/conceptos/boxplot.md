@@ -23,6 +23,8 @@ sin graficar todas las observaciones.
 - **Bigotes**: se extienden hasta el mínimo y el máximo *"normales"*.
 - **Outliers**: puntos sueltos, datos atípicos (ver abajo).
 
+![[boxplot.svg]]
+
 ## Outliers — regla de Tukey
 Basada en el [[medidas-de-dispersion|rango intercuartil]] $\text{IQR}=q_3-q_1$:
 $$ L_W = q_1 - 1.5\cdot\text{IQR}, \qquad U_W = q_3 + 1.5\cdot\text{IQR}. $$

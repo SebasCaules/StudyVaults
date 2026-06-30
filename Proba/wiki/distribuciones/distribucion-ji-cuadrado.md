@@ -43,12 +43,12 @@ $N(0,1)^2$ es ji-cuadrado).
 Con $k$ grados de libertad, según [[teorica-estimacion-puntual-conocidos]]
 (escrita allí con $k=n-1$):
 
-$$f_{\chi^2_k}(x) = \begin{cases}
-\dfrac{x^{\frac{k}{2}-1}\,e^{-x/2}}{2^{\frac{k}{2}}\,\Gamma\!\left(\frac{k}{2}\right)} & x>0,\\[2mm]
-0 & x\le 0,
-\end{cases}$$
+$$f_{\chi^2_k}(x) = \begin{cases} \dfrac{x^{\frac{k}{2}-1}\,e^{-x/2}}{2^{\frac{k}{2}}\,\Gamma\!\left(\frac{k}{2}\right)} & x>0,\\[2mm] 0 & x\le 0, \end{cases}$$
 
 donde $\Gamma(\cdot)$ es la función gamma ($\Gamma(m+1)=m!$, $\Gamma(1/2)=\sqrt\pi$).
+
+![[ji-cuadrado-densidad.svg]]
+
 La teórica manuscrita la escribe directamente para el estadístico de la varianza,
 con exponente $\frac{n-1}{2}-1$ y normalización $2^{\frac{n-1}{2}}\Gamma\!\left(\frac{n-1}{2}\right)$,
 es decir la misma fórmula con $k=n-1$.

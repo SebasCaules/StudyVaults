@@ -28,9 +28,7 @@ problemático por una variable $t$ y tomar límite. Según
 
 Se define como el límite de una integral ordinaria sobre un intervalo finito:
 
-$$ \int_a^{+\infty} f(x)\,dx = \lim_{t\to+\infty}\int_a^{t} f(x)\,dx,
-\qquad
-\int_{-\infty}^{b} f(x)\,dx = \lim_{t\to-\infty}\int_t^{b} f(x)\,dx. $$
+$$ \int_a^{+\infty} f(x)\,dx = \lim_{t\to+\infty}\int_a^{t} f(x)\,dx, \qquad \int_{-\infty}^{b} f(x)\,dx = \lim_{t\to-\infty}\int_t^{b} f(x)\,dx. $$
 
 Cuando ambos extremos son infinitos se parte en un punto $c$ cualquiera:
 

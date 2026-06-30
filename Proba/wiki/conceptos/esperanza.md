@@ -24,6 +24,8 @@ $$ E[X] = \mu_X = \sum_{k \in \mathcal{R}_X} k\,p_X(k) $$
 > (un dado tiene $E[X]=3{,}5$). Cada masa "tira" del balance proporcionalmente a
 > su probabilidad y a su distancia al centro.
 
+![[esperanza-centro-masa.svg]]
+
 **Interpretación.** Si se repite el experimento muchas veces y se registran los
 valores de $X$, el promedio converge a $E[X]$. Es el análogo probabilístico de la
 media de [[datos-agrupados|datos agrupados]] $\bar{x}_{Ag} = \sum_i x_i\,(f_i/n)$,

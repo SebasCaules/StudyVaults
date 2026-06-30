@@ -52,8 +52,7 @@ $x+y=s$, parametrizando por $y$ (entonces $x=s-y$):
 
 Usando la regla del producto $p_{X,Y}(x,y)=p_{X\mid Y}(x\mid y)\,p_Y(y)$ (idem
 con densidades), esto también se escribe con la **condicional**:
-$$ p_S(s)=\sum_{y\in R_Y} p_{X\mid Y}(s-y\mid y)\,p_Y(y),\qquad
-   f_S(s)=\int_{-\infty}^{+\infty} f_{X\mid Y}(s-y\mid y)\,f_Y(y)\,dy. $$
+$$ p_S(s)=\sum_{y\in R_Y} p_{X\mid Y}(s-y\mid y)\,p_Y(y),\qquad f_S(s)=\int_{-\infty}^{+\infty} f_{X\mid Y}(s-y\mid y)\,f_Y(y)\,dy. $$
 
 ### Caso independiente: la convolución propiamente dicha
 Si $X,Y$ son **independientes**, la conjunta factoriza ($p_{X,Y}=p_X\,p_Y$,

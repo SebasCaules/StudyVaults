@@ -17,6 +17,8 @@ relativa a la larga.
 Formaliza la intuición de que **el promedio de muchas observaciones se acerca a
 la media poblacional**. Según [[teorica-ley-grandes-numeros]].
 
+![[lgn-convergencia.svg]]
+
 Sea $\{X_k\}_{k\ge1}$ i.i.d. con media $\mu=\mu_X$ y varianza $\sigma^2=\sigma_X^2$,
 y $\bar X_n=\tfrac1n\sum_{k=1}^n X_k$ el [[promedio-muestral]].
 

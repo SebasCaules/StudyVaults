@@ -61,10 +61,8 @@ más de un objeto. General: si $n=km+1$ objetos van a $m$ conjuntos, al menos un
 contiene $\ge k+1$. (En un grupo de $>366$ personas, al menos 2 cumplen años el mismo día.)
 
 ### Identidades de números combinatorios útiles
-$$ \binom{n}{r}=\binom{n}{n-r}, \qquad
-   \binom{n+1}{r}=\binom{n}{r}+\binom{n}{r-1}\ \text{(Pascal)}, $$
-$$ \sum_{k=0}^{n}\binom{n}{k}=2^{n}, \qquad
-   \sum_{k=0}^{n}(-1)^k\binom{n}{k}=0, $$
+$$ \binom{n}{r}=\binom{n}{n-r}, \qquad \binom{n+1}{r}=\binom{n}{r}+\binom{n}{r-1}\ \text{(Pascal)}, $$
+$$ \sum_{k=0}^{n}\binom{n}{k}=2^{n}, \qquad \sum_{k=0}^{n}(-1)^k\binom{n}{k}=0, $$
 $$ (x+y)^n=\sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}\ \text{(binomio de Newton)}. $$
 
 ### Con reposición vs. sin reposición

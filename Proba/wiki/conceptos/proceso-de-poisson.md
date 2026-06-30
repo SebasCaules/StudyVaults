@@ -52,6 +52,8 @@ Por incrementos estacionarios, el conteo en cualquier intervalo de longitud
 $\tau$ es $\text{Poisson}(\lambda\tau)$. En particular $E[N(t)]=\text{Var}[N(t)]=
 \lambda t$.
 
+![[poisson-proceso-conteo.svg]]
+
 ## Tiempos entre eventos
 Sea $\tau_{n+1}$ el tiempo desde el evento $n$ hasta el $n{+}1$. Como
 $P(\tau_{n+1}>t)=P(\Delta N(t)=0)=P(N(t)=0)=e^{-\lambda t}$ para $t>0$:

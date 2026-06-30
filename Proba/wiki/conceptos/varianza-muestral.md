@@ -52,9 +52,7 @@ $\sigma^2=V(X_i)$):
 
 Muy útil para resolver ejercicios a mano:
 
-$$(n-1)\,S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2
-\quad\Longleftrightarrow\quad
-S_n^2 = \frac{1}{n-1}\left[\sum_{i=1}^n X_i^2 - n\,\overline X_n^2\right].$$
+$$(n-1)\,S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2 \quad\Longleftrightarrow\quad S_n^2 = \frac{1}{n-1}\left[\sum_{i=1}^n X_i^2 - n\,\overline X_n^2\right].$$
 
 ## Ejercicio resuelto — Demostración de insesgadez
 
@@ -70,8 +68,7 @@ cálculo.
 $$(n-1)S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2.$$
 Tomando esperanza y usando $E[X_i^2]=V(X_i)=\sigma^2$ (pues $\mu=0$) y
 $E[\overline X_n^2]=\sigma^2/n$:
-$$E\!\left[(n-1)S_n^2\right] = \sum_{i=1}^n E[X_i^2] - n\,E[\overline X_n^2]
-= n\sigma^2 - n\cdot\frac{\sigma^2}{n} = n\sigma^2 - \sigma^2 = (n-1)\sigma^2.$$
+$$E\!\left[(n-1)S_n^2\right] = \sum_{i=1}^n E[X_i^2] - n\,E[\overline X_n^2] = n\sigma^2 - n\cdot\frac{\sigma^2}{n} = n\sigma^2 - \sigma^2 = (n-1)\sigma^2.$$
 
 **Resultado.** Dividiendo por $n-1$: $\boxed{E[S_n^2]=\sigma^2}$, es decir,
 $S_n^2$ es un **estimador insesgado** de la varianza poblacional.

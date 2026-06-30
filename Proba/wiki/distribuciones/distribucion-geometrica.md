@@ -43,6 +43,8 @@ Se nota $X \sim \text{Geométrica}(p)$.
 ## Función de masa
 $$ p_X(k) = P(X=k) = q^{\,k}\,p, \qquad k \in \mathbb{N}_0 $$
 
+![[geometrica-pmf.svg]]
+
 > Idea ([[geometrica-apunte]]): para tener exactamente $k$ fracasos seguidos y
 > luego el éxito, $q\cdots q\,p = q^k p$. Normaliza con la serie geométrica
 > $\sum_{k=0}^{\infty} q^k = \tfrac{1}{1-q}$, así $\sum_k q^k p = \tfrac{p}{1-q} = 1$.

@@ -51,6 +51,8 @@ La densidad se obtiene derivando la FDA: $f_X(x)=\dfrac{dF_X(x)}{dx}$ (ver
 [[funcion-de-densidad|Función de densidad]] para detalle). Recíprocamente,
 $$ F_X(x)=\int_{-\infty}^{x} f_X(y)\,dy,\qquad \int_{-\infty}^{+\infty} f_X(y)\,dy = 1. $$
 
+![[va-continua-pdf-cdf.svg]]
+
 > **Cuidado:** La densidad $f_X(x)$ **puede tomar valores mayores que 1** — no es una probabilidad, es una "densidad". Lo que nunca puede superar $1$ es la integral: $\int_a^b f_X(x)\,dx \le 1$ para cualquier $[a,b]$, y sobre todo el soporte vale exactamente $1$. Por ejemplo, una densidad que vale $2$ sobre un soporte de base $0{,}5$ integra $2\cdot 0{,}5=1$, así que es válida. Confundir densidad con probabilidad lleva a descartar densidades válidas o a aceptar densidades inválidas.
 
 ## Esperanza como integral

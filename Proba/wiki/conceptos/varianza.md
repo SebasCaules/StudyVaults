@@ -35,6 +35,8 @@ Tiene las mismas unidades que $X$. La [[desigualdad-de-chebyshev|desigualdad de
 Chebyshev]] le da un sentido cuantitativo: acota la probabilidad de alejarse de la
 media en términos de cuántos $\sigma$.
 
+![[varianza-spread.svg]]
+
 ## Propiedades
 
 Sean $a, c$ constantes:

@@ -23,6 +23,8 @@ parámetro). También llamada **Gaussiana**. Es "la más importante".
 
 $$ f_X(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\,\exp\!\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\},\qquad x\in\mathbb{R}. $$
 
+![[normal-densidad.svg]]
+
 - Es **simétrica** respecto de $x=\mu$ → mediana $=\mu=$ moda $=$ media. El máximo
   (valor más frecuente) está en $\mu$ y vale $\frac{1}{\sqrt{2\pi}\,\sigma}$.
 - Cambia la concavidad en $\mu\pm\sigma$ (puntos de inflexión).
@@ -37,6 +39,8 @@ $$ f_X(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\,\exp\!\left\{-\frac{(x-\mu)^2}{2\sigma^
 [[estandarizacion-y-tabla-normal|normal estándar]]:
 $$ F_X(x)=P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right), $$
 donde $\Phi$ es la FDA de $Z\sim N(0,1)$, tabulada. **Solo hace falta tabular $\Phi$ una vez** para cualquier $\mu,\sigma$.
+
+![[normal-fda.svg]]
 
 **Intuición (por qué alcanza una sola tabla).** Todas las normales son la **misma** campana reescalada: cambiar $\mu$ la corre y cambiar $\sigma$ la estira o achica, pero la forma es idéntica. Estandarizar mide la distancia al centro **en cantidad de desvíos** ($z=\frac{x-\mu}{\sigma}$), una unidad común a todas las normales. Por eso el área a la izquierda de $x$ en $N(\mu,\sigma)$ es la misma que a la izquierda de $z$ en $N(0,1)$, y basta tabular $\Phi$ una vez.
 
@@ -56,6 +60,8 @@ $$ M_X(t)=\exp\!\left\{\mu t+\tfrac12\sigma^2 t^2\right\}. $$
 
 $$ P(\mu-\sigma<X<\mu+\sigma)\approx0.6827,\quad P(\mu-2\sigma<X<\mu+2\sigma)\approx0.9545,\quad P(\mu-3\sigma<X<\mu+3\sigma)\approx0.9973. $$
 ($P(-6\sigma<X-\mu<6\sigma)\approx0.999999998$.)
+
+![[normal-regla-empirica.svg]]
 
 ## Asimetría y curtosis
 

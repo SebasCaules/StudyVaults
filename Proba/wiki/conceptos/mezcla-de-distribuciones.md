@@ -36,6 +36,8 @@ $$ E[g(X)]=\sum_{k\in R_M} E[g(X)\mid M=k]\,P(M=k). $$
 La densidad de la mezcla es una **combinación convexa** de las densidades condicionales (los pesos
 $P(M=k)$ suman 1).
 
+![[mezcla-bimodal.svg]]
+
 > ⚠️ **La varianza NO se mezcla linealmente.** En general
 > $$ \text{Var}(X)\neq\sum_k \text{Var}(X\mid M=k)\,P(M=k). $$
 > La forma correcta usa $E[X^2]=\sum_k E[X^2\mid M=k]P(M=k)$ y luego

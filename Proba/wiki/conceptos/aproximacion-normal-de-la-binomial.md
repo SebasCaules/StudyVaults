@@ -21,6 +21,8 @@ $$ \mathrm{Bin}(n,p)\;\approx\;\mathcal N\big(np,\;\sqrt{npq}\big),\qquad q=1-p.
 Vale porque $\mathrm{Bin}(n,p)=\sum_{i=1}^n\mathrm{Bernoulli}(p)$ es suma de i.i.d.
 con $\mu=np$ y $\sigma^2=npq$ (ver [[suma-de-va-independientes]]).
 
+![[aprox-normal-binomial.svg]]
+
 ## Por qué funciona (esbozo de la derivación)
 Según [[teorica-aproximacion-binomial-normal]], partiendo de la PMF exacta
 $P(S_n=x)=\binom{n}{x}p^x q^{n-x}$, se aplica:
@@ -33,12 +35,7 @@ que es exactamente la densidad de una $\mathcal N(np,\sqrt{npq})$ evaluada en $x
 
 ## Corrección por continuidad (clave en discretas)
 Como la Binomial es **discreta** y la Normal **continua**, se ajusta $\pm\tfrac12$:
-$$
-\begin{aligned}
-P(S_n=s)&\approx\Phi\!\left(\tfrac{s+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{s-\frac12-np}{\sqrt{npq}}\right),\\
-P(a\le S_n\le b)&\approx\Phi\!\left(\tfrac{b+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{a-\frac12-np}{\sqrt{npq}}\right).
-\end{aligned}
-$$
+$$ \begin{aligned} P(S_n=s)&\approx\Phi\!\left(\tfrac{s+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{s-\frac12-np}{\sqrt{npq}}\right),\\ P(a\le S_n\le b)&\approx\Phi\!\left(\tfrac{b+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{a-\frac12-np}{\sqrt{npq}}\right). \end{aligned} $$
 Para $<$ y $>$ estrictos hay que excluir los extremos (mover el $\pm\tfrac12$ hacia adentro).
 
 **Intuición.** La $\mathrm{Bin}(n,p)$ es una suma de $n$ Bernoulli i.i.d.

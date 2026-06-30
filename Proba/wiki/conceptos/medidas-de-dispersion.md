@@ -47,6 +47,8 @@ Misma unidad que los datos. Es la medida de dispersión más usada. Su valor
 absoluto no siempre tiene interpretación directa, pero sirve para **comparar** dos
 distribuciones con la misma media (una más dispersa que otra).
 
+![[dispersion.svg]]
+
 > **Intuición.** La varianza eleva al cuadrado las distancias a la media, así que sus unidades son las de los datos al cuadrado (p. ej. minutos$^2$). Tomar la raíz cuadrada para obtener el desvío $s$ es exactamente lo que devuelve las unidades originales (minutos), haciendo el número directamente comparable con los datos.
 
 ## Media del desvío absoluto
@@ -78,7 +80,6 @@ $$ s_{Ag} = \sqrt{\frac{\sum_{i=1}^L (x_i - \bar{x}_{Ag})^2\, f_i}{n-1}} $$
 
 **Cálculo.** Con $n=100$ y $\bar x_{Ag} = 3.6460$ kg (ver
 [[medidas-de-tendencia-central]]), el desvío agrupado es
-$$ s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{10} (x_i - \bar x_{Ag})^2\, f_i}
-= \sqrt{\frac{17.7484}{99}} = 0.4234 \text{ kg}. $$
+$$ s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{10} (x_i - \bar x_{Ag})^2\, f_i} = \sqrt{\frac{17.7484}{99}} = 0.4234 \text{ kg}. $$
 (Media y mediana del mismo ejercicio en [[medidas-de-tendencia-central]];
 mediana por interpolación $=3.6667$ kg en [[tecnica-datos-agrupados-interpolacion]].)

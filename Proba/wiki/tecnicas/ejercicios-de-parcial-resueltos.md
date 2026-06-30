@@ -183,9 +183,7 @@ primeras 2 transiciones** $\Leftrightarrow X(1)\ne N \ \wedge\ X(2)\ne N$. Por e
 $$ P(\text{tardar}>16) = 1 - P(X(1)=N) - P\big(X(1)\ne N \cap X(2)=N\big), $$
 (los dos sucesos a restar son mutuamente excluyentes: o se absorbe en el paso 1,
 o no se absorbe en el 1 pero sí en el 2). Desarrollando con $\vec\pi^{(0)}$:
-$$ = 1 - \underbrace{0.5\cdot 0.3 - 0.5\cdot 0.1}_{X(1)=N}
-        - \underbrace{0.5\cdot 0.25\cdot 0.3 - 0.5\cdot 0.45\cdot 0.1
-        - 0.5\cdot 0.6\cdot 0.3 - 0.5\cdot 0.3\cdot 0.1}_{X(1)\ne N,\ X(2)=N} = 0.635. $$
+$$ = 1 - \underbrace{0.5\cdot 0.3 - 0.5\cdot 0.1}_{X(1)=N} - \underbrace{0.5\cdot 0.25\cdot 0.3 - 0.5\cdot 0.45\cdot 0.1 - 0.5\cdot 0.6\cdot 0.3 - 0.5\cdot 0.3\cdot 0.1}_{X(1)\ne N,\ X(2)=N} = 0.635. $$
 
 **Distribución a largo plazo.** Como $N$ es **el único absorbente** y es accesible
 desde todos los estados, la cadena no es regular pero tiene límite
@@ -265,8 +263,7 @@ pastillas **mezcladas** (sin reposición).
   - $72\text{ h} = 9$ dosis ⇒ $X_9 \sim \text{Bi}(9, 3/5)$, y
     $P(X_9\ge 6)=\sum_{i=6}^{9}\binom{9}{i}(3/5)^i(2/5)^{9-i}\approx 0.4826$.
   - $48\text{ h} = 6$ dosis ⇒ $X_6 \sim \text{Bi}(6, 3/5)$, con
-    $$ E[X_6]=6\cdot\tfrac35=\tfrac{18}{5}=3.6, \qquad
-       \sigma(X_6)=\sqrt{6\cdot\tfrac35\cdot\tfrac25}=\tfrac{6}{5}=1.2. $$
+    $$ E[X_6]=6\cdot\tfrac35=\tfrac{18}{5}=3.6, \qquad \sigma(X_6)=\sqrt{6\cdot\tfrac35\cdot\tfrac25}=\tfrac{6}{5}=1.2. $$
   > Cuidado: $E,\sigma$ se piden para **6 dosis** (48 h), no para las 9 dosis de
   > $P(X\ge 6)$. Usar $n=9$ acá daría $E=27/5$, que es el horizonte equivocado.
 - (b) Se sacan dosis de un pool finito de 80 pastillas (60 "éxitos") **sin
@@ -321,9 +318,7 @@ para acumular $\ge 100$ inutilizables con probabilidad $> 0.92$?
 $N_i$ (agarra nuevo), $R_i$ (reutilizable), $I_i$ (queda inutilizable), con
 $P(I_i\mid N_i)=0.6$ y $P(I_i\mid R_i)=1$. **El primer pañuelo siempre es nuevo**
 ($P(N_1)=1$). $M\in\{0,1,2\}$ es discreta. Recorriendo las ramas del árbol:
-$$ P(M{=}1) = \underbrace{0.6\cdot 1\cdot 0.4}_{I_1,\ \bar I_2}
-            + \underbrace{0.4\cdot \tfrac1{10}\cdot 1}_{\bar I_1\to R_2\to I_2}
-            + \underbrace{0.4\cdot \tfrac9{10}\cdot 0.6}_{\bar I_1\to N_2\to I_2} = 0.496, $$
+$$ P(M{=}1) = \underbrace{0.6\cdot 1\cdot 0.4}_{I_1,\ \bar I_2} + \underbrace{0.4\cdot \tfrac1{10}\cdot 1}_{\bar I_1\to R_2\to I_2} + \underbrace{0.4\cdot \tfrac9{10}\cdot 0.6}_{\bar I_1\to N_2\to I_2} = 0.496, $$
 $$ P(M{=}2) = 0.6\cdot 1\cdot 0.6 = 0.36, \qquad P(M{=}0)=1-0.496-0.36=0.144. $$
 Entonces, por definición de esperanza,
 $$ E[M] = 0\cdot 0.144 + 1\cdot 0.496 + 2\cdot 0.36 = 1.216, $$
@@ -333,8 +328,7 @@ $$ E[M^2] = 0.496 + 4\cdot 0.36 = 1.936 \Rightarrow \sigma(M)=\sqrt{1.936 - 1.21
 ($\mu_M=1.216$, $\sigma_M\approx 0.6763$). Por [[teorema-central-del-limite|TCL]],
 $S_n \overset{(a)}{\sim}\mathcal{N}\!\big(n\mu_M,\ \sqrt n\,\sigma_M\big)$. Se busca
 $n$ con
-$$ P(S_n\ge 70) > 0.92 \ \Rightarrow\ 1-\Phi\!\left(\frac{70-n\mu_M}{\sqrt n\,\sigma_M}\right) > 0.92
-   \ \Rightarrow\ z_{0.08}=-z_{0.92}\ge \frac{70-n\mu_M}{\sqrt n\,\sigma_M}. $$
+$$ P(S_n\ge 70) > 0.92 \ \Rightarrow\ 1-\Phi\!\left(\frac{70-n\mu_M}{\sqrt n\,\sigma_M}\right) > 0.92 \ \Rightarrow\ z_{0.08}=-z_{0.92}\ge \frac{70-n\mu_M}{\sqrt n\,\sigma_M}. $$
 Es una **cuadrática en $\sqrt n$**: queda $\sqrt n \approx 9.46$ (la otra raíz
 $\approx -8.6$ se descarta), de donde $n\ge 89.63 \Rightarrow \boxed{n\ge 90}$ horas.
 
@@ -360,8 +354,7 @@ Los $E_i$ son **mutuamente excluyentes** (la palabra *exactamente*), así que
 $$ P(\text{al menos 2}) = P(E_2\cup E_3) = P(E_2) + P(E_3). $$
 Contando con [[tecnica-conteo-combinatoria|coeficientes binomiales]] (elegir
 enfermos de los $M$ y sanos de los $N-M$):
-$$ \boxed{P(E_2\cup E_3) = \frac{\dbinom{M}{2}\dbinom{N-M}{1}}{\dbinom{N}{3}}
-                         + \frac{\dbinom{M}{3}}{\dbinom{N}{3}}.} $$
+$$ \boxed{P(E_2\cup E_3) = \frac{\dbinom{M}{2}\dbinom{N-M}{1}}{\dbinom{N}{3}} + \frac{\dbinom{M}{3}}{\dbinom{N}{3}}.} $$
 Esta es exactamente la **suma de los dos términos superiores de la
 [[distribucion-hipergeometrica|hipergeométrica]]** $\mathcal{H}(N,M,3)$: el ejercicio
 **deriva la hipergeométrica desde el conteo de Laplace**, sin invocar la fórmula

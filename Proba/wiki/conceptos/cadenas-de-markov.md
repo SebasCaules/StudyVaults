@@ -57,6 +57,8 @@ Grafo dirigido y etiquetado: un nodo por estado, una arista $s_i\to s_j$
 etiquetada con $p_{ij}$. La **suma de las etiquetas de las aristas que salen de un
 nodo es 1**.
 
+![[markov-diagrama.svg]]
+
 ## Tipos de estados (cadenas homogéneas)
 - **Accesibilidad / comunicación:** $s_j$ es accesible desde $s_i$ sii
   $p_{ij}^{(n)}>0$ para algún $n$. Si además $s_i$ es accesible desde $s_j$, se
@@ -158,15 +160,7 @@ $$ P(X_{200}=a\mid X_0=b)\approx \pi_a=\frac{10}{27}\approx 0.370. $$
 ### Clases, recurrencia y primera visita
 *De [[tp6-procesos-estocasticos]] Ej. 22 (resuelto). Cadena con
 $\mathbb{E}=\{0,1,2,3,4,5,6\}$ y*
-$$ \mathbb{P}=\begin{pmatrix}
-\tfrac15&\tfrac35&0&0&\tfrac15&0&0\\
-0&0&1&0&0&0&0\\
-0&\tfrac13&0&\tfrac23&0&0&0\\
-0&1&0&0&0&0&0\\
-0&0&0&0&0&1&0\\
-0&0&0&0&0&0&1\\
-0&0&0&0&1&0&0
-\end{pmatrix}. $$
+$$ \mathbb{P}=\begin{pmatrix} \tfrac15&\tfrac35&0&0&\tfrac15&0&0\\ 0&0&1&0&0&0&0\\ 0&\tfrac13&0&\tfrac23&0&0&0\\ 0&1&0&0&0&0&0\\ 0&0&0&0&0&1&0\\ 0&0&0&0&0&0&1\\ 0&0&0&0&1&0&0 \end{pmatrix}. $$
 
 **Clases (ítem b).** Mirando qué estados se comunican (ida y vuelta con
 probabilidad positiva en algún número de pasos):
@@ -203,17 +197,14 @@ $$ q_{13}=\sum_{h\ge0}\Big(\tfrac13\Big)^{h}\tfrac23=\tfrac23\cdot\frac{1}{1-\tf
 la primera visita a $3$; como $P(T_{13}=n)=q_{13}(n)$, sólo aportan los $n=2k$ con
 $q_{13}(2k)=\big(\tfrac13\big)^{k-1}\tfrac23$. Usando
 $\sum_{k\ge1}k\,q^{k-1}=\tfrac{1}{(1-q)^2}$:
-$$ E[T_{13}]=\sum_{n\ge1}n\,q_{13}(n)=\sum_{k\ge1}2k\Big(\tfrac13\Big)^{k-1}\tfrac23
-=\tfrac43\sum_{k\ge1}k\Big(\tfrac13\Big)^{k-1}=\tfrac43\cdot\frac{1}{(1-\tfrac13)^2}=\tfrac43\cdot\tfrac94=3. $$
+$$ E[T_{13}]=\sum_{n\ge1}n\,q_{13}(n)=\sum_{k\ge1}2k\Big(\tfrac13\Big)^{k-1}\tfrac23 =\tfrac43\sum_{k\ge1}k\Big(\tfrac13\Big)^{k-1}=\tfrac43\cdot\frac{1}{(1-\tfrac13)^2}=\tfrac43\cdot\tfrac94=3. $$
 
 **(c4) Largo plazo en $2$ desde $1$ $=\tfrac38$.** Como la cadena queda atrapada en
 $C_2=\{1,2,3\}$, restringimos a una cadena $Y_n$ sobre $\{1,2,3\}$ con
 $\mathbb{P}_Y=\begin{pmatrix}0&1&0\\\tfrac13&0&\tfrac23\\1&0&0\end{pmatrix}$. Es
 **regular** ($\mathbb{P}_Y^8>0$), así que existe estacionaria $\vec\pi=(a,b,c)$ con
 $\vec\pi=\vec\pi\,\mathbb{P}_Y$, $a+b+c=1$:
-$$ \begin{cases}a=\tfrac13 b+c\\ b=a\\ c=\tfrac23 b\end{cases}\Rightarrow
-\Big(a,b,c\Big)=\Big(\tfrac38,\tfrac38,\tfrac14\Big)\;\Rightarrow\;
-\lim_{n\to\infty}P(X_n=2\mid X_0=1)=b=\tfrac38. $$
+$$ \begin{cases}a=\tfrac13 b+c\\ b=a\\ c=\tfrac23 b\end{cases}\Rightarrow \Big(a,b,c\Big)=\Big(\tfrac38,\tfrac38,\tfrac14\Big)\;\Rightarrow\; \lim_{n\to\infty}P(X_n=2\mid X_0=1)=b=\tfrac38. $$
 
 **Resultado.** $q_{06}=\tfrac14$; $q_{13}=1$; $E[T_{13}]=3$; largo plazo en $2$
 $=\tfrac38$.
@@ -227,23 +218,16 @@ instancia se vuelve $1\to3$ (recursa).*
 
 **(a) Matriz de transición.** De cada estado $\ne0$ se aprueba con prob. $p$ (va a $0$)
 o se reprueba con prob. $1-p$ (baja una oportunidad, salvo $1\to3$):
-$$ \mathbb{P}=\begin{pmatrix}1&0&0&0\\ p&0&0&1-p\\ p&1-p&0&0\\ p&0&1-p&0\end{pmatrix}
-\quad\text{(orden de estados }0,1,2,3). $$
+$$ \mathbb{P}=\begin{pmatrix}1&0&0&0\\ p&0&0&1-p\\ p&1-p&0&0\\ p&0&1-p&0\end{pmatrix} \quad\text{(orden de estados }0,1,2,3). $$
 
 **(b) Evolución desde $X_0=3$.** Con $\vec\pi_0=(0,0,0,1)$ y
 $\vec\pi_{n+1}=\vec\pi_n\,\mathbb{P}$:
-$$ \vec\pi_1=(p,\,0,\,1-p,\,0),\quad
-\vec\pi_2=(2p-p^2,\,(1-p)^2,\,0,\,0),\quad
-\vec\pi_3=(p^3-3p^2+3p,\,0,\,0,\,(1-p)^3). $$
+$$ \vec\pi_1=(p,\,0,\,1-p,\,0),\quad \vec\pi_2=(2p-p^2,\,(1-p)^2,\,0,\,0),\quad \vec\pi_3=(p^3-3p^2+3p,\,0,\,0,\,(1-p)^3). $$
 La clave: en el instante $n$, **no estar aprobado** ($X_n\ne0$) significa haber
 reprobado todas las instancias previas, lo que tiene probabilidad $(1-p)^n$. Por lo
 tanto la probabilidad de estar en $0$ es $1-(1-p)^n$, y la masa restante $(1-p)^n$ se
 reparte cíclicamente entre los estados $1,2,3$ según $n\bmod 3$:
-$$ \vec\pi_n=\begin{cases}
-\big(1-(1-p)^n,\,0,\,0,\,(1-p)^n\big)&n=3k\\
-\big(1-(1-p)^n,\,(1-p)^n,\,0,\,0\big)&n=3k+1\\
-\big(1-(1-p)^n,\,0,\,(1-p)^n,\,0\big)&n=3k+2
-\end{cases} $$
+$$ \vec\pi_n=\begin{cases} \big(1-(1-p)^n,\,0,\,0,\,(1-p)^n\big)&n=3k\\ \big(1-(1-p)^n,\,(1-p)^n,\,0,\,0\big)&n=3k+1\\ \big(1-(1-p)^n,\,0,\,(1-p)^n,\,0\big)&n=3k+2 \end{cases} $$
 
 **Valor límite.** Como $0<1-p<1$, $(1-p)^n\to0$, así que toda la probabilidad se
 concentra en el estado absorbente:

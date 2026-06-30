@@ -32,6 +32,8 @@ Se nota $X \sim \text{BinNeg}(r, p)$ (también llamada **de Pascal**).
 ## Función de masa
 $$ p_X(k) = P(X=k) = \binom{k + r - 1}{k}\,q^{\,k}\,p^{\,r}, \qquad k \in \mathbb{N}_0 $$
 
+![[binomial-negativa-pmf.svg]]
+
 > Idea ([[binomial-negativa-apunte]]): el último ensayo (posición $k+r$) es el
 > $r$-ésimo éxito. En los $k + r - 1$ ensayos previos hay $k$ fracasos y $r-1$
 > éxitos repartidos de $\binom{k+r-1}{k}$ formas, cada secuencia con probabilidad

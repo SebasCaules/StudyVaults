@@ -34,6 +34,8 @@ $$P\big(\hat\theta_\ell(X_1,\dots,X_n) < \theta < \hat\theta_u(X_1,\dots,X_n)\bi
 > contiene o no a $\theta$ (probabilidad 0 o 1). NO se dice "este intervalo tiene
 > 90% de probabilidad de contener a $\mu$".
 
+![[intervalos-confianza.svg]]
+
 ## Caso 1 — Media con desvío conocido (normal) $\to$ Z
 
 $X_i\sim\mathcal N(\mu,\sigma)$ i.i.d. con $\sigma$ **conocido**. Como
@@ -44,8 +46,7 @@ $2\Phi(\Delta/(\sigma/\sqrt n))-1=\gamma$, de donde
 $\Phi(\Delta/(\sigma/\sqrt n))=\frac{1+\gamma}{2}$ y por lo tanto
 ([[teorica-ic-media-desvio-conocido]]):
 
-$$\boxed{\;\Delta_B = z_{\frac{1+\gamma}{2}}\cdot\frac{\sigma}{\sqrt n}\;}\qquad
-IC_\gamma^{\,bil}(\mu)=\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\; \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right),$$
+$$\boxed{\;\Delta_B = z_{\frac{1+\gamma}{2}}\cdot\frac{\sigma}{\sqrt n}\;}\qquad IC_\gamma^{\,bil}(\mu)=\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\; \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right),$$
 
 donde $z_p=\Phi^{-1}(p)$ es el fractil de la $\mathcal N(0,1)$. Unilaterales:
 $\left(\overline X_n - z_\gamma\frac{\sigma}{\sqrt n},\infty\right)$ y
@@ -82,13 +83,11 @@ $$T = \frac{\overline X_n-\mu}{S_n/\sqrt n} \sim t_{n-1}$$
 sigue una [[distribucion-t-de-student]] con $n-1$ grados de libertad. Repitiendo
 la derivación del caso 1 con $T$ ([[teorica-ic-media-desvio-desconocido-intervalos]]):
 
-$$\boxed{\;\Delta_B = t_{n-1,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}\;}\qquad
-IC_\gamma^{\,bil}(\mu)=\left(\overline X_n \pm t_{n-1,\frac{1+\gamma}{2}}\frac{S_n}{\sqrt n}\right).$$
+$$\boxed{\;\Delta_B = t_{n-1,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}\;}\qquad IC_\gamma^{\,bil}(\mu)=\left(\overline X_n \pm t_{n-1,\frac{1+\gamma}{2}}\frac{S_n}{\sqrt n}\right).$$
 
 **Unilaterales** (mismo cambio que en el caso 1, pero con el fractil de la t y
 $\gamma$ en vez de $\frac{1+\gamma}{2}$, según [[teorica-ic-media-desvio-desconocido-intervalos]]):
-$$IC_\gamma^{\,der}(\mu)=\left(-\infty,\;\overline X_n + t_{n-1,\gamma}\frac{S_n}{\sqrt n}\right),\qquad
-IC_\gamma^{\,izq}(\mu)=\left(\overline X_n - t_{n-1,\gamma}\frac{S_n}{\sqrt n},\;+\infty\right),$$
+$$IC_\gamma^{\,der}(\mu)=\left(-\infty,\;\overline X_n + t_{n-1,\gamma}\frac{S_n}{\sqrt n}\right),\qquad IC_\gamma^{\,izq}(\mu)=\left(\overline X_n - t_{n-1,\gamma}\frac{S_n}{\sqrt n},\;+\infty\right),$$
 recordando que $t_{n-1,\alpha}=-t_{n-1,1-\alpha}$.
 
 > **Intuición.** Cuando $\sigma$ es conocido, el pivote divide por una **constante**, y una normal dividida por una constante sigue siendo normal. Cuando se reemplaza $\sigma$ por el desvío muestral $S_n$, se está dividiendo por una **variable aleatoria** (que cambia con cada muestra), y ya no se puede garantizar que el resultado sea normal. La [[distribucion-t-de-student|t de Student]] es exactamente la distribución del cociente de una normal estándar por la raíz de una $\chi^2$ normalizada — que es lo que aparece cuando se usa $S_n$. Por eso cambiar $\sigma$ por $S_n$ no es solo un reemplazo numérico: es cambiar la distribución de referencia.
@@ -212,8 +211,7 @@ medio por colada.
 [[teorema-central-del-limite]] se usa $Z$ (no se asume normalidad). Como los datos
 están **agrupados** ([[datos-agrupados]]), se calculan la media y el desvío con la
 **marca de clase** $x_j$ (centro de cada intervalo) y la frecuencia $f_j$:
-$$\overline x^{Ag}=\frac{\sum_j x_j f_j}{n},\qquad
-s^{Ag}=\sqrt{\frac{\sum_j (x_j-\overline x^{Ag})^2 f_j}{n-1}}.$$
+$$\overline x^{Ag}=\frac{\sum_j x_j f_j}{n},\qquad s^{Ag}=\sqrt{\frac{\sum_j (x_j-\overline x^{Ag})^2 f_j}{n-1}}.$$
 
 **Cálculo.** Con $\sum_j x_j f_j = 110.95$ y $\sum_j (x_j-\overline x^{Ag})^2 f_j = 3.288$:
 $$\overline x^{Ag}=\frac{110.95}{150}=0.7396,\qquad s^{Ag}=\sqrt{\frac{3.288}{149}}\approx 0.1485.$$
@@ -236,8 +234,7 @@ una semiamplitud de $0.01$. c) porcentaje defectuoso **máximo** con 90% de conf
 $z_{\frac{1+0.9}{2}}=z_{0.95}=1.6449$; para c) unilateral a derecha $z_{0.90}=1.2816$.
 
 **Cálculo a).**
-$$\Delta_B = z_{0.95}\sqrt{\frac{0.06\cdot 0.94}{300}}=1.6449\cdot 0.01369\approx 0.0226
-\Rightarrow IC_{90\%}(p)=0.06\pm 0.023=(0.037,\;0.083).$$
+$$\Delta_B = z_{0.95}\sqrt{\frac{0.06\cdot 0.94}{300}}=1.6449\cdot 0.01369\approx 0.0226 \Rightarrow IC_{90\%}(p)=0.06\pm 0.023=(0.037,\;0.083).$$
 
 **Cálculo c) — máximo (unilateral a derecha).** El extremo derecho del IC
 unilateral usa $z_{0.90}$:

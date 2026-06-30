@@ -32,6 +32,8 @@ $$ F_X(x)=\begin{cases} 0 & x\le a\\[2pt] \dfrac{x-a}{b-a} & a<x\le b\\[6pt] 1 &
 
 La FDA crece linealmente entre $a$ y $b$.
 
+![[uniforme-densidad-fda.svg]]
+
 > **Cuidado:** que la FDA crezca **linealmente** no significa que la densidad sea lineal — lo que caracteriza a la uniforme es que la **densidad es constante**. Si en un gráfico ves una densidad con pendiente (lineal y no plana), eso **no** es una uniforme. El mnemónico del profe: "uniforme = densidad constante, tatúenselo".
 
 ## Esperanza y varianza

@@ -43,6 +43,8 @@ Como hay muchos valores con probabilidad nula, la FDA de una V.A.D. tiene forma
 $k$ una altura igual a $p_X(k)$. Según [[va-discretas-introduccion]], esto explica
 gráficamente por qué la función es continua a derecha pero no a izquierda.
 
+![[fda-discreta-continua.svg]]
+
 ## Del caso continuo: recuperar la densidad derivando
 
 En el caso continuo la FDA es derivable y su derivada es la
@@ -67,10 +69,7 @@ $f_{XY}=\partial^2 F_{XY}/\partial x\,\partial y$. El detalle de esta inversa de
 
 **Enunciado** ([[tp3-variables-aleatorias-discretas]] ej. 7). El número $X$ de
 defectos importantes en un automóvil tiene FDA:
-$$ F_X(x) = \begin{cases}
-0 & x < 0 \\ 0{,}06 & 0 \le x < 1 \\ 0{,}19 & 1 \le x < 2 \\ 0{,}39 & 2 \le x < 3 \\
-0{,}67 & 3 \le x < 4 \\ 0{,}92 & 4 \le x < 5 \\ 0{,}97 & 5 \le x < 6 \\ 1 & x \ge 6
-\end{cases} $$
+$$ F_X(x) = \begin{cases} 0 & x < 0 \\ 0{,}06 & 0 \le x < 1 \\ 0{,}19 & 1 \le x < 2 \\ 0{,}39 & 2 \le x < 3 \\ 0{,}67 & 3 \le x < 4 \\ 0{,}92 & 4 \le x < 5 \\ 0{,}97 & 5 \le x < 6 \\ 1 & x \ge 6 \end{cases} $$
 Calcular $p_X(2)$, $P(X > 3)$, $P(2 \le X \le 5)$ y $P(2 < X < 5)$.
 
 **Planteo y cálculo.** Cada salto de la FDA es la PMF en ese punto.

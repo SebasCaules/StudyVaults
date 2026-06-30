@@ -23,6 +23,8 @@ $$ \Phi(z)\overset{\text{def}}{=}F_Z(z)=P(Z\le z)=\int_{-\infty}^{z}\frac{1}{\sq
 No tiene forma cerrada → se **tabula**. Valores guía: $\Phi(0)=0.5$,
 $\lim_{z\to+\infty}\Phi(z)=1$, $\lim_{z\to-\infty}\Phi(z)=0$.
 
+![[normal-estandar-phi.svg]]
+
 ## Paso 1 — estandarizar
 
 $$ Z=\frac{X-\mu}{\sigma}\sim N(0,1),\qquad F_X(x)=P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right). $$

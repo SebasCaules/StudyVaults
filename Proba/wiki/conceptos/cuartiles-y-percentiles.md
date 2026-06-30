@@ -23,6 +23,8 @@ $\tilde x_1 \le \tilde x_2 \le \dots \le \tilde x_n$ la muestra **ordenada**:
   (50% a cada lado).
 - $q_3$ (**tercer cuartil**): deja el **75%** a su izquierda.
 
+![[cuartiles.svg]]
+
 ## Definición formal
 El $j$-ésimo cuartil es un $q_j \in [\tilde x_k,\, \tilde x_{k+1}]$ tal que
 $$ \frac{k}{n} \le j\cdot 0.25 < \frac{k+1}{n}. $$

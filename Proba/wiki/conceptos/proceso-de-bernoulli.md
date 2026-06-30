@@ -45,6 +45,8 @@ $N(k)$ = número de éxitos en $k$ experimentos i.i.d. Por lo tanto
 $N(k)\sim$ [[distribucion-binomial|Binomial]]$(k,p)$:
 $$ P(N(k)=n)=\binom{k}{n}p^n(1-p)^{k-n}. $$
 
+![[bernoulli-proceso.svg]]
+
 ## Incrementos
 Por incrementos estacionarios e independientes, para $k\le m$:
 $$ P\big(N(m)-N(k)=n\big)\overset{\text{inc. est.}}{=}P\big(N(m{-}k)=n\big)\;\Rightarrow\; N(m)-N(k)\sim\text{Binomial}(m{-}k,p). $$

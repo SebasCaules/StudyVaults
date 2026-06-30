@@ -37,6 +37,8 @@ $$ f_X(\alpha)\,\Delta x \approx P\!\left(X\in\left(x-\tfrac{\Delta x}{2},\,x+\t
 La probabilidad de un intervalo es el área bajo la densidad:
 $$ P(a<X\le b)=\int_a^b f_X(x)\,dx = F_X(b)-F_X(a). $$
 
+![[densidad-area.svg]]
+
 > Nota: el valor de $f_X$ en un punto aislado no importa para las probabilidades,
 > porque $P(X=\alpha)=0$. Por eso da igual definir o no la densidad en los
 > bordes del soporte (ej.: en la [[distribucion-uniforme-continua|uniforme]] no

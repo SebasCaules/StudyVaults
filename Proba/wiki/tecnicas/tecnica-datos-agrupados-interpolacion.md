@@ -96,14 +96,12 @@ los intervalos centrados en la media de semiamplitud $s, 2s, 3s$; y el % de
 llamadas que superan los 3 minutos.
 
 **1) Media y desvío (datos agrupados).** Con $n=\sum f_i = 1000$:
-$$ \bar x = \frac{1}{n}\sum x_i f_i = \frac{157\,710}{1000} = 157.71 \text{ seg}, \qquad
-s = \sqrt{\frac{\sum (x_i-\bar x)^2 f_i}{n-1}} \approx 45.37 \text{ seg}. $$
+$$ \bar x = \frac{1}{n}\sum x_i f_i = \frac{157\,710}{1000} = 157.71 \text{ seg}, \qquad s = \sqrt{\frac{\sum (x_i-\bar x)^2 f_i}{n-1}} \approx 45.37 \text{ seg}. $$
 
 **2) Moda por interpolación.** El intervalo modal es el sexto, $(165,195]$, con la
 frecuencia máxima $f_M = 260$; sus vecinos tienen $f_I = 247$ (izquierda) y
 $f_D = 133$ (derecha). Con $L_I = 165$, $L_D = 195$:
-$$ M = \frac{195\,(260-247) + 165\,(260-133)}{(260-247)+(260-133)}
-= \frac{195\cdot 13 + 165\cdot 127}{13 + 127} \approx 167.79 \text{ seg}. $$
+$$ M = \frac{195\,(260-247) + 165\,(260-133)}{(260-247)+(260-133)} = \frac{195\cdot 13 + 165\cdot 127}{13 + 127} \approx 167.79 \text{ seg}. $$
 (La convención simple daría $M = 180$, el punto medio del intervalo modal.)
 
 **3) Mediana por interpolación** sobre el polígono de frecuencias **acumuladas**.
@@ -114,8 +112,7 @@ $$ m_e = 135 + 30\cdot\frac{500 - 302}{549 - 302} \approx 159.05 \text{ seg}. $$
 **4) Proporciones por interpolación.** Sea $P(x)$ la frecuencia acumulada
 interpolada. El intervalo centrado en la media con semiamplitud $s$ es
 $(\bar x - s, \bar x + s) = (112.34, 203.08)$. Interpolando:
-$$ P(112.34) = 122 + (302-122)\tfrac{112.34-105}{30} \approx 166.04, \qquad
-P(203.08) = 809 + (942-809)\tfrac{203.08-195}{30} \approx 844.82, $$
+$$ P(112.34) = 122 + (302-122)\tfrac{112.34-105}{30} \approx 166.04, \qquad P(203.08) = 809 + (942-809)\tfrac{203.08-195}{30} \approx 844.82, $$
 de donde la proporción en $\bar x \pm s$ es $(844.82 - 166.04)/1000 \approx 0.68$
 (**68%**). Análogamente se obtienen las de $\bar x \pm 2s$ y $\bar x \pm 3s$.
 
