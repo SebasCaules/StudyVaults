@@ -38,6 +38,12 @@ export interface VaultConfig {
   library?: boolean;
   // apps estáticas propias (HTML restilizado, servido bajo /apps/<vault>/)
   apps?: VaultApp[];
+  // Sidebar (y catálogo) agrupados por UNIDAD (frontmatter `unidad`) en vez de
+  // por carpeta. Solo para vaults cuyas páginas tienen `unidad:` consistente
+  // (p. ej. Proba). `unitLabels` da el nombre de cada sección; las unidades sin
+  // entrada caen a "Unidad <n>" y las páginas sin `unidad` van a "General".
+  navByUnit?: boolean;
+  unitLabels?: Record<string, string>;
 }
 
 export const VAULTS: VaultConfig[] = [
@@ -102,6 +108,22 @@ export const VAULTS: VaultConfig[] = [
     lang: "es",
     toolkit: true,
     sheets: true,
+    // El programa de la cátedra se estructura por unidades (frontmatter
+    // `unidad:` en cada página) → navegamos por unidad, no por carpeta.
+    navByUnit: true,
+    unitLabels: {
+      "1": "Unidad 1 — Estadística Descriptiva",
+      "2": "Unidad 2 — Introducción a la Probabilidad",
+      "3": "Unidad 3 — Variables Aleatorias Discretas",
+      "4": "Unidad 4 — Variables Aleatorias Continuas",
+      "5": "Unidad 5 — Función de V.A. y Variables Bidimensionales",
+      "6": "Unidad 6 — Procesos Estocásticos",
+      "7": "Unidad 7 — Suma de Variables Aleatorias",
+      "8": "Unidad 8 — Inferencia Estadística",
+      "9": "Unidad 9 — Pruebas de Hipótesis",
+      "0": "Complementos Matemáticos",
+      eval: "Evaluaciones",
+    },
   },
   {
     id: "paw",
