@@ -29,6 +29,8 @@ significativo tiende a $0$.
 Por la [[desigualdad-de-chebyshev|desigualdad de Chebyshev]]:
 $$ P\big(|\bar X_n-\mu|\ge\varepsilon\big)\le\frac{V(\bar X_n)}{\varepsilon^2}=\frac{\sigma^2}{n\,\varepsilon^2}\xrightarrow{n\to\infty}0. $$
 
+> **Observación.** El paso $V(\bar X_n)=\sigma^2/n$ de la demo descansa en descomponer la varianza de la suma como suma de varianzas: $V\!\big(\sum_{k=1}^n X_k\big)=\sum_{k=1}^n V(X_k)$. Eso solo vale si las $X_k$ son **independientes** (o, más débil, no correlacionadas, $\mathrm{Cov}(X_i,X_j)=0$). Sin esa hipótesis hay que sumar además las covarianzas, y la cota $\sigma^2/(n\varepsilon^2)$ deja de valer tal cual. Acá está garantizado por el i.i.d. del enunciado.
+
 ## Ley fuerte (LFGN)
 Bajo las mismas condiciones:
 $$ P\!\left(\lim_{n\to\infty}\bar X_n=\mu\right)=1, $$
@@ -51,6 +53,8 @@ Esta es la base de **estimar probabilidades repitiendo experimentos**
 [[teorema-central-del-limite|TCL]] dice *cómo* fluctúa en el camino (las
 fluctuaciones son de tamaño $\sigma/\sqrt n$ y, reescaladas, son Normales). Son
 complementarios: uno fija el blanco, el otro mide la puntería.
+
+> **Intuición.** El desvío del promedio es $\sigma/\sqrt n\to 0$: a más datos, $\bar X_n$ se aprieta alrededor de $\mu$ hasta comportarse como una constante. Un valor atípico sigue apareciendo en las muestras individuales, pero al promediar contra muchos otros su peso relativo se diluye. En palabras del profe: *los promedios ahogan a los valores atípicos* — promediás muchas repeticiones y el extremo pierde relevancia.
 
 ## Relectura vía TCL
 El [[teorema-central-del-limite|TCL]] da otra mirada: tipificando,

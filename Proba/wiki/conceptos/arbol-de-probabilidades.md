@@ -47,6 +47,10 @@ Según [[tp2-calculo-de-probabilidades]] (repaso, pág. 4), para armar y leer el
   caminos (hojas) que terminan en $B$**.
 - **Bayes** ("dar vuelta el árbol"): $P(\text{rama}\mid B)=\dfrac{\text{prob. del camino que pasa por la rama y llega a }B}{P(B)}$.
 
+> **Cuidado:** Al aplicar la fórmula de probabilidad total en su versión con condicionales,
+> $$P(B) = \sum_i P(B\mid A_i)\,P(A_i),$$
+> **cada término exige multiplicar por $P(A_i)$**. Quedarse solo con la suma de las condicionales $\sum_i P(B\mid A_i)$ es un error frecuente: al condicionar a distintos $A_i$ se cambian los casos totales de cada término, así que sin los pesos $P(A_i)$ el resultado no tiene sentido probabilístico — puede incluso superar 1.
+
 ## Ejercicio resuelto — daltónicos (árbol → Bayes)
 *El 4% de los varones y el 2% de las mujeres son daltónicos. Las mujeres son el 53% de
 la población. ¿Qué proporción de varones hay entre los daltónicos?* (mismo ejemplo de

@@ -42,6 +42,14 @@ $$ P(a<X\le b)=\int_a^b f_X(x)\,dx = F_X(b)-F_X(a). $$
 > bordes del soporte (ej.: en la [[distribucion-uniforme-continua|uniforme]] no
 > se define $f_X$ en $a$ ni en $b$).
 
+> **Intuición.** La densidad surge de "refinar" una discreta. Si medís temperatura con un termómetro que trunca al entero tenés pocos valores y cada probabilidad puntual es alta; si pasás a décimas tenés diez veces más valores y cada probabilidad puntual se divide aproximadamente entre diez, pero la probabilidad de un *rango* casi no cambia. Al llevar el paso a cero, las probabilidades puntuales tienden a $0$ mientras que la probabilidad de un rango converge a un valor estable: ese límite es $\int_a^b f_X$. Por eso la densidad no mide probabilidad en un punto sino **concentración de probabilidad en un rango**.
+
+> **Observación.** En una variable continua conviene distinguir dos formas de "no ocurre":
+> - **Improbable pero posible:** un valor $x$ con $f_X(x)>0$ (está en el **soporte**). Tiene probabilidad puntual $0$, pero puede ocurrir.
+> - **Imposible bajo el modelo:** un valor $x$ con $f_X(x)=0$ fuera del soporte; la distribución lo excluye.
+>
+> Que $P(X=\alpha)=0$ **no** implica que $\alpha$ sea imposible: en un continuo la probabilidad debe repartirse entre infinitos valores, así que todo punto del soporte da $0$ aun siendo alcanzable.
+
 ## Esperanza y momentos a partir de la densidad
 
 $$ E[g(X)]=\int_{-\infty}^{+\infty} g(x)\,f_X(x)\,dx,\qquad E[X^k]=\int_{-\infty}^{+\infty} x^k\,f_X(x)\,dx. $$
@@ -58,6 +66,8 @@ La densidad es el objeto central de varias técnicas de los Complementos Matemá
 - **[[tecnica-derivadas-parciales]]** — la densidad se recupera **derivando** la
   [[funcion-de-distribucion-acumulada|FDA]] ($f_X=F_X'$ en 1D; densidad conjunta
   $=\partial^2 F/\partial x\,\partial y$ en 2D).
+
+> **Cuidado:** cuando la [[funcion-de-distribucion-acumulada|FDA]] queda partida en tramos, verificá que **encajen en los puntos de corte**: el tramo central evaluado en el extremo inferior del soporte debe dar $0$ y en el extremo superior debe dar $1$ (la FDA de una continua es **continua**, sin saltos). Si no coinciden, hay un error en la primitiva. Es una verificación barata que atrapa la mayoría de los errores de cálculo antes de usar la FDA para probabilidades.
 
 ## Cómo se relaciona con la PMF discreta
 

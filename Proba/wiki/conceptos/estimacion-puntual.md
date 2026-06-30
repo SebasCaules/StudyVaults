@@ -120,6 +120,24 @@ hay varios parámetros, se usan varios momentos.
 > Como $\mu=E[X_i]=1/\lambda$, se estima $\hat\mu=\overline X_n$ y se despeja
 > $\hat\lambda = 1/\overline X_n$.
 
+> **Intuición.** El nombre va en plural porque a veces el primer momento
+> $E[X_i]$ no depende del parámetro $\theta$ que se quiere estimar. En ese caso
+> se prueba con el segundo $E[X_i^2]$, el tercero $E[X_i^3]$, y así, hasta dar
+> con uno que sí vincule $\theta$ con algo calculable desde la muestra. No es
+> que haga falta más de un parámetro: aun estimando uno solo puede tocar subir
+> de potencia porque el primer momento no sirve.
+
+> **Ejemplo (geométrica — muestreo de duración variable).** En cada uno de $n$
+> días se entrevista gente hasta el primer aprobado, así que $X_i\sim\text{Geom}(p)$
+> (personas entrevistadas el día $i$). Como el total entrevistado no se fija de
+> antemano, no sirve la proporción muestral directa. Por momentos: $E[X_i]=1/p$,
+> y como $\overline X_n\approx E[X_i]$ por la [[ley-de-grandes-numeros|ley de grandes números]],
+> se despeja
+> $$\hat p = \frac{1}{\overline X_n} = \frac{n}{\displaystyle\sum_{i=1}^n X_i}.$$
+> Por MV se llega al mismo estimador: la log-verosimilitud de las geométricas
+> conduce a igualar la derivada a cero y da idéntica expresión. Que ambos métodos
+> coincidan no siempre pasa.
+
 ## Cómo reconocer cuál usar
 
 - **MV** — cuando se conoce la familia de la distribución y se quiere el
@@ -128,6 +146,15 @@ hay varios parámetros, se usan varios momentos.
 - **MAP** — cuando hay información previa creíble sobre el parámetro (prior).
 - **Momentos** — cuando despejar el parámetro de un momento es fácil
   (típico con exponencial, uniforme).
+
+> **Cuidado:** el método de los momentos exige que los momentos usados existan.
+> Para una Pareto de parámetro $\alpha$, la media solo existe si $\alpha>1$ y la
+> varianza solo si $\alpha>2$. Si el valor real cae fuera de ese rango, el método
+> de momentos directamente no se puede aplicar — MV no tiene esa restricción y es
+> preferible ahí. Además, cuando los momentos son volátiles (alta varianza
+> muestral), el estimador de momentos del mínimo $\hat x_0$ puede dar mayor que
+> algún dato observado: una contradicción que delata que la estimación es
+> inválida.
 
 ## Ejercicio resuelto
 

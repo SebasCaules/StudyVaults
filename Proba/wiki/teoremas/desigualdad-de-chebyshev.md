@@ -37,6 +37,10 @@ porque donde $\mathbb 1=1$ es $x\ge\alpha$, luego $\tfrac{x}{\alpha}\ge 1$.
 
 > El TP7 la enuncia de forma equivalente con $|X|$: $\;P(|X|\ge\varepsilon)\le\dfrac{E[|X|]}{\varepsilon}$.
 
+> **Ejemplo.** Martín sabe que la basura que junta en el fin de semana tiene media $\mu = 100\,\text{kg}$, pero desconoce la distribución (sólo sabe que es no negativa). El camión tiene capacidad $200\,\text{kg}$. Aplicando Markov:
+> $$P(X \ge 200) \le \frac{E[X]}{200} = \frac{100}{200} = \frac{1}{2}.$$
+> Sin saber nada más, garantiza que a lo sumo el $50\%$ de las veces la basura excede la capacidad del camión.
+
 ## Desigualdad de Chebyshev
 Sea $X$ una v.a. con media $\mu$ y varianza $\sigma_X^2$. Para todo $\varepsilon>0$:
 $$ P(|X-\mu|\ge\varepsilon)\le\frac{\sigma_X^2}{\varepsilon^2}. $$
@@ -68,6 +72,15 @@ $$ P(|X-80|\ge 10)\le\frac{16}{10^2}=0.16. $$
 La cota es **correcta pero floja**: el valor verdadero (vía binomial/normal) es
 $\approx 0.983$ — ver [[aproximacion-normal-de-la-binomial]]. Chebyshev sólo
 garantiza $\ge 0.84$.
+
+> **Ejemplo.** Un DJ pone $M$ canciones por evento con $E[M] = 150$ y $V(M) = 500$; la distribución es desconocida. Chebyshev con $\varepsilon = 50$:
+> $$P(|M - 150| \ge 50) \le \frac{500}{50^2} = \frac{500}{2500} = 0.2.$$
+> Tomando el complemento: $P(100 < M < 200) = P(|M - 150| < 50) \ge 1 - 0.2 = 0.8.$
+> El DJ sabe que al menos el $80\%$ de los eventos queda dentro del rango deseado, sin conocer la distribución de $M$.
+
+> **Cuidado:** Chebyshev acota $P(|X - \mu| \ge \varepsilon) \le \tfrac{\sigma^2}{\varepsilon^2}$ (cota superior). Si lo que se quiere es $P(a < X < b)$ con $[a,b]$ simétrico alrededor de $\mu$, hay que pasar al complemento:
+> $$P(|X - \mu| < \varepsilon) \ge 1 - \frac{\sigma^2}{\varepsilon^2},$$
+> lo que **invierte la desigualdad** (de $\le$ a $\ge$). El resultado es una cota inferior, no superior.
 
 ## Cuándo usarlas
 - Cuando **no conocés la distribución**, sólo media y/o varianza.

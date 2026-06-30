@@ -31,6 +31,12 @@ $Y=g(X)$. Es el método más confiable y casi siempre el esperado en el parcial.
    - discreta: $p_Y(k)=\sum_{x:\,g(x)=k} p_X(x)$.
 4. **Escribir el resultado por tramos**, especificando el soporte.
 
+> **Observación (función cuadrática: el discriminante da el soporte).** Cuando $g$ es una parábola, la preimagen $\{g(X)\le y\}$ se obtiene resolviendo $g(x)-y=0$, y su discriminante $\Delta$ indica de una si el evento es no vacío:
+> - $\Delta<0$ → no hay raíces reales → la parábola entera queda de un solo lado de la recta $y$. Si $g$ es hacia arriba (coeficiente principal $>0$) con mínimo $m$, entonces para $y<m$ el evento $\{g(X)\le y\}$ es vacío y $F_Y(y)=0$.
+> - $\Delta\ge0$ → las dos raíces $x_1\le x_2$ delimitan la preimagen, y según la concavidad $\{g(X)\le y\}$ es el intervalo $[x_1,x_2]$ (parábola hacia arriba) o sus dos colas $X\le x_1$, $X\ge x_2$ (hacia abajo).
+>
+> Es lo mismo que el paso 1 de la receta (identificar el soporte de $Y$), pero la condición sobre $\Delta$ entrega de forma automática dónde $F_Y$ deja de valer $0$.
+
 ## Atajos según el tipo de $g$
 
 - **Afín $Y=aX+b$**: no hace falta la FDA para los momentos: $E[Y]=aE[X]+b$,
@@ -45,6 +51,10 @@ $Y=g(X)$. Es el método más confiable y casi siempre el esperado en el parcial.
 > que cabía en un intervalo ahora se reparte en uno más largo, así que la densidad baja, y
 > viceversa. El módulo es porque ese factor de escala es siempre positivo, aunque $g$ sea
 > decreciente (ahí $g^{-1}$ tiene derivada negativa).
+
+> **Observación (no siempre hace falta $f_Y$).** Si solo piden $E[Y]=E[g(X)]$, conviene integrar $g$ directamente contra la densidad original, sin pasar por $F_Y$ ni $f_Y$:
+> $$E[g(X)]=\int_{-\infty}^{\infty} g(x)\,f_X(x)\,dx\qquad\Big(\text{o }\textstyle\sum_x g(x)\,p_X(x)\text{ en el caso discreto}\Big).$$
+> Cuando $g$ es sencilla (polinomio, transformación afín) esto suele ser mucho más corto que derivar $F_Y$ y luego integrar $t\,f_Y(t)$. La distribución completa de $Y$ se necesita solo si piden **probabilidades de $Y$** o su **densidad/masa** explícita.
 
 ## Errores típicos a evitar
 

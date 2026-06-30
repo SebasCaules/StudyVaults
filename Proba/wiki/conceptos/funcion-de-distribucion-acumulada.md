@@ -34,6 +34,8 @@ comportamiento de una v.a.
   (Para una V.A.D. **no** es continua a izquierda: en cada valor del recorrido hay
   un salto de altura $p_X(k)$.)
 
+> **Intuición.** La continuidad a derecha (y la discontinuidad a izquierda) sale directamente del $\le$ de la definición $F_X(k) = P(X \le k)$. Cuando me paro en un valor del recorrido $k_0$, ese valor **sí** queda incluido en $\{X \le k_0\}$: si me corro un $\varepsilon$ a la **derecha** lo sigo incluyendo, así que la función no cambia. Pero si me corro un $\varepsilon$ a la **izquierda**, $k_0$ queda excluido y la función baja el escalón de altura $p_X(k_0)$. Por eso el salto es una discontinuidad solo a izquierda.
+
 ## Forma escalonada
 
 Como hay muchos valores con probabilidad nula, la FDA de una V.A.D. tiene forma

@@ -27,6 +27,10 @@ $$ f_X(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\,\exp\!\left\{-\frac{(x-\mu)^2}{2\sigma^
   (valor más frecuente) está en $\mu$ y vale $\frac{1}{\sqrt{2\pi}\,\sigma}$.
 - Cambia la concavidad en $\mu\pm\sigma$ (puntos de inflexión).
 
+> **Intuición.** El exponente $-\frac{(x-\mu)^2}{2\sigma^2}$ controla la velocidad de caída de la campana. Con $\sigma$ chico, cualquier alejamiento de $\mu$ hace crecer el cociente rápidamente → el exponente se vuelve muy negativo → la densidad cae en forma brusca (campana alta y angosta). Con $\sigma$ grande, el mismo alejamiento se divide por algo más grande, así que el cociente crece despacio y la densidad decae lentamente (campana baja y achatada). Por eso $\sigma$ regula a la vez la altura del pico (que vale $1/(\sqrt{2\pi}\,\sigma)$, inversamente proporcional a $\sigma$) y el ancho de la campana.
+
+> **Observación.** Aunque el soporte teórico es $\mathbb{R}$, la probabilidad fuera de $[\mu-3\sigma,\,\mu+3\sigma]$ es menor al $0.3\%$ (ver regla empírica). Esto permite modelar variables intrínsecamente positivas (longitudes, consumos, tiempos) con una normal, siempre que $\mu$ esté suficientemente lejos del cero en términos de $\sigma$: si $\mu>3\sigma$, la probabilidad de obtener un valor negativo es $P(X<0)=\Phi(-\mu/\sigma)<\Phi(-3)\approx0.135\%$, despreciable en la práctica.
+
 ## Función de distribución acumulada
 
 **No tiene primitiva** (forma cerrada). Se calcula vía la
@@ -40,6 +44,8 @@ donde $\Phi$ es la FDA de $Z\sim N(0,1)$, tabulada. **Solo hace falta tabular $\
 
 - $E[X]=\mu$.
 - $V(X)=\sigma^2$.
+
+> **Intuición.** $E[X]=\mu$ se deduce escribiendo $X=\mu+\sigma Z$ (con $Z\sim N(0,1)$) y usando $E[Z]=0$: el integrando $z\,f_Z(z)$ es una **función impar** (vale lo mismo a izquierda y derecha del cero pero con signo opuesto), así que las dos mitades se cancelan exactamente. La varianza sale de $V(X)=E[X^2]-\mu^2$ con $X^2=\mu^2+2\mu\sigma Z+\sigma^2 Z^2$: el término cruzado (impar) vuelve a anularse y, como $E[Z^2]=1$, queda $E[X^2]=\mu^2+\sigma^2$, de donde $V(X)=\sigma^2$.
 
 ## Función generadora de momentos
 

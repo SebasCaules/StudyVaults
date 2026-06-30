@@ -21,6 +21,10 @@ $$ \bar{x} = \frac{\sum_{i=1}^n x_i}{n} $$
 Interpretación: el punto que "equilibra" los datos sobre la recta. Los valores más
 alejados son los más influyentes en el cálculo → **sensible a outliers**.
 
+> **Cuidado:** La media siempre cae entre el mínimo y el máximo de los datos:
+> $$ \min_i x_i \;\le\; \bar{x} \;\le\; \max_i x_i. $$
+> Si el resultado queda fuera de ese rango, hay un error de cálculo (fórmula mal aplicada o número mal ingresado). Usalo como verificación rápida antes de seguir.
+
 ## Mediana
 Valor que divide a los datos **a la mitad** (50% por debajo, 50% por encima). Se
 calcula ordenando la muestra $\tilde x_1 \le \dots \le \tilde x_n$:
@@ -71,6 +75,8 @@ La **mediana es robusta** ante [[boxplot|outliers]]; la media no.
 
 > Versión poblacional de la media: la [[esperanza|esperanza $E[X]$]] de una
 > [[variable-aleatoria]]. La media muestral $\bar x$ **estima** ese $E[X]$.
+
+> **Observación.** Dos conjuntos de datos pueden tener exactamente la misma media y aun así ser muy distintos. La media describe el *centro*, pero no dice nada sobre cuánto se dispersan los datos alrededor de él: resumir en un solo número corre el riesgo de *resumir de más*. Por eso la media siempre se complementa con al menos una [[medidas-de-dispersion|medida de dispersión]].
 
 ## Con datos agrupados
 $$ \bar{x}_{Ag} = \frac{\sum_{i=1}^L x_i\, f_i}{n} $$

@@ -58,6 +58,8 @@ $$ \beta(p)=\Phi\!\left(\tfrac{\hat p_c - p}{\sqrt{p(1-p)/n}}\right),\qquad \bet
 La forma general (TP9) que mezcla $p_0$ y $p_1$:
 $$ \beta(q_1)=\Phi\!\left(z_{1-\alpha}\sqrt{\tfrac{q_0(1-q_0)}{q_1(1-q_1)}}+\tfrac{q_0-q_1}{\sqrt{q_1(1-q_1)/n}}\right). $$
 
+> **Intuición.** En la prueba bilateral el valor p vale $2\,(1-\Phi(|z_{\text{obs}}|))$ porque el caso observado y su imagen especular respecto de $q_0$ son igualmente extremos bajo $H_1$: si $\hat q$ se alejó $\delta$ hacia arriba de $q_0$, un $\hat q$ que se hubiera alejado $\delta$ hacia abajo sería tanta evidencia en contra de $H_0$ como el caso que realmente ocurrió. Las dos colas tienen la misma probabilidad (la distribución de $Z$ bajo $H_0$ es simétrica alrededor de $0$), y de ahí el factor $2$.
+
 ## ¿Cuándo usarla?
 
 - El dato es un **conteo de éxitos / fracasos** sobre un total ("18 de 145",
@@ -66,6 +68,12 @@ $$ \beta(q_1)=\Phi\!\left(z_{1-\alpha}\sqrt{\tfrac{q_0(1-q_0)}{q_1(1-q_1)}}+\tfr
 - $n$ grande (en la práctica $>100$) para que valga la aproximación normal.
 
 Ver [[reconocer-prueba-de-hipotesis|cómo reconocer qué prueba usar]].
+
+> **Observación.** Cuando $n$ es pequeño (no se puede aplicar el TCL), todavía es posible testear $H_0: q = q_0$ usando la distribución exacta $X \sim \text{Binomial}(n, q_0)$. Para una alternativa de cola derecha se elige el valor crítico $c$ como el menor entero tal que
+> $$ P(X \ge c \mid q = q_0) \le \alpha, $$
+> y se rechaza $H_0$ si $X \ge c$. Como $X$ es discreta, en general la probabilidad de error tipo I resulta **estrictamente menor** que $\alpha$ (no se alcanza el nivel exacto). El valor p es $P(X \ge x_{\text{obs}} \mid q = q_0)$, calculado con la Binomial exacta.
+
+> **Cuidado:** En la prueba bilateral con proporción, los dos valores críticos en escala de $\hat q$ son $q_0 \pm z_{1-\alpha/2}\sqrt{q_0(1-q_0)/n}$: simétricos respecto de $q_0$ pero **no** respecto de $0$. Al estandarizar con $Z$ recién se recupera la simetría alrededor de $0$, y por eso la región de rechazo se expresa con un único valor crítico, $|Z| > z_{1-\alpha/2}$. Si se trabaja directamente con $\hat q$ (sin estandarizar), hay que usar explícitamente los dos umbrales.
 
 ## Conceptos relacionados
 

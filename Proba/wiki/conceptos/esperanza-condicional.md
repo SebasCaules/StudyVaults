@@ -44,6 +44,14 @@ $$ E[X]=E\big[E[X\mid Y]\big]=\begin{cases}\displaystyle\sum_{y\in R_Y} E[X\mid 
 Es la versión "esperada" de la [[probabilidad-total-y-bayes|probabilidad total]]: se descompone el
 cálculo por casos (los valores de $Y$) y se promedia con sus pesos.
 
+> **Intuición.** Conviene condicionar en la dirección que da una estructura conocida. Si $N\mid M$ resulta ser [[distribucion-binomial|Binomial]] o $D\mid B$ resulta ser [[distribucion-uniforme-continua|Uniforme]], entonces $E[N\mid M]$ y $\text{Var}(N\mid M)$ se leen directo de las fórmulas de esa distribución, y promediar esa función de $M$ suele ser mucho más fácil que sumar (o integrar) la conjunta entera. Al revés, $M\mid N$ puede no tener forma reconocible. Elegir bien el lado convierte una suma de cientos de términos en una línea.
+
+> **Observación.** Una función que depende solo de la variable que se condiciona sale afuera de la esperanza condicional: dado $X=x$, $g(x)$ es una constante, de modo que
+> $$E[g(X)\,Y\mid X]=g(X)\,E[Y\mid X].$$
+> Combinado con la ley de esperanza total, esto permite calcular $E[XY]$ sin la conjunta explícita:
+> $$E[XY]=E\big[E[XY\mid X]\big]=E\big[X\,E[Y\mid X]\big],$$
+> lo que agiliza mucho la [[covarianza-y-correlacion|covarianza]] cuando $E[Y\mid X]$ tiene forma cerrada.
+
 ## Ley de varianza total
 
 La varianza **no** se promedia directamente: a la media de las varianzas condicionales hay que

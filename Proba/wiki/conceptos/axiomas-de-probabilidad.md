@@ -40,6 +40,20 @@ $S$. El axioma 1 dice que no hay áreas negativas; el 2, que todo el universo "p
 el 3, que pegar trozos que no se solapan suma sus áreas. La fórmula de la unión resta
 $P(A\cap B)$ porque al sumar $P(A)$ y $P(B)$ la zona compartida se contó **dos veces**.
 
+> **Intuición.** Los axiomas no son arbitrarios: imitan el comportamiento de la **frecuencia relativa**. Si repetís un experimento $n$ veces y el evento $A$ ocurre $n_A$ de ellas, la frecuencia relativa $n_A/n$ cumple automáticamente las tres propiedades: es $\ge 0$, vale $1$ cuando $A = S$ (siempre ocurre alguno de los resultados posibles) y se suma cuando los eventos son disjuntos (sus ocurrencias no se solapan). A medida que $n$ crece, esa frecuencia relativa se estabiliza alrededor de un valor límite — y ese límite es lo que llamamos probabilidad. Los axiomas capturan exactamente esa estabilidad.
+
+> **Cuidado:** $P$ es una **función** que toma conjuntos y devuelve números. Por eso la unión y la intersección van *dentro* del argumento de $P$, nunca afuera:
+>
+> - Correcto: $P(A \cup B)$, $P(A \cap B)$.
+> - Incorrecto: $P(A) \cup P(B)$ — los números no se unen.
+> - Incorrecto: $P(A + B)$ — los conjuntos no se suman, se unen.
+>
+> Escribir la operación de conjunto afuera de $P$ delata no entender qué tipo de objeto es cada cosa.
+
+> **Nota.** La fórmula $P(A \setminus B) = P(A) - P(B)$ **solo vale si $B \subseteq A$** (resta inclusiva). En el caso general, cuando $B$ no está incluido en $A$, la diferencia de conjuntos se calcula como:
+> $$ P(A \setminus B) = P(A) - P(A \cap B). $$
+> Si $B \subseteq A$, entonces $A \cap B = B$ y ambas fórmulas coinciden. Aplicar la primera sin verificar la inclusión es un error frecuente.
+
 ## Ejercicio resuelto
 *Suma o bien 4 o bien 11 al tirar dos dados (Laplace + unión de m.e.).*
 

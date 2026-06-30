@@ -35,6 +35,8 @@ longitud**.
 El **histograma** es el gráfico de barras de $n_k$ (o $f_k$). El **polígono de
 frecuencias** une los puntos medios de las barras.
 
+> **Observación.** Las barras del histograma de una variable continua se dibujan **contiguas** (sin espacio entre ellas), porque representan un rango continuo de valores. Un intervalo con frecuencia cero no significa valores imposibles, sino infrecuentes: un dato podría caer en cualquier parte de ese rango, simplemente no lo hizo en esta muestra. Separar las barras transmitiría la idea incorrecta de un salto en los valores posibles (eso corresponde a una variable discreta).
+
 ## Función de frecuencia relativa acumulada
 $$ F(\alpha) = \frac{|\{x_i : x_i \le \alpha\}|}{n} \in [0,1]. $$
 Es una función creciente (una "escalera"); su polígono se usa para
@@ -47,6 +49,8 @@ proporciones. Es la contraparte muestral de la
 > forma (todo en una barra), muy finos la vuelven ruido (una barra por dato). La FDA
 > acumulada esquiva ese problema porque no depende de cómo agrupes — por eso se la usa
 > para leer cuartiles y proporciones con precisión.
+
+> **Cuidado:** El intervalo de mayor frecuencia (la barra más alta) **no marca dónde está la media**. La media puede caer en otro intervalo según cómo se repartan los datos dentro de cada *bin*. En el ejemplo de los tiempos de viaje en subte, la media daba 40 minutos y no coincidía con el intervalo más frecuente. El histograma muestra la forma y la dispersión de la distribución; la media se calcula aparte.
 
 ## Relación
 - Cuando solo se dispone de la tabla de frecuencias (no los datos individuales)

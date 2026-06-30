@@ -72,6 +72,8 @@ $$ T_k< t \iff N(t)\ge k. $$
 Esto permite pasar de preguntas sobre **tiempos** (Erlang/Exponencial) a preguntas
 sobre **conteos** (Poisson) y viceversa.
 
+> **Cuidado:** dos errores frecuentes al condicionar conteos. **(1)** Para $P(N(t)=n\mid N(s)=k)$ con $s<t$, arrancá de la definición: el numerador es el conjunto $\{N(t)=n,\,N(s)=k\}$, que **no** es la intersección de dos eventos independientes (ambos miran el tramo $[0,s]$). Reescribilo separando el incremento disjunto, $\{N(t)=n,\,N(s)=k\}=\{N(t)-N(s)=n-k\}\cap\{N(s)=k\}$; recién ahí los dos factores son independientes y $P(N(s)=k)$ se cancela con el denominador, dejando $P\big(N(t)-N(s)=n-k\big)$. Si soltás el evento condicionante antes de tiempo (reemplazás $N(t)$ por un incremento pero te olvidás de retener $N(s)=k$), podés obtener probabilidades **mayores que 1**. **(2)** El proceso de Poisson **no** "pierde memoria": esa propiedad es de la [[distribucion-exponencial|Exponencial]] (los tiempos *entre* eventos), no del proceso de conteo. Que $N(s,t)$ se distribuya como $N(t-s)$ es **estacionariedad de incrementos**, no falta de memoria; confundir ambas cosas es uno de los errores más comunes.
+
 ## Relaciones con otras distribuciones / procesos
 - Marginal: [[distribucion-poisson|Poisson]]; tiempos entre eventos:
   [[distribucion-exponencial|Exponencial]] (falta de memoria); tiempo al

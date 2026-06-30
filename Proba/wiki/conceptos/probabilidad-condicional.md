@@ -19,6 +19,10 @@ $$ P(D\mid C) = \frac{P(D\cap C)}{P(C)}. $$
 **Idea**: condicionar a $C$ es *reducir el universo* de todo $S$ a solo $C$; ahora
 $C$ pasa a ser el nuevo "espacio cierto" y se cuentan los casos de $D$ dentro de $C$.
 
+> **Intuición.** La fórmula sale de pensar en frecuencias relativas restringidas. Si repetís el experimento $n$ veces y $C$ ocurrió $n_C$ de ellas, la frecuencia de $D$ *entre los casos en que $C$ ocurrió* es
+> $$\frac{n(D\cap C)}{n_C} = \frac{n(D\cap C)/n}{n_C/n}.$$
+> Cuando $n\to\infty$, el numerador converge a $P(D\cap C)$ y el denominador a $P(C)$. Por eso el denominador es $P(C)$ y no $1$: no dividís entre *todas* las repeticiones, sino solo entre las que ya sabés que cayeron en $C$.
+
 > ⚠️ Si $P(C)=0$, la condicional $P(D\mid C)$ **no está definida** (división por cero):
 > no se puede condicionar a un suceso de probabilidad nula. La definición exige
 > explícitamente $P(C)\neq 0$ ([[tp2-calculo-de-probabilidades]], repaso).
@@ -42,3 +46,9 @@ $$ P(D\mid C) = \frac{P(D\cap C)}{P(C)} = \frac{9/36}{15/36} = \frac{9}{15} = \f
 - Reordenando: $P(D\cap C)=P(D\mid C)\,P(C)$ (**regla de la multiplicación**) → base de
   la [[probabilidad-total-y-bayes|probabilidad total y Bayes]] y de las etiquetas del
   [[arbol-de-probabilidades|árbol de probabilidades]].
+
+> **Cuidado:** la regla del complemento vale al complementar el *evento de interés*, manteniendo fijo el condicionante:
+> $$P(A^c\mid B) = 1 - P(A\mid B),$$
+> pero **no** vale al complementar el *condicionante*:
+> $$P(A\mid B^c) \neq 1 - P(A\mid B)\quad(\text{en general}).$$
+> El motivo: $P(\cdot\mid B)$ y $P(\cdot\mid B^c)$ son probabilidades sobre universos reducidos distintos ($B$ y $B^c$ tienen casos totales distintos), así que sus complementos no tienen por qué relacionarse.

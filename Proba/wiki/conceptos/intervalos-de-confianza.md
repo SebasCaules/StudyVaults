@@ -54,6 +54,10 @@ $\left(-\infty, \overline X_n + z_\gamma\frac{\sigma}{\sqrt n}\right)$.
 **V.a. no normales:** si $n$ es grande ($n>100$), el [[teorema-central-del-limite]]
 permite usar las mismas fórmulas.
 
+> **Intuición.** La distribución de $\overline X_n$ depende de $\mu$, que es lo desconocido, así que no se pueden calcular probabilidades sobre ella directamente. El truco es usar una **distribución pivote**: al estandarizar,
+> $$\frac{\overline X_n - \mu}{\sigma/\sqrt n} \sim \mathcal{N}(0,1),$$
+> se obtiene una variable cuya distribución es completamente conocida (no depende de $\mu$). Desde esa distribución conocida se leen los cuantiles, y luego se despeja $\mu$ algebraicamente. El pivote es el "ancla" que permite hacer afirmaciones sobre lo desconocido a partir de lo conocido.
+
 ## Caso 2 — Proporción $\to$ Z (con $\hat p$ en el desvío)
 
 $X_i\sim$ Bernoulli$(p)$, $\hat p=\frac1n\sum X_i$. Por TCL, para $n$ grande
@@ -87,6 +91,8 @@ $$IC_\gamma^{\,der}(\mu)=\left(-\infty,\;\overline X_n + t_{n-1,\gamma}\frac{S_n
 IC_\gamma^{\,izq}(\mu)=\left(\overline X_n - t_{n-1,\gamma}\frac{S_n}{\sqrt n},\;+\infty\right),$$
 recordando que $t_{n-1,\alpha}=-t_{n-1,1-\alpha}$.
 
+> **Intuición.** Cuando $\sigma$ es conocido, el pivote divide por una **constante**, y una normal dividida por una constante sigue siendo normal. Cuando se reemplaza $\sigma$ por el desvío muestral $S_n$, se está dividiendo por una **variable aleatoria** (que cambia con cada muestra), y ya no se puede garantizar que el resultado sea normal. La [[distribucion-t-de-student|t de Student]] es exactamente la distribución del cociente de una normal estándar por la raíz de una $\chi^2$ normalizada — que es lo que aparece cuando se usa $S_n$. Por eso cambiar $\sigma$ por $S_n$ no es solo un reemplazo numérico: es cambiar la distribución de referencia.
+
 Para $n$ grande ($>100/200$), $t_{n-1,\frac{1+\gamma}{2}}\approx z_{\frac{1+\gamma}{2}}$
 y se recupera la fórmula del caso 1 con $S_n$. Resumen:
 
@@ -105,6 +111,10 @@ $$n \ge z_{\frac{1+\gamma}{2}}^2\,\frac{\sigma^2}{E^2}.$$
 
 Para proporciones, como $p$ es desconocido, se usa la cota conservadora
 $p(1-p)\le \frac14$ o una estimación previa $\hat p$.
+
+> **Nota.** Cuando $\sigma$ es **desconocido**, no se puede despejar $n$ directamente de $E = z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}$ porque el desvío es una incógnita. Una solución práctica es usar el desvío muestral $S_0$ de una **muestra piloto** previa (suficientemente grande para que valga la [[ley-de-grandes-numeros|ley de los grandes números]]):
+> $$n \ge z_{\frac{1+\gamma}{2}}^2\,\frac{S_0^2}{E^2}.$$
+> La lógica es que $S_0 \approx \sigma$ por LGN, y ese mismo $\sigma$ será aproximado también por el $S_n$ de la muestra más grande. La cadena $S_0 \approx \sigma \approx S_n$ justifica usar $S_0$ como sustituto.
 
 > **Intuición.** El $n$ aparece bajo una raíz en la amplitud del IC, así que la
 > precisión mejora con $\sqrt n$: para **partir el error a la mitad** hay que

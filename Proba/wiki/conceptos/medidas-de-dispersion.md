@@ -47,6 +47,8 @@ Misma unidad que los datos. Es la medida de dispersión más usada. Su valor
 absoluto no siempre tiene interpretación directa, pero sirve para **comparar** dos
 distribuciones con la misma media (una más dispersa que otra).
 
+> **Intuición.** La varianza eleva al cuadrado las distancias a la media, así que sus unidades son las de los datos al cuadrado (p. ej. minutos$^2$). Tomar la raíz cuadrada para obtener el desvío $s$ es exactamente lo que devuelve las unidades originales (minutos), haciendo el número directamente comparable con los datos.
+
 ## Media del desvío absoluto
 $$ w = \frac{1}{n}\sum_{i=1}^n |x_i - \bar{x}| $$
 Más "natural" que la varianza, pero analíticamente más incómoda ($x^2$ es

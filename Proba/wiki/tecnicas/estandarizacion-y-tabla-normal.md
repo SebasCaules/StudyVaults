@@ -43,6 +43,8 @@ Probabilidades útiles:
 - $P(a<X\le b)=\Phi\!\left(\frac{b-\mu}{\sigma}\right)-\Phi\!\left(\frac{a-\mu}{\sigma}\right)$.
 - Intervalo simétrico centrado: $P(\mu-k\sigma<X<\mu+k\sigma)=2\Phi(k)-1$.
 
+> **Intuición.** $\Phi(-z)=1-\Phi(z)$ no es solo una fórmula: es la razón geométrica de que la campana sea simétrica respecto del cero. El área a la izquierda de $-z$ (cola izquierda) es exactamente la imagen espejada del área a la derecha de $z$ (cola derecha). Como el área total es $1$, esa cola derecha vale $1-\Phi(z)$. Por eso, cada vez que la tabla no da un $z$ negativo, buscás su opuesto positivo y tomás el complemento — estás midiendo la misma porción de la campana, solo desde el otro lado.
+
 ## Paso 3 — fractiles (problema inverso)
 
 Cuando dan la probabilidad y piden el valor:
@@ -52,6 +54,10 @@ $$ \boxed{\ z_{1-\alpha}=-z_\alpha\ }\qquad\Longleftrightarrow\qquad \Phi^{-1}(\
 Se usa la **tabla de fractiles** $\Phi^{-1}(\alpha)$ de [[tp4-variables-aleatorias-continuas]]
 (Sec. 3). Fractiles habituales: $z_{0.90}\approx1.2816$, $z_{0.95}\approx1.6449$,
 $z_{0.975}\approx1.96$, $z_{0.99}\approx2.3263$.
+
+> **Observación.** La tabla de fractiles de la normal estándar solo muestra valores $\alpha\ge0.5$ porque, por simetría, todo $\alpha<0.5$ corresponde a un fractil negativo: $z_\alpha=-z_{1-\alpha}$. El caso límite es $z_{0.5}=0$ (la mediana coincide con la media). Para $\alpha=0.452$, por ejemplo, se busca $z_{0.548}$ en la tabla y se niega el resultado.
+
+> **Cuidado:** En el problema inverso (dado $\alpha$, hallar $z_\alpha$) es muy fácil aplicar la simetría al revés y obtener el signo equivocado. El profe advierte explícitamente que usar $z_{1-\alpha}=-z_\alpha$ sin visualizar la situación lleva a errores. Antes de operar, hacé un dibujito: marcá el área pedida, identificá si el fractil queda a la izquierda o a la derecha del cero, y recién ahí aplicá la fórmula.
 
 ## Interpolación lineal
 

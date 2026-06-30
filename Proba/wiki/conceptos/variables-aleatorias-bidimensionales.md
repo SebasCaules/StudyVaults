@@ -32,6 +32,12 @@ Cumple $p_{X,Y}\ge0$ y $\displaystyle\sum_{x\in R_X}\sum_{y\in R_Y} p_{X,Y}(x,y)
 **Marginales (sumando filas/columnas):**
 $$ p_X(x)=\sum_{y\in R_Y} p_{X,Y}(x,y),\qquad p_Y(y)=\sum_{x\in R_X} p_{X,Y}(x,y). $$
 
+> **Observación.** El nombre *marginales* viene de la representación en tabla: si se disponen
+> todas las probabilidades conjuntas $p_{X,Y}(x_i, y_j)$ en una grilla con filas para $X$ y
+> columnas para $Y$, las probabilidades de cada variable por separado aparecen literalmente en
+> los **márgenes** de la tabla — sumando cada fila se obtiene $p_X(x_i)$ al margen derecho,
+> y sumando cada columna se obtiene $p_Y(y_j)$ al margen inferior.
+
 **Valor esperado de una función:** para $h:\mathbb{R}^2\to\mathbb{R}$,
 $$ E[h(X,Y)]=\sum_{x\in R_X}\sum_{y\in R_Y} h(x,y)\,p_{X,Y}(x,y). $$
 Si $h$ depende solo de $X$ se recupera $E[h(X)]=\sum_x h(x)\,p_X(x)$ (consistencia con la marginal).
@@ -47,6 +53,21 @@ Allí donde tienen sentido las derivadas, $f_{X,Y}(x,y)=\dfrac{\partial^2}{\part
 $$ f_X(t)=\int_{-\infty}^{\infty} f_{X,Y}(t,y)\,dy,\qquad f_Y(u)=\int_{-\infty}^{\infty} f_{X,Y}(x,u)\,dx. $$
 
 **Valor esperado:** $E[h(X,Y)]=\displaystyle\iint_{\mathbb{R}^2} h(x,y)\,f_{X,Y}(x,y)\,dx\,dy$.
+
+> **Cuidado:** Al calcular densidades marginales o probabilidades $P((X,Y)\in B)$ con soporte
+> no rectangular, **graficá el soporte primero**. El error más frecuente al obtener, por ejemplo,
+> $f_Y(u)=\int f_{X,Y}(x,u)\,dx$ es dejar los límites de la integral en términos de la variable
+> que se integra ($x$) en vez de despejarlos en función de la variable que se conserva ($y$):
+> si el soporte es $2x<y<4x$, escribir directamente «de $2x$ a $4x$» está mal, hay que invertir
+> a $x\in(y/4,\,y/2)$. Graficando el soporte y trazando la recta horizontal $y=u$, los límites en
+> $x$ aparecen visualmente como la intersección de esa recta con la región — siempre en función
+> de $u$.
+
+> **Observación.** Una densidad conjunta **uniforme** (constante en su soporte) no implica
+> que las densidades marginales sean uniformes. Si el soporte no es rectangular, el ancho de
+> la «franja» que se integra varía con el valor de la variable que se fija. Por ejemplo, si
+> $f_{X,Y}=c$ en la región $0<x<4$, $2x<y<4x$, al obtener $f_X(x)=\int_{2x}^{4x}c\,dy=2cx$
+> resulta una densidad proporcional a $x$, no constante.
 
 ## Tabla comparativa
 

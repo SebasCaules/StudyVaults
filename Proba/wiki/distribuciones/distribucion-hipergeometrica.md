@@ -80,6 +80,8 @@ TP8 ej. 24 en [[intervalos-de-confianza]].
 - Cartas de un mazo, artículos defectuosos de un lote chico, bolas de una urna sin
   devolución.
 
+> **Cuidado:** El soporte no siempre arranca en 0 ni termina en $n$. Antes de calcular cualquier probabilidad, verificá si la cantidad de elementos no especiales $N-M$ es menor que $n$: en ese caso, no alcanza con los no-especiales para completar la muestra y el mínimo es $n-(N-M) > 0$. Análogamente, si $M < n$, el máximo es $M$ (te quedás sin especiales). La fórmula $\mathcal{R}_X = \{\max\{0,\,n-(N-M)\},\ldots,\min\{n,M\}\}$ resume esos dos ajustes, pero es más seguro razonarlo del experimento: ¿puedo sacar cero especiales? ¿puedo sacar $n$ especiales?
+
 ## Ejercicio resuelto
 
 **Enunciado** ([[tp3-variables-aleatorias-discretas]] ej. 4). Se selecciona al azar

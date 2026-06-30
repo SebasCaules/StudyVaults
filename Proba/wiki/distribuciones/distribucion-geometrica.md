@@ -47,6 +47,12 @@ $$ p_X(k) = P(X=k) = q^{\,k}\,p, \qquad k \in \mathbb{N}_0 $$
 > luego el éxito, $q\cdots q\,p = q^k p$. Normaliza con la serie geométrica
 > $\sum_{k=0}^{\infty} q^k = \tfrac{1}{1-q}$, así $\sum_k q^k p = \tfrac{p}{1-q} = 1$.
 
+> **Observación.** El nombre "geométrica" viene de la **serie geométrica** $\sum_{k=0}^{\infty} q^k = \frac{1}{1-q}$: es una de las pocas series cuya suma se conoce en forma cerrada, y es exactamente la que aparece tanto al normalizar la PMF ($\sum_k q^k p = 1$) como al calcular la esperanza derivando esa serie respecto de $q$.
+
+> **Cuidado:** El recorrido de la Geométrica es **infinito**: no hay forma de poner un tope a la cantidad de fracasos. A diferencia de la [[distribucion-binomial|Binomial]], donde fijar $n$ impone un máximo, acá siempre subsiste (con probabilidad positiva, por ínfima que sea) la posibilidad de fracasar indefinidamente. Un error frecuente es tratar la Geométrica como si tuviera un valor máximo implícito.
+
+> **Observación.** En la Geométrica el **orden de los resultados importa**: $p_X(k)=q^k p$ dice exactamente que los primeros $k$ intentos fueron fracasos y el $(k+1)$-ésimo, el éxito. No se puede reubicar el éxito en otra posición (como hace el factor combinatorio $\binom{n}{k}$ en la [[distribucion-binomial|Binomial]]), porque moverlo cambiaría el valor mismo de la variable.
+
 ## Esperanza y varianza
 - $E[X] = \mu_X = \dfrac{q}{p} = \dfrac{1-p}{p}$
 - $V(X) = \sigma_X^2 = \dfrac{q}{p^2} = \dfrac{1-p}{p^2}$

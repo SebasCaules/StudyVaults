@@ -40,6 +40,8 @@ calcular la [[varianza|varianza]] vía $V(X) = E[X^2] - (E[X])^2$. Todos los
 momentos se pueden recuperar de golpe con la
 [[funcion-generadora-de-momentos|función generadora de momentos]].
 
+> **Intuición.** La fórmula $E[g(X)] = \sum_k g(k)\,p_X(k)$ evita construir la variable $Y = g(X)$ desde cero. El camino largo sería: (1) determinar el recorrido de $Y$, (2) calcular $p_Y$ para cada valor, (3) recién entonces sumar $y\cdot p_Y(y)$. La fórmula saltea los pasos (1) y (2): como las probabilidades de $Y$ ya están determinadas por las de $X$, se promedian directamente los $g(k)$ con los pesos $p_X(k)$ que ya se conocen.
+
 ## Propiedades (linealidad)
 
 Sean $a,b,c$ constantes y $X, Y$ v.a. discretas:
@@ -51,6 +53,10 @@ Sean $a,b,c$ constantes y $X, Y$ v.a. discretas:
 > ⚠️ **Atención.** Si $X, Y$ son v.a., en general $E[X\cdot Y] \ne E[X]\cdot E[Y]$.
 > No factorizar un valor esperado cuando hay **dos variables** multiplicándose sin
 > verificar que se pueda (requiere [[independencia|independencia]]).
+
+> **Observación.** $E[X^2]$ y $(E[X])^2$ son cosas cualitativamente distintas: la primera es el valor esperado de la variable $X^2$ (se promedian los $k^2$ con pesos $p_X(k)$), mientras que la segunda es la constante $E[X]$ elevada al cuadrado. Por notación, el exponente afecta lo que está inmediatamente antes: en $(E[X])^2$ el cuadrado actúa sobre el número $E[X]$; en $E[X^2]$ actúa sobre la variable $X$ antes de tomar esperanza. Siempre vale $E[X^2] \ge (E[X])^2$ (es la varianza $\ge 0$), con igualdad solo si $X$ es constante casi seguramente.
+
+> **Nota.** $\mu_X = E[X]$ es un **parámetro** (letra griega): describe el promedio *antes* de correr el experimento, cuando todavía no hay datos. La media muestral $\bar{x}$ (letra latina) se calcula *después*, sobre datos ya observados. La notación marca de qué mundo se habla: la griega es probabilística (lo que *va a pasar*), la latina es estadística (lo que *ya pasó*). Confundirlas es un error conceptual, no solo de símbolo; la convergencia $\bar{x} \to \mu_X$ al repetir el experimento es justamente lo que vincula ambos mundos.
 
 ## Ejercicio resuelto
 

@@ -51,6 +51,8 @@ Reglas de decisión y valor p (según [[tp9-pruebas-de-hipotesis|TP9]]):
 tipo I en el peor caso $\mu=\mu_0$,
 $$ P_{\mu_0}(\bar X_n < \bar x_c)=\Phi\!\left(\tfrac{\bar x_c-\mu_0}{\sigma/\sqrt n}\right)=\alpha \Rightarrow \bar x_c = \mu_0 - z_{1-\alpha}\tfrac{\sigma}{\sqrt n}. $$
 
+> **Intuición.** El valor p mide cuán infrecuente es observar lo que se observó (o algo aún más extremo en la dirección de $H_1$), **asumiendo que $H_0$ es cierta**. Por eso se calcula con la distribución del estadístico bajo $H_0$: se le da el "beneficio de la duda" al valor de referencia $\mu_0$ y se pregunta qué tan rara resulta la evidencia recogida dentro de ese escenario. Mientras más chico es el valor p, más incompatible es la muestra con $H_0$.
+
 ### Ejercicio resuelto — $\sigma$ conocida, cola izquierda ($Z$)
 
 **Enunciado** (ejercicio 1 del [[tp9-pruebas-de-hipotesis|TP9]]): de una
@@ -124,6 +126,8 @@ caso $Z$).
 > escribir $\bar x_c = \mu_0 + t_{n-1,1-\alpha}\,\tfrac{S}{\sqrt n}$ porque $S$ es
 > desconocido de antemano; por eso se trabaja directamente con el estadístico $T$.
 
+> **Cuidado:** en la prueba bilateral se usa $t_{n-1,\,1-\alpha/2}$, **no** $t_{n-1,\,1-\alpha}$: el nivel $\alpha$ se reparte en dos colas de $\alpha/2$ cada una. Escribir $1-\alpha/2$ mecánicamente en todas las pruebas es un error frecuente; en las pruebas unilaterales el cuantil es $t_{n-1,\,1-\alpha}$ (toda la probabilidad de error en una sola cola).
+
 ## ¿Cuándo usar $Z$ y cuándo $T$?
 
 - $\sigma$ **conocida** → siempre $Z$.
@@ -131,6 +135,8 @@ caso $Z$).
 - $\sigma$ **desconocida**, muestra **normal** y $n$ **chico** → $T$ ($t_{n-1}$).
 
 Ver también [[reconocer-prueba-de-hipotesis|cómo reconocer qué prueba usar]].
+
+> **Nota.** No rechazar $H_0$ **no equivale** a afirmar que $H_0$ sea verdadera. Significa únicamente que la evidencia muestral no es suficiente para descartarla. La distinción importa: si el valor observado cae apenas dentro de la región de aceptación, la muestra es compatible con $H_0$ pero también con muchas hipótesis alternativas cercanas.
 
 ## Conceptos relacionados
 

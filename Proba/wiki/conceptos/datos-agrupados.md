@@ -42,6 +42,9 @@ incorporando la frecuencia $f_i$ (con $n=\sum f_i$, $L$ = número de intervalos)
 (Marca de clase $x_i$ en lugar de cada dato.) Ver [[medidas-de-dispersion]] y
 [[asimetria-y-curtosis]].
 
+> **Cuidado:** Sumar las marcas de clase y dividir por el número de intervalos $L$ da el **centro del rango** de valores, no la media de los datos. Ese cálculo ignora las frecuencias $f_i$: un intervalo con 1 dato pesa igual que uno con 50. La fórmula correcta pondera cada marca de clase por su frecuencia y divide por el total de datos:
+> $$\bar x_{Ag} = \frac{\sum_{i=1}^L x_i\, f_i}{n}, \qquad n = \sum_{i=1}^L f_i.$$
+
 ## Moda con datos agrupados
 La moda se asigna al **intervalo modal** (el de mayor frecuencia). Dos convenciones:
 el **punto medio** del intervalo modal, o la **interpolación** según las frecuencias

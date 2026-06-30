@@ -23,12 +23,18 @@ Si $P(C)\neq 0$: $\;C$ y $D$ independientes $\iff P(D\mid C)=P(D)$.
 *(Sale de sustituir $P(D\cap C)=P(D)P(C)$ en la [[probabilidad-condicional|definición
 de condicional]].)*
 
+> **Cuidado:** Condicionar puede cambiar los *resultados posibles* sin cambiar las *probabilidades*. Con un dado equilibrado, sean $D=\{5,6\}$ (resultado $>4$, $P(D)=\tfrac{1}{3}$) y $F=\{2,4,6\}$ (par, $P(F)=\tfrac{1}{2}$). Sabiendo que ocurrió $D$, el espacio se restringe a $\{5,6\}$ y el único par disponible es el 6, así que
+> $$ P(F\mid D)=\frac{1}{2}=P(F). $$
+> Los resultados favorables cambiaron (ya no están el 2 ni el 4), pero la *proporción* se conserva. Que $A$ y $B$ sean independientes no significa que la ocurrencia de uno no afecte los **resultados posibles** del otro — significa que no afecta sus **probabilidades**.
+
 ## Casos particulares
 - $\emptyset$ es independiente de **todo** evento ($P(A\cap\emptyset)=0=P(A)\cdot 0$).
 - $S$ es independiente de **todo** evento ($P(A\cap S)=P(A)=P(A)\cdot 1$).
 
 ## Colección de eventos
 $\{A_k\}$ son independientes sii $P\!\left(\bigcap_k A_k\right)=\prod_k P(A_k)$.
+
+> **Observación.** Si $A$ y $B$ son independientes, también lo son todas las combinaciones con sus complementos: $A^c$ y $B$, $A$ y $B^c$, y $A^c$ y $B^c$. La idea es simétrica: si saber que ocurrió $A$ no altera $P(B)$, tampoco puede alterar $P(B^c)=1-P(B)$; y si saber que *no* ocurrió $A$ alterara $P(B)$, entonces saber que *sí* ocurrió la alteraría también, contradiciendo la independencia.
 
 > ⚠️ No confundir con [[espacio-muestral-y-eventos|mutuamente excluyentes]]: si
 > $A,B$ son m.e. y ambos con prob. positiva, **no** son independientes (saber que

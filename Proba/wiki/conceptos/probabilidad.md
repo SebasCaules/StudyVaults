@@ -33,6 +33,12 @@ aleatorio *antes* de observarlo.
 - **[[arbol-de-probabilidades]]** — las 4 reglas para organizar experimentos por
   etapas; síntesis gráfica de condicional, total y Bayes.
 
+> **Intuición.** La aleatoriedad no es una propiedad absoluta del mundo: es una medida de nuestra ignorancia. Que yo no pueda predecir qué carta voy a sacar no significa que nadie pueda hacerlo —alguien que vea el mazo sí lo sabe. Algo es aleatorio *para quien no lo puede predecir*. La probabilidad es una herramienta para actuar razonablemente en medio de esa ignorancia, no para eliminarla.
+
+> **Intuición.** La probabilidad de un suceso $A$ es el valor al que converge su frecuencia relativa al repetir el experimento muchas veces:
+> $$P(A) = \lim_{n \to \infty} \frac{\#\{\text{ocurre } A\}}{n}.$$
+> Aunque el experimento se haga una sola vez, ese límite imaginario —lo que se observaría corriendo infinitos escenarios— le da sentido al número $P(A)$ y motiva los axiomas que organizan la unidad.
+
 ## Fuentes
 - [[axiomas-probabilidad]] · [[regla-de-laplace-slides]] · [[independencia-condicional-bayes]] ·
   [[tp2-calculo-de-probabilidades]] (guía TP2 con 8 ejercicios resueltos).
@@ -45,3 +51,5 @@ aleatorio *antes* de observarlo.
 La probabilidad sobre eventos es la base para las [[variable-aleatoria|variables
 aleatorias]] (unidades 3–5): una v.a. asigna números a los resultados y traslada
 $P$ a distribuciones.
+
+> **Cuidado:** Las probabilidades son *números* y los sucesos son *conjuntos*; no se mezclan las operaciones de uno con las del otro. La unión y la intersección operan sobre sucesos (dentro del argumento de $P$); la suma y la resta operan sobre los números que devuelve $P$. Escribir $P(A) \cup P(B)$ o $P(A + B)$ no tiene sentido: los números no se unen y los conjuntos no se suman.

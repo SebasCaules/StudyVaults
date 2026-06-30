@@ -57,6 +57,10 @@ Demo por convolución + **identidad de Vandermonde**
 $\binom{n_1+n_2}{k}=\sum_{\ell}\binom{n_1}{\ell}\binom{n_2}{k-\ell}$
 (ver [[teorica-suma-binomiales]]). **Hace falta la misma $p$**.
 
+> **Intuición.** Si $X$ cuenta éxitos en $n_1$ intentos y $Y$ cuenta éxitos en $n_2$ intentos, la suma $X+Y$ cuenta éxitos en $n_1+n_2$ intentos — exactamente una $\mathrm{Bin}(n_1+n_2,p)$ (p. ej. $10$ éxitos más $20$ dan $30$ sobre el pool de intentos). Por eso la misma $p$ es esencial: si las probabilidades de éxito difieren, "un éxito de $X$" y "un éxito de $Y$" no son intercambiables y la suma ya no cuenta éxitos en un único pool de intentos.
+
+> **Intuición.** Una $\mathrm{Geo}(p)$ cuenta intentos hasta el primer éxito; otra $\mathrm{Geo}(p)$ independiente, hasta el segundo. Su suma es la cantidad de intentos hasta lograr dos éxitos, que es exactamente $\mathrm{BinNeg}(2,p)$. La misma $p$ vuelve a ser necesaria: la $\mathrm{BinNeg}$ supone una única probabilidad de éxito constante en todos los intentos, así que con $p$ distintos la suma ya no modela el tiempo hasta el segundo éxito de un mismo experimento.
+
 ## 3. Poisson + Poisson → Poisson
 $X\sim\mathrm{Poisson}(\lambda_1)$, $Y\sim\mathrm{Poisson}(\lambda_2)$ indep.
 $\Rightarrow S\sim\mathrm{Poisson}(\lambda_1+\lambda_2)$.

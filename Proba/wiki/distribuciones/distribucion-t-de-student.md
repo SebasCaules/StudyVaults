@@ -100,6 +100,10 @@ Consecuencia práctica: con $n$ chico el IC de la media es **más ancho** (mayor
 incertidumbre por estimar $\sigma$). El [[tp8-estimacion-de-parametros]] trae una
 tabla de $t_{\text{GDL},\gamma}$ para $\gamma\in\{0.8,0.9,0.95,0.975,0.99,0.995\}$.
 
+> **Nota.** Para calcular el **tamaño muestral** que garantiza un margen de error $\varepsilon$, conviene usar el cuantil normal $z$ aunque la t sea válida. El motivo es práctico: despejar $n$ de
+> $$\Delta = t_{n-1,\,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}\le\varepsilon$$
+> obliga a recorrer la tabla grado por grado (búsqueda discreta), porque $t_{n-1,\,(1+\gamma)/2}$ cambia con el propio $n$ que se busca. Con $z$ (constante) el despeje es directo: $n\ge\left(\dfrac{z_{(1+\gamma)/2}\,S_n}{\varepsilon}\right)^2$. Para $n$ grande ambos cuantiles coinciden, así que el resultado es prácticamente idéntico.
+
 ## Cuándo usarla (reconocer en un ejercicio)
 
 - Intervalo de confianza (o prueba de hipótesis) **para la media**, …
@@ -111,6 +115,8 @@ En **pruebas de hipótesis**, $T$ es el estadístico de la
 [[prueba-de-hipotesis-para-la-media|prueba para la media]] con $\sigma$ desconocido,
 y entra en el [[diseno-de-prueba-tamano-muestral|diseño de la prueba]] (fijar $\alpha$
 y $\beta$ para despejar $n$ y el valor crítico).
+
+> **Cuidado:** con $\sigma$ desconocido y $n$ chico, usar los cuantiles de la normal $z$ en lugar de $t_{n-1}$ produce un IC **más estrecho de lo correcto**. Parece más preciso, pero **no cubre** el nivel de confianza pedido: como no se basa en la distribución real del estadístico, en repeticiones el verdadero $\mu$ queda afuera con más frecuencia que el $1-\gamma$ tolerado. La t corrige exactamente esa sub-cobertura, a costa de un intervalo más ancho.
 
 ## Ejercicio resuelto
 

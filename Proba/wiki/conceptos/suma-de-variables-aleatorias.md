@@ -65,6 +65,8 @@ Los casos importantes (Bernoulli→Binomial, dos Binomiales, dos Poisson, dos
 Normales, dos Uniformes, exponenciales→Gamma) están desarrollados en
 [[suma-de-va-independientes]].
 
+> **Cuidado:** Para Binomial, Geométrica, Exponencial y Gamma, la suma de dos variables independientes **solo preserva la familia** si comparten el parámetro de probabilidad o tasa ($p$ o $\lambda$). Si $X\sim\mathrm{Bin}(n,p_1)$ e $Y\sim\mathrm{Bin}(m,p_2)$ con $p_1\neq p_2$, entonces $X+Y$ **no** es Binomial. Lo mismo vale para Geométricas con distinto $p$ y para Exponenciales con distinto $\lambda$. La única excepción de la unidad es Poisson: $X\sim\mathrm{Pois}(\lambda_1)$ e $Y\sim\mathrm{Pois}(\lambda_2)$ independientes dan $X+Y\sim\mathrm{Pois}(\lambda_1+\lambda_2)$ **sin importar** si $\lambda_1=\lambda_2$.
+
 ## Caso i.i.d.: suma y promedio
 Si $X_1,\dots,X_n$ son **i.i.d.** con media $\mu_X$ y varianza $\sigma_X^2$
 (según [[teorica-suma-promedio-iid]]):
@@ -77,6 +79,8 @@ Si $X_1,\dots,X_n$ son **i.i.d.** con media $\mu_X$ y varianza $\sigma_X^2$
 Que $V(\bar X_n)\to 0$ es la base de la [[ley-de-grandes-numeros|LGN]]; el
 comportamiento de $S_n$ y $\bar X_n$ para $n$ grande lo describe el
 [[teorema-central-del-limite|TCL]].
+
+> **Intuición.** Por qué sumar geométricas da binomial negativa: si $G_1$ cuenta los intentos hasta el **primer** éxito y $G_2$ los intentos hasta un nuevo primer éxito en una etapa independiente, entonces $G_1+G_2$ cuenta los intentos totales hasta acumular **dos** éxitos, que es exactamente la $\mathrm{BinNeg}(2,p)$. En general, sumar $r$ geométricas i.i.d. de parámetro $p$ da $\mathrm{BinNeg}(r,p)$. La misma lógica aplica a la Exponencial: tiempo hasta el primer evento más tiempo hasta el siguiente evento independiente = tiempo hasta el segundo evento $\sim\Gamma(2,\lambda)$.
 
 ## Ejercicio resuelto
 *([[tp7-suma-de-va]], ej. 19 de la guía.) Se toman muestras independientes de

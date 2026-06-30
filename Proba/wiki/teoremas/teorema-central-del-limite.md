@@ -27,6 +27,8 @@ Entonces
 $$ \lim_{n\to\infty} P(Z_n\le z)=\Phi(z), $$
 donde $\Phi$ es la FDA de una [[distribucion-normal|Normal estándar]] $\mathcal N(0,1)$.
 
+> **Nota.** Si las propias $X_k$ son normales, el resultado deja de ser una aproximación: la suma (o el promedio) de normales independientes es **exactamente** normal para cualquier $n$, sin necesidad del TCL. El teorema resulta útil precisamente cuando la distribución de origen es desconocida o no es normal.
+
 ## Aproximaciones prácticas (para $n$ grande, regla usual $n>20$)
 A partir de $Z_n\approx\mathcal N(0,1)$:
 $$
@@ -56,11 +58,17 @@ cada entero $s$ se "ensancha" al intervalo $[s-\tfrac12,\,s+\tfrac12]$: así el
 área bajo la campana sobre esa franja aproxima la barra del histograma centrada en
 $s$. De ahí el $\pm\tfrac12$.
 
+> **Observación.** En vez de memorizar cuándo sumar o restar $\tfrac12$, conviene verificar que el recorrido de enteros incluido sea el mismo antes y después de la corrección. Por ejemplo, para $P(S_n \ge 510)$ el recorrido es $\{510, 511, 512,\dots\}$: al restar $\tfrac12$ se obtiene $P(S_n \ge 509.5)$, que cubre el mismo recorrido — correcto. En cambio sumar $\tfrac12$ daría $P(S_n \ge 510.5)$, que arranca en $511$ y excluye al $510$ — recorrido distinto, corrección incorrecta. El criterio es siempre chequear que el conjunto de enteros cubiertos no cambie.
+
 ## Caso emblemático: aproximación de la Binomial
 Como $\mathrm{Bin}(n,p)=\sum_{i=1}^n\mathrm{Bernoulli}(p)$, el TCL da
 $\mathrm{Bin}(n,p)\approx\mathcal N(np,\sqrt{npq})$. La derivación detallada
 (Stirling + Taylor) y los ejemplos están en
 [[aproximacion-normal-de-la-binomial]].
+
+> **Cuidado:** Que $n$ sea grande no alcanza para aproximar $\mathrm{Bin}(n,p)$ por Normal. Si $p$ es muy chico o muy grande, la binomial se concentra casi como una constante (en torno a $0$ o a $n$) y la aproximación falla aunque $n=100$. La condición correcta es que se cumplan **simultáneamente**
+> $$np > 10 \qquad \text{y} \qquad n(1-p) > 10.$$
+> La primera controla que $p$ no sea demasiado grande; la segunda, que no sea demasiado chico. Si $p$ es tan pequeño que $np\le 10$, conviene aproximar primero por $\mathrm{Poisson}(np)$ y recién aplicar el TCL a esa Poisson cuando $\lambda=np>10$.
 
 ## Ejercicio resuelto — central telefónica (dimensionar $N$)
 *([[tp7-suma-de-va]], ej. 5 de la guía.) Una central $A$ sirve a 1800 usuarios. En

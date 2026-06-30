@@ -78,6 +78,8 @@ con valor de referencia $\theta_0$):
   estadístico dé "tan mal o peor" que el valor observado. Se **rechaza $H_0$ si
   valor p $< \alpha$**.
 
+> **Intuición (tira y afloje entre los dos errores).** Bajar $\alpha$ (error tipo I) **sube $\beta$** (error tipo II), y viceversa: no se pueden minimizar los dos a la vez. En el extremo $\alpha\to 0$ no se rechaza $H_0$ nunca (ningún inocente condenado, pero todos los culpables absueltos); en el extremo $\beta\to 0$ se rechaza $H_0$ siempre (ningún culpable se escapa, pero todos los inocentes condenados). Por eso se fija $\alpha$ en un valor chico pero no nulo (típicamente $0.05$ o $0.01$) priorizando controlar el error tipo I, y se acepta el $\beta$ resultante o se lo controla vía el tamaño muestral $n$ (ver [[diseno-de-prueba-tamano-muestral]]).
+
 ## Procedimiento (estilo parcial)
 
 1. Identificar el parámetro y plantear $H_0$ y $H_1$ (definir el tipo de cola).
@@ -89,6 +91,8 @@ con valor de referencia $\theta_0$):
 
 > Gracias al [[teorema-central-del-limite|TCL]], las fórmulas basadas en la
 > normal valen aunque la variable no sea normal **si $n$ es grande**.
+
+> **Intuición (la regla se fija premuestra).** La región de rechazo y el valor crítico se definen **antes de observar la muestra**, no después. Si primero se miran los datos y luego se elige el criterio, se corre el riesgo de sesgar la decisión hacia el resultado deseado ("correr" el umbral hasta que dé lo que uno quiere). Fijar la regla de antemano es lo que vuelve objetiva la decisión: el paso 3 (construir $R$ a partir de $\alpha$) se completa entero sin mirar $\lambda_{\text{obs}}$.
 
 ## Pruebas concretas de esta unidad
 

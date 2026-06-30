@@ -40,6 +40,8 @@ frecuencia.
 $f_i=18$:
 $$ q_{1,Ag} = 36 + \frac{0.25\cdot 60 - 12}{18}\,(39-36) = 36 + \frac{3}{18}\cdot 3 = 36.5. $$
 
+> **Intuición.** Otra forma de verlo: si el intervalo $[L_i, L_{s,i})$ contiene $f_i$ datos y los suponés repartidos parejo, estás partiendo ese intervalo en $f_i$ subintervalos iguales, cada uno de ancho $(L_{s,i} - L_i)/f_i$. Para llegar al dato número $j\cdot 0.25\,n$ arrancás en $L_i$ (que ya tiene acumulados $F_{i-1}$ datos) y avanzás exactamente $(j\cdot 0.25\,n - F_{i-1})$ de esos subintervalos hacia la derecha. La fórmula no dice más que eso.
+
 ## Proporción de datos en un intervalo $(a,b)$
 Sea $P(\cdot)$ la interpolación lineal del **polígono de frecuencias acumuladas**.
 La proporción de datos con valor en $(a,b)$ es
@@ -73,6 +75,8 @@ Cuando los datos están agrupados, la moda se asigna primero al **intervalo moda
 - $F_{i-1}$ es la acumulada hasta el **límite inferior** del intervalo elegido.
 - La interpolación supone que los datos se reparten **uniformemente** dentro de
   cada intervalo (densidad constante) — es la suposición acorde a datos agrupados.
+
+> **Cuidado:** al calcular la media o el desvío agrupados, el denominador es siempre $n$ (el total de datos $\sum f_i$), **no** la cantidad de intervalos. Dividir por la cantidad de intervalos solo promedia las marcas de clase ignorando las frecuencias: te da el centro del rango de valores, no el centro ponderado.
 
 ## Ejercicio resuelto — 1000 llamadas (TP1 ej. 4)
 *Fuente: [[tp1-estadistica-descriptiva]] ej. 4 (resuelto).* Es el ejercicio más

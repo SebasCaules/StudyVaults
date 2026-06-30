@@ -45,6 +45,8 @@ $$ p_X(k) = P(X=k) = \binom{n}{k}\,p^k\,q^{\,n-k}, \qquad k \in \{0,1,\dots,n\} 
 > "3 caras en 5 tiros" es más probable que "5 caras en 5 tiros": no porque cada
 > secuencia lo sea, sino porque hay muchas más maneras de ubicar 3 caras que 5.
 
+> **Cuidado:** La palabra "éxito" no tiene connotación positiva: designa simplemente **el evento que estás contando**. Si $X$ cuenta bolillas defectuosas, "éxito" es sacar una defectuosa. Elegir mal qué llamar éxito no cambia la fórmula, pero sí cambia el valor de $p$ que usás.
+
 ### Origen combinatorio
 La PMF $P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}$ también se deriva **desde el conteo /
 [[regla-de-laplace|Laplace]]** en el modelo de **muestreo con reposición**, sin
@@ -62,6 +64,8 @@ muestreo **sin reposición**, que da la [[distribucion-hipergeometrica|Hipergeom
 > Se demuestran ([[binomial-apunte]]) reindexando la suma ($m = k-1$ para $E[X]$,
 > $m = k-2$ para $E[X^2]$ usando $k^2 = k(k-1) + k$). Se obtiene
 > $E[X^2] = n(n-1)p^2 + np$, de donde $V(X) = E[X^2] - (np)^2 = npq$.
+
+> **Intuición.** $E[X] = np$ tiene sentido directo: si tirás una moneda $n = 10$ veces con $p = 0{,}5$, esperás ver $10 \cdot 0{,}5 = 5$ caras. En general, de $n$ ensayos independientes cada uno con probabilidad $p$ de éxito, la cantidad esperada de éxitos es exactamente la fracción $p$ del total de ensayos.
 
 ## Función generadora de momentos
 $$ M_X(t) = (q + p\,e^t)^n $$
@@ -100,3 +104,11 @@ $X \sim \text{Binomial}(4,\ 0{,}2)$, con $p_X(k) = \binom{4}{k}0{,}2^k\,0{,}8^{\
 - d) $P(X=4) = 0{,}2^4 = 0{,}0016$.
 
 **Resultado.** a) $0{,}41$; b) $0{,}97$; c) $0{,}41$; d) $0{,}0016$.
+
+> **Ejemplo.** (Variable derivada y linealidad.) Una urna tiene 4 bolillas azules y 6 verdes; se hacen $n = 5$ extracciones **con reposición**. Cada apuesta cuesta \$3 y, si sale azul, el casino devuelve \$3 $+$ \$1. Sea $B$ = cantidad de azules: $B \sim \text{Binomial}\!\left(5,\ \tfrac{2}{5}\right)$.
+>
+> Ganancia del casino: por cada apuesta perdida retiene \$3 (hay $5 - B$) y devuelve \$1 por cada ganada (hay $B$), de modo que
+> $$G = 3(5 - B) - B = 15 - 4B.$$
+> El valor esperado de $B$ es directo: $E[B] = n\,p = 5\cdot\tfrac{2}{5} = 2$. Luego, por **linealidad** de la esperanza:
+> $$E[G] = E[15 - 4B] = 15 - 4\,E[B] = 15 - 8 = 7.$$
+> Por cada noche de cinco apuestas, el casino gana en promedio \$7. El ejemplo ilustra que calcular $E[g(X)]$ con $g$ lineal sale aplicando linealidad sobre $E[X]$, sin rehacer la suma de la PMF desde cero.

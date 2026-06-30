@@ -21,6 +21,8 @@ actualizado: 2026-06-06
 
 $$ f_X(x)=\begin{cases} \lambda e^{-\lambda x} & x>0\\[2pt] 0 & x<0.\end{cases} $$
 
+> **Observación.** La densidad $f_X(x)=\lambda e^{-\lambda x}$ es siempre **decreciente**: arranca en $\lambda$ en $x=0$ y cae a cero. Un $\lambda$ grande concentra la masa cerca del origen (los tiempos de vida tienden a ser cortos); un $\lambda$ chico aplana la curva y hace más frecuentes los valores grandes de $X$. Por eso la media $1/\lambda$ se mueve en dirección opuesta a $\lambda$.
+
 ## Función de distribución acumulada
 
 $$ F_X(x)=\begin{cases} 1-e^{-\lambda x} & x\ge0\\[2pt] 0 & x<0,\end{cases}\qquad P(X>x)=e^{-\lambda x}\ \ (x\ge0). $$

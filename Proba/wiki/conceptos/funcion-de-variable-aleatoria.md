@@ -38,6 +38,16 @@ $$ F_Y(y) = P(Y\le y) = P\big(g(X)\le y\big). $$
 > A veces el paso por la FDA no es necesario: en el caso discreto basta agrupar
 > directamente las probabilidades de las preimágenes $g^{-1}(\{k\})$.
 
+> **Cuidado:** Cuando $g$ no es monótona (p. ej. una parábola), el evento $\{g(X)\le y\}$
+> puede corresponder a uno o varios intervalos de $X$ que hay que identificar para cada $y$ por separado.
+> Para una parábola $g(x)=ax^2+bx+c$ con $a>0$ y discriminante $\Delta(y)=b^2-4a(c-y)$:
+> - Si $\Delta(y)<0$: $P(g(X)\le y)=0$ (la parábola queda siempre por encima de $y$).
+> - Si $\Delta(y)\ge0$: las raíces $x_{1,2}=\dfrac{-b\pm\sqrt{\Delta(y)}}{2a}$ delimitan el intervalo
+>   y $F_Y(y)=F_X(x_2)-F_X(x_1)$.
+>
+> El soporte de $Y$ arranca en el mínimo de $g$ sobre el soporte de $X$, no en el valor de $g$ en el mínimo de $X$.
+> Confundir los dos es el error más frecuente en este tipo de transformaciones.
+
 ## Casos según el tipo de $X$ y de $Y$
 
 | $X$ | $g$ | $Y$ |
@@ -48,6 +58,16 @@ $$ F_Y(y) = P(Y\le y) = P\big(g(X)\le y\big). $$
 
 Una transformación de una v.a. **continua** puede dar una v.a. **discreta** (p. ej. clasificar
 el pH en tipos de agua), pero una v.a. discreta nunca se vuelve continua por aplicar $g$.
+
+> **Ejemplo.** (Continua → discreta) El gasto $G\sim N(75,\,15)$ (en miles de pesos) se clasifica
+> en porcentaje de descuento:
+> $$D = \begin{cases} 0 & G < 69 \\ 5 & 69 \le G < 78 \\ 15 & 78 \le G < 99 \\ 25 & G \ge 99. \end{cases}$$
+> El recorrido de $D$ es finito $\{0,5,15,25\}$, así que $D$ es discreta aunque $G$ sea continua.
+> Las probabilidades se obtienen estandarizando los extremos de cada intervalo:
+> $$P(D=0)=P(G<69)=\Phi\!\left(\tfrac{69-75}{15}\right)=\Phi(-0{,}4)=1-\Phi(0{,}4),$$
+> $$P(D=5)=\Phi\!\left(\tfrac{78-75}{15}\right)-\Phi\!\left(\tfrac{69-75}{15}\right)=\Phi(0{,}2)-\Phi(-0{,}4),$$
+> y análogamente para $D=15$ y $D=25$. Con esas probabilidades se calcula directamente $E[D]$,
+> $\text{Var}(D)$, etc., como cualquier variable discreta.
 
 ## Transformaciones afines $Y=aX+b$
 
@@ -63,6 +83,14 @@ Si $a=0$, entonces $Y=b$ es **constante**: $\sigma_Y^2=0$ y $P(Y=b)=1$.
 **Caso normal:** si $X\sim N(\mu_X,\sigma_X)$ y $a\neq0$, entonces
 $Y=aX+b\sim N(a\mu_X+b,\,|a|\sigma_X)$ (la familia normal es cerrada por afines). De ahí la
 **estandarización** $Z=\dfrac{Y-\mu_Y}{\sigma_Y}\sim N(0,1)$. Ver [[distribucion-normal]].
+
+> **Observación.** Para calcular $E[g(X)]$ no siempre hace falta encontrar $f_Y$: se puede integrar
+> $g$ directamente con la densidad original,
+> $$E[g(X)] = \int_{-\infty}^{\infty} g(x)\,f_X(x)\,dx.$$
+> Esto suele ahorrar trabajo: si $g$ es un polinomio en $X$, los términos se expresan en función de
+> $E[X]$, $E[X^2]$, etc., que ya se conocen a partir de $\mu_X$ y $\sigma_X^2$
+> (usando $E[X^2]=\text{Var}(X)+E[X]^2$). La regla es útil cuando piden solo el valor esperado
+> o la varianza de $g(X)$, sin necesitar la distribución completa de $Y$.
 
 ## Aplicación: generación de números aleatorios (transformada inversa)
 

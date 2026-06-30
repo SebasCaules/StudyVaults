@@ -70,6 +70,14 @@ $$ V(X) = \sigma_X^2 = E\!\left[(X-\mu_X)^2\right] = E[X^2] - (E[X])^2 $$
 > [[datos-agrupados|datos agrupados]]: la frecuencia relativa $f_i/n$ converge a
 > la probabilidad $P(X=k)$, según [[va-discretas-introduccion]].
 
+> **Intuición.** $E[X] = \mu_X$ es el valor al que tiende el **promedio muestral** cuando se repite el experimento muchas veces: si se simulan $n$ realizaciones de $X$ y se promedian, esa media converge a $\mu_X$ a medida que $n \to \infty$ (nunca da exactamente igual, pero se acerca tanto como se quiera). Es el análogo probabilístico de la media de [[datos-agrupados|datos agrupados]]: reemplazar cada frecuencia relativa $f_i/n$ por la probabilidad $p_X(k)$ en la fórmula de la media da exactamente $E[X]$.
+
+> **Observación.** Por convención, los parámetros de una variable aleatoria ($\mu_X$, $\sigma_X^2$) se escriben con **letras griegas**: describen el experimento *antes* de realizarlo. Las versiones muestrales (media $\bar{x}$, varianza muestral $s^2$) usan letras latinas y describen lo que ocurrió *después* de observar datos. La diferencia es conceptual, no cosmética: una cosa es el parámetro probabilístico (fijo, propio del modelo) y otra la estadística descriptiva (calculada sobre realizaciones concretas). Usar $\mu$ para una media muestral mezcla el antes y el después del experimento.
+
+> **Cuidado:** La linealidad $E[aX + bY + c] = aE[X] + bE[Y] + c$ vale siempre, pero **no** se extiende a productos ni a funciones no lineales:
+> $$ E[X \cdot Y] \neq E[X]\cdot E[Y], \qquad E[g(X)] \neq g(E[X]) \text{ en general.} $$
+> En particular $E[X^2] \neq (E[X])^2$: la diferencia entre ambos es justamente $V(X) \geq 0$. La igualdad $E[XY] = E[X]\,E[Y]$ sí vale bajo independencia, pero eso se ve más adelante.
+
 ## Función generadora de momentos (FGM)
 
 Ver [[funcion-generadora-de-momentos|Función generadora de momentos]]: herramienta

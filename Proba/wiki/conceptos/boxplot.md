@@ -35,6 +35,8 @@ Los bigotes llegan hasta el dato más extremo que aún esté dentro de los lími
 > regla que sirve para detectarlo, a diferencia de lo que pasaría usando media y
 > desvío (que el propio outlier inflaría).
 
+> **Cuidado:** El bigote se dibuja solo donde hay datos. Si no hay ninguna observación en el tramo $[L_W, q_1)$, el bigote inferior se queda en $q_1$ (no baja hasta $L_W$); lo mismo arriba con $q_3$ y $U_W$. Los límites de Tukey son el umbral para clasificar outliers, no el extremo del bigote.
+
 ## Lectura de la forma
 La distancia desigual de $q_1$ y $q_3$ a la mediana revela **[[asimetria-y-curtosis|asimetría]]**.
 Para comparar muestras, se grafican varios boxplots en paralelo sobre el mismo eje.

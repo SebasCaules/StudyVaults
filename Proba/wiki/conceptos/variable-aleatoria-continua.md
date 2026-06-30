@@ -41,11 +41,17 @@ $F_X:\mathbb{R}\to[0,1]$, $F_X(\alpha)=P(X\le\alpha)$, con las propiedades:
 Para una v.a.c. $F_X$ es **continua**, y por eso da igual usar $<$ o $\le$:
 $$ P(a<X<b)=P(a\le X\le b)=F_X(b)-F_X(a). $$
 
+> **Intuición.** Conviene arrancar el estudio de una v.a.c. por la FDA porque **es una probabilidad**: valen todas las herramientas que ya conocés (probabilidad total, eventos mutuamente excluyentes, complemento). La densidad, en cambio, no es una probabilidad, así que esas herramientas no aplican directamente. Estrategia típica: calcular $F_X$ con reglas de probabilidad, derivar para obtener $f_X$, y con la densidad calcular $E[X]$, $\operatorname{Var}(X)$, etc.
+
+> **Observación.** Cuando la FDA queda partida en tramos, chequeá siempre que los tramos coincidan en los extremos del soporte: si el soporte es $(a,b)$, al sustituir $a$ en el tramo intermedio tiene que dar $F_X(a)=0$ y al sustituir $b$ tiene que dar $F_X(b)=1$. Si no coinciden, hay un error de cálculo. Como $F_X$ de una v.a.c. es continua, este chequeo de continuidad en los empalmes detecta la mayoría de los errores antes de seguir.
+
 ## Función de densidad
 
 La densidad se obtiene derivando la FDA: $f_X(x)=\dfrac{dF_X(x)}{dx}$ (ver
 [[funcion-de-densidad|Función de densidad]] para detalle). Recíprocamente,
 $$ F_X(x)=\int_{-\infty}^{x} f_X(y)\,dy,\qquad \int_{-\infty}^{+\infty} f_X(y)\,dy = 1. $$
+
+> **Cuidado:** La densidad $f_X(x)$ **puede tomar valores mayores que 1** — no es una probabilidad, es una "densidad". Lo que nunca puede superar $1$ es la integral: $\int_a^b f_X(x)\,dx \le 1$ para cualquier $[a,b]$, y sobre todo el soporte vale exactamente $1$. Por ejemplo, una densidad que vale $2$ sobre un soporte de base $0{,}5$ integra $2\cdot 0{,}5=1$, así que es válida. Confundir densidad con probabilidad lleva a descartar densidades válidas o a aceptar densidades inválidas.
 
 ## Esperanza como integral
 

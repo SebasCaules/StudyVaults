@@ -50,6 +50,8 @@ $$ \vec p(n)=\vec p(0)\,\mathbb{P}^{n}. $$
 La matriz de **$k$ pasos** es $\mathbb{P}^{(k)}=\mathbb{P}^k$ (sus entradas son las
 probabilidades de ir de un estado a otro en exactamente $k$ pasos).
 
+> **Cuidado:** $(\mathbb{P}^k)_{ij}$ es la probabilidad de ir de $s_i$ a $s_j$ en $k$ pasos **avanzando en el tiempo**: el condicionante está en el pasado y el condicionado en el futuro. El atajo de la potencia de la matriz **no vale** cuando la condicional está invertida. Si querés $P(X_n=s_i\mid X_{n+k}=s_j)$ —el pasado dado el futuro—, $(\mathbb{P}^k)_{ij}$ da otro número; en ese caso resolvé siempre vía intersección y dividí por el condicionante.
+
 ## Diagrama de estados
 Grafo dirigido y etiquetado: un nodo por estado, una arista $s_i\to s_j$
 etiquetada con $p_{ij}$. La **suma de las etiquetas de las aristas que salen de un
@@ -89,6 +91,14 @@ estacionaria: hay que pedir que sea distribución de probabilidad.)
 Cuando la cadena es **periódica** puede no existir $\vec\pi$ como límite, aunque
 los promedios temporales sí convergen (ejemplo del "bebé" en
 [[teorica-cadenas-de-markov]]).
+
+> **Cuidado:** Resolver $\vec\pi=\vec\pi\,\mathbb{P}$ con $\sum_j\pi_j=1$ **garantiza** que $\vec\pi$ es la distribución estacionaria solo si la cadena **ya fue verificada como regular**. El orden importa: primero verificar regularidad, recién después aplicar el autovector a izquierda. Si la cadena no es regular y se aplica igual el procedimiento, el vector hallado puede no ser la distribución estacionaria (y aunque numéricamente dé bien, el razonamiento no es válido: es por carambola).
+
+> **Observación.** Que una cadena **no sea regular** no implica que no tenga distribución estacionaria: hay que analizar cada caso por separado.
+> - **Un único estado absorbente accesible desde todos los demás:** sin importar dónde arranque, la cadena termina en ese estado con probabilidad 1 → sí hay distribución estacionaria (concentrada en el absorbente).
+> - **Dos o más estados absorbentes:** la cadena termina en uno u otro según el estado inicial; las filas de $\mathbb{P}^n$ no convergen a un mismo vector → no hay un comportamiento de largo plazo unificado, no existe distribución estacionaria global.
+> - **Cadena periódica:** las potencias $\mathbb{P}^n$ oscilan entre valores y no convergen → no existe $\vec\pi$ como límite.
+> - **Estado transitorio que comunica con una subclase regular:** a largo plazo la cadena se comporta como esa subclase, y la distribución estacionaria de la subclase describe el comportamiento de largo plazo.
 
 ## Tiempo hasta absorción
 Si $s_1,\dots,s_k$ son absorbentes, ordenando los estados

@@ -37,6 +37,8 @@ $$ p_X(k) = P(X=k) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}, \qquad k \in \mathbb{
 > \lambda$). Se demuestran ([[poisson-apunte]]) reindexando: $E[X]=\lambda$ y, con
 > $k^2 = k(k-1)+k$, $E[X^2] = \lambda^2 + \lambda$, de donde $V(X)=\lambda$.
 
+> **Observación.** Que media y varianza coincidan no es un accidente: la Poisson hereda esta propiedad de la Binomial. La varianza de una $\text{Binomial}(n,p)$ es $np(1-p)$; cuando $p$ es chico, $1-p \approx 1$ y por tanto $np(1-p) \approx np = \lambda$. En el límite $n\to\infty,\ p\to 0$ con $np=\lambda$ fijo, la varianza converge exactamente a $\lambda$, igual que la media. Esto también explica por qué la aproximación exige $p$ chico: si $p$ no fuera pequeño, la varianza de la Binomial quedaría por debajo de $\lambda$ y las dos distribuciones dejarían de parecerse.
+
 ## Función generadora de momentos
 $$ M_X(t) = e^{\lambda(e^t - 1)} $$
 (ver [[funcion-generadora-de-momentos|FGM]]).
@@ -71,6 +73,8 @@ $$ \lim_{n\to\infty}\binom{n}{k}p_n^{\,k}(1-p_n)^{\,n-k} = \frac{\lambda^k}{k!}\
 > $(1-p_n)^{n} \to e^{-\lambda}$ (porque $(1+x/n)^n \to e^x$), mientras que
 > $(1-p_n)^{-k}\to 1$. La cátedra ilustra con $p=0{,}001$: ya con $n$ moderado,
 > $P(X_n=0)=(1-p)^n$ (binomial) y $e^{-np}$ (Poisson) coinciden en varias cifras.
+
+> **Cuidado:** Para que la aproximación sea válida no basta con $n$ grande y $p$ chico por separado: también hace falta que $\lambda = np$ quede **acotado** (en la práctica, $\lambda < 10$ como referencia). Si $p = 0{,}01$ pero $n = 10{,}000$, entonces $\lambda = 100$ y la Binomial sigue siendo una Binomial grande que la Poisson ya no aproxima bien. Las condiciones se resumen en: $n \gg 1$, $p \ll 1$ **y** $np = \lambda$ de magnitud razonable.
 
 ## Cuándo usarla (reconocer en un ejercicio)
 - Conteos de eventos **raros** en un intervalo, dada una tasa media $\lambda$.

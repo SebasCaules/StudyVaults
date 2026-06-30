@@ -47,6 +47,10 @@ Sean $a, c$ constantes:
 > No dividir/sumar la varianza por suma (o resta) de variables sin verificar que se
 > pueda (requiere [[independencia|independencia]]).
 
+> **Intuición.** La fórmula $V(X) = \sum_k (k - \mu)^2\, p_X(k)$ es la versión probabilística de la varianza de datos agrupados: reemplazás cada frecuencia relativa $f_k/n$ por la probabilidad $p_X(k)$. Si simulás $n$ repeticiones del experimento y calculás la varianza empírica de los resultados, ese número converge a $V(X)$ cuando $n \to \infty$. La varianza de la v.a. anticipa la dispersión que verías al repetir muchas veces.
+
+> **Observación.** El recíproco de $V(c)=0$ también vale: si $V(X)=0$, entonces $X$ es constante (toma un único valor con probabilidad 1). La varianza nula caracteriza el determinismo: sin dispersión, no hay aleatoriedad posible.
+
 ## Ejercicio resuelto
 
 **Enunciado** ([[va-discretas-introduccion]], ejemplo del casino). Sea $G$ la
@@ -61,3 +65,5 @@ $$ V(G) = \tfrac72 - \left(\tfrac16\right)^2 = \tfrac72 - \tfrac{1}{36} = \tfrac
 
 **Resultado.** $V(G) = \tfrac{125}{36} \approx 3{,}47$, con desvío
 $\sigma(G) = \sqrt{125/36} = \tfrac{5\sqrt5}{6} \approx 1{,}86$.
+
+> **Nota.** En la notación del curso, las letras griegas ($\mu$, $\sigma^2$, $\sigma$) refieren a parámetros de una v.a. — cantidades teóricas definidas *antes* de correr el experimento. Las letras latinas ($\bar{x}$, $s^2$, $s$) refieren a estadísticas calculadas sobre datos ya observados, *después* del experimento. Usar letras latinas para la varianza de una v.a. no es solo un desliz notacional: confunde lo probabilístico (antes) con lo estadístico (después).

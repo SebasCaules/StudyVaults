@@ -40,3 +40,7 @@ calculan las [[estadistica-descriptiva|medidas de resumen]].
 La muestra es la contraparte observada de una [[variable-aleatoria]]: las medidas
 de resumen muestrales (media, varianza) **estiman** parámetros poblacionales
 ($E[X]$, $V(X)$). Ese salto es el objeto de la [[inferencia-estadistica]].
+
+> **Observación.** El parámetro poblacional (p. ej. $\mu$) es **fijo y desconocido**: si pudiéramos censar a toda la población siempre daría el mismo valor. El estadístico o estimador $\hat{\theta}$ (p. ej. la media muestral $\bar{X}_n$) es **variable antes de tomar la muestra** —porque la muestra podría haber sido otra— y **fijo una vez observada**. Esta distinción es central en inferencia: todo el cálculo probabilístico (sesgo, varianza del estimador, distribución muestral) se hace *antes* de ver los datos, cuando $\hat{\theta}$ todavía es una variable aleatoria.
+
+> **Cuidado:** el estimador $\hat{\theta}$ y su forma de cálculo deben definirse **antes** de observar la muestra. Elegirlo a posteriori —mirando los datos— resta objetividad: los resultados terminan influyendo en la elección del método y pueden cambiar las conclusiones. Declararlo de antemano es lo que permite analizar su comportamiento probabilístico (su distribución, su sesgo) sin contaminarlo con lo que efectivamente salió en la muestra.

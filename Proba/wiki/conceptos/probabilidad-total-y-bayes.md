@@ -28,6 +28,11 @@ $$ P(B) = \sum_k P(B\cap A_k) = \sum_k P(B\mid A_k)\,P(A_k). $$
 Se "arma" $B$ a partir de los pedazos $B\cap A_k$ (m.e.) y se usa la
 [[probabilidad-condicional|condicional]] $P(B\cap A_k)=P(B\mid A_k)P(A_k)$.
 
+> **Cuidado:** No sumes las condicionales $P(B\mid A_k)$ sin el peso $P(A_k)$. Cada condicional vive en su propio subespacio $A_k$ (cambian los «casos totales»), así que $\sum_k P(B\mid A_k)$ no tiene sentido probabilístico — puede dar incluso mayor que 1. La versión correcta siempre lleva el factor $P(A_k)$:
+> $$ P(B) = \sum_k P(B\mid A_k)\,P(A_k). $$
+
+> **Observación.** En un [[arbol-de-probabilidades|árbol de probabilidades]], cada nivel debe ser una **partición** del evento padre: las ramas son mutuamente excluyentes y agotan todas las posibilidades. Si un nivel no forma partición, el diagrama es inválido y la probabilidad total no se aplica.
+
 ## Teorema de Bayes
 Permite **dar vuelta** la condicional. Con $B$ evento y $\{A_k\}$ partición:
 $$ P(A_i\mid B) = \frac{P(B\mid A_i)\,P(A_i)}{\sum_k P(B\mid A_k)\,P(A_k)}. $$

@@ -43,6 +43,12 @@ $P(M=k)$ suman 1).
 > $\text{Var}(X)=E[\text{Var}(X\mid M)]+\text{Var}(E[X\mid M])$: falta el segundo término,
 > que recoge la variabilidad **entre** las medias condicionales.
 
+> **Intuición.** La mezcla es análoga a una **función definida por partes**: una función que es lineal en un tramo, cuadrática en otro y trigonométrica en un tercero no es ninguna de las tres en sí misma — es una función partida. Lo mismo pasa con $X$: condicionada a cada escenario tiene una distribución conocida, pero la variable marginal no es ninguna de ellas; es la superposición de todas según qué escenario ocurrió.
+
+> **Observación.** La densidad de la mezcla puede ser **multimodal** aunque todas las condicionales sean unimodales. Si $X\mid M=k\sim\mathcal{N}(\mu_k,\sigma^2)$ con medias muy separadas ($\mu_1=10,\mu_2=100,\mu_3=200$), la densidad marginal $f_X$ muestra tres campanas claramente diferenciadas, no una sola. La mezcla de normales no es necesariamente normal.
+
+> **Intuición.** La linealidad vale para $E[g(X)]$ porque la integral de una combinación convexa de densidades es la combinación convexa de las integrales — la función $g$ pasa adentro sin problema. La varianza **rompe** ese patrón porque requiere restar $(E[X])^2$: ese cuadrado se mete en una expresión que ya era combinación convexa y la linealidad se pierde. Por eso el camino correcto es calcular $E[X^2]=\sum_k E[X^2\mid M=k]\,P(M=k)$ — que sí es lineal — y recién después restar.
+
 ## Mezcla inversa: discreta condicionada a continua
 
 El otro tipo de mezcla (TP5, ec. 51-55) es **simétrico**: ahora la variable observada $X$ es

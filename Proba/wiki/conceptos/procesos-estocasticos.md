@@ -46,6 +46,8 @@ el estado intermedio en $t_k$:
 $$ p(x_1,t_1,\dots,x_{k-1},t_{k-1},x_{k+1},t_{k+1},\dots) = \sum_{x_k\in\mathbb{E}} p(x_1,t_1,\dots,\mathbf{x_k},\mathbf{t_k},\dots). $$
 En los [[#Proceso de Markov|procesos de Markov]] adopta su forma simple y útil.
 
+> **Observación.** Ante un proceso estocástico nuevo, el **diagrama de árbol** es la herramienta natural para los primeros pasos: rama por rama se ve cómo se propagan las probabilidades y si el proceso tiene alguna estructura explotable. Para pasos lejanos el árbol crece exponencialmente y deja de ser manejable, pero para los primeros dos o tres instantes es la forma más directa de calcular distribuciones y de entender el comportamiento del proceso.
+
 ## Propiedades simplificadoras
 
 ### Proceso estacionario
@@ -56,6 +58,8 @@ Es decir, $\{X(t)\}_t$ no se distingue de $\{X(t+\Delta t)\}_t$. Es
 **estacionario en sentido amplio** si solo $E[X(t)]$ y $\text{Var}[X(t)]$ son
 constantes (condición más débil).
 
+> **Intuición.** Un proceso estacionario es un proceso *estable*: sus probabilidades no se descontrolan con el tiempo, no tiende ni a crecer ni a decrecer de forma indefinida. En la práctica pocos procesos reales son estacionarios (la distribución rara vez se mantiene idéntica), por eso suele alcanzar con pedir estacionariedad en sentido amplio: que la media y la varianza sean constantes, y que la covarianza entre $X(t)$ y $X(t+\Delta t)$ dependa solo de la longitud $\Delta t$ del intervalo, no del instante $t$ de partida.
+
 ### Incrementos independientes y estacionarios
 - **Incrementos independientes:** para intervalos disjuntos $[t_1,t_2]\cap[t_3,t_4]
   =\emptyset$, los incrementos $X(t_2)-X(t_1)$ y $X(t_4)-X(t_3)$ son v.a.
@@ -63,6 +67,8 @@ constantes (condición más débil).
 - **Incrementos estacionarios:** $X(t_2)-X(t_1)$ y $X(t_2{+}\Delta t)-X(t_1{+}
   \Delta t)$ tienen la **misma distribución**. El incremento depende solo de la
   longitud del intervalo, no de dónde está.
+
+> **Intuición.** Mirar los incrementos $X(t_2)-X(t_1)$ suele dar más información que mirar $X(t)$ directamente: escribir 10 palabras en un minuto no significa lo mismo si venías escribiendo 20 (bajaste) que si venías escribiendo 0 (subiste). Además, muchos procesos que *no* son estacionarios tienen incrementos que *sí* lo son; en esos casos conviene trabajar con el proceso de incrementos en lugar del proceso original.
 
 ### Proceso de Markov
 $\{X(t)\}_t$ es un **proceso de Markov** sii, para $t_1\le\dots\le t_n$,
