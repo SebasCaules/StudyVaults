@@ -21,6 +21,18 @@ export type EntryKind =
   | "caution" // condición de validez / error común / cuidado — coral
   | "example"; // ejemplo / caso / intuición — gris
 
+/**
+ * Una variable de la leyenda de una fórmula: el símbolo y su significado.
+ * Pensada para hojas académicas donde cada fórmula declara qué es cada letra
+ * ("donde $\\mu$ es la media…"). Se renderiza una variable por renglón.
+ */
+export interface SheetVar {
+  /** Símbolo en LaTeX SIN delimitadores `$` (ej. "\\mu", "n", "\\sigma^2"). */
+  sym: string;
+  /** Significado del símbolo (texto breve; admite matemática inline `$...$`). */
+  desc: string;
+}
+
 export interface SheetEntry {
   /** Nombre corto del ítem (ej. "Varianza", "TCL", "Singleton"). */
   label: string;
@@ -28,7 +40,8 @@ export interface SheetEntry {
   kind?: EntryKind;
   /**
    * LaTeX de la fórmula, SIN delimitadores `$`. Se renderiza en display salvo
-   * que `inline` sea true. Principal en hojas de fórmulas.
+   * que `inline` sea true. Principal en hojas de fórmulas. Para mostrar varias
+   * fórmulas, una por renglón, usar un entorno `\\begin{aligned}…\\\\…\\end{aligned}`.
    */
   tex?: string;
   /** Renderizar `tex` inline (en línea con el label) en vez de en display. */
@@ -38,6 +51,11 @@ export interface SheetEntry {
    * Principal en hojas de conceptos.
    */
   body?: string;
+  /**
+   * Leyenda de variables de la fórmula: cada símbolo con su significado, uno
+   * por renglón ("donde …"). Da legibilidad académica a las hojas de fórmulas.
+   */
+  vars?: SheetVar[];
   /** Condición de validez o "cuándo aplica" (texto breve, admite `$...$`). */
   cond?: string;
   /** Nota / caveat / error común (texto breve, admite `$...$`). */

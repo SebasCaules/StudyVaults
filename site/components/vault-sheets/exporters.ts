@@ -128,6 +128,13 @@ function texEntry(e: SheetEntry, sheetKind: Sheet["kind"]): string {
     lines.push(`\\item ${label}${e.body ? `: ${texRich(e.body)}` : ""}`);
   }
   if (e.tex && e.body) lines.push(`\\par ${texRich(e.body)}`);
+  if (e.vars && e.vars.length) {
+    lines.push(`\\par {\\footnotesize\\itshape donde:}`);
+    for (const v of e.vars)
+      lines.push(
+        `\\par {\\footnotesize \\hspace*{0.8em}$${texMath(v.sym)}$: ${texRich(v.desc)}}`,
+      );
+  }
   if (e.cond) lines.push(`\\par {\\small\\itshape ${texRich(e.cond)}}`);
   if (e.note)
     lines.push(
@@ -195,6 +202,10 @@ function mdEntry(e: SheetEntry): string {
   let line = `- ${tag}**${e.label}**`;
   if (e.tex) line += e.inline ? ` — $${e.tex}$` : `\n  $$${e.tex}$$`;
   if (e.body) line += `${e.tex && !e.inline ? "\n  " : " — "}${e.body}`;
+  if (e.vars && e.vars.length) {
+    line += `\n  _donde:_`;
+    for (const v of e.vars) line += `\n  - $${v.sym}$ — ${v.desc}`;
+  }
   if (e.cond) line += `\n  _Cuándo:_ ${e.cond}`;
   if (e.note) line += `\n  _⚠ ${e.note}_`;
   return line;

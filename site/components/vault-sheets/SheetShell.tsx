@@ -430,6 +430,23 @@ function Entry({
           <RichText text={entry.body} />
         </p>
       )}
+      {entry.vars && entry.vars.length > 0 && (
+        <div className="sheet-entry__vars">
+          <span className="sheet-entry__vars-cap">donde</span>
+          <dl className="sheet-entry__vars-list">
+            {entry.vars.map((v, vi) => (
+              <Fragment key={vi}>
+                <dt className="sheet-entry__var-sym">
+                  <Math tex={v.sym} inline />
+                </dt>
+                <dd className="sheet-entry__var-desc">
+                  <RichText text={v.desc} />
+                </dd>
+              </Fragment>
+            ))}
+          </dl>
+        </div>
+      )}
       {entry.cond && (
         <p className="sheet-entry__cond">
           <RichText text={entry.cond} />
