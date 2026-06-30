@@ -33,7 +33,9 @@ Sea $X_1,\dots,X_n$ una muestra i.i.d. de media $\mu$. Hay tres planteos:
 
 Si la muestra es normal con $\sigma^2$ **conocida** (o si $n$ es grande por
 [[teorema-central-del-limite|TCL]], aunque no sea normal), el estadístico es
-$$ Z = \frac{\bar X - \mu_0}{\sigma/\sqrt n} \sim N(0,1) \quad \text{bajo } H_0. $$
+$$
+Z = \frac{\bar X - \mu_0}{\sigma/\sqrt n} \sim N(0,1) \quad \text{bajo } H_0.
+$$
 
 Reglas de decisión y valor p (según [[tp9-pruebas-de-hipotesis|TP9]]):
 
@@ -49,7 +51,9 @@ Reglas de decisión y valor p (según [[tp9-pruebas-de-hipotesis|TP9]]):
 **Deducción del valor crítico (cola izquierda,
 [[apunte-media-nula-mayor-igual|apunte nula mayor o igual]]):** acotando el error
 tipo I en el peor caso $\mu=\mu_0$,
-$$ P_{\mu_0}(\bar X_n < \bar x_c)=\Phi\!\left(\tfrac{\bar x_c-\mu_0}{\sigma/\sqrt n}\right)=\alpha \Rightarrow \bar x_c = \mu_0 - z_{1-\alpha}\tfrac{\sigma}{\sqrt n}. $$
+$$
+P_{\mu_0}(\bar X_n < \bar x_c)=\Phi\!\left(\tfrac{\bar x_c-\mu_0}{\sigma/\sqrt n}\right)=\alpha \Rightarrow \bar x_c = \mu_0 - z_{1-\alpha}\tfrac{\sigma}{\sqrt n}.
+$$
 
 > **Intuición.** El valor p mide cuán infrecuente es observar lo que se observó (o algo aún más extremo en la dirección de $H_1$), **asumiendo que $H_0$ es cierta**. Por eso se calcula con la distribución del estadístico bajo $H_0$: se le da el "beneficio de la duda" al valor de referencia $\mu_0$ y se pregunta qué tan rara resulta la evidencia recogida dentro de ese escenario. Mientras más chico es el valor p, más incompatible es la muestra con $H_0$.
 
@@ -64,13 +68,17 @@ $\alpha=5\%$, ¿se puede concluir que el peso medio es significativamente
 **inferior** al especificado? Calcular el valor p.
 
 **Planteo.** "Significativamente inferior a $18$" → prueba de **cola izquierda**:
-$$ H_0:\mu\ge 18 \qquad H_1:\mu<18. $$
+$$
+H_0:\mu\ge 18 \qquad H_1:\mu<18.
+$$
 Como $\sigma$ es **conocida** ($\sigma=2$), estadístico $Z=\dfrac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1)$.
 
 **Región de rechazo.** Cola izquierda al $5\%$: se rechaza si $Z<-z_{0.95}=-1.645$.
 
 **Cálculo.**
-$$ z_{\text{obs}}=\frac{17.5-18}{2/\sqrt{16}}=\frac{-0.5}{0.5}=-1. $$
+$$
+z_{\text{obs}}=\frac{17.5-18}{2/\sqrt{16}}=\frac{-0.5}{0.5}=-1.
+$$
 Valor p (cola izquierda) $=\Phi(z_{\text{obs}})=\Phi(-1)\approx 0.1587$.
 
 **Resultado.** Como $z_{\text{obs}}=-1 > -1.645$ (equivalente a valor p
@@ -85,7 +93,9 @@ fabricante afirma que el tiempo medio de secado es $\mu\le 20$ min; sobre
 $n=36$ tableros el promedio observado da $\bar x=21$ min. ¿Miente el fabricante o
 fue el azar? Asumiendo el tiempo de secado normal con $\sigma$ conocida, la prueba
 es de **cola derecha**:
-$$ H_0:\mu\le 20 \qquad H_1:\mu>20, \qquad Z=\frac{\bar X-20}{\sigma/\sqrt{36}}. $$
+$$
+H_0:\mu\le 20 \qquad H_1:\mu>20, \qquad Z=\frac{\bar X-20}{\sigma/\sqrt{36}}.
+$$
 Se rechaza $H_0$ si $Z>z_{1-\alpha}$, es decir si $\bar X > 20 + z_{1-\alpha}\,\sigma/6$.
 La curva OC de las slides toma $\alpha=0.05$ (de modo que $\beta(20)=1-\alpha=0.95$)
 y muestra $\beta(21)\approx 0.20$, $\beta\to 0$ a medida que el verdadero $\mu$
@@ -101,7 +111,9 @@ crece por encima de $20$.
 
 Si la muestra es normal y $\sigma^2$ es **desconocida** (no se la puede
 reemplazar por la normal porque $n$ es chico), el estadístico es
-$$ T = \frac{\bar X - \mu_0}{S/\sqrt n} \sim t_{n-1} \quad \text{bajo } H_0, $$
+$$
+T = \frac{\bar X - \mu_0}{S/\sqrt n} \sim t_{n-1} \quad \text{bajo } H_0,
+$$
 una [[distribucion-t-de-student|t de Student]] con $n-1$ grados de libertad.
 
 > **Intuición.** $T$ se parece a $Z$ pero reemplaza el $\sigma$ desconocido por
@@ -157,14 +169,18 @@ concluir que la resistencia es significativamente **diferente** a lo especificad
 Nivel $\alpha=5\%$, variable normal.
 
 **Planteo.** "Diferente" → prueba de **dos colas**:
-$$ H_0:\mu=250 \qquad H_1:\mu\ne 250. $$
+$$
+H_0:\mu=250 \qquad H_1:\mu\ne 250.
+$$
 Como $\sigma$ es desconocido (sólo tenemos $S=11.2$), estadístico
 $T=\dfrac{\bar X-\mu_0}{S/\sqrt n}\sim t_{34}$.
 
 **Región de rechazo.** Se rechaza si $|T| > t_{34,\,0.975}\approx 2.0322$.
 
 **Cálculo.**
-$$ t_{\text{obs}}=\frac{274.4-250}{11.2/\sqrt{35}}=\frac{24.4}{1.893}\approx 12.889. $$
+$$
+t_{\text{obs}}=\frac{274.4-250}{11.2/\sqrt{35}}=\frac{24.4}{1.893}\approx 12.889.
+$$
 
 **Resultado.** Como $t_{\text{obs}}=12.889 > 2.0322$, se **rechaza $H_0$**: hay
 suficiente evidencia, a nivel $5\%$, de que la resistencia media de la remesa es
@@ -194,7 +210,9 @@ supuestos se requieren?
 **(a) Prueba de la media (cola izquierda, $\sigma$ desconocida → $T$).**
 "Menor a $800$" → $H_0:\mu\ge 800$ vs $H_1:\mu<800$. Como $\sigma$ es desconocido
 y $n=5$ es chico (muestra normal), estadístico $T=\dfrac{\bar X-\mu_0}{S/\sqrt n}\sim t_{4}$.
-$$ t_{\text{obs}}=\frac{787-800}{13.04/\sqrt5}=\frac{-13}{5.832}\approx -2.23. $$
+$$
+t_{\text{obs}}=\frac{787-800}{13.04/\sqrt5}=\frac{-13}{5.832}\approx -2.23.
+$$
 Región de rechazo (cola izquierda, $4$ g.l.): $T<-t_{4,0.95}=-2.132$. Como
 $t_{\text{obs}}=-2.23 < -2.132$, se **rechaza $H_0$**: hay evidencia de una
 disminución significativa de la media diaria → algo anda mal en el proceso.
@@ -202,7 +220,9 @@ disminución significativa de la media diaria → algo anda mal en el proceso.
 **(b) IC del $90\%$ para la varianza** (usa $(n-1)S^2/\sigma^2\sim\chi^2_{n-1}$,
 [[varianza-muestral|varianza muestral]] y la [[distribucion-ji-cuadrado|ji-cuadrado]]).
 Con $n-1=4$ g.l. y $\chi^2_{4,\,0.05}=0.7107$, $\chi^2_{4,\,0.95}=9.4877$:
-$$ \left[\frac{(n-1)S^2}{\chi^2_{4,\,0.95}},\ \frac{(n-1)S^2}{\chi^2_{4,\,0.05}}\right] = \left[\frac{4\cdot 170}{9.4877},\ \frac{4\cdot 170}{0.7107}\right] \approx [71.67,\ 956.77]. $$
+$$
+\left[\frac{(n-1)S^2}{\chi^2_{4,\,0.95}},\ \frac{(n-1)S^2}{\chi^2_{4,\,0.05}}\right] = \left[\frac{4\cdot 170}{9.4877},\ \frac{4\cdot 170}{0.7107}\right] \approx [71.67,\ 956.77].
+$$
 
 **(c) Supuestos.** El procedimiento es válido si la producción diaria es una
 **variable aleatoria normal** (para que $T\sim t_{n-1}$ y $(n-1)S^2/\sigma^2\sim\chi^2_{n-1}$).

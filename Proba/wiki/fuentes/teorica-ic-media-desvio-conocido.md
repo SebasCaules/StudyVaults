@@ -20,7 +20,9 @@ unilaterales, uso del TCL para v.a. no normales.
 - **Nivel de confianza** $\gamma$ (cercano a 1): se pide
   $P(\mu\in(\overline X_n-\Delta,\overline X_n+\Delta))\ge\gamma$.
 - Estandarizando: $P(\dots) = 2\Phi(\Delta/(\sigma/\sqrt n))-1\ge\gamma$, de donde
-  $$\Delta = z_{\frac{1+\gamma}{2}}\cdot\frac{\sigma}{\sqrt n}.$$
+  $$
+  \Delta = z_{\frac{1+\gamma}{2}}\cdot\frac{\sigma}{\sqrt n}.
+  $$
 - **IC bilateral:** $\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\ \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right)$.
 - **IC unilaterales:** $\left(\overline X_n - z_\gamma\frac{\sigma}{\sqrt n},\ \infty\right)$ y $\left(-\infty,\ \overline X_n + z_\gamma\frac{\sigma}{\sqrt n}\right)$.
 - **V.a. no normales:** para $n$ grande ($n>100$) el TCL permite usar las mismas

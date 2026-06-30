@@ -16,10 +16,14 @@ $f_X$ de una [[variable-aleatoria-continua|variable aleatoria continua]] $X$ es 
 derivada de su [[funcion-de-distribucion-acumulada|FDA]] donde esta sea derivable
 ([[teorica-va-continuas]]):
 
-$$ f_X(x) = \frac{dF_X(x)}{dx}\quad\text{para todo } x\in\mathbb{R} \text{ donde } F_X \text{ es derivable}. $$
+$$
+f_X(x) = \frac{dF_X(x)}{dx}\quad\text{para todo } x\in\mathbb{R} \text{ donde } F_X \text{ es derivable}.
+$$
 
 Recíprocamente, la FDA es la integral de la densidad:
-$$ F_X(x)=\int_{-\infty}^{x} f_X(y)\,dy. $$
+$$
+F_X(x)=\int_{-\infty}^{x} f_X(y)\,dy.
+$$
 
 ## Propiedades
 
@@ -32,10 +36,14 @@ $$ F_X(x)=\int_{-\infty}^{x} f_X(y)\,dy. $$
 
 La densidad **no** es una probabilidad: $f_X(x)$ puede ser mayor que $1$. Lo que
 aproxima una probabilidad es $f_X$ por un ancho pequeño ([[teorica-va-continuas]]):
-$$ f_X(\alpha)\,\Delta x \approx P\!\left(X\in\left(x-\tfrac{\Delta x}{2},\,x+\tfrac{\Delta x}{2}\right]\right)\quad\text{si }\Delta x\text{ es chico}. $$
+$$
+f_X(\alpha)\,\Delta x \approx P\!\left(X\in\left(x-\tfrac{\Delta x}{2},\,x+\tfrac{\Delta x}{2}\right]\right)\quad\text{si }\Delta x\text{ es chico}.
+$$
 
 La probabilidad de un intervalo es el área bajo la densidad:
-$$ P(a<X\le b)=\int_a^b f_X(x)\,dx = F_X(b)-F_X(a). $$
+$$
+P(a<X\le b)=\int_a^b f_X(x)\,dx = F_X(b)-F_X(a).
+$$
 
 ![[densidad-area.svg]]
 
@@ -54,7 +62,9 @@ $$ P(a<X\le b)=\int_a^b f_X(x)\,dx = F_X(b)-F_X(a). $$
 
 ## Esperanza y momentos a partir de la densidad
 
-$$ E[g(X)]=\int_{-\infty}^{+\infty} g(x)\,f_X(x)\,dx,\qquad E[X^k]=\int_{-\infty}^{+\infty} x^k\,f_X(x)\,dx. $$
+$$
+E[g(X)]=\int_{-\infty}^{+\infty} g(x)\,f_X(x)\,dx,\qquad E[X^k]=\int_{-\infty}^{+\infty} x^k\,f_X(x)\,dx.
+$$
 En particular la [[esperanza|esperanza]] $\mu_X=\int x\,f_X\,dx$ y la
 [[varianza|varianza]] $\sigma_X^2=\int (x-\mu_X)^2 f_X\,dx=E[X^2]-(E[X])^2$.
 
@@ -92,10 +102,16 @@ con $b=2$ y $\lambda=0.01$. Obtener la densidad $f_X$.
 $x\le0$, su derivada también es $0$ ahí.
 
 **Cálculo.** Para $x>0$, con $b=2$, $\lambda=0.01$:
-$$ f_X(x)=\frac{d}{dx}\Big[1-e^{-(0.01x)^2}\Big]=-e^{-(0.01x)^2}\cdot\big[-(0.01x)^2\big]'. $$
+$$
+f_X(x)=\frac{d}{dx}\Big[1-e^{-(0.01x)^2}\Big]=-e^{-(0.01x)^2}\cdot\big[-(0.01x)^2\big]'.
+$$
 Como $\big[(0.01x)^2\big]'=2\cdot0.01x\cdot0.01=0.0002\,x$,
-$$ f_X(x)=0.0002\,x\,e^{-(0.01x)^2}. $$
+$$
+f_X(x)=0.0002\,x\,e^{-(0.01x)^2}.
+$$
 
 **Resultado.**
-$$ f_X(x)=\begin{cases} 0.0002\,x\,e^{-(0.01x)^2} & x>0\\[2pt] 0 & x\le0.\end{cases} $$
+$$
+f_X(x)=\begin{cases} 0.0002\,x\,e^{-(0.01x)^2} & x>0\\[2pt] 0 & x\le0.\end{cases}
+$$
 (En general, $f_X(x)=\lambda b(\lambda x)^{b-1}e^{-(\lambda x)^b}$ para $x>0$.)

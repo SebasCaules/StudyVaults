@@ -30,7 +30,10 @@ Se nota $X \sim \text{BinNeg}(r, p)$ (también llamada **de Pascal**).
 > Fuente: [[binomial-negativa-apunte]] y [[tp3-variables-aleatorias-discretas]].
 
 ## Función de masa
-$$ p_X(k) = P(X=k) = \binom{k + r - 1}{k}\,q^{\,k}\,p^{\,r}, \qquad k \in \mathbb{N}_0 $$
+
+$$
+p_X(k) = P(X=k) = \binom{k + r - 1}{k}\,q^{\,k}\,p^{\,r}, \qquad k \in \mathbb{N}_0
+$$
 
 ![[binomial-negativa-pmf.svg]]
 
@@ -41,8 +44,13 @@ $$ p_X(k) = P(X=k) = \binom{k + r - 1}{k}\,q^{\,k}\,p^{\,r}, \qquad k \in \mathb
 > $\binom{k+r-1}{k} = (-1)^k\binom{-r}{k}$ y $p^r(1-q)^{-r} = \sum_k \binom{k+r-1}{k}q^k p^r = 1$.
 
 ## Esperanza y varianza
-- $E[X] = \mu_X = \dfrac{r\,q}{p} = r\,\dfrac{1-p}{p}$
-- $V(X) = \sigma_X^2 = \dfrac{r\,q}{p^2} = r\,\dfrac{1-p}{p^2}$
+
+$$
+\begin{aligned}
+E[X] = \mu_X &= \frac{r\,q}{p} = r\,\frac{1-p}{p} \\[4pt]
+V(X) = \sigma_X^2 &= \frac{r\,q}{p^2} = r\,\frac{1-p}{p^2}
+\end{aligned}
+$$
 
 > Son $r$ veces las de la geométrica, consistente con que es la suma de $r$
 > geométricas independientes.
@@ -55,7 +63,10 @@ $$ p_X(k) = P(X=k) = \binom{k + r - 1}{k}\,q^{\,k}\,p^{\,r}, \qquad k \in \mathb
 > cuesta esperar uno.
 
 ## Función generadora de momentos
-$$ M_X(t) = \left(\frac{p}{1 - q\,e^t}\right)^{r}, \qquad t < -\ln q $$
+
+$$
+M_X(t) = \left(\frac{p}{1 - q\,e^t}\right)^{r}, \qquad t < -\ln q
+$$
 (ver [[funcion-generadora-de-momentos|FGM]]; es la de la geométrica a la $r$).
 
 ## Relaciones con otras distribuciones
@@ -83,12 +94,16 @@ n.º de personas sin talasemia (fracasos) antes de la tercera con talasemia
 $\Rightarrow X \sim \text{BinNeg}(3,\ 0{,}05)$.
 
 **Cálculo.**
-$$ E[X] = \frac{r\,q}{p} = \frac{3\cdot 0{,}95}{0{,}05} = 57 $$
+$$
+E[X] = \frac{r\,q}{p} = \frac{3\cdot 0{,}95}{0{,}05} = 57
+$$
 "Entre las 36 primeras no hay 3 con talasemia" significa que aún no se alcanzó el
 tercer éxito en los primeros 36 ensayos, es decir, hubo a lo sumo 2 éxitos en 36
 ensayos. Conviene calcularlo con la [[distribucion-binomial|Binomial$(36,\ 0{,}05)$]]
 $Y$ = n.º de éxitos en 36:
-$$ P(Y \le 2) = \sum_{j=0}^{2}\binom{36}{j}0{,}05^{j}\,0{,}95^{\,36-j} \approx 0{,}7321 $$
+$$
+P(Y \le 2) = \sum_{j=0}^{2}\binom{36}{j}0{,}05^{j}\,0{,}95^{\,36-j} \approx 0{,}7321
+$$
 
 **Resultado.** En promedio $57$ personas sin talasemia antes de la tercera con
 talasemia; $P(\text{no 3 entre las 36}) \approx 0{,}7321$.

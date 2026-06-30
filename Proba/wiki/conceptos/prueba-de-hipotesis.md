@@ -64,7 +64,9 @@ con valor de referencia $\theta_0$):
 - **Nivel de significación** $\alpha$: cota (pequeña) para la máxima
   probabilidad admisible de cometer un [[error-tipo-i-y-tipo-ii|error tipo I]].
   La región crítica $R^{(\alpha)}$ se elige tal que
-  $$ P_{H_0}\!\left(\Lambda \in R^{(\alpha)}\right) \le \alpha. $$
+  $$
+  P_{H_0}\!\left(\Lambda \in R^{(\alpha)}\right) \le \alpha.
+  $$
 - **Errores** ([[error-tipo-i-y-tipo-ii|página dedicada]]):
 
   | | $H_0$ verdadera | $H_0$ falsa |
@@ -123,12 +125,18 @@ la hipótesis a un nivel de significación del 5 %?"
 
 **Planteo.** Parámetro: proporción $p$ de Corvette. La hipótesis a defender es
 $p\ge 0.15$, así que es una prueba de **cola izquierda**:
-$$ H_0: p \ge 0.15 \qquad H_1: p < 0.15, \qquad \alpha = 0.05. $$
+$$
+H_0: p \ge 0.15 \qquad H_1: p < 0.15, \qquad \alpha = 0.05.
+$$
 Estadístico (con $n=1000$ grande, [[prueba-de-hipotesis-para-la-proporcion|prueba para la proporción]]):
-$$ Z = \frac{\hat p - p_0}{\sqrt{p_0(1-p_0)/n}}, \qquad \hat p = \frac{80}{1000}=0.08,\ p_0=0.15. $$
+$$
+Z = \frac{\hat p - p_0}{\sqrt{p_0(1-p_0)/n}}, \qquad \hat p = \frac{80}{1000}=0.08,\ p_0=0.15.
+$$
 
 **Cálculo.**
-$$ z_{\text{obs}} = \frac{0.08 - 0.15}{\sqrt{0.15\cdot 0.85/1000}} = \frac{-0.07}{\sqrt{0.0001275}} = \frac{-0.07}{0.01129} \approx -6.2. $$
+$$
+z_{\text{obs}} = \frac{0.08 - 0.15}{\sqrt{0.15\cdot 0.85/1000}} = \frac{-0.07}{\sqrt{0.0001275}} = \frac{-0.07}{0.01129} \approx -6.2.
+$$
 El valor p de cola izquierda es $\Phi(-6.2)$, del orden de $10^{-10}$ (el TP9
 reporta "del orden de $10^{-10}$"). Como valor p $\ll \alpha=0.05$, cae muy
 adentro de la región de rechazo.

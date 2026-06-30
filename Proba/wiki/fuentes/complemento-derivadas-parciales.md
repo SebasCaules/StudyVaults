@@ -21,11 +21,15 @@ Soporte para [[funcion-de-densidad]], [[funcion-de-distribucion-acumulada]] y
 ## Puntos clave
 - **Caso 1D (alambre):** si $m(x)$ es la masa acumulada desde $x=0$ [kg], la
   densidad lineal [kg/m] es la derivada
-  $$ \frac{\Delta m}{\Delta x}=\frac{m\!\left(\alpha+\tfrac{\Delta x}{2}\right)-m\!\left(\alpha-\tfrac{\Delta x}{2}\right)}{\Delta x}\xrightarrow[\Delta x\to 0]{}\frac{dm}{dx}(\alpha). $$
+  $$
+  \frac{\Delta m}{\Delta x}=\frac{m\!\left(\alpha+\tfrac{\Delta x}{2}\right)-m\!\left(\alpha-\tfrac{\Delta x}{2}\right)}{\Delta x}\xrightarrow[\Delta x\to 0]{}\frac{dm}{dx}(\alpha).
+  $$
 - **Caso 2D (placa):** $m(\alpha,\beta)=$ masa de la placa para $x\le\alpha,\,y\le\beta$
   [kg]. La densidad superficial [kg/m²] es la **derivada parcial cruzada** de la
   masa acumulada:
-  $$ d(x,y)=\frac{\partial}{\partial x}\frac{\partial}{\partial y}m(x,y)=\frac{\partial^2 m}{\partial x\,\partial y}. $$
+  $$
+  d(x,y)=\frac{\partial}{\partial x}\frac{\partial}{\partial y}m(x,y)=\frac{\partial^2 m}{\partial x\,\partial y}.
+  $$
 - **Igualdad de derivadas cruzadas (Schwarz/Clairaut):** bajo ciertas condiciones
   $\dfrac{\partial^2 m}{\partial x\,\partial y}=\dfrac{\partial^2 m}{\partial y\,\partial x}$,
   así que el orden de derivación no importa.

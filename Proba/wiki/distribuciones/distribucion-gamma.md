@@ -30,17 +30,25 @@ usan uno tras otro). Es la suma de exponenciales independientes.
 
 Caso del curso (forma entera $n$), según [[teorica-suma-exponenciales]] y la
 tabla del [[tp7-suma-de-va]]:
-$$ f_{\Gamma(n,\lambda)}(x)=\frac{\lambda^{n}\,x^{\,n-1}\,e^{-\lambda x}}{(n-1)!} =\frac{(\lambda x)^{n-1}}{(n-1)!}\,\lambda e^{-\lambda x}\qquad (x>0). $$
+$$
+f_{\Gamma(n,\lambda)}(x)=\frac{\lambda^{n}\,x^{\,n-1}\,e^{-\lambda x}}{(n-1)!} =\frac{(\lambda x)^{n-1}}{(n-1)!}\,\lambda e^{-\lambda x}\qquad (x>0).
+$$
 
 Forma general (forma $\alpha$ real, reemplazando $(n-1)!$ por $\Gamma(\alpha)$):
-$$ f_X(x)=\frac{\lambda^{\alpha}\,x^{\,\alpha-1}\,e^{-\lambda x}}{\Gamma(\alpha)}\qquad (x>0). $$
+$$
+f_X(x)=\frac{\lambda^{\alpha}\,x^{\,\alpha-1}\,e^{-\lambda x}}{\Gamma(\alpha)}\qquad (x>0).
+$$
 
 ![[gamma-densidad.svg]]
 
 ## Esperanza y varianza
 
-- $E[X]=\dfrac{\alpha}{\lambda}$.
-- $V(X)=\dfrac{\alpha}{\lambda^{2}}$.
+$$
+\begin{aligned}
+E[X] &= \frac{\alpha}{\lambda} \\[4pt]
+V(X) &= \frac{\alpha}{\lambda^{2}}
+\end{aligned}
+$$
 
 > **Intuición (forma vs tasa).** El parámetro de forma $\alpha$ (cuántas
 > exponenciales sumás) corre la masa hacia la derecha y la hace más simétrica; la
@@ -53,11 +61,15 @@ $$ f_X(x)=\frac{\lambda^{\alpha}\,x^{\,\alpha-1}\,e^{-\lambda x}}{\Gamma(\alpha)
 **Deducción (caso entero).** Como $X=\sum_{i=1}^n\tau_i$ con
 $\tau_i\sim\mathrm{Exp}(\lambda)$ i.i.d. ($E[\tau_i]=1/\lambda$,
 $V(\tau_i)=1/\lambda^2$) e independientes:
-$$ E[X]=\sum_{i=1}^n E[\tau_i]=\frac{n}{\lambda},\qquad V(X)=\sum_{i=1}^n V(\tau_i)=\frac{n}{\lambda^{2}}. $$
+$$
+E[X]=\sum_{i=1}^n E[\tau_i]=\frac{n}{\lambda},\qquad V(X)=\sum_{i=1}^n V(\tau_i)=\frac{n}{\lambda^{2}}.
+$$
 
 ## Función generadora de momentos
 
-$$ M_X(t)=\left(\frac{\lambda}{\lambda-t}\right)^{\alpha}\qquad (t<\lambda). $$
+$$
+M_X(t)=\left(\frac{\lambda}{\lambda-t}\right)^{\alpha}\qquad (t<\lambda).
+$$
 Es la potencia $\alpha$-ésima de la FGM de una [[distribucion-exponencial|exponencial]],
 lo que vuelve a mostrar que sumar exponenciales (multiplicar FGM) da una Gamma.
 
@@ -98,14 +110,20 @@ exceda 310 horas?*
 
 **Planteo.** $T=\sum_{i=1}^{30}\tau_i$ con $\tau_i\sim\mathrm{Exp}(0.1)$ i.i.d., así
 que $T\sim\mathrm{Gamma}(30,\,0.1)$. Sus momentos:
-$$ E[T]=\frac{30}{0.1}=300,\qquad V(T)=\frac{30}{0.1^{2}}=3000. $$
+$$
+E[T]=\frac{30}{0.1}=300,\qquad V(T)=\frac{30}{0.1^{2}}=3000.
+$$
 
 **Valor exacto (vía Poisson).** Como $\{T>310\}\Leftrightarrow\{N(310)\le 29\}$ con
 $N(310)\sim\mathrm{Poisson}(0.1\cdot 310)=\mathrm{Poisson}(31)$:
-$$ P(T>310)=\sum_{k=0}^{29}\frac{31^{k}}{k!}e^{-31}\approx 0.40465. $$
+$$
+P(T>310)=\sum_{k=0}^{29}\frac{31^{k}}{k!}e^{-31}\approx 0.40465.
+$$
 
 **Aproximación por TCL** (suma de 30 i.i.d.):
-$$ P(T>310)\approx 1-\Phi\!\left(\frac{310-300}{\sqrt{3000}}\right)=1-\Phi\!\left(\frac{1}{\sqrt{30}}\right)\approx 1-\Phi(0.1826)\approx 0.4276. $$
+$$
+P(T>310)\approx 1-\Phi\!\left(\frac{310-300}{\sqrt{3000}}\right)=1-\Phi\!\left(\frac{1}{\sqrt{30}}\right)\approx 1-\Phi(0.1826)\approx 0.4276.
+$$
 
 **Resultado.** Exacto $\approx 0.4047$; TCL $\approx 0.4276$ (la Respuesta de la
 guía reporta el valor por TCL, $0.4276$).

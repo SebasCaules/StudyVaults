@@ -19,7 +19,9 @@ valor p para la prueba de hipótesis sobre una proporción (cola derecha).
 - $H_0: p\le p_0$ vs $H_1: p>p_0$, nivel de significación $\alpha$.
 - Por TCL, si $n$ es grande, $\hat p \sim N\!\left(p_0, \sqrt{\tfrac{p_0(1-p_0)}{n}}\right)$ bajo $H_0$.
 - Error tipo I (acotado en $p=p_0$):
-  $$ P(\text{Error I}) = 1-\Phi\!\left(\tfrac{\hat p_c - p_0}{\sqrt{p_0(1-p_0)/n}}\right)=\alpha \Rightarrow \hat p_c = p_0 + z_{1-\alpha}\sqrt{\tfrac{p_0(1-p_0)}{n}} $$
+  $$
+  P(\text{Error I}) = 1-\Phi\!\left(\tfrac{\hat p_c - p_0}{\sqrt{p_0(1-p_0)/n}}\right)=\alpha \Rightarrow \hat p_c = p_0 + z_{1-\alpha}\sqrt{\tfrac{p_0(1-p_0)}{n}}
+  $$
 - $\beta(p) = \Phi\!\left(\tfrac{\hat p_c - p}{\sqrt{p(1-p)/n}}\right)$ para $p>p_0$; $\beta(\hat p_c)=0.5$, $\beta(p_0)=1-\alpha$, $\beta(1)=0$.
 - Valor p (cola derecha): $\text{valor p} = P_{p_0}(\hat p \ge \hat p_{\text{obs}}) = 1-\Phi\!\left(\tfrac{\hat p_{\text{obs}}-p_0}{\sqrt{p_0(1-p_0)/n}}\right)$.
 

@@ -48,7 +48,9 @@ y $\sigma_S^2=\sigma_X^2+\sigma_Y^2$.
 
 ## 1. Bernoulli → Binomial
 Si $X_1,\dots,X_n\sim\mathrm{Bernoulli}(p)$ i.i.d. ($\mu=p$, $\sigma^2=pq$):
-$$ S_n=\sum_{i=1}^n X_i\sim\mathrm{Bin}(n,p). $$
+$$
+S_n=\sum_{i=1}^n X_i\sim\mathrm{Bin}(n,p).
+$$
 Es la **definición operativa** de la [[distribucion-binomial|Binomial]]: contar éxitos.
 
 ## 2. Binomial + Binomial → Binomial (misma $p$)
@@ -65,7 +67,9 @@ $\binom{n_1+n_2}{k}=\sum_{\ell}\binom{n_1}{\ell}\binom{n_2}{k-\ell}$
 $X\sim\mathrm{Poisson}(\lambda_1)$, $Y\sim\mathrm{Poisson}(\lambda_2)$ indep.
 $\Rightarrow S\sim\mathrm{Poisson}(\lambda_1+\lambda_2)$.
 Demo por convolución + binomio de Newton (ver [[teorica-suma-poisson]]):
-$$ p_S(s)=\frac{e^{-(\lambda_1+\lambda_2)}}{s!}\sum_{y=0}^s\binom{s}{y}\lambda_2^y\lambda_1^{s-y}=\frac{e^{-(\lambda_1+\lambda_2)}}{s!}(\lambda_1+\lambda_2)^s. $$
+$$
+p_S(s)=\frac{e^{-(\lambda_1+\lambda_2)}}{s!}\sum_{y=0}^s\binom{s}{y}\lambda_2^y\lambda_1^{s-y}=\frac{e^{-(\lambda_1+\lambda_2)}}{s!}(\lambda_1+\lambda_2)^s.
+$$
 
 ## 4. Normal + Normal → Normal
 $X\sim\mathcal N(\mu_1,\sigma_1)$, $Y\sim\mathcal N(\mu_2,\sigma_2)$ indep.
@@ -75,12 +79,16 @@ Demo: convolución de densidades + **completar cuadrados** en el exponente
 
 ## 5. Uniforme + Uniforme → triangular (no se conserva)
 $X,Y\sim\mathrm{Unif}(0,1)$ indep. $\Rightarrow$ densidad **triangular** en $(0,2)$:
-$$ f_S(s)=\begin{cases} s & 0<s<1\\ 2-s & 1\le s<2\\ 0 & \text{si no}\end{cases} $$
+$$
+f_S(s)=\begin{cases} s & 0<s<1\\ 2-s & 1\le s<2\\ 0 & \text{si no}\end{cases}
+$$
 Ejemplo de familia **no estable** bajo suma (ver [[teorica-suma-uniformes]]).
 
 ## 6. Exponenciales → Gamma / Erlang
 $\tau_1,\dots,\tau_n\sim\mathrm{Exp}(\lambda)$ i.i.d. $\Rightarrow$
-$$ T_n=\sum_{i=1}^n\tau_i\sim\mathrm{Gamma}(n,\lambda),\qquad f_{T_n}(t)=\frac{\lambda^n t^{\,n-1}e^{-\lambda t}}{(n-1)!}\;\;(t>0). $$
+$$
+T_n=\sum_{i=1}^n\tau_i\sim\mathrm{Gamma}(n,\lambda),\qquad f_{T_n}(t)=\frac{\lambda^n t^{\,n-1}e^{-\lambda t}}{(n-1)!}\;\;(t>0).
+$$
 $T_n$ es el instante de la $n$-ésima ocurrencia de un [[proceso-de-poisson|proceso de Poisson]]
 de tasa $\lambda$; la demo usa $\{T_n>t\}\Leftrightarrow\{N(t)\le n-1\}$
 (ver [[teorica-suma-exponenciales]]). La $\mathrm{Gamma}(n,\lambda)$ con $n$ entero
@@ -97,10 +105,14 @@ total de operación. ¿Probabilidad de que $T$ exceda 310 horas?*
 Por el caso 6, $T\sim\mathrm{Gamma}(30,\,0.1)$.
 
 **Valor exacto (vía Poisson).** Con $N\sim\mathrm{Poisson}(\lambda t)=\mathrm{Poisson}(0.1\cdot310)=\mathrm{Poisson}(31)$:
-$$ P(T>310)=P(N<30)=\sum_{k=0}^{29}\frac{31^k}{k!}e^{-31}\approx 0.40465. $$
+$$
+P(T>310)=P(N<30)=\sum_{k=0}^{29}\frac{31^k}{k!}e^{-31}\approx 0.40465.
+$$
 
 **Aproximación por TCL** (suma de 30 i.i.d.): $E[T]=30/0.1=300$, $V(T)=30/0.1^2=3000$.
-$$ P(T>310)\approx 1-\Phi\!\left(\frac{310-300}{\sqrt{3000}}\right)=1-\Phi\!\left(\frac{1}{\sqrt{30}}\right)\approx 1-\Phi(0.1826)\approx 0.4276. $$
+$$
+P(T>310)\approx 1-\Phi\!\left(\frac{310-300}{\sqrt{3000}}\right)=1-\Phi\!\left(\frac{1}{\sqrt{30}}\right)\approx 1-\Phi(0.1826)\approx 0.4276.
+$$
 
 **Resultado.** Exacto $\approx 0.4047$; TCL $\approx 0.4276$ (aproximación razonable
 para $n=30$). *(También podría acotarse con Markov/Chebyshev, pero la cota queda muy floja.)*

@@ -30,14 +30,20 @@ el tiempo es discreto o continuo (según [[teorica-relacion-bernoulli-poisson]])
 ## Poisson como límite de Bernoulli
 Discretizamos $[0,t]$ en $\dfrac{t}{\Delta t}$ intervalos de longitud $\Delta t$.
 En cada intervalo, la probabilidad de un evento es
-$$ P\big(N(k\Delta t)-N((k{-}1)\Delta t)=1\big)=\lambda\,\Delta t+o(\Delta t)\approx \lambda\,\Delta t, $$
+$$
+P\big(N(k\Delta t)-N((k{-}1)\Delta t)=1\big)=\lambda\,\Delta t+o(\Delta t)\approx \lambda\,\Delta t,
+$$
 y la de más de uno es $o(\Delta t)\approx0$. Entonces $N(t)$ se comporta como un
 proceso de Bernoulli con $p=\lambda\,\Delta t$ y $k=\dfrac{t}{\Delta t}$ ensayos:
-$$ N(t)\;\underset{\text{aprox}}{\sim}\;\text{Binomial}\!\left(\frac{t}{\Delta t},\,\lambda\,\Delta t\right). $$
+$$
+N(t)\;\underset{\text{aprox}}{\sim}\;\text{Binomial}\!\left(\frac{t}{\Delta t},\,\lambda\,\Delta t\right).
+$$
 
 Tomando $\Delta t\to0$ (infinitos ensayos, $p\to0$ con $\frac{t}{\Delta t}\cdot
 \lambda\Delta t=\lambda t$ fijo), la binomial converge a la Poisson:
-$$ P(N(t)=n)\approx\binom{t/\Delta t}{n}(\lambda\Delta t)^n(1-\lambda\Delta t)^{\frac{t}{\Delta t}-n}\;\xrightarrow[\Delta t\to0]{}\;\frac{(\lambda t)^n}{n!}e^{-\lambda t}. $$
+$$
+P(N(t)=n)\approx\binom{t/\Delta t}{n}(\lambda\Delta t)^n(1-\lambda\Delta t)^{\frac{t}{\Delta t}-n}\;\xrightarrow[\Delta t\to0]{}\;\frac{(\lambda t)^n}{n!}e^{-\lambda t}.
+$$
 Este es exactamente el resultado de la
 [[distribucion-poisson|aproximación Poisson de la binomial]] (Poisson como
 límite de Binomial con $n$ grande, $p$ chico, $np=\lambda t$).
@@ -70,7 +76,9 @@ con el proceso de Bernoulli.*
 
 **(a)** Pasamos la tasa a las unidades del intervalo. En $t=20\text{ s}=\tfrac13$
 min, $\lambda t=75\cdot\tfrac13=25$. Luego $N\sim\text{Poisson}(25)$ y
-$$ P(N=20)=\frac{25^{20}}{20!}e^{-25}\approx 0.0519. $$
+$$
+P(N=20)=\frac{25^{20}}{20!}e^{-25}\approx 0.0519.
+$$
 
 **(b) Conexión con Bernoulli.** Si discretizamos los 20 s en, por ejemplo,
 $\Delta t=1$ s, tenemos $k=20$ "ensayos" con $p=\lambda\Delta t=75\cdot\frac{1}{60}
@@ -78,7 +86,9 @@ $\Delta t=1$ s, tenemos $k=20$ "ensayos" con $p=\lambda\Delta t=75\cdot\frac{1}{
 sumo un evento por intervalo" sea razonable. Tomando $\Delta t$ chico (p. ej.
 $\Delta t=0.01$ s, $k=2000$, $p=0.0125$), $N\approx\text{Binomial}(2000,0.0125)$
 con $kp=25=\lambda t$, y
-$$ P(N=20)\approx\binom{2000}{20}(0.0125)^{20}(0.9875)^{1980}\approx 0.0519, $$
+$$
+P(N=20)\approx\binom{2000}{20}(0.0125)^{20}(0.9875)^{1980}\approx 0.0519,
+$$
 que coincide con la Poisson: el proceso de Bernoulli **aproxima** al de Poisson
 cuanto más fino es $\Delta t$.
 

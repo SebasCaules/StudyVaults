@@ -46,12 +46,16 @@ distribución.
 
 ## Falta de memoria (exponencial)
 
-$$ P(X>x+\Delta\mid X>x)=P(X>\Delta)=e^{-\lambda\Delta}. $$
+$$
+P(X>x+\Delta\mid X>x)=P(X>\Delta)=e^{-\lambda\Delta}.
+$$
 
 ## Normal estándar y estandarización
 
 Ver [[estandarizacion-y-tabla-normal]].
-$$ Z=\frac{X-\mu}{\sigma}\sim N(0,1),\quad \Phi(z)=P(Z\le z),\quad \Phi(-z)=1-\Phi(z),\quad z_{1-\alpha}=-z_\alpha. $$
+$$
+Z=\frac{X-\mu}{\sigma}\sim N(0,1),\quad \Phi(z)=P(Z\le z),\quad \Phi(-z)=1-\Phi(z),\quad z_{1-\alpha}=-z_\alpha.
+$$
 Regla empírica: $1\sigma\approx0.6827$, $2\sigma\approx0.9545$, $3\sigma\approx0.9973$.
 Fractiles: $z_{0.90}\approx1.2816$, $z_{0.95}\approx1.6449$, $z_{0.975}\approx1.96$, $z_{0.99}\approx2.3263$.
 

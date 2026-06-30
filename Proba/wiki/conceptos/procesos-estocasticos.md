@@ -43,7 +43,9 @@ independientes, y procesos de Markov.
 ## Ecuación de Chapman-Kolmogorov
 Vale en **todo** proceso estocástico. En el caso discreto, marginalizando sobre
 el estado intermedio en $t_k$:
-$$ p(x_1,t_1,\dots,x_{k-1},t_{k-1},x_{k+1},t_{k+1},\dots) = \sum_{x_k\in\mathbb{E}} p(x_1,t_1,\dots,\mathbf{x_k},\mathbf{t_k},\dots). $$
+$$
+p(x_1,t_1,\dots,x_{k-1},t_{k-1},x_{k+1},t_{k+1},\dots) = \sum_{x_k\in\mathbb{E}} p(x_1,t_1,\dots,\mathbf{x_k},\mathbf{t_k},\dots).
+$$
 En los [[#Proceso de Markov|procesos de Markov]] adopta su forma simple y útil.
 
 > **Observación.** Ante un proceso estocástico nuevo, el **diagrama de árbol** es la herramienta natural para los primeros pasos: rama por rama se ve cómo se propagan las probabilidades y si el proceso tiene alguna estructura explotable. Para pasos lejanos el árbol crece exponencialmente y deja de ser manejable, pero para los primeros dos o tres instantes es la forma más directa de calcular distribuciones y de entender el comportamiento del proceso.
@@ -53,7 +55,9 @@ En los [[#Proceso de Markov|procesos de Markov]] adopta su forma simple y útil.
 ### Proceso estacionario
 $\{X(t)\}_t$ es **estacionario** sii desplazar todos los índices un $\Delta t$ no
 cambia la distribución conjunta:
-$$ p(x_1,t_1{+}\Delta t,\dots,x_n,t_n{+}\Delta t)=p(x_1,t_1,\dots,x_n,t_n). $$
+$$
+p(x_1,t_1{+}\Delta t,\dots,x_n,t_n{+}\Delta t)=p(x_1,t_1,\dots,x_n,t_n).
+$$
 Es decir, $\{X(t)\}_t$ no se distingue de $\{X(t+\Delta t)\}_t$. Es
 **estacionario en sentido amplio** si solo $E[X(t)]$ y $\text{Var}[X(t)]$ son
 constantes (condición más débil).
@@ -72,7 +76,9 @@ constantes (condición más débil).
 
 ### Proceso de Markov
 $\{X(t)\}_t$ es un **proceso de Markov** sii, para $t_1\le\dots\le t_n$,
-$$ p(x_n,t_n\mid x_{n-1},t_{n-1},\dots,x_1,t_1)=p(x_n,t_n\mid x_{n-1},t_{n-1}). $$
+$$
+p(x_n,t_n\mid x_{n-1},t_{n-1},\dots,x_1,t_1)=p(x_n,t_n\mid x_{n-1},t_{n-1}).
+$$
 El futuro depende **solo del estado más reciente**, no de toda la historia. Aquí
 Chapman-Kolmogorov se simplifica a $p(x_3,t_3\mid x_1,t_1)=\sum_{x_2}p(x_3,t_3\mid
 x_2,t_2)\,p(x_2,t_2\mid x_1,t_1)$. Cuando $\mathbb{E}$ es discreto se trata de una
@@ -87,7 +93,9 @@ x_2,t_2)\,p(x_2,t_2\mid x_1,t_1)$. Cuando $\mathbb{E}$ es discreto se trata de u
 ## Proceso de conteo
 Dado un proceso $\{T_k\}$ que marca los instantes de ocurrencia de eventos ($T_0=
 0$, $k\le m\Rightarrow T_k\le T_m$), se le asocia el **proceso de conteo**
-$$ N(t)=\max\{k: T_k\le t\}, $$
+$$
+N(t)=\max\{k: T_k\le t\},
+$$
 que cuenta los eventos hasta el instante $t$. Cumple $N(0)=0$, $N(t)\in
 \mathbb{N}_0$, $s\le t\Rightarrow N(s)\le N(t)$, y $N(t)-N(s)$ = # de eventos en
 $(s,t]$. Los dos procesos de conteo estrella de la materia son:
@@ -109,17 +117,25 @@ $\text{Var}[X_n]$.*
 **Planteo.** Expresamos el proceso como
 [[suma-de-variables-aleatorias|suma de v.a. independientes]].
 Desplegando la recurrencia desde $X_0=0$:
-$$ X_1=Z_0,\quad X_2=Z_0+Z_1,\quad X_3=Z_0+Z_1+Z_2 \;\Rightarrow\; X_n=\sum_{i=0}^{n-1}Z_i. $$
+$$
+X_1=Z_0,\quad X_2=Z_0+Z_1,\quad X_3=Z_0+Z_1+Z_2 \;\Rightarrow\; X_n=\sum_{i=0}^{n-1}Z_i.
+$$
 
 **Esperanza.** Por linealidad, con $E[Z_i]=\sum_z z\,p_Z(z)=0$ (la distribución
 es simétrica respecto de $0$):
-$$ E[X_n]=\sum_{i=0}^{n-1}E[Z_i]=0. $$
+$$
+E[X_n]=\sum_{i=0}^{n-1}E[Z_i]=0.
+$$
 
 **Varianza.** Como las $Z_i$ son **independientes**, la varianza de la suma es la
 suma de varianzas; y como son idénticamente distribuidas, $\text{Var}[Z_i]=
 \text{Var}[Z_0]$:
-$$ \text{Var}[Z_0]=E[Z_0^2]-\underbrace{E[Z_0]^2}_{0}=\sum_{i}i^2 p_Z(i)=4(0.1)+1(0.25)+0+1(0.25)+4(0.1)=1.3. $$
-$$ \text{Var}[X_n]=\sum_{i=0}^{n-1}\text{Var}[Z_0]=1.3\,n. $$
+$$
+\text{Var}[Z_0]=E[Z_0^2]-\underbrace{E[Z_0]^2}_{0}=\sum_{i}i^2 p_Z(i)=4(0.1)+1(0.25)+0+1(0.25)+4(0.1)=1.3.
+$$
+$$
+\text{Var}[X_n]=\sum_{i=0}^{n-1}\text{Var}[Z_0]=1.3\,n.
+$$
 
 **Resultado.** $E[X_n]=0$ y $\text{Var}[X_n]=1.3\,n$ (crece con $n$: el proceso
 tiene [[#Incrementos independientes y estacionarios|incrementos independientes y

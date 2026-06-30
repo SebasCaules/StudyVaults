@@ -31,7 +31,9 @@ $P:\Sigma\to\mathbb{R}$ la **medida de probabilidad** que cumple:
 - **Monotonía**: $A\subseteq B \Rightarrow P(A)\le P(B)$.
   *(Pues $B = A\cup(B\setminus A)$, m.e., y $P(B\setminus A)\ge 0$.)*
 - **Probabilidad de la unión** (incluso si **no** son m.e.):
-$$ P(A\cup B) = P(A) + P(B) - P(A\cap B). $$
+$$
+P(A\cup B) = P(A) + P(B) - P(A\cap B).
+$$
 
 > Si $A,B$ son m.e., $P(A\cap B)=0$ y se recupera $P(A\cup B)=P(A)+P(B)$.
 
@@ -60,7 +62,9 @@ $P(A\cap B)$ porque al sumar $P(A)$ y $P(B)$ la zona compartida se contó **dos 
 **Resolución.** $S$ tiene $36$ casos. "Suma $=4$": $\{(1,3),(2,2),(3,1)\}$ → $3$ casos.
 "Suma $=11$": $\{(5,6),(6,5)\}$ → $2$ casos. Son **m.e.** (una suma no puede ser 4
 y 11 a la vez), así que
-$$ P(\text{4 o 11}) = \frac{3}{36} + \frac{2}{36} = \frac{5}{36}. $$
+$$
+P(\text{4 o 11}) = \frac{3}{36} + \frac{2}{36} = \frac{5}{36}.
+$$
 Ver [[regla-de-laplace]].
 
 ## Ejercicio resuelto — inclusión-exclusión de 3 eventos ([[tp2-calculo-de-probabilidades]] ej. 13)
@@ -70,9 +74,13 @@ $A\cap B\cap C{=}2$. ¿Qué proporción de unidades es defectuosa?*
 
 Defectuosa $= A\cup B\cup C$. Con la fórmula de inclusión-exclusión para 3 eventos
 (generalización de la unión de a dos — ver [[tecnica-conteo-combinatoria]]):
-$$ P(A\cup B\cup C) = P(A)+P(B)+P(C) - P(A\cap B)-P(A\cap C)-P(B\cap C) + P(A\cap B\cap C). $$
+$$
+P(A\cup B\cup C) = P(A)+P(B)+P(C) - P(A\cap B)-P(A\cap C)-P(B\cap C) + P(A\cap B\cap C).
+$$
 Dividiendo cada conteo por $1000$:
-$$ P = \frac{30+35+20 - 5-5-4 + 2}{1000} = \frac{73}{1000} = 0.073. $$
+$$
+P = \frac{30+35+20 - 5-5-4 + 2}{1000} = \frac{73}{1000} = 0.073.
+$$
 Es decir, el $7.3\%$ de las unidades es defectuosa.
 
 ## Relación

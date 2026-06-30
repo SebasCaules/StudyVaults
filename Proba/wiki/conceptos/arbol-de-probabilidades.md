@@ -57,10 +57,14 @@ la población. ¿Qué proporción de varones hay entre los daltónicos?* (mismo 
 [[independencia-condicional-bayes]] y [[probabilidad-total-y-bayes]], armado como árbol.)
 
 **Primer nivel — sexo (partición $\{V,\bar V\}$):**
-$$ P(V)=0.47,\qquad P(\bar V)=0.53. \quad(\text{suman }1,\ \text{regla 3}) $$
+$$
+P(V)=0.47,\qquad P(\bar V)=0.53. \quad(\text{suman }1,\ \text{regla 3})
+$$
 
 **Segundo nivel — daltonismo (condicionado al sexo):**
-$$ P(D\mid V)=0.04,\quad P(D^c\mid V)=0.96,\qquad P(D\mid\bar V)=0.02,\quad P(D^c\mid\bar V)=0.98. $$
+$$
+P(D\mid V)=0.04,\quad P(D^c\mid V)=0.96,\qquad P(D\mid\bar V)=0.02,\quad P(D^c\mid\bar V)=0.98.
+$$
 
 **Hojas (regla 4, producto del camino):**
 
@@ -74,10 +78,14 @@ $$ P(D\mid V)=0.04,\quad P(D^c\mid V)=0.96,\qquad P(D\mid\bar V)=0.02,\quad P(D^
 (las cuatro hojas suman $1$.)
 
 **Probabilidad total** de daltónico = suma de las hojas con $D$:
-$$ P(D) = 0.0188 + 0.0106 = 0.0294. $$
+$$
+P(D) = 0.0188 + 0.0106 = 0.0294.
+$$
 
 **Bayes** ("dar vuelta el árbol", lo que se pide):
-$$ P(V\mid D) = \frac{P(V\cap D)}{P(D)} = \frac{0.0188}{0.0294} \approx 0.6395. $$
+$$
+P(V\mid D) = \frac{P(V\cap D)}{P(D)} = \frac{0.0188}{0.0294} \approx 0.6395.
+$$
 Es decir, $\approx 64\%$ de los daltónicos son varones (y $P(\bar V\mid D)\approx 0.3605$).
 
 ## Relación

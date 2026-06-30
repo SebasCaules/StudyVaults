@@ -82,7 +82,9 @@ crítico de la regla de decisión. Ese es el contenido de la técnica
 [[diseno-de-prueba-tamano-muestral|diseño de la prueba y tamaño muestral]]
 (ej. 4, 5, 6, 7 y 16 del [[tp9-pruebas-de-hipotesis|TP9]]). Para la media con
 $\sigma$ conocida:
-$$ n=\left(\frac{(z_{1-\alpha}+z_{1-\beta^*})\,\sigma}{\mu_1-\mu_0}\right)^2 \quad(\text{redondeando hacia arriba}). $$
+$$
+n=\left(\frac{(z_{1-\alpha}+z_{1-\beta^*})\,\sigma}{\mu_1-\mu_0}\right)^2 \quad(\text{redondeando hacia arriba}).
+$$
 Es la fórmula detrás de la frase "para bajar $\alpha$ y $\beta$ a la vez hay que
 aumentar $n$".
 
@@ -98,7 +100,9 @@ Si la pieza extraída es buena, no se puede rechazar $H_0$ (pero tampoco
 aceptarla con certeza). El **error tipo II** es no rechazar $H_0$ (sacar una pieza
 buena) cuando en realidad $H_0$ es falsa (hay $k\ge 1$ defectuosas). Con $k$
 defectuosas en $12$, sacar una buena tiene probabilidad
-$$ \beta(k) = P(\text{pieza buena}\mid k\text{ defectuosas}) = \frac{12-k}{12}, \qquad k=0,1,\dots,12. $$
+$$
+\beta(k) = P(\text{pieza buena}\mid k\text{ defectuosas}) = \frac{12-k}{12}, \qquad k=0,1,\dots,12.
+$$
 Así $\beta(0)=1$ (si no hay defectuosas, jamás se rechaza: $H_0$ es verdadera),
 $\beta(12)=0$ (si todas son defectuosas, siempre se rechaza). Es un caso "de
 juguete" útil para ver que **$\beta$ es una función del grado de falsedad de
@@ -136,12 +140,16 @@ si la media muestral es menor que $4970$**.
 El error estándar es $\sigma/\sqrt n = 120/\sqrt{50}=16.97$.
 
 **(a) Error tipo I.** Es rechazar siendo $\mu=\mu_0=5000$:
-$$ \alpha = P_{5000}(\bar X < 4970) = \Phi\!\left(\frac{4970-5000}{16.97}\right)=\Phi(-1.768)\approx 0.039. $$
+$$
+\alpha = P_{5000}(\bar X < 4970) = \Phi\!\left(\frac{4970-5000}{16.97}\right)=\Phi(-1.768)\approx 0.039.
+$$
 Es decir $\alpha \approx 3.9\%$.
 
 **(b) Error tipo II para $\mu=4960$.** Es aceptar ($\bar X \ge 4970$) siendo en
 realidad $\mu=4960$:
-$$ \beta(4960)=P_{4960}(\bar X \ge 4970)=1-\Phi\!\left(\frac{4970-4960}{16.97}\right)=1-\Phi(0.589)=1-0.722 \approx 0.278. $$
+$$
+\beta(4960)=P_{4960}(\bar X \ge 4970)=1-\Phi\!\left(\frac{4970-4960}{16.97}\right)=1-\Phi(0.589)=1-0.722 \approx 0.278.
+$$
 
 **Resultado.** $\alpha\approx 0.039$ y $\beta(4960)\approx 0.278$ (coincide con
 la respuesta del TP9: $0.278$; para $\mu=4950$ da $0.119$). Nótese cómo $\beta$

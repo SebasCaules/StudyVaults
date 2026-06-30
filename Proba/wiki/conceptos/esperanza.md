@@ -16,7 +16,9 @@ comparar alternativas inciertas (ver [[teoria-de-la-decision-valor-esperado|teor
 
 La **esperanza** o **valor esperado** de una [[variable-aleatoria|v.a. discreta]]
 $X$, notada $\mu_X$ o $E[X]$, es:
-$$ E[X] = \mu_X = \sum_{k \in \mathcal{R}_X} k\,p_X(k) $$
+$$
+E[X] = \mu_X = \sum_{k \in \mathcal{R}_X} k\,p_X(k)
+$$
 
 > **Intuición.** Pensar la PMF como masas $p_X(k)$ colocadas sobre la recta en
 > cada $k$: $E[X]$ es el **centro de masa** (el punto donde la barra se
@@ -36,7 +38,9 @@ donde la frecuencia relativa $f_i/n$ converge a $P(X=k)$
 ## Esperanza de una función de la v.a.
 
 Para una función cualquiera $g : \mathbb{R} \mapsto \mathbb{R}$:
-$$ E[g(X)] = \sum_{k \in \mathcal{R}_X} g(k)\,p_X(k) $$
+$$
+E[g(X)] = \sum_{k \in \mathcal{R}_X} g(k)\,p_X(k)
+$$
 En particular, los **momentos**: $E[X^k] = \sum_x x^k p_X(x)$. Esto se usa para
 calcular la [[varianza|varianza]] vía $V(X) = E[X^2] - (E[X])^2$. Todos los
 momentos se pueden recuperar de golpe con la
@@ -71,7 +75,9 @@ apostador acierta el 1, y gana $1$ si no). Por [[regla-de-laplace|Laplace]]:
 $P(G=-4) = P(\text{sale } 1) = \tfrac16$ y $P(G=1) = \tfrac56$.
 
 **Cálculo.**
-$$ E[G] = (-4)\cdot\tfrac16 + 1\cdot\tfrac56 = \tfrac{-4+5}{6} = \tfrac16 $$
+$$
+E[G] = (-4)\cdot\tfrac16 + 1\cdot\tfrac56 = \tfrac{-4+5}{6} = \tfrac16
+$$
 
 **Resultado.** $E[G] = \tfrac16 > 0$: el casino sale ganando. En 1000 apuestas
 gana en promedio $\approx 166{,}66$ pesos.

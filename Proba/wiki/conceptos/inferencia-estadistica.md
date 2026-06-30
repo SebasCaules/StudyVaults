@@ -22,7 +22,9 @@ mecanismo que lo generó).
 
 Según [[teorica-estimacion-puntual-intro]], el esquema es:
 
-$$\text{Población} \;\longrightarrow\; \text{muestra } \{X_i\}_{i=1}^n \;\longrightarrow\; \text{estadístico / estimador} \;\longrightarrow\; \theta$$
+$$
+\text{Población} \;\longrightarrow\; \text{muestra } \{X_i\}_{i=1}^n \;\longrightarrow\; \text{estadístico / estimador} \;\longrightarrow\; \theta
+$$
 
 ## Cerrando el lazo con descriptiva
 
@@ -105,7 +107,9 @@ que es una variable aleatoria. La **estimación** es su valor evaluado en los
 datos observados.
 
 **Cálculo.**
-$$\hat\mu(2,4) = \frac12(2+4) = 3.$$
+$$
+\hat\mu(2,4) = \frac12(2+4) = 3.
+$$
 
 **Resultado.** La estimación de $\mu$ es $\boxed{3}$. Nótese la distinción: el
 **estimador** $\hat\mu$ es una v.a.; la **estimación** $\hat\mu(2,4)=3$ es un número.

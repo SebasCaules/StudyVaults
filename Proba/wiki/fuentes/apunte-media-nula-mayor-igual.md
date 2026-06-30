@@ -19,7 +19,9 @@ $\sigma$ conocida.
 
 - Región de rechazo a la **izquierda**: se rechaza $H_0$ si $\bar X_n < \bar x_c$.
 - Probabilidad de error tipo I (acotada por el caso $\mu=\mu_0$, el peor dentro de $H_0$):
-  $$ P(\text{Error I}) = P_\mu(\bar X_n < \bar x_c) \le P_{\mu_0}(\bar X_n < \bar x_c) = \Phi\!\left(\tfrac{\bar x_c-\mu_0}{\sigma/\sqrt n}\right) \le \alpha $$
+  $$
+  P(\text{Error I}) = P_\mu(\bar X_n < \bar x_c) \le P_{\mu_0}(\bar X_n < \bar x_c) = \Phi\!\left(\tfrac{\bar x_c-\mu_0}{\sigma/\sqrt n}\right) \le \alpha
+  $$
   de donde $\bar x_c = \mu_0 - z_{1-\alpha}\,\dfrac{\sigma}{\sqrt n}$.
 - $\beta(\mu) = 1 - \Phi\!\left(z_{\alpha} + \tfrac{\mu_0-\mu}{\sigma}\sqrt n\right)$ para $\mu<\mu_0$.
 - Valores: $\beta(\bar x_c)=0.5$, $\beta(\mu_0)=1-\alpha$, $\lim_{\mu\to-\infty}\beta(\mu)=0$.

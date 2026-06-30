@@ -25,7 +25,9 @@ acumulada.
 ## Idea en 1D: derivada como densidad (alambre)
 Sea $m(x)$ la masa de un alambre acumulada desde $x=0$ hasta $x$ [kg]. La densidad
 lineal [kg/m] en un punto $\alpha$ es el cociente incremental de masa, en el límite:
-$$ \frac{\Delta m}{\Delta x}=\frac{m\!\left(\alpha+\tfrac{\Delta x}{2}\right)-m\!\left(\alpha-\tfrac{\Delta x}{2}\right)}{\Delta x} \xrightarrow[\Delta x\to 0]{}\; \frac{dm}{dx}(\alpha). $$
+$$
+\frac{\Delta m}{\Delta x}=\frac{m\!\left(\alpha+\tfrac{\Delta x}{2}\right)-m\!\left(\alpha-\tfrac{\Delta x}{2}\right)}{\Delta x} \xrightarrow[\Delta x\to 0]{}\; \frac{dm}{dx}(\alpha).
+$$
 **Analogía proba:** $m(x)\leftrightarrow F_X(x)$ (FDA), densidad $\leftrightarrow f_X(x)=F_X'(x)$.
 
 ## Idea en 2D: derivada parcial cruzada (placa)
@@ -33,9 +35,13 @@ Sea $m(\alpha,\beta)$ la masa de la placa contenida en el cuadrante $\{x\le\alph
 [kg]. La densidad superficial [kg/m²] en $(\alpha,\beta)$ se obtiene como un cociente
 incremental en las dos direcciones a la vez (los cuatro vértices del rectángulo,
 con signos $+,-,+,-$):
-$$ \frac{\Delta m}{\Delta x\,\Delta y}=\frac{m\!\left(\alpha+\tfrac{\Delta x}{2},\beta+\tfrac{\Delta y}{2}\right)-m\!\left(\alpha+\tfrac{\Delta x}{2},\beta-\tfrac{\Delta y}{2}\right)+m\!\left(\alpha-\tfrac{\Delta x}{2},\beta-\tfrac{\Delta y}{2}\right)-m\!\left(\alpha-\tfrac{\Delta x}{2},\beta+\tfrac{\Delta y}{2}\right)}{\Delta x\,\Delta y}. $$
+$$
+\frac{\Delta m}{\Delta x\,\Delta y}=\frac{m\!\left(\alpha+\tfrac{\Delta x}{2},\beta+\tfrac{\Delta y}{2}\right)-m\!\left(\alpha+\tfrac{\Delta x}{2},\beta-\tfrac{\Delta y}{2}\right)+m\!\left(\alpha-\tfrac{\Delta x}{2},\beta-\tfrac{\Delta y}{2}\right)-m\!\left(\alpha-\tfrac{\Delta x}{2},\beta+\tfrac{\Delta y}{2}\right)}{\Delta x\,\Delta y}.
+$$
 Tomando límite $\Delta x,\Delta y\to 0$ esto es la **derivada parcial cruzada**:
-$$ d(x,y)=\frac{\partial}{\partial x}\frac{\partial}{\partial y}\,m(x,y)=\frac{\partial^2 m}{\partial x\,\partial y}. $$
+$$
+d(x,y)=\frac{\partial}{\partial x}\frac{\partial}{\partial y}\,m(x,y)=\frac{\partial^2 m}{\partial x\,\partial y}.
+$$
 **Analogía proba:** $m(x,y)\leftrightarrow F(x,y)$ (FDA conjunta) y la densidad
 conjunta es $f(x,y)=\dfrac{\partial^2 F}{\partial x\,\partial y}$.
 
@@ -50,7 +56,9 @@ una **franja** acumulada en la otra dirección, no un punto.
 ## Igualdad de las derivadas cruzadas (teorema de Clairaut/Schwarz)
 Bajo ciertas condiciones de regularidad (las parciales segundas son continuas),
 el orden de derivación no importa:
-$$ \frac{\partial^2 m}{\partial x\,\partial y}=\frac{\partial^2 m}{\partial y\,\partial x}. $$
+$$
+\frac{\partial^2 m}{\partial x\,\partial y}=\frac{\partial^2 m}{\partial y\,\partial x}.
+$$
 Por eso da igual derivar primero en $x$ o en $y$.
 
 ## Notación
@@ -70,15 +78,21 @@ Por eso da igual derivar primero en $x$ o en $y$.
 > (Ejemplo de [[complemento-derivadas-parciales]].)
 
 **Parciales primeras.**
-$$ \frac{\partial m}{\partial x}=2x\,y^3 \quad(\text{$y$ constante}),\qquad \frac{\partial m}{\partial y}=3x^2\,y^2 \quad(\text{$x$ constante}). $$
+$$
+\frac{\partial m}{\partial x}=2x\,y^3 \quad(\text{$y$ constante}),\qquad \frac{\partial m}{\partial y}=3x^2\,y^2 \quad(\text{$x$ constante}).
+$$
 
 **Derivadas cruzadas (deben coincidir).**
-$$ \frac{\partial^2 m}{\partial y\,\partial x}=\frac{\partial}{\partial y}\big(2x\,y^3\big)=6x\,y^2, \qquad \frac{\partial^2 m}{\partial x\,\partial y}=\frac{\partial}{\partial x}\big(3x^2\,y^2\big)=6x\,y^2. $$
+$$
+\frac{\partial^2 m}{\partial y\,\partial x}=\frac{\partial}{\partial y}\big(2x\,y^3\big)=6x\,y^2, \qquad \frac{\partial^2 m}{\partial x\,\partial y}=\frac{\partial}{\partial x}\big(3x^2\,y^2\big)=6x\,y^2.
+$$
 Coinciden: $\dfrac{\partial^2 m}{\partial y\,\partial x}=\dfrac{\partial^2 m}{\partial x\,\partial y}=6xy^2$,
 como predice el teorema de Clairaut.
 
 **Parciales segundas puras (a modo de práctica).**
-$$ \frac{\partial^2 m}{\partial x^2}=\frac{\partial}{\partial x}(2xy^3)=2y^3,\qquad \frac{\partial^2 m}{\partial y^2}=\frac{\partial}{\partial y}(3x^2y^2)=6x^2y. $$
+$$
+\frac{\partial^2 m}{\partial x^2}=\frac{\partial}{\partial x}(2xy^3)=2y^3,\qquad \frac{\partial^2 m}{\partial y^2}=\frac{\partial}{\partial y}(3x^2y^2)=6x^2y.
+$$
 
 **Resultado.** La densidad asociada a esta masa acumulada sería
 $d(x,y)=\dfrac{\partial^2 m}{\partial x\,\partial y}=6xy^2$. En clave probabilística:

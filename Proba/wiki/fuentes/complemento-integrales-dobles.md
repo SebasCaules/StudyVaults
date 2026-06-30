@@ -24,7 +24,9 @@ Soporte para [[variables-aleatorias-bidimensionales]] y [[funcion-de-densidad]].
   es decir la integral doble $\iint_R d(x,y)\,dx\,dy$.
 - **Teorema de Fubini:** la integral doble se calcula como integral iterada, y se
   puede integrar en cualquier orden (eligiendo bien los límites del recinto):
-  $$ \iint_R d\,dA = \int_0^1\!\!\int_0^{1-x} d\,dy\,dx = \int_0^1\!\!\int_0^{1-y} d\,dx\,dy. $$
+  $$
+  \iint_R d\,dA = \int_0^1\!\!\int_0^{1-x} d\,dy\,dx = \int_0^1\!\!\int_0^{1-y} d\,dx\,dy.
+  $$
 - **Ejemplo (triángulo $0<x$, $0<y$, $x+y<1$, densidad $d(x,y)=xy$):**
   masa $=\int_0^1\int_0^{1-x} xy\,dy\,dx = \tfrac{1}{12}$ kg; el resultado no depende
   del orden de integración.

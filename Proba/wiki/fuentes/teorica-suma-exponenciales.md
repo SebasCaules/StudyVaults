@@ -21,7 +21,9 @@ conexión con el **proceso de Poisson** $N(t)$.
   $\{T_n>t\}\Leftrightarrow\{N(t)<n\}=\{N(t)\le n-1\}$.
 - $P(T_n>t)=\sum_{k=0}^{n-1}\dfrac{(\lambda t)^k}{k!}e^{-\lambda t}$ para $t>0$.
 - Derivando la FDA y telescopiando la suma se obtiene la densidad:
-$$ f_{T_n}(t)=\dfrac{\lambda^n\,t^{\,n-1}\,e^{-\lambda t}}{(n-1)!}\quad t>0. $$
+$$
+f_{T_n}(t)=\dfrac{\lambda^n\,t^{\,n-1}\,e^{-\lambda t}}{(n-1)!}\quad t>0.
+$$
 - $T_n\sim\mathrm{Erlang}_n(\lambda)$, equivalentemente $T_n\sim\mathrm{Gamma}(n,\lambda)$.
 
 ## Páginas del wiki que toca

@@ -56,12 +56,16 @@ unilateral $\Delta_U$ usa $\gamma$ en vez de $\frac{1+\gamma}{2}$.
 donde $z_p=\Phi^{-1}(p)$ y $t_{m,p}=F_{T_m}^{-1}(p)$ ([[distribucion-t-de-student]]).
 
 **IC bilateral (caso 1):**
-$$IC_\gamma(\mu)=\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\; \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right).$$
+$$
+IC_\gamma(\mu)=\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\; \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right).
+$$
 **Unilaterales (caso 1):** $\left(\overline X_n - z_\gamma\frac{\sigma}{\sqrt n},\infty\right)$, $\left(-\infty,\overline X_n + z_\gamma\frac{\sigma}{\sqrt n}\right)$.
 
 ## Intervalo de confianza para la proporción
 
-$$IC_\gamma(p)=\left(\hat p \pm z_{\frac{1+\gamma}{2}}\sqrt{\frac{\hat p(1-\hat p)}{n}}\right),\qquad \text{(}n\text{ grande)}.$$
+$$
+IC_\gamma(p)=\left(\hat p \pm z_{\frac{1+\gamma}{2}}\sqrt{\frac{\hat p(1-\hat p)}{n}}\right),\qquad \text{(}n\text{ grande)}.
+$$
 Unilaterales acotados a $[0,1]$:
 $\left(\hat p - z_\gamma\sqrt{\tfrac{\hat p(1-\hat p)}{n}},\,1\right)$ y
 $\left(0,\,\hat p + z_\gamma\sqrt{\tfrac{\hat p(1-\hat p)}{n}}\right)$.

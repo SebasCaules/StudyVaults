@@ -18,7 +18,9 @@ según grados de libertad, convergencia a la normal, fractiles.
 - $T = \dfrac{\overline X_n-\mu}{S_n/\sqrt n} \sim t_{n-1}$; cuando $n\to\infty$,
   $t_{n-1}\to\mathcal N(0,1)$. (William S. Gosset, "Student".)
 - **Densidad** ($n$ = grados de libertad):
-  $$f_T(t)=\frac{1}{\sqrt{(n-1)\pi}}\frac{\Gamma(\frac n2)}{\Gamma(\frac{n-1}{2})}\left(1+\frac{t^2}{n-1}\right)^{-\frac n2}.$$
+  $$
+  f_T(t)=\frac{1}{\sqrt{(n-1)\pi}}\frac{\Gamma(\frac n2)}{\Gamma(\frac{n-1}{2})}\left(1+\frac{t^2}{n-1}\right)^{-\frac n2}.
+  $$
   Es **simétrica** ($f_T(-t)=f_T(t)$) y tiende a la densidad de $\mathcal N(0,1)$.
 - **Momentos** (con $n$ grados de libertad): $E[T]=0$ si $n>2$ (no def. si $n\le 2$);
   $V(T)=\frac{n-1}{n-3}>1$ si $n>3$. Tiene **colas más pesadas** que la normal.

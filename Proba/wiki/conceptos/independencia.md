@@ -15,7 +15,9 @@ intersección. Es el supuesto que simplifica casi todo cálculo y la base de las
 [[independencia-de-variables-aleatorias|v.a. independientes]].
 
 Dos eventos $A, B$ son **independientes** sii
-$$ P(A\cap B) = P(A)\cdot P(B). $$
+$$
+P(A\cap B) = P(A)\cdot P(B).
+$$
 Intuición: que ocurra uno **no aporta información** sobre el otro.
 
 ## Caracterización por la condicional
@@ -47,10 +49,14 @@ independientes. Calcular: (a) exactamente uno acierta; (b) exactamente dos.*
 Sean $A_1$ = "tirador 1 acierta", $A_2$ = "tirador 2 acierta", independientes.
 
 **(b) Exactamente dos** $= A_1\cap A_2$:
-$$ P(A_1\cap A_2) = P(A_1)P(A_2) = 0.6\cdot 0.7 = 0.42. $$
+$$
+P(A_1\cap A_2) = P(A_1)P(A_2) = 0.6\cdot 0.7 = 0.42.
+$$
 
 **(a) Exactamente uno** $= (A_1\cap A_2^c)\cup(A_1^c\cap A_2)$ (m.e.):
-$$ P = P(A_1)P(A_2^c) + P(A_1^c)P(A_2) = 0.6\cdot 0.3 + 0.4\cdot 0.7 = 0.18 + 0.28 = 0.46. $$
+$$
+P = P(A_1)P(A_2^c) + P(A_1^c)P(A_2) = 0.6\cdot 0.3 + 0.4\cdot 0.7 = 0.18 + 0.28 = 0.46.
+$$
 
 ## Ejercicio resuelto — mutuamente excluyentes vs. independientes ([[tp2-calculo-de-probabilidades]] ej. 12)
 *Sean $A,B$ con $P(A)=0.4$ y $P(A\cup B)=0.7$. ¿Cuánto vale $p=P(B)$ si son
@@ -59,7 +65,9 @@ $$ P = P(A_1)P(A_2^c) + P(A_1^c)P(A_2) = 0.6\cdot 0.3 + 0.4\cdot 0.7 = 0.18 + 0.
 **(a) M.e.** ($P(A\cap B)=0$): $\;P(A\cup B)=P(A)+P(B)\Rightarrow 0.7=0.4+p\Rightarrow p=0.3.$
 
 **(b) Independientes** ($P(A\cap B)=P(A)P(B)$):
-$$ P(A\cup B)=P(A)+P(B)-P(A)P(B)\Rightarrow 0.7 = 0.4 + p - 0.4p \Rightarrow 0.6\,p=0.3\Rightarrow p=0.5. $$
+$$
+P(A\cup B)=P(A)+P(B)-P(A)P(B)\Rightarrow 0.7 = 0.4 + p - 0.4p \Rightarrow 0.6\,p=0.3\Rightarrow p=0.5.
+$$
 Distinto valor de $p$ según el supuesto: **m.e. e independiente son cosas opuestas**.
 
 ## Ejercicio resuelto — fiabilidad serie/paralelo ([[tp2-calculo-de-probabilidades]] ej. 20)
@@ -72,7 +80,9 @@ Cada contacto **funciona** con $p=1-10^{-2}=0.99$.
 - **Serie** (la rama funciona si funcionan **ambos**): $P(\text{rama})=p\cdot p=0.99^2=0.9801$.
 - **Paralelo** (el circuito funciona si funciona **al menos una** rama → complemento de
   que fallen las dos): con $q_{\text{rama}}=1-0.9801=0.0199$,
-$$ P = 1 - q_{\text{rama}}^2 = 1 - 0.0199^2 \approx 0.999604. $$
+$$
+P = 1 - q_{\text{rama}}^2 = 1 - 0.0199^2 \approx 0.999604.
+$$
 
 > Regla de oro: **serie → producto** (todos deben funcionar); **paralelo → complemento
 > del producto de fallas** (basta con que uno funcione).

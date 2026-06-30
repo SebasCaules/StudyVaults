@@ -80,10 +80,14 @@ Entonces $B\in[0,5]$.
 **FDA por la región.** Para $b\in[0,5]$, el evento $\{B\le b\}$ corresponde a $Q\le q_{\alpha,1}$ o
 $Q\ge q_{\alpha,2}$, donde $q_{\alpha,1},q_{\alpha,2}=1\pm\sqrt{1-\tfrac{b}{5}}$ son las raíces de
 $b=10q-5q^2$. Integrando la densidad triangular en esas dos colas:
-$$ F_B(b)=\frac{q_{\alpha,1}^2}{2}+\frac{(2-q_{\alpha,2})^2}{2}=\left(1-\sqrt{1-\tfrac{b}{5}}\right)^2,\qquad b\in[0,5]. $$
+$$
+F_B(b)=\frac{q_{\alpha,1}^2}{2}+\frac{(2-q_{\alpha,2})^2}{2}=\left(1-\sqrt{1-\tfrac{b}{5}}\right)^2,\qquad b\in[0,5].
+$$
 
 **Probabilidad pedida.**
-$$ P(B>3)=1-F_B(3)=1-\left(1-\sqrt{1-\tfrac{3}{5}}\right)^2\approx0.8649. $$
+$$
+P(B>3)=1-F_B(3)=1-\left(1-\sqrt{1-\tfrac{3}{5}}\right)^2\approx0.8649.
+$$
 
 **Resultado.** $F_B(b)=\left(1-\sqrt{1-b/5}\right)^2$ en $[0,5]$ y $P(B>3)\approx0.8649$. La
 esperanza puede obtenerse integrando $g$ contra $f_Q$: $E[B]=\int(10q-5q^2)f_Q(q)\,dq=\tfrac{25}{6}$.

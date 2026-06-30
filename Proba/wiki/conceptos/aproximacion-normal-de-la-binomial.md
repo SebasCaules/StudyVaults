@@ -17,7 +17,9 @@ continuidad por tratarse de una discreta.
 
 Caso particular y más usado del [[teorema-central-del-limite|TCL]]: para $n$
 grande,
-$$ \mathrm{Bin}(n,p)\;\approx\;\mathcal N\big(np,\;\sqrt{npq}\big),\qquad q=1-p. $$
+$$
+\mathrm{Bin}(n,p)\;\approx\;\mathcal N\big(np,\;\sqrt{npq}\big),\qquad q=1-p.
+$$
 Vale porque $\mathrm{Bin}(n,p)=\sum_{i=1}^n\mathrm{Bernoulli}(p)$ es suma de i.i.d.
 con $\mu=np$ y $\sigma^2=npq$ (ver [[suma-de-va-independientes]]).
 
@@ -30,12 +32,16 @@ $P(S_n=x)=\binom{n}{x}p^x q^{n-x}$, se aplica:
 - **Taylor** $\ln(1+x)=x-\tfrac{x^2}{2}+O(x^3)$,
 
 y, tomando $x=np+z\sqrt{npq}$, se llega a
-$$ P(S_n=x)\;\xrightarrow{n\to\infty}\;\frac{1}{\sqrt{2\pi npq}}\,e^{-\frac{(x-np)^2}{2npq}}, $$
+$$
+P(S_n=x)\;\xrightarrow{n\to\infty}\;\frac{1}{\sqrt{2\pi npq}}\,e^{-\frac{(x-np)^2}{2npq}},
+$$
 que es exactamente la densidad de una $\mathcal N(np,\sqrt{npq})$ evaluada en $x$.
 
 ## Corrección por continuidad (clave en discretas)
 Como la Binomial es **discreta** y la Normal **continua**, se ajusta $\pm\tfrac12$:
-$$ \begin{aligned} P(S_n=s)&\approx\Phi\!\left(\tfrac{s+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{s-\frac12-np}{\sqrt{npq}}\right),\\ P(a\le S_n\le b)&\approx\Phi\!\left(\tfrac{b+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{a-\frac12-np}{\sqrt{npq}}\right). \end{aligned} $$
+$$
+\begin{aligned} P(S_n=s)&\approx\Phi\!\left(\tfrac{s+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{s-\frac12-np}{\sqrt{npq}}\right),\\ P(a\le S_n\le b)&\approx\Phi\!\left(\tfrac{b+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{a-\frac12-np}{\sqrt{npq}}\right). \end{aligned}
+$$
 Para $<$ y $>$ estrictos hay que excluir los extremos (mover el $\pm\tfrac12$ hacia adentro).
 
 **Intuición.** La $\mathrm{Bin}(n,p)$ es una suma de $n$ Bernoulli i.i.d.
@@ -59,13 +65,19 @@ binomial y por la aproximación normal.*
 **Modelo.** $X\sim\mathrm{Bin}(100,0.8)$.
 
 **Valor exacto (binomial).** $70<X<90\iff 71\le X\le 89$:
-$$ P(70<X<90)=\sum_{k=71}^{89}\binom{100}{k}0.8^k\,0.2^{100-k}\approx 0.98305. $$
+$$
+P(70<X<90)=\sum_{k=71}^{89}\binom{100}{k}0.8^k\,0.2^{100-k}\approx 0.98305.
+$$
 
 **Aproximación normal.** $\mu=100\cdot0.8=80$, $\sigma=\sqrt{100\cdot0.8\cdot0.2}=4$.
 Como se excluyen el 70 y el 90 (incluidos 71 y 89), con corrección por continuidad
 el intervalo continuo es $(70.5,\,89.5)$:
-$$ P(70<X<90)=P(70.5<X\le 89.5)\approx\Phi\!\left(\frac{89.5-80}{4}\right)-\Phi\!\left(\frac{70.5-80}{4}\right). $$
-$$ =\Phi(2.375)-\Phi(-2.375)=2\Phi(2.375)-1\approx 2(0.99123)-1\approx 0.98245. $$
+$$
+P(70<X<90)=P(70.5<X\le 89.5)\approx\Phi\!\left(\frac{89.5-80}{4}\right)-\Phi\!\left(\frac{70.5-80}{4}\right).
+$$
+$$
+=\Phi(2.375)-\Phi(-2.375)=2\Phi(2.375)-1\approx 2(0.99123)-1\approx 0.98245.
+$$
 
 **Resultado.** Exacto $\approx 0.98305$; normal con corrección $\approx 0.98245$
 (error $<10^{-3}$). *(Chebyshev sólo garantizaba $\ge0.84$ — ver

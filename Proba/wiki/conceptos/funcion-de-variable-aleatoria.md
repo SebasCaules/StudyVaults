@@ -29,7 +29,9 @@ El procedimiento robusto que sirve siempre pasa por la
 
 1. **Partir de $F_X$** (lo que se conoce de $X$).
 2. **Determinar la FDA de $Y$:**
-$$ F_Y(y) = P(Y\le y) = P\big(g(X)\le y\big). $$
+$$
+F_Y(y) = P(Y\le y) = P\big(g(X)\le y\big).
+$$
    El truco es reescribir el evento $\{g(X)\le y\}$ como un evento sobre $X$ y evaluar $F_X$ ahí.
 3. **Obtener la masa o densidad:**
    - Si $Y$ es continua: $f_Y(y)=\dfrac{d}{dy}F_Y(y)$ (derivar).
@@ -96,7 +98,9 @@ $Y=aX+b\sim N(a\mu_X+b,\,|a|\sigma_X)$ (la familia normal es cerrada por afines)
 
 Si $X$ es continua con $F_X$ estrictamente creciente (existe $F_X^{-1}$) y
 $U\sim\text{Unif}(0,1)$ (ver [[distribucion-uniforme-continua]]), al definir
-$$ Y = F_X^{-1}(U) $$
+$$
+Y = F_X^{-1}(U)
+$$
 resulta $F_Y(y)=P(F_X^{-1}(U)\le y)=P(U\le F_X(y))=F_X(y)$, es decir **$Y$ tiene la misma
 distribución que $X$**. Esto permite simular cualquier distribución a partir de una uniforme.
 
@@ -113,12 +117,18 @@ radio $R$ de una esfera es una v.a. continua con densidad $f_R(r)=6r(1-r)$ para 
 la densidad del volumen $V=\frac{4\pi}{3}R^3$.
 
 **Planteo (método de la FDA).** Como $V$ es función creciente de $R$:
-$$ F_V(v)=P(V\le v)=P\!\left(\tfrac{4\pi}{3}R^3\le v\right)=P\!\left(R\le\sqrt[3]{\tfrac{3v}{4\pi}}\right)=F_R\!\left(\sqrt[3]{\tfrac{3v}{4\pi}}\right). $$
+$$
+F_V(v)=P(V\le v)=P\!\left(\tfrac{4\pi}{3}R^3\le v\right)=P\!\left(R\le\sqrt[3]{\tfrac{3v}{4\pi}}\right)=F_R\!\left(\sqrt[3]{\tfrac{3v}{4\pi}}\right).
+$$
 
 **Cálculo.** Derivando con la regla de la cadena:
-$$ f_V(v)=f_R\!\left(\sqrt[3]{\tfrac{3v}{4\pi}}\right)\cdot\frac{1}{3}\left(\tfrac{3v}{4\pi}\right)^{-2/3}\cdot\frac{3}{4\pi}. $$
+$$
+f_V(v)=f_R\!\left(\sqrt[3]{\tfrac{3v}{4\pi}}\right)\cdot\frac{1}{3}\left(\tfrac{3v}{4\pi}\right)^{-2/3}\cdot\frac{3}{4\pi}.
+$$
 Reemplazando $f_R(r)=6r(1-r)$ y aglomerando términos, queda
-$$ f_V(v)=\frac{3}{2\pi}\left(\sqrt[3]{\tfrac{4\pi}{3v}}-1\right),\qquad 0<v<\frac{4\pi}{3}, $$
+$$
+f_V(v)=\frac{3}{2\pi}\left(\sqrt[3]{\tfrac{4\pi}{3v}}-1\right),\qquad 0<v<\frac{4\pi}{3},
+$$
 y $0$ en otro caso.
 
 **Resultado.** El soporte de $V$ es $\left(0,\tfrac{4\pi}{3}\right)$ (imagen de $0<r<1$). Notar
@@ -140,10 +150,14 @@ disipada $W=V^2$ (sobre $1\,\Omega$).
 
 **Soporte y FDA.** Como $W=V^2\ge0$, para $w<0$ es $F_W(w)=0$. Para $w>0$, usando que $g(v)=v^2$
 **no es inyectiva** (preimagen $\{-\sqrt{w}\le V\le\sqrt{w}\}$):
-$$ F_W(w)=P(V^2\le w)=P(-\sqrt{w}\le V\le\sqrt{w})=\Phi(\sqrt{w})-\Phi(-\sqrt{w})=2\Phi(\sqrt{w})-1. $$
+$$
+F_W(w)=P(V^2\le w)=P(-\sqrt{w}\le V\le\sqrt{w})=\Phi(\sqrt{w})-\Phi(-\sqrt{w})=2\Phi(\sqrt{w})-1.
+$$
 
 **Densidad.** Derivando con la regla de la cadena ($\Phi'(z)=\tfrac{1}{\sqrt{2\pi}}e^{-z^2/2}$):
-$$ f_W(w)=2\,\Phi'(\sqrt{w})\cdot\frac{1}{2\sqrt{w}}=\frac{1}{\sqrt{2\pi w}}\,e^{-w/2},\qquad w>0, $$
+$$
+f_W(w)=2\,\Phi'(\sqrt{w})\cdot\frac{1}{2\sqrt{w}}=\frac{1}{\sqrt{2\pi w}}\,e^{-w/2},\qquad w>0,
+$$
 y $0$ en otro caso.
 
 **Resultado.** $f_W(w)=\dfrac{1}{\sqrt{2\pi w}}e^{-w/2}$ para $w>0$: es exactamente la densidad de

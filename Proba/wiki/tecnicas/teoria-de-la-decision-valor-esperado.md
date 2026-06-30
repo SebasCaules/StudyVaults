@@ -71,7 +71,9 @@ demanda insatisfecha no se penaliza.)
 a \$0,40. Si la demanda $X \ge k$, vende los $k$ que tiene; si $X < k$, vende
 solo $X$ y le quedan diarios sin vender (que ya pagó). Como
 [[funcion-de-variable-aleatoria|función de $X$]]:
-$$ G_k(X) = \begin{cases} 1\cdot X - 0{,}40\,k & \text{si } X < k \quad(\text{sobran diarios})\\[2pt] 1\cdot k - 0{,}40\,k = 0{,}60\,k & \text{si } X \ge k \quad(\text{vende todo}) \end{cases} $$
+$$
+G_k(X) = \begin{cases} 1\cdot X - 0{,}40\,k & \text{si } X < k \quad(\text{sobran diarios})\\[2pt] 1\cdot k - 0{,}40\,k = 0{,}60\,k & \text{si } X \ge k \quad(\text{vende todo}) \end{cases}
+$$
 
 **Cálculo.** Se computa $E[G_k] = \sum_x G_k(x)\,p_X(x)$ para cada $k$ del recorrido
 de la demanda (Tabla 6 del raw):
@@ -88,7 +90,9 @@ de la demanda (Tabla 6 del raw):
 | 70 | 39,84 |
 
 Por ejemplo, para $k=68$:
-$$ E[G_{68}] = \underbrace{(35{,}8)(0{,}01)+\dots+(39{,}8)(0{,}15)}_{X<68} + \underbrace{(0{,}60\cdot 68)(0{,}28+0{,}22+0{,}16)}_{X\ge 68} = 40{,}10 $$
+$$
+E[G_{68}] = \underbrace{(35{,}8)(0{,}01)+\dots+(39{,}8)(0{,}15)}_{X<68} + \underbrace{(0{,}60\cdot 68)(0{,}28+0{,}22+0{,}16)}_{X\ge 68} = 40{,}10
+$$
 (los términos con $X<68$ usan $G_{68}=X-27{,}2$; los términos con $X\ge 68$ usan
 $G_{68}=0{,}60\cdot 68 = 40{,}8$).
 

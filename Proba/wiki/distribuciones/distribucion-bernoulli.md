@@ -25,13 +25,21 @@ experimento del que solo interesa si ocurre o no un evento de probabilidad $p$
 (p. ej. "sacar una bola roja de la urna").
 
 ## Función de masa
-$$ p_X(0) = P(X=0) = q = 1-p, \qquad p_X(1) = P(X=1) = p $$
+
+$$
+p_X(0) = P(X=0) = q = 1-p, \qquad p_X(1) = P(X=1) = p
+$$
 
 ![[bernoulli-pmf.svg]]
 
 ## Esperanza y varianza
-- $E[X] = \mu_X = p$
-- $V(X) = \sigma_X^2 = p\,q = p(1-p)$
+
+$$
+\begin{aligned}
+E[X] = \mu_X &= p \\[4pt]
+V(X) = \sigma_X^2 &= p\,q = p(1-p)
+\end{aligned}
+$$
 
 > Derivación ([[bernoulli-apunte]]): $E[X] = 0\cdot q + 1\cdot p = p$ y
 > $E[X^2] = 0^2\cdot q + 1^2\cdot p = p$, luego
@@ -44,7 +52,10 @@ $$ p_X(0) = P(X=0) = q = 1-p, \qquad p_X(1) = P(X=1) = p $$
 > dispersión).
 
 ## Función generadora de momentos
-$$ M_X(t) = q + p\,e^t $$
+
+$$
+M_X(t) = q + p\,e^t
+$$
 (ver [[funcion-generadora-de-momentos|FGM]]).
 
 ## Relaciones con otras distribuciones
@@ -69,9 +80,15 @@ roja, $X = 0$ si sale azul. Hallar la distribución, $E[X]$ y $V(X)$.
 \text{Bernoulli}(p)$. Por [[regla-de-laplace|Laplace]], $p = P(X=1) = \tfrac37$.
 
 **Cálculo.**
-$$ p_X(0) = \tfrac47 = q, \qquad p_X(1) = \tfrac37 = p $$
-$$ E[X] = p = \tfrac37 \approx 0{,}43 $$
-$$ V(X) = pq = \tfrac37\cdot\tfrac47 = \tfrac{12}{49} \approx 0{,}245 $$
+$$
+p_X(0) = \tfrac47 = q, \qquad p_X(1) = \tfrac37 = p
+$$
+$$
+E[X] = p = \tfrac37 \approx 0{,}43
+$$
+$$
+V(X) = pq = \tfrac37\cdot\tfrac47 = \tfrac{12}{49} \approx 0{,}245
+$$
 
 **Resultado.** $X \sim \text{Bernoulli}(3/7)$, con $E[X] = 3/7$ y $V(X) = 12/49$.
 
@@ -90,26 +107,40 @@ idénticas** (no es Binomial). Sea $P(\text{componente funciona})=0{,}9$, compon
 [[independencia|independientes]].
 
 - Circuito I (paralelo), $F_I = C_1\cup C_2$:
-  $$P(F_I)=P(C_1)+P(C_2)-P(C_1)P(C_2)=0{,}9+0{,}9-0{,}81=0{,}99 \Rightarrow F_I\sim\text{Bernoulli}(0{,}99).$$
+  $$
+  P(F_I)=P(C_1)+P(C_2)-P(C_1)P(C_2)=0{,}9+0{,}9-0{,}81=0{,}99 \Rightarrow F_I\sim\text{Bernoulli}(0{,}99).
+  $$
 - Circuito II (serie), $F_{II}=C_3\cap C_4$:
-  $$P(F_{II})=0{,}9\cdot 0{,}9=0{,}81 \Rightarrow F_{II}\sim\text{Bernoulli}(0{,}81).$$
+  $$
+  P(F_{II})=0{,}9\cdot 0{,}9=0{,}81 \Rightarrow F_{II}\sim\text{Bernoulli}(0{,}81).
+  $$
 
 Como $F_I$ y $F_{II}$ dependen de componentes distintos, son independientes.
 $\mathcal{R}_X=\{0,1,2\}$.
 
 **Cálculo.** Con $P(\bar F_I)=0{,}01$ y $P(\bar F_{II})=0{,}19$:
-$$P(X=0)=P(\bar F_I)P(\bar F_{II})=0{,}01\cdot 0{,}19=0{,}0019$$
-$$P(X=1)=P(\bar F_I)P(F_{II})+P(F_I)P(\bar F_{II})=0{,}01\cdot 0{,}81+0{,}99\cdot 0{,}19=0{,}1962$$
-$$P(X=2)=P(F_I)P(F_{II})=0{,}99\cdot 0{,}81=0{,}8019$$
+$$
+P(X=0)=P(\bar F_I)P(\bar F_{II})=0{,}01\cdot 0{,}19=0{,}0019
+$$
+$$
+P(X=1)=P(\bar F_I)P(F_{II})+P(F_I)P(\bar F_{II})=0{,}01\cdot 0{,}81+0{,}99\cdot 0{,}19=0{,}1962
+$$
+$$
+P(X=2)=P(F_I)P(F_{II})=0{,}99\cdot 0{,}81=0{,}8019
+$$
 
 | $x$ | 0 | 1 | 2 |
 |---|---|---|---|
 | $p_X(x)$ | 0,0019 | 0,1962 | 0,8019 |
 
 [[funcion-de-distribucion-acumulada|FDA]] escalonada:
-$$ F_X(x)= \begin{cases} 0 & x<0\\ 0{,}0019 & 0\le x<1\\ 0{,}1981 & 1\le x<2\\ 1 & x\ge 2 \end{cases} $$
+$$
+F_X(x)= \begin{cases} 0 & x<0\\ 0{,}0019 & 0\le x<1\\ 0{,}1981 & 1\le x<2\\ 1 & x\ge 2 \end{cases}
+$$
 Valor esperado (por linealidad de la esperanza, $E[X]=E[F_I]+E[F_{II}]$):
-$$E[X]=0\cdot 0{,}0019 + 1\cdot 0{,}1962 + 2\cdot 0{,}8019 = 0{,}99+0{,}81 = 1{,}80.$$
+$$
+E[X]=0\cdot 0{,}0019 + 1\cdot 0{,}1962 + 2\cdot 0{,}8019 = 0{,}99+0{,}81 = 1{,}80.
+$$
 
 **Resultado.** $E[X]=1{,}8$ circuitos funcionando en promedio. Como las dos
 Bernoulli **no** comparten $p$, no se puede usar $E[\text{Bin}]=np$; pero la

@@ -21,9 +21,13 @@ actualizado: 2026-06-06
 ## Función de distribución y densidad
 
 La guía la define directamente por su **FDA** ([[tp4-variables-aleatorias-continuas]] ej. 14):
-$$ F_X(x)=\begin{cases} 1-\exp\!\big(-(\lambda x)^b\big) & x>0\\[2pt] 0 & x\le 0.\end{cases} $$
+$$
+F_X(x)=\begin{cases} 1-\exp\!\big(-(\lambda x)^b\big) & x>0\\[2pt] 0 & x\le 0.\end{cases}
+$$
 Derivando se obtiene la **densidad**:
-$$ f_X(x)=F_X'(x)=\lambda\,b\,(\lambda x)^{b-1}\exp\!\big(-(\lambda x)^b\big),\qquad x>0, $$
+$$
+f_X(x)=F_X'(x)=\lambda\,b\,(\lambda x)^{b-1}\exp\!\big(-(\lambda x)^b\big),\qquad x>0,
+$$
 y $0$ en otro caso.
 
 ![[weibull-densidad.svg]]
@@ -32,12 +36,16 @@ y $0$ en otro caso.
 
 Usando la función Gamma $\Gamma(s)=\int_0^\infty u^{s-1}e^{-u}\,du$ (resultado estándar, **no
 derivado en el raw** de la unidad 4 — ver [[distribucion-gamma|Gamma]], forward-link de U7):
-$$ E[X]=\frac{1}{\lambda}\,\Gamma\!\left(1+\tfrac1b\right),\qquad V(X)=\frac{1}{\lambda^2}\left[\Gamma\!\left(1+\tfrac2b\right)-\Gamma\!\left(1+\tfrac1b\right)^2\right]. $$
+$$
+E[X]=\frac{1}{\lambda}\,\Gamma\!\left(1+\tfrac1b\right),\qquad V(X)=\frac{1}{\lambda^2}\left[\Gamma\!\left(1+\tfrac2b\right)-\Gamma\!\left(1+\tfrac1b\right)^2\right].
+$$
 La **mediana** sale de $F_X(m)=\tfrac12$: $m=\dfrac{(\ln 2)^{1/b}}{\lambda}$.
 
 ## Tasa de fallas
 
-$$ R(x)=\frac{f_X(x)}{1-F_X(x)}=\lambda\,b\,(\lambda x)^{b-1}. $$
+$$
+R(x)=\frac{f_X(x)}{1-F_X(x)}=\lambda\,b\,(\lambda x)^{b-1}.
+$$
 Es una **potencia de $x$** (ver [[tasa-de-fallas]]):
 - $b=1$: $R$ constante → se reduce a la [[distribucion-exponencial|exponencial]].
 - $b>1$: $R$ creciente (desgaste/envejecimiento).
@@ -72,17 +80,25 @@ $>10\,000$ hs; ¿cuántas se espera que duren $>20\,000$ hs?
 $X>10$ significa "dura más de $10\,000$ hs".
 
 **Cálculo a).** Derivando,
-$$ f_X(x)=\big[1-e^{-(0.01x)^2}\big]'=e^{-(0.01x)^2}\cdot\big[(0.01x)^2\big]' = e^{-(0.01x)^2}\cdot 2\cdot0.01x\cdot0.01 = 0.0002\,x\,e^{-(0.01x)^2}\quad(x>0). $$
+$$
+f_X(x)=\big[1-e^{-(0.01x)^2}\big]'=e^{-(0.01x)^2}\cdot\big[(0.01x)^2\big]' = e^{-(0.01x)^2}\cdot 2\cdot0.01x\cdot0.01 = 0.0002\,x\,e^{-(0.01x)^2}\quad(x>0).
+$$
 
 **Cálculo b).** $P(X>G_{90})=0.90 \Rightarrow 1-F_X(G_{90})=e^{-(0.01 G_{90})^2}=0.90$, luego
-$$ -(0.01 G_{90})^2=\ln(0.9) \Rightarrow 0.01\,G_{90}=\sqrt{-\ln 0.9} \Rightarrow G_{90}=\frac{\sqrt{-\ln 0.9}}{0.01}\approx 32.459. $$
+$$
+-(0.01 G_{90})^2=\ln(0.9) \Rightarrow 0.01\,G_{90}=\sqrt{-\ln 0.9} \Rightarrow G_{90}=\frac{\sqrt{-\ln 0.9}}{0.01}\approx 32.459.
+$$
 Como está en miles de hs, $G_{90}\approx 32\,459$ hs.
 
 **Cálculo c).** Sea $Y_{1000}=$ piezas con duración $>20\,000$ hs entre las $1000$ ya
 seleccionadas. Como las $1000$ ya cumplen $X>10$, la probabilidad de éxito es **condicional**:
-$$ p=P(X>20\mid X>10)=\frac{P(X>20)}{P(X>10)}=\frac{e^{-(0.01\cdot20)^2}}{e^{-(0.01\cdot10)^2}} =\frac{e^{-0.04}}{e^{-0.01}}=e^{-0.03}\approx 0.97045. $$
+$$
+p=P(X>20\mid X>10)=\frac{P(X>20)}{P(X>10)}=\frac{e^{-(0.01\cdot20)^2}}{e^{-(0.01\cdot10)^2}} =\frac{e^{-0.04}}{e^{-0.01}}=e^{-0.03}\approx 0.97045.
+$$
 Modelando $Y_{1000}\sim\text{Bi}(1000,p)$, el número esperado es
-$$ E[Y_{1000}]=1000\cdot 0.97045\approx 970.45\approx 970. $$
+$$
+E[Y_{1000}]=1000\cdot 0.97045\approx 970.45\approx 970.
+$$
 
 **Resultado.** a) $f_X(x)=0.0002\,x\,e^{-(0.01x)^2}$ ($x>0$). b) $G_{90}\approx 32\,459$ hs.
 c) $\approx 970$ piezas.

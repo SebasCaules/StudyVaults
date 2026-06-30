@@ -22,7 +22,9 @@ $\sigma$ conocida.
   $\bar x_{c_2}=\mu_0+\Delta_c$.
 - Bajo $H_0$, $\bar X_n \sim N(\mu_0, \sigma/\sqrt n)$.
 - Probabilidad de error tipo I:
-  $$ P(\text{Error Tipo I}) = P_{\mu_0}(|\bar X_n - \mu_0| > \Delta_c) = 2\left(1-\Phi\!\left(\tfrac{\Delta_c}{\sigma/\sqrt n}\right)\right) = \alpha $$
+  $$
+  P(\text{Error Tipo I}) = P_{\mu_0}(|\bar X_n - \mu_0| > \Delta_c) = 2\left(1-\Phi\!\left(\tfrac{\Delta_c}{\sigma/\sqrt n}\right)\right) = \alpha
+  $$
   de donde $\Delta_c = z_{1-\alpha/2}\,\dfrac{\sigma}{\sqrt n}$.
 - $\beta(\mu) = \Phi\!\left(z_{1-\alpha/2} + \tfrac{\mu_0-\mu}{\sigma}\sqrt n\right) - \Phi\!\left(-z_{1-\alpha/2} + \tfrac{\mu_0-\mu}{\sigma}\sqrt n\right)$.
 - Valores característicos: $\beta(\mu_0)=1-\alpha$, $\beta(\bar x_{c_1})\approx\beta(\bar x_{c_2})\approx 0.5$, $\beta(\pm\infty)=0$.

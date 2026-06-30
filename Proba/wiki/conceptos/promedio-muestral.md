@@ -16,12 +16,16 @@ teoremas clave son la [[ley-de-grandes-numeros|LGN]] (converge a $\mu_X$) y el
 
 Dada una muestra $X_1,\dots,X_n$ **i.i.d.** con media $\mu_X$ y varianza
 $\sigma_X^2$, el **promedio muestral** (o media muestral) es
-$$ \bar X_n=\frac1n\sum_{i=1}^n X_i=\frac1n S_n. $$
+$$
+\bar X_n=\frac1n\sum_{i=1}^n X_i=\frac1n S_n.
+$$
 Es la v.a. central de la **distribución en el muestreo** y de la estimación.
 
 ## Media y varianza
 Según [[teorica-suma-promedio-iid]]:
-$$ E[\bar X_n]=\mu_X,\qquad V(\bar X_n)=\frac{V(S_n)}{n^2}=\frac{n\sigma_X^2}{n^2}=\frac{\sigma_X^2}{n}. $$
+$$
+E[\bar X_n]=\mu_X,\qquad V(\bar X_n)=\frac{V(S_n)}{n^2}=\frac{n\sigma_X^2}{n^2}=\frac{\sigma_X^2}{n}.
+$$
 - $\bar X_n$ es un estimador **insesgado** de $\mu_X$ ($E[\bar X_n]=\mu_X$).
 - Su **desvío** es $\sigma_{\bar X_n}=\dfrac{\sigma_X}{\sqrt n}$ (el famoso *error estándar*).
 - $V(\bar X_n)=\dfrac{\sigma_X^2}{n}\xrightarrow{n\to\infty}0$: el promedio se **concentra** en $\mu_X$.
@@ -53,13 +57,19 @@ kg. Calcular la probabilidad de que la media de una muestra de 100 cajas esté
 entre 19.7 y 20.6 kg.*
 
 **Planteo.** $X_i\sim\mathcal N(20,3)$, $n=100$. El promedio es exactamente normal:
-$$ \bar X_{100}\sim\mathcal N\!\left(20,\;\frac{3}{\sqrt{100}}\right)=\mathcal N(20,\,0.3). $$
+$$
+\bar X_{100}\sim\mathcal N\!\left(20,\;\frac{3}{\sqrt{100}}\right)=\mathcal N(20,\,0.3).
+$$
 
 **Tipificación.**
-$$ P(19.7\le\bar X_{100}\le 20.6)=\Phi\!\left(\frac{20.6-20}{0.3}\right)-\Phi\!\left(\frac{19.7-20}{0.3}\right)=\Phi(2)-\Phi(-1). $$
+$$
+P(19.7\le\bar X_{100}\le 20.6)=\Phi\!\left(\frac{20.6-20}{0.3}\right)-\Phi\!\left(\frac{19.7-20}{0.3}\right)=\Phi(2)-\Phi(-1).
+$$
 
 **Cálculo.** $\Phi(2)\approx0.9772$, $\Phi(-1)=1-\Phi(1)\approx1-0.8413=0.1587$:
-$$ P\approx 0.9772-0.1587=0.8185. $$
+$$
+P\approx 0.9772-0.1587=0.8185.
+$$
 
 **Resultado.** $\;P(19.7\le\bar X_{100}\le 20.6)\approx 0.8185.$ *(Comparar con el
 ítem a, una sola caja $\mathcal N(20,3)$: la misma franja da sólo $\approx0.1191$,

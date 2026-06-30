@@ -18,17 +18,26 @@ Informan *"qué tan dispersos"* están los datos alrededor de su centro. Junto c
 las [[medidas-de-tendencia-central]] forman las medidas de resumen.
 
 ## Rango
-$$ R = |\max_i x_i - \min_i x_i| $$
+
+$$
+R = |\max_i x_i - \min_i x_i|
+$$
 Muy sensible a [[boxplot|outliers]] (solo usa los dos extremos). El TP1 lo escribe
 con barras de valor absoluto; como $\max \ge \min$, equivale a $\max_i x_i - \min_i x_i$.
 
 ## Rango intercuartil (IQR)
-$$ \text{IQR} = q_3 - q_1 $$
+
+$$
+\text{IQR} = q_3 - q_1
+$$
 Longitud del 50% **central** de los datos → robusto. Ver [[cuartiles-y-percentiles]]
 y [[boxplot]] (define los bigotes y los outliers de Tukey).
 
 ## Varianza muestral
-$$ s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2 $$
+
+$$
+s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2
+$$
 Mide la dispersión promedio al cuadrado respecto de la [[medidas-de-tendencia-central|media]].
 > Problema: queda en **unidades al cuadrado**. Se divide por $n-1$ (no $n$): es la
 > versión muestral, relevante en [[inferencia-estadistica]].
@@ -42,7 +51,10 @@ Mide la dispersión promedio al cuadrado respecto de la [[medidas-de-tendencia-c
 > [[estimacion-puntual|estimadores]].
 
 ## Desvío estándar
-$$ s = \sqrt{s^2} $$
+
+$$
+s = \sqrt{s^2}
+$$
 Misma unidad que los datos. Es la medida de dispersión más usada. Su valor
 absoluto no siempre tiene interpretación directa, pero sirve para **comparar** dos
 distribuciones con la misma media (una más dispersa que otra).
@@ -52,12 +64,18 @@ distribuciones con la misma media (una más dispersa que otra).
 > **Intuición.** La varianza eleva al cuadrado las distancias a la media, así que sus unidades son las de los datos al cuadrado (p. ej. minutos$^2$). Tomar la raíz cuadrada para obtener el desvío $s$ es exactamente lo que devuelve las unidades originales (minutos), haciendo el número directamente comparable con los datos.
 
 ## Media del desvío absoluto
-$$ w = \frac{1}{n}\sum_{i=1}^n |x_i - \bar{x}| $$
+
+$$
+w = \frac{1}{n}\sum_{i=1}^n |x_i - \bar{x}|
+$$
 Más "natural" que la varianza, pero analíticamente más incómoda ($x^2$ es
 derivable en todos lados, $|x|$ no).
 
 ## Mediana del desvío absoluto (MAD)
-$$ \text{MAD} = \text{mediana}\{\,|x_i - \bar{x}|\,\} $$
+
+$$
+\text{MAD} = \text{mediana}\{\,|x_i - \bar{x}|\,\}
+$$
 Medida **robusta**, usada en muchos contextos.
 
 ## Relación poblacional
@@ -66,7 +84,10 @@ una [[variable-aleatoria]] (con $\sigma = \sqrt{V(X)}$). El desvío muestral $s$
 **estima** ese $\sigma$ poblacional.
 
 ## Con datos agrupados
-$$ s_{Ag} = \sqrt{\frac{\sum_{i=1}^L (x_i - \bar{x}_{Ag})^2\, f_i}{n-1}} $$
+
+$$
+s_{Ag} = \sqrt{\frac{\sum_{i=1}^L (x_i - \bar{x}_{Ag})^2\, f_i}{n-1}}
+$$
 ($x_i$ = marca de clase). Ver [[datos-agrupados]].
 
 ## Ejercicio resuelto — desvío de 100 recién nacidos (TP1 ej. 5)
@@ -80,6 +101,8 @@ $$ s_{Ag} = \sqrt{\frac{\sum_{i=1}^L (x_i - \bar{x}_{Ag})^2\, f_i}{n-1}} $$
 
 **Cálculo.** Con $n=100$ y $\bar x_{Ag} = 3.6460$ kg (ver
 [[medidas-de-tendencia-central]]), el desvío agrupado es
-$$ s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{10} (x_i - \bar x_{Ag})^2\, f_i} = \sqrt{\frac{17.7484}{99}} = 0.4234 \text{ kg}. $$
+$$
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{10} (x_i - \bar x_{Ag})^2\, f_i} = \sqrt{\frac{17.7484}{99}} = 0.4234 \text{ kg}.
+$$
 (Media y mediana del mismo ejercicio en [[medidas-de-tendencia-central]];
 mediana por interpolación $=3.6667$ kg en [[tecnica-datos-agrupados-interpolacion]].)

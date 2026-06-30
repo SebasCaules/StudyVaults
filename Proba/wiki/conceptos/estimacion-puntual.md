@@ -25,12 +25,16 @@ Como $\hat\theta$ es una variable aleatoria, queremos que esté "cerca" de
 $\theta$. Eso se mide con el **error cuadrático medio (ECM / MSE)**, según
 [[teorica-estimacion-puntual-intro]]:
 
-$$\mathrm{mse}(\hat\theta) = E\!\left[(\hat\theta-\theta)^2\right].$$
+$$
+\mathrm{mse}(\hat\theta) = E\!\left[(\hat\theta-\theta)^2\right].
+$$
 
 Sumando y restando $E[\hat\theta]$ adentro del cuadrado, el término cruzado se
 anula y queda la descomposición fundamental **sesgo–varianza**:
 
-$$\boxed{\;\mathrm{mse}(\hat\theta) = V(\hat\theta) + \mathrm{sesgo}^2(\hat\theta)\;} \qquad \mathrm{sesgo}(\hat\theta) = E[\hat\theta]-\theta.$$
+$$
+\boxed{\;\mathrm{mse}(\hat\theta) = V(\hat\theta) + \mathrm{sesgo}^2(\hat\theta)\;} \qquad \mathrm{sesgo}(\hat\theta) = E[\hat\theta]-\theta.
+$$
 
 - **Estimador insesgado:** $\mathrm{sesgo}(\hat\theta)=0 \iff E[\hat\theta]=\theta$.
   En promedio da en el blanco.
@@ -74,7 +78,9 @@ La **verosimilitud** es la densidad conjunta vista como función del parámetro,
 $f(x_1,\dots,x_n;\theta)$. El estimador de MV es el valor de $\theta$ que la
 maximiza:
 
-$$\hat\theta = \arg\max_\theta f(x_1,\dots,x_n;\theta).$$
+$$
+\hat\theta = \arg\max_\theta f(x_1,\dots,x_n;\theta).
+$$
 
 Con muestra i.i.d., $f=\prod_i f(x_i;\theta)$, y conviene maximizar la
 **log-verosimilitud** $\ln f=\sum_i\ln f(x_i;\theta)$ (el logaritmo es creciente,
@@ -92,7 +98,9 @@ Enfoque **bayesiano** ([[teorica-maximo-a-posteriori]]): se trata a $\theta$ com
 v.a. con una densidad **a priori** $g(\theta)$ que codifica información previa.
 Por el [[probabilidad-total-y-bayes|teorema de Bayes]] la densidad **a posteriori** es
 
-$$g(\theta\mid x_1,\dots,x_n) = \frac{f(x_1,\dots,x_n\mid\theta)\,g(\theta)}{\int f(x_1,\dots,x_n\mid\zeta)\,g(\zeta)\,d\zeta},$$
+$$
+g(\theta\mid x_1,\dots,x_n) = \frac{f(x_1,\dots,x_n\mid\theta)\,g(\theta)}{\int f(x_1,\dots,x_n\mid\zeta)\,g(\zeta)\,d\zeta},
+$$
 
 y el estimador MAP la maximiza: $\hat\theta=\arg\max_\theta g(\theta\mid x_1,\dots,x_n)$.
 Como el denominador no depende de $\theta$, basta maximizar el numerador.
@@ -165,10 +173,14 @@ $\mu$.
 **Planteo.** La densidad de cada $X_i$ es
 $f(x_i;\mu)=\frac{1}{\sqrt{2\pi}\,\sigma}\exp\!\left(-\frac{(x_i-\mu)^2}{2\sigma^2}\right)$.
 La log-verosimilitud de la muestra es
-$$\mathcal L(\mu)=\ln\prod_{i=1}^n f(x_i;\mu)=\sum_{i=1}^n\ln\frac{1}{\sqrt{2\pi\sigma^2}}-\sum_{i=1}^n\frac{(x_i-\mu)^2}{2\sigma^2}.$$
+$$
+\mathcal L(\mu)=\ln\prod_{i=1}^n f(x_i;\mu)=\sum_{i=1}^n\ln\frac{1}{\sqrt{2\pi\sigma^2}}-\sum_{i=1}^n\frac{(x_i-\mu)^2}{2\sigma^2}.
+$$
 
 **Cálculo.** Derivando respecto de $\mu$ e igualando a cero:
-$$\frac{\partial\mathcal L}{\partial\mu}=\sum_{i=1}^n\frac{x_i-\mu}{\sigma^2}=\frac{1}{\sigma^2}\left(\sum_{i=1}^n x_i - n\mu\right)=0 \;\Rightarrow\; \hat\mu=\frac1n\sum_{i=1}^n x_i.$$
+$$
+\frac{\partial\mathcal L}{\partial\mu}=\sum_{i=1}^n\frac{x_i-\mu}{\sigma^2}=\frac{1}{\sigma^2}\left(\sum_{i=1}^n x_i - n\mu\right)=0 \;\Rightarrow\; \hat\mu=\frac1n\sum_{i=1}^n x_i.
+$$
 La derivada segunda es $\frac{\partial^2\mathcal L}{\partial\mu^2}=-\frac{n}{\sigma^2}<0$,
 así que efectivamente es un máximo.
 
@@ -184,9 +196,13 @@ máxima verosimilitud de $\alpha$ con $X_i$ i.i.d. para
 (b) $X\sim\text{Uniforme}(3,\alpha)$; (c) $X\sim\text{Uniforme}(\alpha,2)$.
 
 **(a) Laplace — derivando.** La log-verosimilitud es
-$$\mathcal L(\alpha)=\sum_{i=1}^n\left[-\ln(2\alpha)-\frac{|x_i|}{\alpha}\right] =-n\ln 2 - n\ln\alpha - \frac{1}{\alpha}\sum_{i=1}^n|x_i|.$$
+$$
+\mathcal L(\alpha)=\sum_{i=1}^n\left[-\ln(2\alpha)-\frac{|x_i|}{\alpha}\right] =-n\ln 2 - n\ln\alpha - \frac{1}{\alpha}\sum_{i=1}^n|x_i|.
+$$
 Derivando e igualando a cero:
-$$\frac{d\mathcal L}{d\alpha}=-\frac{n}{\alpha}+\frac{1}{\alpha^2}\sum_{i=1}^n|x_i|=0 \;\Rightarrow\; \boxed{\hat\alpha=\frac1n\sum_{i=1}^n |x_i|}.$$
+$$
+\frac{d\mathcal L}{d\alpha}=-\frac{n}{\alpha}+\frac{1}{\alpha^2}\sum_{i=1}^n|x_i|=0 \;\Rightarrow\; \boxed{\hat\alpha=\frac1n\sum_{i=1}^n |x_i|}.
+$$
 
 **(b) Uniforme$(3,\alpha)$ — por soporte.** La densidad es
 $f(x)=\frac{1}{\alpha-3}$ para $3<x<\alpha$. La verosimilitud
@@ -221,14 +237,22 @@ para $p\in(0,1)$, $\alpha,\beta>0$. Hallar el estimador MAP de $P$.
 **Planteo.** Con $s=\sum_{i=1}^n x_i$ (número de éxitos), la verosimilitud es
 $f(x\mid p)=p^{s}(1-p)^{n-s}$. La posterior es proporcional al producto
 verosimilitud $\times$ prior:
-$$g(p\mid x)\;\propto\; p^{s}(1-p)^{n-s}\cdot p^{\alpha-1}(1-p)^{\beta-1} = p^{\,s+\alpha-1}(1-p)^{\,n-s+\beta-1}.$$
+$$
+g(p\mid x)\;\propto\; p^{s}(1-p)^{n-s}\cdot p^{\alpha-1}(1-p)^{\beta-1} = p^{\,s+\alpha-1}(1-p)^{\,n-s+\beta-1}.
+$$
 
 **Cálculo.** Tomando logaritmo (la constante de normalización no depende de $p$):
-$$Q(p)=(s+\alpha-1)\ln p + (n-s+\beta-1)\ln(1-p).$$
+$$
+Q(p)=(s+\alpha-1)\ln p + (n-s+\beta-1)\ln(1-p).
+$$
 Derivando e igualando a cero:
-$$Q'(p)=\frac{s+\alpha-1}{p}-\frac{n-s+\beta-1}{1-p}=0 \;\Rightarrow\; (s+\alpha-1)(1-p)=(n-s+\beta-1)\,p,$$
+$$
+Q'(p)=\frac{s+\alpha-1}{p}-\frac{n-s+\beta-1}{1-p}=0 \;\Rightarrow\; (s+\alpha-1)(1-p)=(n-s+\beta-1)\,p,
+$$
 y despejando $p$:
-$$\boxed{\hat p_{\text{MAP}}=\frac{s+\alpha-1}{n+\alpha+\beta-2} =\frac{\sum_i x_i+\alpha-1}{n+\alpha+\beta-2}.}$$
+$$
+\boxed{\hat p_{\text{MAP}}=\frac{s+\alpha-1}{n+\alpha+\beta-2} =\frac{\sum_i x_i+\alpha-1}{n+\alpha+\beta-2}.}
+$$
 
 **Resultado.** El prior Beta agrega $\alpha-1$ "éxitos" y $\beta-1$ "fracasos"
 virtuales. Con prior uniforme ($\alpha=\beta=1$) se recupera el estimador de MV
@@ -247,20 +271,26 @@ $Y=a\overline X_1+b\overline X_2$ con $0<a<1$.
 es $\sigma^2/2n$ en $a=\tfrac12$.
 
 **(a) Insesgadez.** Como $E[\overline X_1]=E[\overline X_2]=\mu$,
-$$E[Y]=(a+b)\mu \stackrel{!}{=}\mu \;\Rightarrow\; \boxed{b=1-a}.$$
+$$
+E[Y]=(a+b)\mu \stackrel{!}{=}\mu \;\Rightarrow\; \boxed{b=1-a}.
+$$
 
 **(b) Mínima varianza con $n_2=2n_1$.** Por independencia,
 $V(Y)=a^2\frac{\sigma^2}{n_1}+(1-a)^2\frac{\sigma^2}{n_2}
 =\frac{\sigma^2}{n_1}\left(a^2+\frac{(1-a)^2}{2}\right)$.
 Derivando respecto de $a$ e igualando a cero:
-$$\frac{d}{da}\!\left(a^2+\tfrac{(1-a)^2}{2}\right)=2a-(1-a)=3a-1=0 \;\Rightarrow\; \boxed{a=\tfrac13},\quad b=\tfrac23.$$
+$$
+\frac{d}{da}\!\left(a^2+\tfrac{(1-a)^2}{2}\right)=2a-(1-a)=3a-1=0 \;\Rightarrow\; \boxed{a=\tfrac13},\quad b=\tfrac23.
+$$
 (La muestra más grande, $n_2=2n_1$, recibe el doble de peso — coherente.)
 
 **(c) Caso $n_1=n_2=n$.** Ahora
 $V(Y)=\frac{\sigma^2}{n}\!\left(a^2+(1-a)^2\right)$. Como $a^2+(1-a)^2<1$ para
 $a\in(0,1)$, resulta $V(Y)<\frac{\sigma^2}{n}=V(\overline X_1)$. Minimizando:
 $\frac{d}{da}(a^2+(1-a)^2)=2a-2(1-a)=4a-2=0\Rightarrow a=\tfrac12$, que da
-$$V(Y)_{\min}=\frac{\sigma^2}{n}\cdot\frac12=\boxed{\frac{\sigma^2}{2n}}.$$
+$$
+V(Y)_{\min}=\frac{\sigma^2}{n}\cdot\frac12=\boxed{\frac{\sigma^2}{2n}}.
+$$
 
 **Resultado.** Promediar las dos muestras con pesos proporcionales a sus tamaños
 (equivalentemente, $a=1/2$ cuando $n_1=n_2$) da el **estimador insesgado de

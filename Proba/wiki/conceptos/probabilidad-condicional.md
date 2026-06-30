@@ -15,7 +15,9 @@ universo a $C$ y mirás qué fracción de $C$ también cumple $D$. Es el ladrill
 [[arbol-de-probabilidades|árbol de probabilidades]].
 
 La probabilidad de $D$ **dado** $C$ (sabiendo que $C$ ocurrió), con $P(C)\neq 0$:
-$$ P(D\mid C) = \frac{P(D\cap C)}{P(C)}. $$
+$$
+P(D\mid C) = \frac{P(D\cap C)}{P(C)}.
+$$
 **Idea**: condicionar a $C$ es *reducir el universo* de todo $S$ a solo $C$; ahora
 $C$ pasa a ser el nuevo "espacio cierto" y se cuentan los casos de $D$ dentro de $C$.
 
@@ -39,7 +41,9 @@ $C$ pasa a ser el nuevo "espacio cierto" y se cuentan los casos de $D$ dentro de
 Sea $C=\{\text{suma}\ge 8\}$ y $D=\{\text{suma par}\}$.
 - $|C| = 15$ casos $\Rightarrow P(C)=\tfrac{15}{36}$.
 - $C\cap D$ (suma $\ge 8$ **y** par: 8, 10, 12) $= 9$ casos $\Rightarrow P(C\cap D)=\tfrac{9}{36}$.
-$$ P(D\mid C) = \frac{P(D\cap C)}{P(C)} = \frac{9/36}{15/36} = \frac{9}{15} = \frac{3}{5} = 0.6. $$
+$$
+P(D\mid C) = \frac{P(D\cap C)}{P(C)} = \frac{9/36}{15/36} = \frac{9}{15} = \frac{3}{5} = 0.6.
+$$
 
 ## Relación
 - Si $P(D\mid C)=P(D)$, los eventos son [[independencia|independientes]].

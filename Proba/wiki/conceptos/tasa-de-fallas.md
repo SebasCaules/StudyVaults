@@ -16,7 +16,9 @@ La **función de tasa de fallas** (o **tasa de riesgo**, *hazard rate*) se asoci
 una duración o tiempo hasta la falla. Según [[tp4-variables-aleatorias-continuas]] (ej. 13)
 se define como
 
-$$ R(t)=\frac{f_T(t)}{1-F_T(t)}, $$
+$$
+R(t)=\frac{f_T(t)}{1-F_T(t)},
+$$
 
 donde $f_T$ es la [[funcion-de-densidad|densidad]] y $F_T$ la
 [[funcion-de-distribucion-acumulada|FDA]] de $T$. Al denominador $S(t)=1-F_T(t)=P(T>t)$ se lo
@@ -26,7 +28,9 @@ llama **función de supervivencia** (o confiabilidad).
 
 $R(t)$ es la **tasa instantánea de falla condicionada a haber sobrevivido hasta $t$**: para
 $\Delta t$ pequeño,
-$$ P\big(t\le T\le t+\Delta t \mid T>t\big)\approx R(t)\,\Delta t. $$
+$$
+P\big(t\le T\le t+\Delta t \mid T>t\big)\approx R(t)\,\Delta t.
+$$
 Es decir, $R(t)\,\Delta t$ aproxima la probabilidad de fallar en el próximo instante $\Delta t$
 dado que el componente llegó funcionando hasta $t$. La forma de $R(t)$ describe el patrón de
 envejecimiento:
@@ -43,9 +47,13 @@ envejecimiento:
 
 Como $\dfrac{d}{dt}\big[1-F_T(t)\big]=-f_T(t)$, la tasa de fallas es la derivada logarítmica
 (cambiada de signo) de la supervivencia:
-$$ R(t)=\frac{f_T(t)}{1-F_T(t)}=-\frac{S'(t)}{S(t)}=-\frac{d}{dt}\ln S(t). $$
+$$
+R(t)=\frac{f_T(t)}{1-F_T(t)}=-\frac{S'(t)}{S(t)}=-\frac{d}{dt}\ln S(t).
+$$
 Esto permite recuperar la distribución a partir de $R$: integrando,
-$$ S(t)=1-F_T(t)=\exp\!\left(-\int_0^t R(u)\,du\right). $$
+$$
+S(t)=1-F_T(t)=\exp\!\left(-\int_0^t R(u)\,du\right).
+$$
 
 ## Caracterización de la exponencial: $R$ constante $\iff$ exponencial
 
@@ -58,12 +66,18 @@ $$ S(t)=1-F_T(t)=\exp\!\left(-\int_0^t R(u)\,du\right). $$
 
 ($\Rightarrow$) Si $T\sim\text{Expo}(\lambda)$, entonces $f_T(t)=\lambda e^{-\lambda t}$ y
 $1-F_T(t)=e^{-\lambda t}$ para $t>0$, de modo que
-$$ R(t)=\frac{\lambda e^{-\lambda t}}{e^{-\lambda t}}=\lambda \quad\text{(constante)}. $$
+$$
+R(t)=\frac{\lambda e^{-\lambda t}}{e^{-\lambda t}}=\lambda \quad\text{(constante)}.
+$$
 
 ($\Leftarrow$) Supongamos $R(t)=\lambda$ constante. Usando $R(t)=-\dfrac{d}{dt}\ln S(t)$ y la
 condición inicial $S(0)=1-F_T(0)=1$ (es un **problema de valor inicial** para $F_T$):
-$$ -\frac{d}{dt}\ln S(t)=\lambda \;\Rightarrow\; \ln S(t)=-\lambda t + C,\quad S(0)=1\Rightarrow C=0, $$
-$$ S(t)=e^{-\lambda t} \;\Rightarrow\; F_T(t)=1-e^{-\lambda t}, $$
+$$
+-\frac{d}{dt}\ln S(t)=\lambda \;\Rightarrow\; \ln S(t)=-\lambda t + C,\quad S(0)=1\Rightarrow C=0,
+$$
+$$
+S(t)=e^{-\lambda t} \;\Rightarrow\; F_T(t)=1-e^{-\lambda t},
+$$
 que es exactamente la FDA de una exponencial de parámetro $\lambda$. $\blacksquare$
 
 Esto reexpresa la **falta de memoria** de la [[distribucion-exponencial|exponencial]]: una

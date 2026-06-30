@@ -29,11 +29,15 @@ Poisson, o sea la **suma de $k$ exponenciales** i.i.d. de la misma tasa. Es la
 
 Sea $\tau_1,\tau_2,\dots\sim\mathrm{Exp}(\lambda)$ i.i.d. (tiempos **entre**
 ocurrencias). El instante de la $k$-ésima ocurrencia es
-$$ T_k=\sum_{i=1}^{k}\tau_i. $$
+$$
+T_k=\sum_{i=1}^{k}\tau_i.
+$$
 Según [[teorica-suma-exponenciales]], usando la equivalencia con el proceso de
 Poisson $\{T_k>t\}\Leftrightarrow\{N(t)\le k-1\}$ con
 $N(t)\sim\mathrm{Poisson}(\lambda t)$:
-$$ P(T_k>t)=\sum_{j=0}^{k-1}\frac{(\lambda t)^{j}}{j!}\,e^{-\lambda t},\qquad t>0, $$
+$$
+P(T_k>t)=\sum_{j=0}^{k-1}\frac{(\lambda t)^{j}}{j!}\,e^{-\lambda t},\qquad t>0,
+$$
 
 > **Intuición (la dualidad Erlang↔Poisson).** "La $k$-ésima ocurrencia todavía no
 > llegó a tiempo $t$" es lo mismo que decir "hasta $t$ hubo a lo sumo $k-1$
@@ -44,7 +48,9 @@ $$ P(T_k>t)=\sum_{j=0}^{k-1}\frac{(\lambda t)^{j}}{j!}\,e^{-\lambda t},\qquad t>
 
 y derivando la FDA $F_{T_k}(t)=1-P(T_k>t)$ (telescopiando la suma) se obtiene la
 **densidad**:
-$$ f_{T_k}(t)=\frac{\lambda^{k}\,t^{\,k-1}\,e^{-\lambda t}}{(k-1)!}\qquad (t>0). $$
+$$
+f_{T_k}(t)=\frac{\lambda^{k}\,t^{\,k-1}\,e^{-\lambda t}}{(k-1)!}\qquad (t>0).
+$$
 
 ![[erlang-densidad.svg]]
 
@@ -52,7 +58,9 @@ $$ f_{T_k}(t)=\frac{\lambda^{k}\,t^{\,k-1}\,e^{-\lambda t}}{(k-1)!}\qquad (t>0).
 
 Como $T_k$ es suma de $k$ exponenciales i.i.d. con $E[\tau_i]=1/\lambda$ y
 $V(\tau_i)=1/\lambda^2$, independientes:
-$$ E[T_k]=\frac{k}{\lambda},\qquad V(T_k)=\frac{k}{\lambda^{2}}. $$
+$$
+E[T_k]=\frac{k}{\lambda},\qquad V(T_k)=\frac{k}{\lambda^{2}}.
+$$
 
 ## Casos particulares y relaciones
 
@@ -81,10 +89,14 @@ con $E[T]=30/0.1=300$ y $V(T)=30/0.1^2=3000$.
 
 **Valor exacto.** $\{T>310\}\Leftrightarrow\{N(310)\le 29\}$,
 $N(310)\sim\mathrm{Poisson}(31)$:
-$$ P(T>310)=\sum_{k=0}^{29}\frac{31^{k}}{k!}e^{-31}\approx 0.4047. $$
+$$
+P(T>310)=\sum_{k=0}^{29}\frac{31^{k}}{k!}e^{-31}\approx 0.4047.
+$$
 
 **Aproximación por TCL.**
-$$ P(T>310)\approx 1-\Phi\!\left(\frac{310-300}{\sqrt{3000}}\right)\approx 1-\Phi(0.1826)\approx 0.4276. $$
+$$
+P(T>310)\approx 1-\Phi\!\left(\frac{310-300}{\sqrt{3000}}\right)\approx 1-\Phi(0.1826)\approx 0.4276.
+$$
 
 **Resultado.** Exacto $\approx 0.4047$; TCL $\approx 0.4276$. *(La resolución
 completa y la versión Gamma general están en [[distribucion-gamma]].)*

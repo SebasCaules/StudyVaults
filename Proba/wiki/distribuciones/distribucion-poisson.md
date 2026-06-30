@@ -24,7 +24,10 @@ Se nota $X \sim \text{Poisson}(\lambda)$. Ejemplos
 emitidas por una sustancia radioactiva, pasajeros que llegan a una parada por hora.
 
 ## Función de masa
-$$ p_X(k) = P(X=k) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}, \qquad k \in \mathbb{N}_0 $$
+
+$$
+p_X(k) = P(X=k) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}, \qquad k \in \mathbb{N}_0
+$$
 
 ![[poisson-pmf.svg]]
 
@@ -32,8 +35,13 @@ $$ p_X(k) = P(X=k) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}, \qquad k \in \mathbb{
 > $\sum_{k=0}^\infty \tfrac{\lambda^k}{k!}e^{-\lambda} = e^{-\lambda}\,e^{\lambda} = e^0 = 1$.
 
 ## Esperanza y varianza
-- $E[X] = \mu_X = \lambda$
-- $V(X) = \sigma_X^2 = \lambda$
+
+$$
+\begin{aligned}
+E[X] = \mu_X &= \lambda \\[4pt]
+V(X) = \sigma_X^2 &= \lambda
+\end{aligned}
+$$
 
 > Propiedad distintiva: **media y varianza son iguales** ($\mu_X = \sigma_X^2 =
 > \lambda$). Se demuestran ([[poisson-apunte]]) reindexando: $E[X]=\lambda$ y, con
@@ -42,7 +50,10 @@ $$ p_X(k) = P(X=k) = \frac{\lambda^{k}}{k!}\,e^{-\lambda}, \qquad k \in \mathbb{
 > **Observación.** Que media y varianza coincidan no es un accidente: la Poisson hereda esta propiedad de la Binomial. La varianza de una $\text{Binomial}(n,p)$ es $np(1-p)$; cuando $p$ es chico, $1-p \approx 1$ y por tanto $np(1-p) \approx np = \lambda$. En el límite $n\to\infty,\ p\to 0$ con $np=\lambda$ fijo, la varianza converge exactamente a $\lambda$, igual que la media. Esto también explica por qué la aproximación exige $p$ chico: si $p$ no fuera pequeño, la varianza de la Binomial quedaría por debajo de $\lambda$ y las dos distribuciones dejarían de parecerse.
 
 ## Función generadora de momentos
-$$ M_X(t) = e^{\lambda(e^t - 1)} $$
+
+$$
+M_X(t) = e^{\lambda(e^t - 1)}
+$$
 (ver [[funcion-generadora-de-momentos|FGM]]).
 
 ## Relaciones con otras distribuciones
@@ -64,11 +75,15 @@ $$ M_X(t) = e^{\lambda(e^t - 1)} $$
 Cuando $n$ es **grande** y $p$ **chico**, la [[distribucion-binomial|Binomial$(n,p)$]]
 se aproxima por una Poisson de parámetro $\lambda = n\,p$
 ([[poisson-aproximacion-binomial-apunte]]):
-$$ P(X=k) = \binom{n}{k}p^k(1-p)^{\,n-k} \;\approx\; \frac{(np)^k}{k!}\,e^{-np} $$
+$$
+P(X=k) = \binom{n}{k}p^k(1-p)^{\,n-k} \;\approx\; \frac{(np)^k}{k!}\,e^{-np}
+$$
 
 **Proposición.** Sea $\{p_n\}$ una secuencia con $\lim_{n\to\infty} n\,p_n = \lambda > 0$.
 Entonces, para todo $k \in \mathbb{N}_0$:
-$$ \lim_{n\to\infty}\binom{n}{k}p_n^{\,k}(1-p_n)^{\,n-k} = \frac{\lambda^k}{k!}\,e^{-\lambda} $$
+$$
+\lim_{n\to\infty}\binom{n}{k}p_n^{\,k}(1-p_n)^{\,n-k} = \frac{\lambda^k}{k!}\,e^{-\lambda}
+$$
 
 > Idea de la demostración: se usa $\binom{n}{k}p_n^k = \tfrac{(np_n)^k}{k!}\cdot
 > \tfrac{n(n-1)\cdots(n-k+1)}{n^k}$, que tiende a $\tfrac{\lambda^k}{k!}$, y
@@ -114,14 +129,20 @@ artillería dispara a un blanco con probabilidad de acertar $p=0{,}01$ por dispa
 menos una vez**? Resolver con binomial y con la aproximación Poisson, y comparar.
 
 **Planteo.** $X_n\sim\text{Binomial}(n,p)$ = aciertos en $n$ tiros. Se pide
-$$P(X_n\ge 1)=1-P(X_n=0)\ge 0{,}9 \iff P(X_n=0)\le 0{,}1.$$
+$$
+P(X_n\ge 1)=1-P(X_n=0)\ge 0{,}9 \iff P(X_n=0)\le 0{,}1.
+$$
 
 **Cálculo (binomial exacta).** $P(X_n=0)=(1-p)^n\le 0{,}1$, tomando logaritmo
 (creciente) y dando vuelta el signo porque $\log(1-p)<0$:
-$$ n \ge \frac{-1}{\log_{10}(1-p)} = \frac{-1}{\log_{10}(0{,}99)} \approx 229{,}1 \;\Rightarrow\; n_{\min}^{(b)} = 230. $$
+$$
+n \ge \frac{-1}{\log_{10}(1-p)} = \frac{-1}{\log_{10}(0{,}99)} \approx 229{,}1 \;\Rightarrow\; n_{\min}^{(b)} = 230.
+$$
 
 **Cálculo (aproximación Poisson, $\lambda=np$).** $P(X_n=0)\approx e^{-np}\le 0{,}1$:
-$$ n \ge \frac{-\ln(0{,}1)}{p} = \frac{\ln 10}{0{,}01} \approx 230{,}26 \;\Rightarrow\; n_{\min}^{(P)} = 231. $$
+$$
+n \ge \frac{-\ln(0{,}1)}{p} = \frac{\ln 10}{0{,}01} \approx 230{,}26 \;\Rightarrow\; n_{\min}^{(P)} = 231.
+$$
 
 **Resultado.** $n_{\min}^{(b)}=230$ (binomial) vs $n_{\min}^{(P)}=231$ (Poisson):
 difieren en **1 disparo**. El raw tabula la razón para $p\in[0{,}01;\,0{,}10]$ y la

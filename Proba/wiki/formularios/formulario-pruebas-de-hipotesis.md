@@ -24,8 +24,12 @@ Potencia $=1-\beta$. $\;P_{H_0}(\text{rechazar})\le\alpha$.
 
 ## Estadísticos
 
-$$ Z_{\text{media}}=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\quad(\sigma\text{ conocida o }n\text{ grande}) \qquad T=\frac{\bar X-\mu_0}{S/\sqrt n}\sim t_{n-1}\quad(\sigma\text{ desc., }n\text{ chico, normal}) $$
-$$ Z_{\text{prop}}=\frac{\hat q-q_0}{\sqrt{q_0(1-q_0)/n}}\quad(n>100) $$
+$$
+Z_{\text{media}}=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\quad(\sigma\text{ conocida o }n\text{ grande}) \qquad T=\frac{\bar X-\mu_0}{S/\sqrt n}\sim t_{n-1}\quad(\sigma\text{ desc., }n\text{ chico, normal})
+$$
+$$
+Z_{\text{prop}}=\frac{\hat q-q_0}{\sqrt{q_0(1-q_0)/n}}\quad(n>100)
+$$
 
 ## Región de rechazo (con estadístico estandarizado)
 
@@ -64,7 +68,9 @@ Valores guía: $\beta(\mu_0)=1-\alpha$; $\beta(\text{valor crítico})\approx 0.5
 
 ## Error tipo II — proporción (cola derecha)
 
-$$ \beta(q_1)=\Phi\!\left(z_{1-\alpha}\sqrt{\tfrac{q_0(1-q_0)}{q_1(1-q_1)}}+\frac{q_0-q_1}{\sqrt{q_1(1-q_1)/n}}\right). $$
+$$
+\beta(q_1)=\Phi\!\left(z_{1-\alpha}\sqrt{\tfrac{q_0(1-q_0)}{q_1(1-q_1)}}+\frac{q_0-q_1}{\sqrt{q_1(1-q_1)/n}}\right).
+$$
 
 ## Diseño de la prueba — tamaño muestral (fijar α y β)
 

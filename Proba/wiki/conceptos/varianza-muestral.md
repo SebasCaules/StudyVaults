@@ -18,7 +18,9 @@ partir de una muestra i.i.d. $\{X_i\}_{i=1}^n$. Es el correlato inferencial de l
 [[medidas-de-dispersion|varianza descriptiva]], pero con denominador $n-1$ para
 que sea insesgado.
 
-$$\boxed{\;S_n^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i-\overline X_n)^2\;}$$
+$$
+\boxed{\;S_n^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i-\overline X_n)^2\;}
+$$
 
 El **desvío muestral** es $S_n=\sqrt{S_n^2}$. Aparece como estimador de $\sigma$
 en los [[intervalos-de-confianza]] de la media con desvío desconocido (caso de la
@@ -52,7 +54,9 @@ $\sigma^2=V(X_i)$):
 
 Muy útil para resolver ejercicios a mano:
 
-$$(n-1)\,S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2 \quad\Longleftrightarrow\quad S_n^2 = \frac{1}{n-1}\left[\sum_{i=1}^n X_i^2 - n\,\overline X_n^2\right].$$
+$$
+(n-1)\,S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2 \quad\Longleftrightarrow\quad S_n^2 = \frac{1}{n-1}\left[\sum_{i=1}^n X_i^2 - n\,\overline X_n^2\right].
+$$
 
 ## Ejercicio resuelto — Demostración de insesgadez
 
@@ -65,10 +69,14 @@ $V(\overline X_n)=E[\overline X_n^2]=\sigma^2/n$. Partimos de la identidad de
 cálculo.
 
 **Cálculo.**
-$$(n-1)S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2.$$
+$$
+(n-1)S_n^2 = \sum_{i=1}^n X_i^2 - n\,\overline X_n^2.
+$$
 Tomando esperanza y usando $E[X_i^2]=V(X_i)=\sigma^2$ (pues $\mu=0$) y
 $E[\overline X_n^2]=\sigma^2/n$:
-$$E\!\left[(n-1)S_n^2\right] = \sum_{i=1}^n E[X_i^2] - n\,E[\overline X_n^2] = n\sigma^2 - n\cdot\frac{\sigma^2}{n} = n\sigma^2 - \sigma^2 = (n-1)\sigma^2.$$
+$$
+E\!\left[(n-1)S_n^2\right] = \sum_{i=1}^n E[X_i^2] - n\,E[\overline X_n^2] = n\sigma^2 - n\cdot\frac{\sigma^2}{n} = n\sigma^2 - \sigma^2 = (n-1)\sigma^2.
+$$
 
 **Resultado.** Dividiendo por $n-1$: $\boxed{E[S_n^2]=\sigma^2}$, es decir,
 $S_n^2$ es un **estimador insesgado** de la varianza poblacional.

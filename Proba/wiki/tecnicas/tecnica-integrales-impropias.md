@@ -28,11 +28,15 @@ problemático por una variable $t$ y tomar límite. Según
 
 Se define como el límite de una integral ordinaria sobre un intervalo finito:
 
-$$ \int_a^{+\infty} f(x)\,dx = \lim_{t\to+\infty}\int_a^{t} f(x)\,dx, \qquad \int_{-\infty}^{b} f(x)\,dx = \lim_{t\to-\infty}\int_t^{b} f(x)\,dx. $$
+$$
+\int_a^{+\infty} f(x)\,dx = \lim_{t\to+\infty}\int_a^{t} f(x)\,dx, \qquad \int_{-\infty}^{b} f(x)\,dx = \lim_{t\to-\infty}\int_t^{b} f(x)\,dx.
+$$
 
 Cuando ambos extremos son infinitos se parte en un punto $c$ cualquiera:
 
-$$ \int_{-\infty}^{+\infty} f(x)\,dx = \int_{-\infty}^{c} f(x)\,dx + \int_{c}^{+\infty} f(x)\,dx. $$
+$$
+\int_{-\infty}^{+\infty} f(x)\,dx = \int_{-\infty}^{c} f(x)\,dx + \int_{c}^{+\infty} f(x)\,dx.
+$$
 
 **Dos condiciones para que la integral impropia exista (converja):**
 1. La integral ordinaria $\int_a^{t} f$ debe existir para cada $t$ finito (con $t>a$ o $t<b$ según el caso).
@@ -55,9 +59,13 @@ Cuando $f$ tiene una asíntota / singularidad en un extremo del intervalo de
 integración, se usa también un límite:
 
 - $f$ continua en $[a,b)$ (no en $b$):
-  $$ \int_a^b f(x)\,dx = \lim_{t\to b^-}\int_a^{t} f(x)\,dx. $$
+  $$
+  \int_a^b f(x)\,dx = \lim_{t\to b^-}\int_a^{t} f(x)\,dx.
+  $$
 - $f$ continua en $(a,b]$ (no en $a$):
-  $$ \int_a^b f(x)\,dx = \lim_{t\to a^+}\int_t^{b} f(x)\,dx. $$
+  $$
+  \int_a^b f(x)\,dx = \lim_{t\to a^+}\int_t^{b} f(x)\,dx.
+  $$
 - $f$ continua en $(a,b)$ pero no en $a$ ni en $b$: se parte en un $c\in(a,b)$,
   $\int_a^b = \int_a^c + \int_c^b$, y cada pedazo se trata como los casos anteriores.
 
@@ -74,10 +82,14 @@ integración, se usa también un límite:
 
 **Planteo (Tipo I).** El límite superior es infinito, así que introducimos $t>1$
 y tomamos límite:
-$$ \int_1^{\infty}\frac{1}{x^2}\,dx = \lim_{t\to\infty}\int_1^{t} x^{-2}\,dx. $$
+$$
+\int_1^{\infty}\frac{1}{x^2}\,dx = \lim_{t\to\infty}\int_1^{t} x^{-2}\,dx.
+$$
 
 **Cálculo.** Una primitiva de $x^{-2}$ es $-\tfrac{1}{x}$:
-$$ \int_1^{t} x^{-2}\,dx = \left.-\frac{1}{x}\right|_1^{t} = -\frac{1}{t}-\left(-\frac{1}{1}\right) = 1-\frac{1}{t}. $$
+$$
+\int_1^{t} x^{-2}\,dx = \left.-\frac{1}{x}\right|_1^{t} = -\frac{1}{t}-\left(-\frac{1}{1}\right) = 1-\frac{1}{t}.
+$$
 
 **Límite.** $\displaystyle\lim_{t\to\infty}\left(1-\frac{1}{t}\right) = 1.$
 
@@ -91,11 +103,15 @@ $$ \int_1^{t} x^{-2}\,dx = \left.-\frac{1}{x}\right|_1^{t} = -\frac{1}{t}-\left(
 
 **Planteo.** El integrando explota en $x=2$ (el denominador $2\sqrt{x-2}\to 0$).
 Es una integral impropia de **Tipo II** con singularidad en el extremo izquierdo:
-$$ \int_2^{5}\frac{1}{2\sqrt{x-2}}\,dx = \lim_{t\to 2^+}\int_t^{5}\frac{1}{2\sqrt{x-2}}\,dx. $$
+$$
+\int_2^{5}\frac{1}{2\sqrt{x-2}}\,dx = \lim_{t\to 2^+}\int_t^{5}\frac{1}{2\sqrt{x-2}}\,dx.
+$$
 
 **Cálculo.** Una primitiva de $\tfrac{1}{2\sqrt{x-2}}=\tfrac{1}{2}(x-2)^{-1/2}$ es
 $\sqrt{x-2}$:
-$$ \int_t^{5}\frac{1}{2\sqrt{x-2}}\,dx = \left.\sqrt{x-2}\right|_t^{5} = \sqrt{5-2}-\sqrt{t-2} = \sqrt{3}-\sqrt{t-2}. $$
+$$
+\int_t^{5}\frac{1}{2\sqrt{x-2}}\,dx = \left.\sqrt{x-2}\right|_t^{5} = \sqrt{5-2}-\sqrt{t-2} = \sqrt{3}-\sqrt{t-2}.
+$$
 
 **Límite.** $\displaystyle\lim_{t\to 2^+}\left(\sqrt{3}-\sqrt{t-2}\right) = \sqrt{3}-0 = \sqrt{3}.$
 

@@ -21,7 +21,9 @@ densidad de una $\mathcal N(np,\sqrt{npq})$ (teorema de De Moivre–Laplace).
 - Tras el desarrollo: $P(S_n=x)\approx\dfrac{1}{\sqrt{2\pi npq}}\,e^{-\frac{(x-np)^2}{2npq}}$,
   es decir la densidad de una $\mathcal N(np,\sqrt{npq})$ evaluada en $x$.
 - **Corrección por continuidad** (aproximar discreta por continua):
-$$ P(S_n=s)\approx\Phi\!\left(\tfrac{s+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{s-\frac12-np}{\sqrt{npq}}\right). $$
+$$
+P(S_n=s)\approx\Phi\!\left(\tfrac{s+\frac12-np}{\sqrt{npq}}\right)-\Phi\!\left(\tfrac{s-\frac12-np}{\sqrt{npq}}\right).
+$$
 
 ## Páginas del wiki que toca
 - [[aproximacion-normal-de-la-binomial]]

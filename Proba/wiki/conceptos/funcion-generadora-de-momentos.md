@@ -16,7 +16,9 @@ sumas de variables independientes.
 
 La **función generadora de momentos (FGM)** de una [[variable-aleatoria|v.a.]] $X$ se
 define como:
-$$ M_X(t) = E\!\left[e^{tX}\right] = \sum_{k \in \mathcal{R}_X} e^{tk}\,p_X(k) $$
+$$
+M_X(t) = E\!\left[e^{tX}\right] = \sum_{k \in \mathcal{R}_X} e^{tk}\,p_X(k)
+$$
 (para los $t$ donde la suma converge). Es una herramienta que **codifica todos los
 [[esperanza|momentos]]** de $X$ en una sola función.
 
@@ -35,9 +37,13 @@ $$ M_X(t) = E\!\left[e^{tX}\right] = \sum_{k \in \mathcal{R}_X} e^{tk}\,p_X(k) $
 ## Propiedad de generación de momentos
 
 Derivando $M_X(t)$ y evaluando en $t = 0$ se obtienen los momentos:
-$$ E[X^k] = M_X^{(k)}(0) = \left.\frac{d^k}{dt^k} M_X(t)\right|_{t=0} $$
+$$
+E[X^k] = M_X^{(k)}(0) = \left.\frac{d^k}{dt^k} M_X(t)\right|_{t=0}
+$$
 En particular:
-$$ E[X] = M_X'(0), \qquad E[X^2] = M_X''(0), \qquad V(X) = M_X''(0) - \big(M_X'(0)\big)^2 $$
+$$
+E[X] = M_X'(0), \qquad E[X^2] = M_X''(0), \qquad V(X) = M_X''(0) - \big(M_X'(0)\big)^2
+$$
 
 ## Otras propiedades
 
@@ -70,9 +76,15 @@ que $E[X] = p$ y $V(X) = pq$.
 **Planteo.** $M_X(t) = q + p\,e^t$. Derivamos respecto de $t$.
 
 **Cálculo.**
-$$ M_X'(t) = p\,e^t \;\Rightarrow\; E[X] = M_X'(0) = p\,e^0 = p $$
-$$ M_X''(t) = p\,e^t \;\Rightarrow\; E[X^2] = M_X''(0) = p $$
-$$ V(X) = E[X^2] - (E[X])^2 = p - p^2 = p(1-p) = pq $$
+$$
+M_X'(t) = p\,e^t \;\Rightarrow\; E[X] = M_X'(0) = p\,e^0 = p
+$$
+$$
+M_X''(t) = p\,e^t \;\Rightarrow\; E[X^2] = M_X''(0) = p
+$$
+$$
+V(X) = E[X^2] - (E[X])^2 = p - p^2 = p(1-p) = pq
+$$
 
 **Resultado.** $E[X] = p$ y $V(X) = pq$, que coinciden con las fórmulas directas de
 la [[distribucion-bernoulli|Bernoulli]].

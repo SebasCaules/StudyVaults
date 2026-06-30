@@ -24,7 +24,9 @@ Ejemplo simple: cualquier evento y su complemento, $\{A, A^c\}$.
 ## Fórmula de la probabilidad total
 Para todo evento $B$ y partición $\{A_k\}$, primero se descompone $B$ en pedazos
 disjuntos $B\cap A_k$ (forma equivalente, antes de aplicar la condicional):
-$$ P(B) = \sum_k P(B\cap A_k) = \sum_k P(B\mid A_k)\,P(A_k). $$
+$$
+P(B) = \sum_k P(B\cap A_k) = \sum_k P(B\mid A_k)\,P(A_k).
+$$
 Se "arma" $B$ a partir de los pedazos $B\cap A_k$ (m.e.) y se usa la
 [[probabilidad-condicional|condicional]] $P(B\cap A_k)=P(B\mid A_k)P(A_k)$.
 
@@ -35,7 +37,9 @@ Se "arma" $B$ a partir de los pedazos $B\cap A_k$ (m.e.) y se usa la
 
 ## Teorema de Bayes
 Permite **dar vuelta** la condicional. Con $B$ evento y $\{A_k\}$ partición:
-$$ P(A_i\mid B) = \frac{P(B\mid A_i)\,P(A_i)}{\sum_k P(B\mid A_k)\,P(A_k)}. $$
+$$
+P(A_i\mid B) = \frac{P(B\mid A_i)\,P(A_i)}{\sum_k P(B\mid A_k)\,P(A_k)}.
+$$
 - $P(A_i)$ = probabilidad **a priori** (antes de la info extra).
 - $P(A_i\mid B)$ = probabilidad **a posteriori** (después de observar $B$).
 
@@ -54,10 +58,14 @@ Sean $D$ = daltónico, $V$ = varón. Datos: $P(V)=0.47$, $P(\bar V)=0.53$,
 $P(D\mid V)=0.04$, $P(D\mid \bar V)=0.02$. Como $\{V,\bar V\}$ es partición:
 
 **Probabilidad total:**
-$$ P(D) = P(D\mid V)P(V) + P(D\mid\bar V)P(\bar V) = 0.04(0.47)+0.02(0.53) = 0.0294. $$
+$$
+P(D) = P(D\mid V)P(V) + P(D\mid\bar V)P(\bar V) = 0.04(0.47)+0.02(0.53) = 0.0294.
+$$
 
 **Bayes** (lo que se pide, $P(V\mid D)$):
-$$ P(V\mid D) = \frac{P(D\mid V)P(V)}{P(D)} = \frac{0.0188}{0.0294} \approx 0.6395. $$
+$$
+P(V\mid D) = \frac{P(D\mid V)P(V)}{P(D)} = \frac{0.0188}{0.0294} \approx 0.6395.
+$$
 (Y $P(\bar V\mid D)=1-0.6395=0.3605$.)
 
 ## Ejercicio resuelto — test diagnóstico (falso positivo / falso negativo)
@@ -69,19 +77,29 @@ análisis en otro laboratorio (independiente dada la condición) y ambos dan pos
 $P(E\mid +_1\cap +_2)$.
 
 **(a) Probabilidad total** de positivo:
-$$ P(+) = P(+\mid E)P(E) + P(+\mid E^c)P(E^c) = 0.9(0.05)+0.01(0.95) = 0.0545. $$
+$$
+P(+) = P(+\mid E)P(E) + P(+\mid E^c)P(E^c) = 0.9(0.05)+0.01(0.95) = 0.0545.
+$$
 
 **(b) Falso positivo** = positivo **y** sano:
-$$ P(+\cap E^c) = P(+\mid E^c)P(E^c) = 0.01\cdot 0.95 = 0.0095. $$
+$$
+P(+\cap E^c) = P(+\mid E^c)P(E^c) = 0.01\cdot 0.95 = 0.0095.
+$$
 
 **(c) Falso negativo** = negativo **y** enfermo:
-$$ P(-\cap E) = P(-\mid E)P(E) = 0.1\cdot 0.05 = 0.005. $$
+$$
+P(-\cap E) = P(-\mid E)P(E) = 0.1\cdot 0.05 = 0.005.
+$$
 
 **(d) Bayes** (lo que importa clínicamente, valor predictivo positivo):
-$$ P(E\mid +) = \frac{P(+\mid E)P(E)}{P(+)} = \frac{0.045}{0.0545} \approx 0.8257. $$
+$$
+P(E\mid +) = \frac{P(+\mid E)P(E)}{P(+)} = \frac{0.045}{0.0545} \approx 0.8257.
+$$
 
 **(e) Dos positivos** independientes dada la condición ($P(+_1\cap +_2\mid E)=P(+_1\mid E)P(+_2\mid E)$):
-$$ P(E\mid +_1\cap +_2) = \frac{0.9^2\,(0.05)}{0.9^2(0.05)+0.01^2(0.95)} \approx 0.9977. $$
+$$
+P(E\mid +_1\cap +_2) = \frac{0.9^2\,(0.05)}{0.9^2(0.05)+0.01^2(0.95)} \approx 0.9977.
+$$
 (Repetir el test confirmatorio dispara la probabilidad a posteriori de $\approx 0.83$ a $\approx 1$.)
 
 ## Relación

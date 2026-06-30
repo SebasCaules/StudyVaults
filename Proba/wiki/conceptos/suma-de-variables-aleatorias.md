@@ -19,13 +19,17 @@ Página **hub** de la unidad 7. Dadas dos (o más) v.a., estudiamos la v.a.
 
 ## Esperanza de una suma (siempre)
 La esperanza es **lineal**, sin ninguna hipótesis sobre $X,Y$:
-$$ E[X+Y]=E[X]+E[Y],\qquad \mu_S=\mu_X+\mu_Y. $$
+$$
+E[X+Y]=E[X]+E[Y],\qquad \mu_S=\mu_X+\mu_Y.
+$$
 Para $n$ v.a.: $\;E[S_n]=\sum_{k=1}^n E[X_k]$.
 
 ## Varianza de una suma
 En el **caso general** aparece el término de [[covarianza-y-correlacion|covarianza]]
 (según [[teorica-suma-va-general]]):
-$$ V(X+Y)=V(X)+2\,\mathrm{Cov}(X,Y)+V(Y). $$
+$$
+V(X+Y)=V(X)+2\,\mathrm{Cov}(X,Y)+V(Y).
+$$
 Sale de desarrollar $E\big[((X-\mu_X)+(Y-\mu_Y))^2\big]$.
 
 > Si $X,Y$ son **independientes** (o sólo **no correlacionadas**, $\mathrm{Cov}=0$):
@@ -52,7 +56,9 @@ $x+y=s$, parametrizando por $y$ (entonces $x=s-y$):
 
 Usando la regla del producto $p_{X,Y}(x,y)=p_{X\mid Y}(x\mid y)\,p_Y(y)$ (idem
 con densidades), esto también se escribe con la **condicional**:
-$$ p_S(s)=\sum_{y\in R_Y} p_{X\mid Y}(s-y\mid y)\,p_Y(y),\qquad f_S(s)=\int_{-\infty}^{+\infty} f_{X\mid Y}(s-y\mid y)\,f_Y(y)\,dy. $$
+$$
+p_S(s)=\sum_{y\in R_Y} p_{X\mid Y}(s-y\mid y)\,p_Y(y),\qquad f_S(s)=\int_{-\infty}^{+\infty} f_{X\mid Y}(s-y\mid y)\,f_Y(y)\,dy.
+$$
 
 ### Caso independiente: la convolución propiamente dicha
 Si $X,Y$ son **independientes**, la conjunta factoriza ($p_{X,Y}=p_X\,p_Y$,
@@ -92,14 +98,20 @@ $\bar X_{10}=\tfrac1{10}\sum D_i$, $\;\bar Y_{15}=\tfrac1{15}\sum E_i$.
 
 **Distribución de cada promedio.** Por ser promedios de normales independientes,
 son normales con:
-$$ E[\bar X_{10}]=20,\quad V(\bar X_{10})=\frac{3}{10};\qquad E[\bar Y_{15}]=20,\quad V(\bar Y_{15})=\frac{3}{15}=\frac15. $$
+$$
+E[\bar X_{10}]=20,\quad V(\bar X_{10})=\frac{3}{10};\qquad E[\bar Y_{15}]=20,\quad V(\bar Y_{15})=\frac{3}{15}=\frac15.
+$$
 
 **Distribución de la diferencia** $W=\bar X_{10}-\bar Y_{15}$ (resta de normales indep. es normal):
-$$ E[W]=20-20=0,\qquad V(W)=V(\bar X_{10})+V(\bar Y_{15})=\frac{3}{10}+\frac15=\frac12. $$
+$$
+E[W]=20-20=0,\qquad V(W)=V(\bar X_{10})+V(\bar Y_{15})=\frac{3}{10}+\frac15=\frac12.
+$$
 O sea $W\sim\mathcal N\!\big(0,\sqrt{1/2}\big)$.
 
 **Cálculo.** Pedimos $P(|W|>0.3)$:
-$$ P(|W|>0.3)=2\Big(1-\Phi\big(\tfrac{0.3}{\sqrt{1/2}}\big)\Big)=2\big(1-\Phi(0.3\sqrt2)\big)=2\big(1-\Phi(0.4243)\big). $$
+$$
+P(|W|>0.3)=2\Big(1-\Phi\big(\tfrac{0.3}{\sqrt{1/2}}\big)\Big)=2\big(1-\Phi(0.3\sqrt2)\big)=2\big(1-\Phi(0.4243)\big).
+$$
 Interpolando en la tabla entre $\Phi(0.42)=0.6628$ y $\Phi(0.43)=0.6664$ se obtiene
 $\Phi(0.4243)\approx 0.6643$, luego $P\approx 2(1-0.6643)\approx 0.6714$.
 

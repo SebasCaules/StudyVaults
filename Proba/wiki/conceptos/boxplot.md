@@ -27,7 +27,9 @@ sin graficar todas las observaciones.
 
 ## Outliers — regla de Tukey
 Basada en el [[medidas-de-dispersion|rango intercuartil]] $\text{IQR}=q_3-q_1$:
-$$ L_W = q_1 - 1.5\cdot\text{IQR}, \qquad U_W = q_3 + 1.5\cdot\text{IQR}. $$
+$$
+L_W = q_1 - 1.5\cdot\text{IQR}, \qquad U_W = q_3 + 1.5\cdot\text{IQR}.
+$$
 Los datos que **exceden** estos límites $[L_W, U_W]$ se consideran **outliers**.
 Los bigotes llegan hasta el dato más extremo que aún esté dentro de los límites.
 

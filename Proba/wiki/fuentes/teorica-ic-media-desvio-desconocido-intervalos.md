@@ -17,7 +17,9 @@ aproximación normal para $n$ grande, ejemplo paso a paso.
 ## Puntos clave
 - Partiendo de $T=\frac{\overline X_n-\mu}{S_n/\sqrt n}\sim t_{n-1}$ y pidiendo
   $P(|\overline X_n-\mu|\le\Delta_B)=\gamma$, se llega a
-  $$\Delta_B = t_{n-1,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}.$$
+  $$
+  \Delta_B = t_{n-1,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}.
+  $$
 - Para $n$ grande ($>100/200$), $t_{n-1,\frac{1+\gamma}{2}}\approx z_{\frac{1+\gamma}{2}}$,
   recuperando el IC con la normal (reemplazando $\sigma$ por $S_n$).
 - **IC bilateral:** $\left(\overline X_n \pm t_{n-1,\frac{1+\gamma}{2}}\frac{S_n}{\sqrt n}\right)$;

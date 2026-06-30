@@ -42,11 +42,15 @@ Cada condición es una ecuación; juntas determinan $n$ y $\bar x_c$.
 Para la media con $\sigma$ conocida y prueba de **cola derecha**, el estimador
 $\bar X \sim N(\mu,\,\sigma/\sqrt n)$. Las dos condiciones son:
 
-$$ \bar x_c = \mu_0 + z_{1-\alpha}\,\frac{\sigma}{\sqrt n}, \qquad \beta(\mu_1) = \Phi\!\left(z_{1-\alpha} + \frac{\mu_0-\mu_1}{\sigma/\sqrt n}\right) = \beta^*. $$
+$$
+\bar x_c = \mu_0 + z_{1-\alpha}\,\frac{\sigma}{\sqrt n}, \qquad \beta(\mu_1) = \Phi\!\left(z_{1-\alpha} + \frac{\mu_0-\mu_1}{\sigma/\sqrt n}\right) = \beta^*.
+$$
 
 De la segunda, usando $\Phi^{-1}(\beta^*) = -z_{1-\beta^*}$ (con $\mu_1>\mu_0$):
 
-$$ z_{1-\alpha} - \frac{\mu_1-\mu_0}{\sigma/\sqrt n} = -z_{1-\beta^*} \;\Longrightarrow\; \boxed{\,n = \left(\frac{(z_{1-\alpha}+z_{1-\beta^*})\,\sigma}{\mu_1-\mu_0}\right)^2\,}. $$
+$$
+z_{1-\alpha} - \frac{\mu_1-\mu_0}{\sigma/\sqrt n} = -z_{1-\beta^*} \;\Longrightarrow\; \boxed{\,n = \left(\frac{(z_{1-\alpha}+z_{1-\beta^*})\,\sigma}{\mu_1-\mu_0}\right)^2\,}.
+$$
 
 Se redondea **hacia arriba** (el $n$ entero más chico que cumple). Una vez fijado
 $n$ se obtiene la frontera $\bar x_c = \mu_0 + z_{1-\alpha}\,\sigma/\sqrt n$. Para
@@ -65,7 +69,9 @@ $\mu_1<\mu_0$) y la fórmula de $n$ es la misma con $|\mu_1-\mu_0|$.
 Misma lógica, pero la varianza cambia de $q_0$ a $q_1$, así que ambos fractiles
 llevan su propio desvío. Para **cola derecha** ($H_0:q\le q_0$):
 
-$$ \beta(q_1)=\Phi\!\left(z_{1-\alpha}\sqrt{\frac{q_0(1-q_0)}{q_1(1-q_1)}}+\frac{q_0-q_1}{\sqrt{q_1(1-q_1)/n}}\right)\le\beta^*. $$
+$$
+\beta(q_1)=\Phi\!\left(z_{1-\alpha}\sqrt{\frac{q_0(1-q_0)}{q_1(1-q_1)}}+\frac{q_0-q_1}{\sqrt{q_1(1-q_1)/n}}\right)\le\beta^*.
+$$
 
 Igualando el argumento a $-z_{1-\beta^*}$ se despeja $\sqrt n$ y luego $n$
 (ver el ejercicio resuelto). El valor crítico en número de defectuosos es
@@ -107,7 +113,9 @@ $6\%$ ($\beta(0.06)\le 0.2$). (a) Plantear la prueba. (b) Determinar $n$ y $c$.
 
 **(a) Planteo.** Lo que importa es vigilar que la proporción **no aumente**
 respecto del $2\%$ aceptable → prueba de **cola derecha**:
-$$ H_0: q \le 0.02 \qquad H_1: q > 0.02, \qquad \alpha=0.1. $$
+$$
+H_0: q \le 0.02 \qquad H_1: q > 0.02, \qquad \alpha=0.1.
+$$
 Detener el proceso cuando no había que hacerlo (rechazar $H_0$ siendo verdadera)
 es el **error tipo I** → $\alpha=0.1$. No detenerlo cuando $q=0.06$ es **error
 tipo II** → se pide $\beta(0.06)\le 0.2$. Estadístico $Z$ de proporción (con $n$
@@ -115,16 +123,24 @@ grande, [[prueba-de-hipotesis-para-la-proporcion]]).
 
 **(b) Determinar $n$.** Se impone $\beta(0.06)\le 0.2$ con la fórmula de la
 proporción ($q_0=0.02$, $q_1=0.06$, $z_{1-\alpha}=z_{0.9}=1.2816$):
-$$ \beta(0.06)=\Phi\!\left(z_{0.9}\sqrt{\frac{0.02(0.98)}{0.06(0.94)}}+\frac{0.02-0.06}{\sqrt{0.06(0.94)/n}}\right)=\Phi\!\left(z_{0.9}\sqrt{\tfrac{49}{141}}-\frac{2\sqrt n}{\sqrt{141}}\right)\le 0.2. $$
+$$
+\beta(0.06)=\Phi\!\left(z_{0.9}\sqrt{\frac{0.02(0.98)}{0.06(0.94)}}+\frac{0.02-0.06}{\sqrt{0.06(0.94)/n}}\right)=\Phi\!\left(z_{0.9}\sqrt{\tfrac{49}{141}}-\frac{2\sqrt n}{\sqrt{141}}\right)\le 0.2.
+$$
 Como $\Phi^{-1}(0.2)=z_{0.2}=-0.8416$, se pide que el argumento sea $\le z_{0.2}$:
-$$ z_{0.9}\sqrt{\tfrac{49}{141}}-\frac{2\sqrt n}{\sqrt{141}}\le z_{0.2} \;\Longrightarrow\; \frac{2\sqrt n}{\sqrt{141}}\ge z_{0.9}\sqrt{\tfrac{49}{141}}-z_{0.2}. $$
+$$
+z_{0.9}\sqrt{\tfrac{49}{141}}-\frac{2\sqrt n}{\sqrt{141}}\le z_{0.2} \;\Longrightarrow\; \frac{2\sqrt n}{\sqrt{141}}\ge z_{0.9}\sqrt{\tfrac{49}{141}}-z_{0.2}.
+$$
 Despejando $\sqrt n$ y luego $n$:
-$$ \sqrt n \ge \frac{7}{2}z_{0.9}-\frac{\sqrt{141}}{2}z_{0.2} \;\Longrightarrow\; n \ge \left(\tfrac{7}{2}(1.2816)-\tfrac{\sqrt{141}}{2}(-0.8416)\right)^2 \approx 89.91. $$
+$$
+\sqrt n \ge \frac{7}{2}z_{0.9}-\frac{\sqrt{141}}{2}z_{0.2} \;\Longrightarrow\; n \ge \left(\tfrac{7}{2}(1.2816)-\tfrac{\sqrt{141}}{2}(-0.8416)\right)^2 \approx 89.91.
+$$
 Por lo tanto **$n=90$** (se verifica $\beta(0.06)\approx 0.1998\le 0.2$ con $n=90$,
 mientras que con $n=89$ daría $0.2023>0.2$).
 
 **Determinar $c$.** Con $n=90$, la frontera en $\hat q$ es
-$$ \hat q_c = q_0 + z_{0.9}\sqrt{\frac{q_0(1-q_0)}{n}} = 0.02 + 1.2816\sqrt{\frac{0.02\cdot 0.98}{90}} \approx 0.0389. $$
+$$
+\hat q_c = q_0 + z_{0.9}\sqrt{\frac{q_0(1-q_0)}{n}} = 0.02 + 1.2816\sqrt{\frac{0.02\cdot 0.98}{90}} \approx 0.0389.
+$$
 En número de defectuosos, $X=n\hat q = 90\hat q$, la condición de rechazo
 $\hat q>0.0389$ equivale a $X > 1.8+\tfrac{21}{10}\sqrt{\tfrac25}\,z_{0.9}\approx 3.50$.
 Como $X$ es entero, se revisa el proceso cuando hay **$c=4$ o más** defectuosas.

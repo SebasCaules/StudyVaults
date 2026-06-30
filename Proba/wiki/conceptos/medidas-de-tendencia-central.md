@@ -17,7 +17,10 @@ Números que informan *"por dónde andan los valores"* de una muestra
 $\{x_i\}_{i=1}^n$. Forman parte de las [[estadistica-descriptiva|medidas de resumen]].
 
 ## Media muestral (promedio)
-$$ \bar{x} = \frac{\sum_{i=1}^n x_i}{n} $$
+
+$$
+\bar{x} = \frac{\sum_{i=1}^n x_i}{n}
+$$
 Interpretación: el punto que "equilibra" los datos sobre la recta. Los valores más
 alejados son los más influyentes en el cálculo → **sensible a outliers**.
 
@@ -48,7 +51,9 @@ Cuando los datos están agrupados, primero se identifica el **intervalo modal**
 1. **Punto medio:** $M = (L_I + L_D)/2$ (la marca de clase del intervalo modal).
 2. **Interpolación** según las frecuencias **vecinas** $f_I$ (izquierda) y $f_D$
    (derecha), repartiendo el exceso proporcionalmente:
-   $$ (M - L_I)(f_M - f_D) = (L_D - M)(f_M - f_I) \ \Rightarrow\ M = \frac{L_D(f_M - f_I) + L_I(f_M - f_D)}{(f_M - f_I)+(f_M - f_D)}. $$
+   $$
+   (M - L_I)(f_M - f_D) = (L_D - M)(f_M - f_I) \ \Rightarrow\ M = \frac{L_D(f_M - f_I) + L_I(f_M - f_D)}{(f_M - f_I)+(f_M - f_D)}.
+   $$
    La interpolación corre la moda hacia el vecino más frecuente. Procedimiento y
    ejemplo (TP1 ej. 4: $M\approx 167.79$ vs. $180$) en
    **[[tecnica-datos-agrupados-interpolacion]]**.
@@ -80,7 +85,10 @@ La **mediana es robusta** ante [[boxplot|outliers]]; la media no.
 > **Observación.** Dos conjuntos de datos pueden tener exactamente la misma media y aun así ser muy distintos. La media describe el *centro*, pero no dice nada sobre cuánto se dispersan los datos alrededor de él: resumir en un solo número corre el riesgo de *resumir de más*. Por eso la media siempre se complementa con al menos una [[medidas-de-dispersion|medida de dispersión]].
 
 ## Con datos agrupados
-$$ \bar{x}_{Ag} = \frac{\sum_{i=1}^L x_i\, f_i}{n} $$
+
+$$
+\bar{x}_{Ag} = \frac{\sum_{i=1}^L x_i\, f_i}{n}
+$$
 donde $x_i$ es la **marca de clase** y $f_i$ la frecuencia del intervalo $i$.
 Detalle en [[datos-agrupados]].
 
@@ -94,12 +102,16 @@ Detalle en [[datos-agrupados]].
 | Frec. $f_i$ | 2 | 3 | 14 | 10 | 15 | 18 | 16 | 14 | 4 | 4 |
 
 **Media (agrupada).** Con $n=\sum f_i = 100$:
-$$ \bar x = \frac{1}{n}\sum x_i f_i = \frac{364.60}{100} = 3.6460 \text{ kg}. $$
+$$
+\bar x = \frac{1}{n}\sum x_i f_i = \frac{364.60}{100} = 3.6460 \text{ kg}.
+$$
 
 **Mediana (por interpolación).** Los datos se acumulan hasta los **extremos
 derechos** de los intervalos: la marca $3.5$ es el intervalo $(3.4,3.6]$ y $3.7$ el
 $(3.6,3.8]$. La acumulada hasta $3.6$ es $44$ y hasta $3.8$ es $62$; como
 $n/2 = 50$ cae en $(3.6,3.8]$:
-$$ m_e = 3.6 + \frac{50-44}{62-44}(3.8-3.6) = 3.6667 \text{ kg}. $$
+$$
+m_e = 3.6 + \frac{50-44}{62-44}(3.8-3.6) = 3.6667 \text{ kg}.
+$$
 (El desvío $s=0.4234$ está en [[medidas-de-dispersion]]; el detalle del método de
 interpolación, en [[tecnica-datos-agrupados-interpolacion]].)

@@ -19,7 +19,9 @@ suma de dos $\mathrm{Unif}(0,1)$ independientes, obteniendo una densidad
 - $X,Y\sim\mathrm{Unif}(0,1)$ indep., $f_X=f_Y=1$ en $(0,1)$.
 - $f_S(s)=\int_0^1 f_X(s-y)\,dy$; el integrando vale $1$ sólo cuando $s-1<y<s$.
 - Resultado (densidad triangular en $(0,2)$):
-$$ f_S(s)=\begin{cases} s & 0<s<1\\ 2-s & 1\le s<2\\ 0 & \text{en otro caso}\end{cases} $$
+$$
+f_S(s)=\begin{cases} s & 0<s<1\\ 2-s & 1\le s<2\\ 0 & \text{en otro caso}\end{cases}
+$$
 - **Moraleja:** la familia uniforme **no** es estable bajo suma. El soporte se ensancha y la forma cambia.
 
 ## Páginas del wiki que toca

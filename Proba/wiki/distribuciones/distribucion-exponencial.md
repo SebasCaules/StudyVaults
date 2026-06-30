@@ -19,7 +19,9 @@ actualizado: 2026-06-06
 
 ## Función de densidad
 
-$$ f_X(x)=\begin{cases} \lambda e^{-\lambda x} & x>0\\[2pt] 0 & x<0.\end{cases} $$
+$$
+f_X(x)=\begin{cases} \lambda e^{-\lambda x} & x>0\\[2pt] 0 & x<0.\end{cases}
+$$
 
 ![[exponencial-densidad.svg]]
 
@@ -27,7 +29,9 @@ $$ f_X(x)=\begin{cases} \lambda e^{-\lambda x} & x>0\\[2pt] 0 & x<0.\end{cases} 
 
 ## Función de distribución acumulada
 
-$$ F_X(x)=\begin{cases} 1-e^{-\lambda x} & x\ge0\\[2pt] 0 & x<0,\end{cases}\qquad P(X>x)=e^{-\lambda x}\ \ (x\ge0). $$
+$$
+F_X(x)=\begin{cases} 1-e^{-\lambda x} & x\ge0\\[2pt] 0 & x<0,\end{cases}\qquad P(X>x)=e^{-\lambda x}\ \ (x\ge0).
+$$
 
 ## Esperanza y varianza
 
@@ -38,15 +42,23 @@ $$ F_X(x)=\begin{cases} 1-e^{-\lambda x} & x\ge0\\[2pt] 0 & x<0,\end{cases}\qqua
 y el cambio $u=\lambda t$ (la normalización $\int_0^\infty\lambda e^{-\lambda x}dx=1$
 y estos momentos son **integrales impropias** sobre dominio no acotado; ver
 [[tecnica-integrales-impropias]]):
-$$ E[X]=\int_0^\infty t\,\lambda e^{-\lambda t}\,dt=\frac{1}{\lambda}\int_0^\infty u\,e^{-u}\,du=\frac{1!}{\lambda}=\frac{1}{\lambda}, $$
-$$ E[X^2]=\int_0^\infty t^2\,\lambda e^{-\lambda t}\,dt=\frac{1}{\lambda^2}\int_0^\infty u^2 e^{-u}\,du=\frac{2!}{\lambda^2}=\frac{2}{\lambda^2}, $$
-$$ V(X)=\frac{2}{\lambda^2}-\left(\frac{1}{\lambda}\right)^2=\frac{1}{\lambda^2}. $$
+$$
+E[X]=\int_0^\infty t\,\lambda e^{-\lambda t}\,dt=\frac{1}{\lambda}\int_0^\infty u\,e^{-u}\,du=\frac{1!}{\lambda}=\frac{1}{\lambda},
+$$
+$$
+E[X^2]=\int_0^\infty t^2\,\lambda e^{-\lambda t}\,dt=\frac{1}{\lambda^2}\int_0^\infty u^2 e^{-u}\,du=\frac{2!}{\lambda^2}=\frac{2}{\lambda^2},
+$$
+$$
+V(X)=\frac{2}{\lambda^2}-\left(\frac{1}{\lambda}\right)^2=\frac{1}{\lambda^2}.
+$$
 
 ## Falta de memoria
 
 Propiedad característica de la exponencial ([[teorica-va-exponencial]]): el haber
 "sobrevivido" hasta $x$ no aporta información sobre el futuro.
-$$ P(X>x+\Delta\mid X>x)=\frac{P(X>x+\Delta)}{P(X>x)}=\frac{e^{-\lambda(x+\Delta)}}{e^{-\lambda x}}=e^{-\lambda\Delta}=P(X>\Delta). $$
+$$
+P(X>x+\Delta\mid X>x)=\frac{P(X>x+\Delta)}{P(X>x)}=\frac{e^{-\lambda(x+\Delta)}}{e^{-\lambda x}}=e^{-\lambda\Delta}=P(X>\Delta).
+$$
 Ej.: si $X$ es el tiempo de vida de un dispositivo, $P(X>20+1\mid X>20)=P(X>1)$.
 Es la **única** distribución continua sin memoria (su análogo discreto es la
 [[distribucion-geometrica|geométrica]]).
@@ -55,7 +67,9 @@ Es la **única** distribución continua sin memoria (su análogo discreto es la
 
 ## Función generadora de momentos
 
-$$ M_X(t)=\frac{\lambda}{\lambda-t}\quad (t<\lambda). $$
+$$
+M_X(t)=\frac{\lambda}{\lambda-t}\quad (t<\lambda).
+$$
 (No figura en el apunte; ver [[funcion-generadora-de-momentos|FGM]].)
 
 ## Asimetría y curtosis
@@ -103,14 +117,20 @@ antes de 100 horas (fallas independientes)?
 **Cálculo a).** Por **falta de memoria**, haber durado 400 hs no informa nada:
 la probabilidad de fallar en las próximas 100 hs es la de fallar en un intervalo
 de 100 hs cualquiera,
-$$ P(X<100)=F_X(100)=1-e^{-100/400}=1-e^{-0.25}\approx 0.2212. $$
+$$
+P(X<100)=F_X(100)=1-e^{-100/400}=1-e^{-0.25}\approx 0.2212.
+$$
 
 **Cálculo b).** Sea $T$ el tiempo de cada dispositivo y $D=$ cantidad que dura
 más de 100 hs. $P(T>100)=e^{-100/400}=e^{-0.25}$. Que **ninguno** falle antes de
 100 hs (los 10 duran más) tiene probabilidad
-$$ P(D=10)=\big(e^{-0.25}\big)^{10}=e^{-2.5}\approx 0.08209, $$
+$$
+P(D=10)=\big(e^{-0.25}\big)^{10}=e^{-2.5}\approx 0.08209,
+$$
 así que "al menos uno falla antes de 100 hs" es
-$$ 1-P(D=10)\approx 1-0.08209 = 0.91792. $$
+$$
+1-P(D=10)\approx 1-0.08209 = 0.91792.
+$$
 
 **Resultado.** a) $\approx0.2212$. b) $\approx0.9179$.
 
@@ -126,12 +146,18 @@ si falla alguno), probabilidad de que el sistema funcione más de 1500 horas.
 cantidad que dura más de 1200 hs.
 
 **Cálculo a).**
-$$ P(Y_5\ge1)=1-P(Y_5=0)=0.75 \Rightarrow P(Y_5=0)=(1-p)^5=0.25 \Rightarrow 1-p=\sqrt[5]{0.25}. $$
+$$
+P(Y_5\ge1)=1-P(Y_5=0)=0.75 \Rightarrow P(Y_5=0)=(1-p)^5=0.25 \Rightarrow 1-p=\sqrt[5]{0.25}.
+$$
 Entonces $p=e^{-1200\lambda}=1-\sqrt[5]{0.25}$, y
-$$ \lambda=-\frac{\ln\!\big(1-\sqrt[5]{0.25}\big)}{1200}\approx 0.0011819\ \text{1/hora}. $$
+$$
+\lambda=-\frac{\ln\!\big(1-\sqrt[5]{0.25}\big)}{1200}\approx 0.0011819\ \text{1/hora}.
+$$
 
 **Cálculo b).** En serie, el sistema funciona >1500 hs solo si **los 5** duran
 más de 1500 hs. Con $p'=P(X>1500)=e^{-0.0011819\cdot1500}$,
-$$ P(\text{los 5}>1500)=\big(e^{-0.0011819\cdot1500}\big)^5\approx 0.00014135. $$
+$$
+P(\text{los 5}>1500)=\big(e^{-0.0011819\cdot1500}\big)^5\approx 0.00014135.
+$$
 
 **Resultado.** a) $\lambda\approx0.001182$ 1/hora. b) $\approx0.00014$.

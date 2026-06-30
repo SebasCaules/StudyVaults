@@ -32,7 +32,10 @@ Ejemplos típicos: número de bolillas rojas al extraer $n$ **con reposición**;
 número de caras en $n$ tiros de una moneda.
 
 ## Función de masa
-$$ p_X(k) = P(X=k) = \binom{n}{k}\,p^k\,q^{\,n-k}, \qquad k \in \{0,1,\dots,n\} $$
+
+$$
+p_X(k) = P(X=k) = \binom{n}{k}\,p^k\,q^{\,n-k}, \qquad k \in \{0,1,\dots,n\}
+$$
 
 ![[binomial-pmf.svg]]
 
@@ -60,8 +63,13 @@ El detalle de la derivación combinatoria está documentado en
 muestreo **sin reposición**, que da la [[distribucion-hipergeometrica|Hipergeométrica]].
 
 ## Esperanza y varianza
-- $E[X] = \mu_X = n\,p$
-- $V(X) = \sigma_X^2 = n\,p\,(1-p) = n\,p\,q$
+
+$$
+\begin{aligned}
+E[X] = \mu_X &= n\,p \\[4pt]
+V(X) = \sigma_X^2 &= n\,p\,(1-p) = n\,p\,q
+\end{aligned}
+$$
 
 > Se demuestran ([[binomial-apunte]]) reindexando la suma ($m = k-1$ para $E[X]$,
 > $m = k-2$ para $E[X^2]$ usando $k^2 = k(k-1) + k$). Se obtiene
@@ -70,7 +78,10 @@ muestreo **sin reposición**, que da la [[distribucion-hipergeometrica|Hipergeom
 > **Intuición.** $E[X] = np$ tiene sentido directo: si tirás una moneda $n = 10$ veces con $p = 0{,}5$, esperás ver $10 \cdot 0{,}5 = 5$ caras. En general, de $n$ ensayos independientes cada uno con probabilidad $p$ de éxito, la cantidad esperada de éxitos es exactamente la fracción $p$ del total de ensayos.
 
 ## Función generadora de momentos
-$$ M_X(t) = (q + p\,e^t)^n $$
+
+$$
+M_X(t) = (q + p\,e^t)^n
+$$
 (ver [[funcion-generadora-de-momentos|FGM]]; es la FGM de la
 [[distribucion-bernoulli|Bernoulli]] elevada a la $n$).
 

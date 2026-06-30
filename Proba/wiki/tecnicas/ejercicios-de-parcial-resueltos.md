@@ -40,19 +40,27 @@ con $P(D), P(C), P(N)$ dados. Calcular $P(X > E[X])$ y el desvío de $X$.
 **Planteo (la idea clave).** $X$ es una **mezcla**: no es discreta ni continua
 "pura", pero **sí es continua**. La herramienta es la **probabilidad total
 aplicada a la FDA** ([[funcion-de-distribucion-acumulada]]):
-$$ F_X(t) = F_{X_D}(t)\,P(D) + F_{X_C}(t)\,P(C) + F_{X_N}(t)\,P(N). $$
+$$
+F_X(t) = F_{X_D}(t)\,P(D) + F_{X_C}(t)\,P(C) + F_{X_N}(t)\,P(N).
+$$
 Derivando, la densidad también se mezcla:
-$$ f_X(x) = f_{X_D}(x)\,P(D) + f_{X_C}(x)\,P(C) + f_{X_N}(x)\,P(N). $$
+$$
+f_X(x) = f_{X_D}(x)\,P(D) + f_{X_C}(x)\,P(C) + f_{X_N}(x)\,P(N).
+$$
 
 **Cálculo de la esperanza.** Por linealidad, la esperanza de la mezcla es el
 promedio ponderado de las esperanzas:
-$$ E[X] = P(D)\,E[X_D] + P(C)\,E[X_C] + P(N)\,E[X_N] = \mu_X. $$
+$$
+E[X] = P(D)\,E[X_D] + P(C)\,E[X_C] + P(N)\,E[X_N] = \mu_X.
+$$
 Luego $P(X > \mu_X) = 1 - F_X(\mu_X)$, evaluando cada $F_{X_i}$ en $\mu_X$.
 
 **Desvío — error típico.** El desvío **NO** se mezcla como las esperanzas
 ($\sigma_X \ne \sum p_i \sigma_i$). Lo que sí vale es la mezcla para el **momento
 de segundo orden**:
-$$ E[X^2] = \sum_i P(i)\,E[X_i^2] = \sum_i P(i)\big(V(X_i) + E[X_i]^2\big), $$
+$$
+E[X^2] = \sum_i P(i)\,E[X_i^2] = \sum_i P(i)\big(V(X_i) + E[X_i]^2\big),
+$$
 y recién después $V(X) = E[X^2] - E[X]^2$, $\sigma_X = \sqrt{V(X)}$.
 
 **Intuición.** Pensá en la mezcla como "elegir primero una urna" (con prob.
@@ -80,18 +88,26 @@ $P(N(20)=1 \mid N(40)=4)$ y $P(T_5 < 45)$.
 (b) ¿Cuántos minutos monitorear para que $P(N(t)\ge 50) > 0.9$?
 
 **Planteo (a) — condicional dentro de un Poisson.**
-$$ P(N(20)=1 \mid N(40)=4) = \frac{P(N(20)=1 \cap N(40)-N(20)=3)}{P(N(40)=4)}. $$
+$$
+P(N(20)=1 \mid N(40)=4) = \frac{P(N(20)=1 \cap N(40)-N(20)=3)}{P(N(40)=4)}.
+$$
 Como los **incrementos son independientes**, el numerador factoriza:
-$$ = \frac{P(N(20)=1)\,P(N(40)-N(20)=3)}{P(N(40)=4)}. $$
+$$
+= \frac{P(N(20)=1)\,P(N(40)-N(20)=3)}{P(N(40)=4)}.
+$$
 Con $N(20)\sim Po(20\lambda)=Po(\tfrac{5}{3})$ y, por **incrementos
 estacionarios**, $N(40)-N(20)\sim Po(\tfrac{5}{3})$, $N(40)\sim Po(\tfrac{10}{3})$.
 La cuenta da el equivalente a una binomial:
-$$ = \binom{4}{1}\Big(\tfrac{1}{2}\Big)^1\Big(\tfrac{1}{2}\Big)^3 = \tfrac{1}{4}. $$
+$$
+= \binom{4}{1}\Big(\tfrac{1}{2}\Big)^1\Big(\tfrac{1}{2}\Big)^3 = \tfrac{1}{4}.
+$$
 
 **Planteo (a, 2da parte) — Erlang vía Poisson.** $T_5$ (instante de la 5ª tos)
 es [[distribucion-erlang|Erlang]]/$\Gamma(5,\lambda)$. En vez de integrar la Gamma, se usa la
 **equivalencia de sucesos** con el proceso de conteo:
-$$ P(T_5 < 45) = P(N(45) \ge 5) = 1 - P(N(45) \le 4), \quad N(45)\sim Po(45\lambda). $$
+$$
+P(T_5 < 45) = P(N(45) \ge 5) = 1 - P(N(45) \le 4), \quad N(45)\sim Po(45\lambda).
+$$
 
 **Intuición — el truco que aparece una y otra vez.** "La 5ª tos llegó antes de
 $t$" y "hubo al menos 5 toses hasta $t$" son **el mismo suceso** vistos del lado
@@ -102,7 +118,9 @@ sobre conteos (Poisson, que se suma con la PMF) suele ser muchísimo más barato
 **Planteo (b) — buscar el tiempo $t$.** Para $\lambda t$ grande,
 $N(t)\sim Po(\lambda t) \approx \mathcal{N}(\lambda t, \sqrt{\lambda t})$ (TCL).
 Con corrección por continuidad:
-$$ P(N(t)\ge 50) \approx 1 - \Phi\!\left(\frac{49.5 - t/12}{\sqrt{t/12}}\right) > 0.9. $$
+$$
+P(N(t)\ge 50) \approx 1 - \Phi\!\left(\frac{49.5 - t/12}{\sqrt{t/12}}\right) > 0.9.
+$$
 Esto lleva a $z_{0.1} = -z_{0.9} \ge \frac{49.5 - t/12}{\sqrt{t/12}}$, una
 **cuadrática en $\sqrt{t}$**. Se resuelve, se descarta la raíz negativa y se
 verifica: $t \approx 712.5$ min.
@@ -130,7 +148,9 @@ la columna suma "ir a un intermedio y desde ahí al destino" sobre cada camino.
 
 **Planteo (b) — "hacia atrás" con Bayes.** La matriz solo sirve hacia adelante.
 Para invertir el tiempo se usa [[probabilidad-total-y-bayes|Bayes]]:
-$$ P(X(1)=C\mid X(3)=F) = \frac{P(X(3)=F\mid X(1)=C)\,P(X(1)=C)}{\sum_i P(X(3)=F\mid X(1)=i)\,P(X(1)=i)}. $$
+$$
+P(X(1)=C\mid X(3)=F) = \frac{P(X(3)=F\mid X(1)=C)\,P(X(1)=C)}{\sum_i P(X(3)=F\mid X(1)=i)\,P(X(1)=i)}.
+$$
 Si la inicial es uniforme, $P(X(1)=i)=\tfrac13$ se cancela y queda solo el
 cociente de las transicionales a 2 pasos.
 
@@ -138,7 +158,9 @@ cociente de las transicionales a 2 pasos.
 es **regular** (alguna potencia $\mathbb{P}^k$ tiene todas las entradas
 positivas: acá $\mathbb{P}^2$ casi todas, $\mathbb{P}^4$ todas). Entonces existe
 $\vec\pi$ única con
-$$ \vec\pi = \vec\pi\,\mathbb{P}, \qquad \sum_i \pi_i = 1. $$
+$$
+\vec\pi = \vec\pi\,\mathbb{P}, \qquad \sum_i \pi_i = 1.
+$$
 Se arma el sistema (descartando una ecuación por dependencia lineal) y se
 resuelve. Ver [[cadenas-de-markov]].
 
@@ -161,7 +183,9 @@ $\vec\pi = (1,0,0,0)$ concentrada en $M$ (sin importar el estado inicial).
 **Planteo (c) — tiempo medio de absorción.** Se ordena $\mathbb{P}$ separando el
 absorbente y se toma $Q$ = submatriz de transiciones entre estados transitorios.
 La **matriz fundamental** es
-$$ (I - Q)^{-1}, $$
+$$
+(I - Q)^{-1},
+$$
 cuya entrada $(i,j)$ es el número esperado de visitas al estado $j$ partiendo de
 $i$. **Sumando la fila** correspondiente al estado inicial se obtiene el tiempo
 medio total hasta la absorción (la "esperanza de vida"). Ver [[cadenas-de-markov]].
@@ -172,7 +196,9 @@ Ibuprofeno / Ninguno).
 
 **Enunciado.** $X(n)$ = pastilla tomada en la $n$-ésima dosis (cada **8 h**),
 $E=\{P,I,N\}$. $N$ ("se terminan los síntomas") es **absorbente**.
-$$ \mathbb{P}=\begin{pmatrix} 0.25 & 0.45 & 0.3 \\ 0.6 & 0.3 & 0.1 \\ 0 & 0 & 1 \end{pmatrix}, \qquad \vec\pi^{(0)}=(\tfrac12,\tfrac12,0). $$
+$$
+\mathbb{P}=\begin{pmatrix} 0.25 & 0.45 & 0.3 \\ 0.6 & 0.3 & 0.1 \\ 0 & 0 & 1 \end{pmatrix}, \qquad \vec\pi^{(0)}=(\tfrac12,\tfrac12,0).
+$$
 Calcular la probabilidad de que tarde **más de 16 h** (desde la 1ª pastilla) hasta
 que se terminan los síntomas.
 
@@ -180,10 +206,14 @@ que se terminan los síntomas.
 dosis. "Tardar más de 16 h" $\Leftrightarrow$ **no llegar al absorbente $N$ en las
 primeras 2 transiciones** $\Leftrightarrow X(1)\ne N \ \wedge\ X(2)\ne N$. Por el
 **complemento**:
-$$ P(\text{tardar}>16) = 1 - P(X(1)=N) - P\big(X(1)\ne N \cap X(2)=N\big), $$
+$$
+P(\text{tardar}>16) = 1 - P(X(1)=N) - P\big(X(1)\ne N \cap X(2)=N\big),
+$$
 (los dos sucesos a restar son mutuamente excluyentes: o se absorbe en el paso 1,
 o no se absorbe en el 1 pero sí en el 2). Desarrollando con $\vec\pi^{(0)}$:
-$$ = 1 - \underbrace{0.5\cdot 0.3 - 0.5\cdot 0.1}_{X(1)=N} - \underbrace{0.5\cdot 0.25\cdot 0.3 - 0.5\cdot 0.45\cdot 0.1 - 0.5\cdot 0.6\cdot 0.3 - 0.5\cdot 0.3\cdot 0.1}_{X(1)\ne N,\ X(2)=N} = 0.635. $$
+$$
+= 1 - \underbrace{0.5\cdot 0.3 - 0.5\cdot 0.1}_{X(1)=N} - \underbrace{0.5\cdot 0.25\cdot 0.3 - 0.5\cdot 0.45\cdot 0.1 - 0.5\cdot 0.6\cdot 0.3 - 0.5\cdot 0.3\cdot 0.1}_{X(1)\ne N,\ X(2)=N} = 0.635.
+$$
 
 **Distribución a largo plazo.** Como $N$ es **el único absorbente** y es accesible
 desde todos los estados, la cadena no es regular pero tiene límite
@@ -202,19 +232,25 @@ $\vec\pi=(0,0,1)$: a la larga todo termina en $N$, sin importar el estado inicia
 `2025_12_05_Final_..._TemaA_RES.pdf`, Ej. 5 (carga viral).
 
 **Enunciado (final 05/12).** Densidad conjunta
-$$ f_{TX}(t,x) = \begin{cases} \tfrac{3}{160}\,t\,x & 0\le t\le 4,\ 1\le x\le t+1 \\ 0 & \text{c.c.} \end{cases} $$
+$$
+f_{TX}(t,x) = \begin{cases} \tfrac{3}{160}\,t\,x & 0\le t\le 4,\ 1\le x\le t+1 \\ 0 & \text{c.c.} \end{cases}
+$$
 Si $X = \log_{10}(C)$: (a) $P(X\le 3)$ y $P(X\le 3 \mid T>2)$. (b) $P(C>1000)$.
 
 **Planteo — clave: dibujar la región.** El soporte es triangular ($1\le x \le
 t+1$, $0\le t \le 4$). La constante ya está dada (se verifica integrando $=1$).
 Para $P(X\le 3)$ conviene el complemento:
-$$ P(X\le 3) = 1 - P(X>3) = 1 - \int_{2}^{4}\!\!\int_{3}^{t+1} \tfrac{3}{160}\,t\,x \,dx\,dt, $$
+$$
+P(X\le 3) = 1 - P(X>3) = 1 - \int_{2}^{4}\!\!\int_{3}^{t+1} \tfrac{3}{160}\,t\,x \,dx\,dt,
+$$
 ojo con los **límites**: $X>3$ exige $t+1 > 3 \Rightarrow t > 2$, por eso la
 integral en $t$ arranca en 2. Resultado $\approx 43/80$.
 
 **Planteo — condicional.** $P(X\le 3\mid T>2)$ es un cociente de integrales sobre
 la región recortada por $t>2$:
-$$ P(X\le 3\mid T>2) = \frac{\displaystyle\int_2^4\!\!\int_1^{3} \tfrac{3}{160}txdx\,dt}{\displaystyle\int_2^4\!\!\int_1^{t+1}\tfrac{3}{160}txdx\,dt}. $$
+$$
+P(X\le 3\mid T>2) = \frac{\displaystyle\int_2^4\!\!\int_1^{3} \tfrac{3}{160}txdx\,dt}{\displaystyle\int_2^4\!\!\int_1^{t+1}\tfrac{3}{160}txdx\,dt}.
+$$
 
 **Planteo (b) — volver a $C$.** $C>1000 \Leftrightarrow 10^X > 10^3
 \Leftrightarrow X>3$, así que $P(C>1000) = P(X>3) = 1 - P(X\le 3) = 37/80$.
@@ -232,14 +268,22 @@ Ver [[variables-aleatorias-bidimensionales]], [[funcion-de-variable-aleatoria]].
 
 **Planteo (a) — momentos sin hallar $f_Q$.** Usar
 [[esperanza|esperanza de una función de v.a.]] directamente:
-$$ E[Q] = 10E[D^2] + 2, \qquad E[D^2]=\int_0^1 x^2dx = \tfrac13 \Rightarrow E[Q]=\tfrac{16}{3}. $$
-$$ E[Q^2] = 100E[D^4] + 40E[D^2] + 4, \qquad E[D^4]=\tfrac15, $$
+$$
+E[Q] = 10E[D^2] + 2, \qquad E[D^2]=\int_0^1 x^2dx = \tfrac13 \Rightarrow E[Q]=\tfrac{16}{3}.
+$$
+$$
+E[Q^2] = 100E[D^4] + 40E[D^2] + 4, \qquad E[D^4]=\tfrac15,
+$$
 y $V(Q) = E[Q^2] - E[Q]^2 = \tfrac{9400}{45} \approx 208.89$.
 
 **Planteo (b) — método de la FDA.** Para $q\in(2,12)$:
-$$ F_Q(q) = P(10D^2+2 \le q) = P\!\left(D \le \sqrt{\tfrac{q-2}{10}}\right) = \sqrt{\tfrac{q-2}{10}}, $$
+$$
+F_Q(q) = P(10D^2+2 \le q) = P\!\left(D \le \sqrt{\tfrac{q-2}{10}}\right) = \sqrt{\tfrac{q-2}{10}},
+$$
 (válido porque $D\ge 0$). Derivando,
-$$ f_Q(q) = \frac{1}{2\sqrt{10(q-2)}}, \quad q\in(2,12); \quad 0 \text{ c.c.} $$
+$$
+f_Q(q) = \frac{1}{2\sqrt{10(q-2)}}, \quad q\in(2,12); \quad 0 \text{ c.c.}
+$$
 
 Ver [[funcion-de-variable-aleatoria]], [[distribucion-uniforme-continua]], [[funcion-de-densidad]].
 
@@ -263,14 +307,18 @@ pastillas **mezcladas** (sin reposición).
   - $72\text{ h} = 9$ dosis ⇒ $X_9 \sim \text{Bi}(9, 3/5)$, y
     $P(X_9\ge 6)=\sum_{i=6}^{9}\binom{9}{i}(3/5)^i(2/5)^{9-i}\approx 0.4826$.
   - $48\text{ h} = 6$ dosis ⇒ $X_6 \sim \text{Bi}(6, 3/5)$, con
-    $$ E[X_6]=6\cdot\tfrac35=\tfrac{18}{5}=3.6, \qquad \sigma(X_6)=\sqrt{6\cdot\tfrac35\cdot\tfrac25}=\tfrac{6}{5}=1.2. $$
+    $$
+    E[X_6]=6\cdot\tfrac35=\tfrac{18}{5}=3.6, \qquad \sigma(X_6)=\sqrt{6\cdot\tfrac35\cdot\tfrac25}=\tfrac{6}{5}=1.2.
+    $$
   > Cuidado: $E,\sigma$ se piden para **6 dosis** (48 h), no para las 9 dosis de
   > $P(X\ge 6)$. Usar $n=9$ acá daría $E=27/5$, que es el horizonte equivocado.
 - (b) Se sacan dosis de un pool finito de 80 pastillas (60 "éxitos") **sin
   reposición**. Mismo desdoblamiento: $Y_9 \sim \mathcal{H}(80,60,9)$ para
   $P(Y_9\ge 6)\approx 0.8469$, y $Y_6 \sim \mathcal{H}(N{=}80, K{=}60, n{=}6)$ para
   $E,\sigma$:
-  $$ E[Y_6] = n\tfrac{K}{N}=\tfrac92, \qquad \sigma(Y_6) = \sqrt{n\tfrac{K}{N}\tfrac{N-K}{N}\tfrac{N-n}{N-1}}\approx 1.0265, $$
+  $$
+  E[Y_6] = n\tfrac{K}{N}=\tfrac92, \qquad \sigma(Y_6) = \sqrt{n\tfrac{K}{N}\tfrac{N-K}{N}\tfrac{N-n}{N-1}}\approx 1.0265,
+  $$
   donde $\tfrac{N-n}{N-1}$ es el **factor de corrección por población finita**.
 
 **Moraleja.** "Con reposición / pool infinito" → [[distribucion-binomial|Binomial]];
@@ -292,10 +340,14 @@ $P(\text{cong. 2})=0.3$, $P(1\mid 2)=0.33$. La ruta 3 se congestiona con prob.
 de la **partición**: ambas, exactamente una, ninguna. Con $P(1\cap 2) = P(1\mid
 2)P(2) = 0.33\cdot 0.3 = 0.099$ se arma la partición y se aplica
 [[probabilidad-total-y-bayes|probabilidad total]]:
-$$ P(C_3) = \sum_{\text{escenarios}} P(C_3\mid \text{esc.})\,P(\text{esc.}) = 0.1992. $$
+$$
+P(C_3) = \sum_{\text{escenarios}} P(C_3\mid \text{esc.})\,P(\text{esc.}) = 0.1992.
+$$
 
 **Planteo (b) — Bayes.**
-$$ P(1\cap 2 \mid C_3) = \frac{P(C_3\mid 1\cap 2)\,P(1\cap 2)}{P(C_3)} = \frac{1\cdot 0.099}{0.1992} \approx 0.497. $$
+$$
+P(1\cap 2 \mid C_3) = \frac{P(C_3\mid 1\cap 2)\,P(1\cap 2)}{P(C_3)} = \frac{1\cdot 0.099}{0.1992} \approx 0.497.
+$$
 
 Ver [[probabilidad-total-y-bayes]], [[independencia]].
 
@@ -318,17 +370,27 @@ para acumular $\ge 100$ inutilizables con probabilidad $> 0.92$?
 $N_i$ (agarra nuevo), $R_i$ (reutilizable), $I_i$ (queda inutilizable), con
 $P(I_i\mid N_i)=0.6$ y $P(I_i\mid R_i)=1$. **El primer pañuelo siempre es nuevo**
 ($P(N_1)=1$). $M\in\{0,1,2\}$ es discreta. Recorriendo las ramas del árbol:
-$$ P(M{=}1) = \underbrace{0.6\cdot 1\cdot 0.4}_{I_1,\ \bar I_2} + \underbrace{0.4\cdot \tfrac1{10}\cdot 1}_{\bar I_1\to R_2\to I_2} + \underbrace{0.4\cdot \tfrac9{10}\cdot 0.6}_{\bar I_1\to N_2\to I_2} = 0.496, $$
-$$ P(M{=}2) = 0.6\cdot 1\cdot 0.6 = 0.36, \qquad P(M{=}0)=1-0.496-0.36=0.144. $$
+$$
+P(M{=}1) = \underbrace{0.6\cdot 1\cdot 0.4}_{I_1,\ \bar I_2} + \underbrace{0.4\cdot \tfrac1{10}\cdot 1}_{\bar I_1\to R_2\to I_2} + \underbrace{0.4\cdot \tfrac9{10}\cdot 0.6}_{\bar I_1\to N_2\to I_2} = 0.496,
+$$
+$$
+P(M{=}2) = 0.6\cdot 1\cdot 0.6 = 0.36, \qquad P(M{=}0)=1-0.496-0.36=0.144.
+$$
 Entonces, por definición de esperanza,
-$$ E[M] = 0\cdot 0.144 + 1\cdot 0.496 + 2\cdot 0.36 = 1.216, $$
-$$ E[M^2] = 0.496 + 4\cdot 0.36 = 1.936 \Rightarrow \sigma(M)=\sqrt{1.936 - 1.216^2}\approx 0.6763. $$
+$$
+E[M] = 0\cdot 0.144 + 1\cdot 0.496 + 2\cdot 0.36 = 1.216,
+$$
+$$
+E[M^2] = 0.496 + 4\cdot 0.36 = 1.936 \Rightarrow \sigma(M)=\sqrt{1.936 - 1.216^2}\approx 0.6763.
+$$
 
 **Planteo (b) — suma i.i.d. → TCL.** $S_n=\sum_{i=1}^n M_i$ con $M_i$ i.i.d.
 ($\mu_M=1.216$, $\sigma_M\approx 0.6763$). Por [[teorema-central-del-limite|TCL]],
 $S_n \overset{(a)}{\sim}\mathcal{N}\!\big(n\mu_M,\ \sqrt n\,\sigma_M\big)$. Se busca
 $n$ con
-$$ P(S_n\ge 70) > 0.92 \ \Rightarrow\ 1-\Phi\!\left(\frac{70-n\mu_M}{\sqrt n\,\sigma_M}\right) > 0.92 \ \Rightarrow\ z_{0.08}=-z_{0.92}\ge \frac{70-n\mu_M}{\sqrt n\,\sigma_M}. $$
+$$
+P(S_n\ge 70) > 0.92 \ \Rightarrow\ 1-\Phi\!\left(\frac{70-n\mu_M}{\sqrt n\,\sigma_M}\right) > 0.92 \ \Rightarrow\ z_{0.08}=-z_{0.92}\ge \frac{70-n\mu_M}{\sqrt n\,\sigma_M}.
+$$
 Es una **cuadrática en $\sqrt n$**: queda $\sqrt n \approx 9.46$ (la otra raíz
 $\approx -8.6$ se descarta), de donde $n\ge 89.63 \Rightarrow \boxed{n\ge 90}$ horas.
 
@@ -351,10 +413,14 @@ enfermas.
 $N$ son equiprobables, así que se usa la **regla de Laplace** (casos
 favorables/casos totales). Definir $E_i$ = "se eligen **exactamente** $i$ enfermas".
 Los $E_i$ son **mutuamente excluyentes** (la palabra *exactamente*), así que
-$$ P(\text{al menos 2}) = P(E_2\cup E_3) = P(E_2) + P(E_3). $$
+$$
+P(\text{al menos 2}) = P(E_2\cup E_3) = P(E_2) + P(E_3).
+$$
 Contando con [[tecnica-conteo-combinatoria|coeficientes binomiales]] (elegir
 enfermos de los $M$ y sanos de los $N-M$):
-$$ \boxed{P(E_2\cup E_3) = \frac{\dbinom{M}{2}\dbinom{N-M}{1}}{\dbinom{N}{3}} + \frac{\dbinom{M}{3}}{\dbinom{N}{3}}.} $$
+$$
+\boxed{P(E_2\cup E_3) = \frac{\dbinom{M}{2}\dbinom{N-M}{1}}{\dbinom{N}{3}} + \frac{\dbinom{M}{3}}{\dbinom{N}{3}}.}
+$$
 Esta es exactamente la **suma de los dos términos superiores de la
 [[distribucion-hipergeometrica|hipergeométrica]]** $\mathcal{H}(N,M,3)$: el ejercicio
 **deriva la hipergeométrica desde el conteo de Laplace**, sin invocar la fórmula

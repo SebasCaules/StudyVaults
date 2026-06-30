@@ -61,7 +61,9 @@ fórmulas en **[[tecnica-datos-agrupados-interpolacion]]**.
 
 Ejemplo (Ej 5 de la guía, $n=100$): mediana en el intervalo $[3.6,3.8)$ con
 $F_{\text{ant}}=44$, $F=62$:
-$$ \text{mediana} = \frac{50 - 44}{62 - 44}\,(3.8 - 3.6) + 3.6 = 3.6667. $$
+$$
+\text{mediana} = \frac{50 - 44}{62 - 44}\,(3.8 - 3.6) + 3.6 = 3.6667.
+$$
 
 > Los resultados agrupados son **similares pero no idénticos** a los de datos sin
 > agrupar (se paga un costo de precisión por haber perdido información).

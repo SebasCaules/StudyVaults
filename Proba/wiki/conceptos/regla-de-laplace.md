@@ -15,7 +15,9 @@ vuelve un problema de **contar** ([[tecnica-conteo-combinatoria|combinatoria]]).
 
 Cuando el [[espacio-muestral-y-eventos|espacio muestral]] $S$ es **finito** y todos
 los resultados son **igualmente probables** (equiprobables):
-$$ P(A) = \frac{\text{casos favorables}}{\text{casos posibles}} = \frac{|A|}{|S|}. $$
+$$
+P(A) = \frac{\text{casos favorables}}{\text{casos posibles}} = \frac{|A|}{|S|}.
+$$
 Calcular probabilidades se reduce a **contar** → ver [[tecnica-conteo-combinatoria]].
 
 **Intuición.** Si las $|S|$ caras del experimento son indistinguibles en cuanto a su
@@ -31,7 +33,9 @@ de los [[axiomas-de-probabilidad|axiomas]], pero con todos los puntos del mismo 
 
 - **Casos posibles**: $6\times 6 = 36$ (principio de multiplicación).
 - **Casos favorables** (suma $=8$): $\{(2,6),(3,5),(4,4),(5,3),(6,2)\}$ → $5$.
-$$ P(\text{suma}=8) = \frac{5}{36}. $$
+$$
+P(\text{suma}=8) = \frac{5}{36}.
+$$
 
 > **Cuidado:** El error más común al aplicar Laplace es tomar como equiprobables resultados que *parecen* serlo pero no lo son. Ejemplo: en un juego con un mazo de $5$ cartas (con reposición) gano solo si las dos cartas extraídas son iguales. Uno tiende a decir "hay dos resultados, ganar o perder, así que $P(\text{ganar}) = 1/2$". Es incorrecto: ganar y perder no tienen la misma chance. Los resultados equiprobables son los **pares ordenados** de cartas — hay $25$, cada uno con probabilidad $1/25$ — y ganar abarca solo los $5$ pares iguales, así que $P(\text{ganar}) = 5/25 = 1/5$. Antes de aplicar Laplace, identificá cuál es el espacio muestral cuyos elementos son efectivamente indistinguibles por azar.
 

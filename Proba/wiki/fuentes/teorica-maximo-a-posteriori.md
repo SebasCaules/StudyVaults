@@ -25,7 +25,9 @@ Bayes, estimador MAP de la media de una normal con prior normal.
   denominador no depende de $\theta$, así que se maximiza el numerador.
 - **Ejemplo (normal con prior normal):** $X_i\sim\mathcal N(\mu,\sigma)$,
   prior $\mu\sim\mathcal N(\mu_p,\sigma_p)$. Resultado:
-  $$\hat\mu = \frac{n\sigma_p^2}{n\sigma_p^2+\sigma^2}\,\overline X_n + \frac{\sigma^2}{n\sigma_p^2+\sigma^2}\,\mu_p.$$
+  $$
+  \hat\mu = \frac{n\sigma_p^2}{n\sigma_p^2+\sigma^2}\,\overline X_n + \frac{\sigma^2}{n\sigma_p^2+\sigma^2}\,\mu_p.
+  $$
   Para $n$ chico, $\hat\mu\approx\mu_p$ (manda el prior); para $n$ grande,
   $\hat\mu\approx\overline X_n$ (mandan los datos).
 

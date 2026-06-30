@@ -19,7 +19,9 @@ Técnica para calcular probabilidades y fractiles de una
 
 $Z\sim N(0,1)$ tiene media $0$ y desvío $1$, densidad
 $f_Z(z)=\frac{1}{\sqrt{2\pi}}e^{-z^2/2}$ y FDA
-$$ \Phi(z)\overset{\text{def}}{=}F_Z(z)=P(Z\le z)=\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}e^{-y^2/2}\,dy. $$
+$$
+\Phi(z)\overset{\text{def}}{=}F_Z(z)=P(Z\le z)=\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}e^{-y^2/2}\,dy.
+$$
 No tiene forma cerrada → se **tabula**. Valores guía: $\Phi(0)=0.5$,
 $\lim_{z\to+\infty}\Phi(z)=1$, $\lim_{z\to-\infty}\Phi(z)=0$.
 
@@ -27,7 +29,9 @@ $\lim_{z\to+\infty}\Phi(z)=1$, $\lim_{z\to-\infty}\Phi(z)=0$.
 
 ## Paso 1 — estandarizar
 
-$$ Z=\frac{X-\mu}{\sigma}\sim N(0,1),\qquad F_X(x)=P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right). $$
+$$
+Z=\frac{X-\mu}{\sigma}\sim N(0,1),\qquad F_X(x)=P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right).
+$$
 La igualdad de probabilidades al estandarizar vale porque se aplica una función
 **creciente y biyectiva** a ambos lados de la desigualdad ([[tp4-variables-aleatorias-continuas]] ej. 21).
 
@@ -36,7 +40,9 @@ La igualdad de probabilidades al estandarizar vale porque se aplica una función
 ## Paso 2 — simetría (tablas solo con $z\ge0$)
 
 La densidad es simétrica, así que:
-$$ \boxed{\ \Phi(z)=1-\Phi(-z)\ }\qquad\Longrightarrow\qquad \Phi(-z)=1-\Phi(z). $$
+$$
+\boxed{\ \Phi(z)=1-\Phi(-z)\ }\qquad\Longrightarrow\qquad \Phi(-z)=1-\Phi(z).
+$$
 Esto permite calcular probabilidades con $z$ negativo usando una tabla que solo
 tiene valores positivos.
 
@@ -50,9 +56,13 @@ Probabilidades útiles:
 ## Paso 3 — fractiles (problema inverso)
 
 Cuando dan la probabilidad y piden el valor:
-$$ z_\alpha=\Phi^{-1}(\alpha),\qquad x_\alpha=\mu+\sigma\,z_\alpha. $$
+$$
+z_\alpha=\Phi^{-1}(\alpha),\qquad x_\alpha=\mu+\sigma\,z_\alpha.
+$$
 Por simetría del fractil:
-$$ \boxed{\ z_{1-\alpha}=-z_\alpha\ }\qquad\Longleftrightarrow\qquad \Phi^{-1}(\alpha)=-\Phi^{-1}(1-\alpha). $$
+$$
+\boxed{\ z_{1-\alpha}=-z_\alpha\ }\qquad\Longleftrightarrow\qquad \Phi^{-1}(\alpha)=-\Phi^{-1}(1-\alpha).
+$$
 Se usa la **tabla de fractiles** $\Phi^{-1}(\alpha)$ de [[tp4-variables-aleatorias-continuas]]
 (Sec. 3). Fractiles habituales: $z_{0.90}\approx1.2816$, $z_{0.95}\approx1.6449$,
 $z_{0.975}\approx1.96$, $z_{0.99}\approx2.3263$.
@@ -65,7 +75,9 @@ $z_{0.975}\approx1.96$, $z_{0.99}\approx2.3263$.
 
 Si el $z$ buscado cae **entre dos filas** de la tabla, se interpola linealmente.
 Para $\Phi(z)$ con $z\in(z_1,z_2)$:
-$$ \Phi(z)\approx \Phi(z_1)+\frac{\Phi(z_2)-\Phi(z_1)}{z_2-z_1}\,(z-z_1). $$
+$$
+\Phi(z)\approx \Phi(z_1)+\frac{\Phi(z_2)-\Phi(z_1)}{z_2-z_1}\,(z-z_1).
+$$
 > Ejemplo ([[teorica-va-normal]]): $\Phi(0.6\overline{6})$ con $\Phi(0.66)=0.7454$ y
 > $\Phi(0.67)=0.7486$ da $\approx0.7475$.
 
@@ -88,9 +100,13 @@ nota que supera **en al menos 5 puntos** a $x_R$.
 **Planteo.** Primero $x_R$ con $P(X\le x_R)=0.25$, luego $P(X\ge x_R+5)$.
 
 **Cálculo.**
-$$ \Phi\!\left(\frac{x_R-78}{6}\right)=0.25 \Rightarrow \frac{x_R-78}{6}=z_{0.25}=-z_{0.75}\approx-0.6745 \Rightarrow x_R\approx78-6\cdot0.6745\approx73.95. $$
+$$
+\Phi\!\left(\frac{x_R-78}{6}\right)=0.25 \Rightarrow \frac{x_R-78}{6}=z_{0.25}=-z_{0.75}\approx-0.6745 \Rightarrow x_R\approx78-6\cdot0.6745\approx73.95.
+$$
 Entonces
-$$ P(X\ge x_R+5)=P(X\ge78.95)=1-\Phi\!\left(\frac{78.95-78}{6}\right)\approx1-\Phi(0.16)\approx1-0.5631=0.4369. $$
+$$
+P(X\ge x_R+5)=P(X\ge78.95)=1-\Phi\!\left(\frac{78.95-78}{6}\right)\approx1-\Phi(0.16)\approx1-0.5631=0.4369.
+$$
 
 **Resultado.** $\approx44\%$ de los estudiantes superan en al menos 5 puntos a la
 nota reprobatoria del $25\%$.
@@ -106,15 +122,23 @@ $Q_1-1.5\,I_Q$ o por encima de $Q_3+1.5\,I_Q$; calcular $P(\text{outlier})$. g) 
 
 **Planteo y cálculo e).** $Q_1=\mu+\sigma z_{0.25}$ y $Q_3=\mu+\sigma z_{0.75}$. Por simetría
 $z_{0.75}=-z_{0.25}\approx0.6745$, así que
-$$ Q_1=\mu-0.6745\,\sigma,\qquad Q_3=\mu+0.6745\,\sigma,\qquad I_Q=Q_3-Q_1=1.349\,\sigma. $$
+$$
+Q_1=\mu-0.6745\,\sigma,\qquad Q_3=\mu+0.6745\,\sigma,\qquad I_Q=Q_3-Q_1=1.349\,\sigma.
+$$
 
 **Cálculo f).** Las cercas de Tukey, en unidades estandarizadas ($\mu=0,\sigma=1$), están en
-$$ Q_3+1.5\,I_Q=0.6745+1.5\cdot1.349=2.698,\qquad Q_1-1.5\,I_Q=-2.698. $$
+$$
+Q_3+1.5\,I_Q=0.6745+1.5\cdot1.349=2.698,\qquad Q_1-1.5\,I_Q=-2.698.
+$$
 Como la normal es simétrica,
-$$ P(\text{outlier})=2\,\Phi(-2.698)=2\,(1-\Phi(2.698))\approx2\cdot0.00349\approx0.007. $$
+$$
+P(\text{outlier})=2\,\Phi(-2.698)=2\,(1-\Phi(2.698))\approx2\cdot0.00349\approx0.007.
+$$
 
 **Cálculo g).** Por simetría de $Z$ y con $\int z\,e^{-z^2/2}dz=-e^{-z^2/2}$,
-$$ E[|Z|]=2\int_0^\infty z\,\frac{1}{\sqrt{2\pi}}e^{-z^2/2}\,dz=\frac{2}{\sqrt{2\pi}}\big[-e^{-z^2/2}\big]_0^\infty=\frac{2}{\sqrt{2\pi}}=\sqrt{\frac{2}{\pi}}\approx0.798. $$
+$$
+E[|Z|]=2\int_0^\infty z\,\frac{1}{\sqrt{2\pi}}e^{-z^2/2}\,dz=\frac{2}{\sqrt{2\pi}}\big[-e^{-z^2/2}\big]_0^\infty=\frac{2}{\sqrt{2\pi}}=\sqrt{\frac{2}{\pi}}\approx0.798.
+$$
 
 **Resultado.** e) $I_Q=1.349\,\sigma$. f) $P(\text{outlier})\approx0.7\%$: en una normal,
 solo cerca de **7 de cada 1000** observaciones serían marcadas como atípicas por la regla del

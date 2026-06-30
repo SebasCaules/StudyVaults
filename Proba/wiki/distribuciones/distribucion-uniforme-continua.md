@@ -19,7 +19,9 @@ ningún punto (todos los subintervalos del mismo largo son igual de probables).
 
 ## Función de densidad
 
-$$ f_X(x)=\begin{cases} \dfrac{1}{b-a} & x\in(a,b)\\[4pt] 0 & x\notin(a,b).\end{cases} $$
+$$
+f_X(x)=\begin{cases} \dfrac{1}{b-a} & x\in(a,b)\\[4pt] 0 & x\notin(a,b).\end{cases}
+$$
 
 La densidad es **constante** en el intervalo: "es uniforme, no hay predilección
 por algunos valores" ([[teorica-va-uniforme]]).
@@ -28,7 +30,9 @@ por algunos valores" ([[teorica-va-uniforme]]).
 
 ## Función de distribución acumulada
 
-$$ F_X(x)=\begin{cases} 0 & x\le a\\[2pt] \dfrac{x-a}{b-a} & a<x\le b\\[6pt] 1 & x\ge b.\end{cases} $$
+$$
+F_X(x)=\begin{cases} 0 & x\le a\\[2pt] \dfrac{x-a}{b-a} & a<x\le b\\[6pt] 1 & x\ge b.\end{cases}
+$$
 
 La FDA crece linealmente entre $a$ y $b$.
 
@@ -42,13 +46,19 @@ La FDA crece linealmente entre $a$ y $b$.
 - $V(X)=\dfrac{(b-a)^2}{12}$.
 
 **Deducción de la esperanza** ([[teorica-va-uniforme]]):
-$$ E[X]=\int_a^b x\cdot\frac{1}{b-a}\,dx=\frac{x^2}{2(b-a)}\Big|_a^b=\frac{b^2-a^2}{2(b-a)}=\frac{b+a}{2}. $$
+$$
+E[X]=\int_a^b x\cdot\frac{1}{b-a}\,dx=\frac{x^2}{2(b-a)}\Big|_a^b=\frac{b^2-a^2}{2(b-a)}=\frac{b+a}{2}.
+$$
 **Varianza:** $E[X^2]=\int_a^b x^2\frac{1}{b-a}\,dx=\frac{b^2+ab+a^2}{3}$, luego
-$$ V(X)=\frac{b^2+ab+a^2}{3}-\left(\frac{a+b}{2}\right)^2=\frac{b^2-2ab+a^2}{12}=\frac{(b-a)^2}{12}. $$
+$$
+V(X)=\frac{b^2+ab+a^2}{3}-\left(\frac{a+b}{2}\right)^2=\frac{b^2-2ab+a^2}{12}=\frac{(b-a)^2}{12}.
+$$
 
 ## Función generadora de momentos
 
-$$ M_X(t)=\frac{e^{tb}-e^{ta}}{t(b-a)}\quad(t\neq0),\qquad M_X(0)=1. $$
+$$
+M_X(t)=\frac{e^{tb}-e^{ta}}{t(b-a)}\quad(t\neq0),\qquad M_X(0)=1.
+$$
 (No figura en el apunte de la teórica; ver [[funcion-generadora-de-momentos|FGM]].)
 
 ## Asimetría y curtosis
@@ -84,7 +94,9 @@ minutos siguientes a su llegada, es decir si el pasajero llegó en los últimos 
 minutos del ciclo de 5: $X\in(2,5)$. Equivalentemente, se pide $P(X>2)$.
 
 **Cálculo.** Con $a=0$, $b=5$, $f_X(x)=\tfrac15$ en $(0,5)$:
-$$ P(X>2)=\int_2^5 \frac{1}{5}\,dx=\frac{5-2}{5}=\frac{3}{5}. $$
+$$
+P(X>2)=\int_2^5 \frac{1}{5}\,dx=\frac{5-2}{5}=\frac{3}{5}.
+$$
 O por la FDA: $P(X>2)=1-F_X(2)=1-\tfrac{2-0}{5-0}=1-\tfrac25=\tfrac35$.
 
 **Resultado.** $P=\tfrac35=0.6$.

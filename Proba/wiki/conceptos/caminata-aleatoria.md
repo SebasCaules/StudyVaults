@@ -47,7 +47,9 @@ Caso **simétrico**: $p=1/2$.
   2H_n-n$.
 
 ## Distribución y momentos (caso simétrico)
-$$ P(X_n=x)=\binom{n}{\frac{n+x}{2}}\Big(\tfrac12\Big)^n,\qquad E[X_n]=0,\quad \text{Var}[X_n]=n. $$
+$$
+P(X_n=x)=\binom{n}{\frac{n+x}{2}}\Big(\tfrac12\Big)^n,\qquad E[X_n]=0,\quad \text{Var}[X_n]=n.
+$$
 Caso general $p$: $E[X_n]=n(2p-1)$, $\text{Var}[X_n]=4np(1-p)$. (La
 [[esperanza|esperanza]] sale por linealidad y la [[varianza|varianza]] por
 [[independencia|independencia]] de los pasos; ver el cálculo paso a paso en
@@ -70,7 +72,9 @@ $X_n=\sum_{k=1}^{n}G_k$ con $X_0=0$.
 - **Distribución:** $X_n$ es suma de $n$ normales estándar independientes; como la
   [[teorica-suma-normales|suma de normales independientes es normal]] (con medias y
   varianzas que se suman):
-  $$ X_n=\sum_{k=1}^{n}G_k\ \sim\ N(0,n),\qquad E[X_n]=0,\quad \text{Var}[X_n]=n. $$
+  $$
+  X_n=\sum_{k=1}^{n}G_k\ \sim\ N(0,n),\qquad E[X_n]=0,\quad \text{Var}[X_n]=n.
+  $$
 - Coincide en momentos con la caminata simétrica ($E=0$, $\text{Var}=n$), pero ahora
   $X_n$ es **continua** en vez de discreta. De hecho, por el
   [[teorema-central-del-limite|TCL]] la caminata simétrica estandarizada

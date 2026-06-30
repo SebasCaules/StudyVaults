@@ -56,7 +56,9 @@ Con $X_k$ i.i.d., $\mu,\sigma$; $\;Z_n=\dfrac{\bar X_n-\mu}{\sigma/\sqrt n}$:
 
 ## Aproximación normal de la binomial — ver [[aproximacion-normal-de-la-binomial]]
 $\mathrm{Bin}(n,p)\approx\mathcal N(np,\sqrt{npq})$. **Corrección por continuidad:**
-$$ P(a\le S_n\le b)\approx\Phi\!\big(\tfrac{b+\frac12-np}{\sqrt{npq}}\big)-\Phi\!\big(\tfrac{a-\frac12-np}{\sqrt{npq}}\big). $$
+$$
+P(a\le S_n\le b)\approx\Phi\!\big(\tfrac{b+\frac12-np}{\sqrt{npq}}\big)-\Phi\!\big(\tfrac{a-\frac12-np}{\sqrt{npq}}\big).
+$$
 
 ## Fractiles usuales (de la tabla del [[tp7-suma-de-va]])
 - $z_{0.975}=1.96$, $\;z_{0.99}=2.3263$, $\;z_{0.95}=1.6449$, $\;z_{0.985}\approx2.17$.

@@ -20,7 +20,9 @@ da un **rango** $(\hat\theta_\ell, \hat\theta_u)$ que contiene al parámetro
 $\theta$ con un **nivel de confianza** $\gamma$ (cercano a 1). Es la segunda rama
 de la [[inferencia-estadistica]].
 
-$$P\big(\hat\theta_\ell(X_1,\dots,X_n) < \theta < \hat\theta_u(X_1,\dots,X_n)\big) = \gamma.$$
+$$
+P\big(\hat\theta_\ell(X_1,\dots,X_n) < \theta < \hat\theta_u(X_1,\dots,X_n)\big) = \gamma.
+$$
 
 - **Bilateral:** ambos extremos finitos.
 - **Unilateral a derecha:** $\hat\theta_\ell=-\infty$.
@@ -46,7 +48,9 @@ $2\Phi(\Delta/(\sigma/\sqrt n))-1=\gamma$, de donde
 $\Phi(\Delta/(\sigma/\sqrt n))=\frac{1+\gamma}{2}$ y por lo tanto
 ([[teorica-ic-media-desvio-conocido]]):
 
-$$\boxed{\;\Delta_B = z_{\frac{1+\gamma}{2}}\cdot\frac{\sigma}{\sqrt n}\;}\qquad IC_\gamma^{\,bil}(\mu)=\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\; \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right),$$
+$$
+\boxed{\;\Delta_B = z_{\frac{1+\gamma}{2}}\cdot\frac{\sigma}{\sqrt n}\;}\qquad IC_\gamma^{\,bil}(\mu)=\left(\overline X_n - z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n},\; \overline X_n + z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}\right),
+$$
 
 donde $z_p=\Phi^{-1}(p)$ es el fractil de la $\mathcal N(0,1)$. Unilaterales:
 $\left(\overline X_n - z_\gamma\frac{\sigma}{\sqrt n},\infty\right)$ y
@@ -65,7 +69,9 @@ $X_i\sim$ Bernoulli$(p)$, $\hat p=\frac1n\sum X_i$. Por TCL, para $n$ grande
 $\hat p\approx\mathcal N(p,\sqrt{p(1-p)/n})$. El desvío depende del $p$
 desconocido, así que se reemplaza por $\hat p$ ([[teorica-ic-proporcion]]):
 
-$$IC_\gamma^{\,bil}(p)=\left(\hat p - z_{\frac{1+\gamma}{2}}\sqrt{\tfrac{\hat p(1-\hat p)}{n}},\; \hat p + z_{\frac{1+\gamma}{2}}\sqrt{\tfrac{\hat p(1-\hat p)}{n}}\right).$$
+$$
+IC_\gamma^{\,bil}(p)=\left(\hat p - z_{\frac{1+\gamma}{2}}\sqrt{\tfrac{\hat p(1-\hat p)}{n}},\; \hat p + z_{\frac{1+\gamma}{2}}\sqrt{\tfrac{\hat p(1-\hat p)}{n}}\right).
+$$
 
 Diferencias con el caso 1: se sabe que $p\in[0,1]$ (los IC unilaterales se acotan
 a $0$ y $1$) y se reemplaza la varianza real por $\hat p(1-\hat p)$, aproximación
@@ -78,16 +84,22 @@ necesariamente grande. Se reemplaza $\sigma$ por el desvío muestral $S_n$ y
 $\mu$ por $\overline X_n$, lo que cambia la distribución de referencia: el
 estadístico
 
-$$T = \frac{\overline X_n-\mu}{S_n/\sqrt n} \sim t_{n-1}$$
+$$
+T = \frac{\overline X_n-\mu}{S_n/\sqrt n} \sim t_{n-1}
+$$
 
 sigue una [[distribucion-t-de-student]] con $n-1$ grados de libertad. Repitiendo
 la derivación del caso 1 con $T$ ([[teorica-ic-media-desvio-desconocido-intervalos]]):
 
-$$\boxed{\;\Delta_B = t_{n-1,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}\;}\qquad IC_\gamma^{\,bil}(\mu)=\left(\overline X_n \pm t_{n-1,\frac{1+\gamma}{2}}\frac{S_n}{\sqrt n}\right).$$
+$$
+\boxed{\;\Delta_B = t_{n-1,\frac{1+\gamma}{2}}\cdot\frac{S_n}{\sqrt n}\;}\qquad IC_\gamma^{\,bil}(\mu)=\left(\overline X_n \pm t_{n-1,\frac{1+\gamma}{2}}\frac{S_n}{\sqrt n}\right).
+$$
 
 **Unilaterales** (mismo cambio que en el caso 1, pero con el fractil de la t y
 $\gamma$ en vez de $\frac{1+\gamma}{2}$, según [[teorica-ic-media-desvio-desconocido-intervalos]]):
-$$IC_\gamma^{\,der}(\mu)=\left(-\infty,\;\overline X_n + t_{n-1,\gamma}\frac{S_n}{\sqrt n}\right),\qquad IC_\gamma^{\,izq}(\mu)=\left(\overline X_n - t_{n-1,\gamma}\frac{S_n}{\sqrt n},\;+\infty\right),$$
+$$
+IC_\gamma^{\,der}(\mu)=\left(-\infty,\;\overline X_n + t_{n-1,\gamma}\frac{S_n}{\sqrt n}\right),\qquad IC_\gamma^{\,izq}(\mu)=\left(\overline X_n - t_{n-1,\gamma}\frac{S_n}{\sqrt n},\;+\infty\right),
+$$
 recordando que $t_{n-1,\alpha}=-t_{n-1,1-\alpha}$.
 
 > **Intuición.** Cuando $\sigma$ es conocido, el pivote divide por una **constante**, y una normal dividida por una constante sigue siendo normal. Cuando se reemplaza $\sigma$ por el desvío muestral $S_n$, se está dividiendo por una **variable aleatoria** (que cambia con cada muestra), y ya no se puede garantizar que el resultado sea normal. La [[distribucion-t-de-student|t de Student]] es exactamente la distribución del cociente de una normal estándar por la raíz de una $\chi^2$ normalizada — que es lo que aparece cuando se usa $S_n$. Por eso cambiar $\sigma$ por $S_n$ no es solo un reemplazo numérico: es cambiar la distribución de referencia.
@@ -106,7 +118,9 @@ y se recupera la fórmula del caso 1 con $S_n$. Resumen:
 El **error de muestreo** $E$ es la semiamplitud del IC (la máxima distancia del
 centro a un extremo). Despejando $n$ de $E = z_{\frac{1+\gamma}{2}}\frac{\sigma}{\sqrt n}$:
 
-$$n \ge z_{\frac{1+\gamma}{2}}^2\,\frac{\sigma^2}{E^2}.$$
+$$
+n \ge z_{\frac{1+\gamma}{2}}^2\,\frac{\sigma^2}{E^2}.
+$$
 
 Para proporciones, como $p$ es desconocido, se usa la cota conservadora
 $p(1-p)\le \frac14$ o una estimación previa $\hat p$.
@@ -129,7 +143,9 @@ se extrae **sin reposición**, el número de individuos con el atributo es
 normal de la hipergeométrica, la semiamplitud del IC para $p$ lleva un **factor
 de corrección por población finita** ([[tp8-estimacion-de-parametros]], ej. 24):
 
-$$E = z_{1-\frac{\alpha}{2}}\sqrt{\hat p(1-\hat p)}\;\sqrt{\frac{N-n}{N\,n}}.$$
+$$
+E = z_{1-\frac{\alpha}{2}}\sqrt{\hat p(1-\hat p)}\;\sqrt{\frac{N-n}{N\,n}}.
+$$
 
 - Si $N\gg n$, el factor $\sqrt{\tfrac{N-n}{Nn}}\to\sqrt{\tfrac1n}$ y se recupera
   la fórmula de población infinita $E=z\sqrt{\hat p(1-\hat p)/n}$.
@@ -138,7 +154,9 @@ $$E = z_{1-\frac{\alpha}{2}}\sqrt{\hat p(1-\hat p)}\;\sqrt{\frac{N-n}{N\,n}}.$$
 **Tamaño muestral con corrección.** Definiendo
 $B=\dfrac{E}{z_{1-\alpha/2}\sqrt{\hat p(1-\hat p)}}$, se despeja
 
-$$\boxed{\;n=\frac{1}{B^2+\frac{1}{N}}\;}$$
+$$
+\boxed{\;n=\frac{1}{B^2+\frac{1}{N}}\;}
+$$
 
 (con $\hat p$ una estimación previa o una muestra piloto). A diferencia del caso
 infinito, $n$ está **acotado por $N$**: aunque se pida un error muy chico, nunca
@@ -155,9 +173,13 @@ recipientes para ácido sulfúrico (en litros) son $9.8, 10.2, 10.4, 9.8, 10.0,
 $n-1=6$ grados de libertad. $\gamma=0.95\Rightarrow\frac{1+\gamma}{2}=0.975$.
 
 **Cálculo.** Con $\sum x_k=70.0$ y $\sum x_k^2=700.48$:
-$$\bar x = \frac{70.0}{7}=10.0,\qquad s^2=\frac{1}{6}\left(700.48 - 7\cdot 10.0^2\right)=\frac{0.48}{6}=0.08 \Rightarrow s\approx 0.2828.$$
+$$
+\bar x = \frac{70.0}{7}=10.0,\qquad s^2=\frac{1}{6}\left(700.48 - 7\cdot 10.0^2\right)=\frac{0.48}{6}=0.08 \Rightarrow s\approx 0.2828.
+$$
 De la tabla, $t_{6,0.975}=2.4469$. La semiamplitud:
-$$\Delta_B = t_{6,0.975}\cdot\frac{s}{\sqrt 7}=2.4469\cdot\frac{0.2828}{\sqrt 7}\approx 0.2616.$$
+$$
+\Delta_B = t_{6,0.975}\cdot\frac{s}{\sqrt 7}=2.4469\cdot\frac{0.2828}{\sqrt 7}\approx 0.2616.
+$$
 
 **Resultado.** $IC_{95\%}(\mu)=10.0\pm 0.2616=\boxed{(9.74,\;10.26)}$.
 
@@ -173,10 +195,14 @@ muestreo de 5 g?
 $\gamma=0.9\Rightarrow z_{\frac{1+\gamma}{2}}=z_{0.95}=1.644854$.
 
 **Cálculo a).** $\Delta_B = z_{0.95}\frac{\sigma}{\sqrt n}=1.644854\cdot\frac{15}{\sqrt{10}}\approx 7.8$.
-$$IC_{90\%}(\mu)=246\pm 7.8=(238.20,\;253.80).$$
+$$
+IC_{90\%}(\mu)=246\pm 7.8=(238.20,\;253.80).
+$$
 
 **Cálculo b).** Pedir error $E\le 5$:
-$$5\ge z_{0.95}\frac{\sigma}{\sqrt n}\Rightarrow n\ge z_{0.95}^2\frac{\sigma^2}{5^2}=1.644854^2\cdot\frac{15^2}{25}\approx 24.35\Rightarrow n\ge 25.$$
+$$
+5\ge z_{0.95}\frac{\sigma}{\sqrt n}\Rightarrow n\ge z_{0.95}^2\frac{\sigma^2}{5^2}=1.644854^2\cdot\frac{15^2}{25}\approx 24.35\Rightarrow n\ge 25.
+$$
 Como ya se midieron $10$, hacen falta $25-10=15$ envases **más**.
 
 **Resultado.** a) $246\pm 7.8$; b) **15 envases más**.
@@ -191,7 +217,9 @@ $\hat p_{600}=0.25$. Obtener un IC del 90% para el rating.
 $z_{\frac{1+0.9}{2}}=z_{0.95}=1.6448$.
 
 **Cálculo.**
-$$IC_{90\%}(p)=0.25\pm 1.6448\sqrt{\frac{0.25\cdot 0.75}{600}}=0.25\pm 0.0291=(0.2209,\;0.2791).$$
+$$
+IC_{90\%}(p)=0.25\pm 1.6448\sqrt{\frac{0.25\cdot 0.75}{600}}=0.25\pm 0.0291=(0.2209,\;0.2791).
+$$
 
 **Resultado.** $IC_{90\%}(p)\approx\boxed{(0.22,\;0.28)}$, es decir entre $22\%$ y
 $28\%$ de rating.
@@ -211,12 +239,18 @@ medio por colada.
 [[teorema-central-del-limite]] se usa $Z$ (no se asume normalidad). Como los datos
 están **agrupados** ([[datos-agrupados]]), se calculan la media y el desvío con la
 **marca de clase** $x_j$ (centro de cada intervalo) y la frecuencia $f_j$:
-$$\overline x^{Ag}=\frac{\sum_j x_j f_j}{n},\qquad s^{Ag}=\sqrt{\frac{\sum_j (x_j-\overline x^{Ag})^2 f_j}{n-1}}.$$
+$$
+\overline x^{Ag}=\frac{\sum_j x_j f_j}{n},\qquad s^{Ag}=\sqrt{\frac{\sum_j (x_j-\overline x^{Ag})^2 f_j}{n-1}}.
+$$
 
 **Cálculo.** Con $\sum_j x_j f_j = 110.95$ y $\sum_j (x_j-\overline x^{Ag})^2 f_j = 3.288$:
-$$\overline x^{Ag}=\frac{110.95}{150}=0.7396,\qquad s^{Ag}=\sqrt{\frac{3.288}{149}}\approx 0.1485.$$
+$$
+\overline x^{Ag}=\frac{110.95}{150}=0.7396,\qquad s^{Ag}=\sqrt{\frac{3.288}{149}}\approx 0.1485.
+$$
 Con $z_{0.975}=1.9599$ y $\frac{1+\gamma}{2}=0.975$:
-$$\Delta_B = z_{0.975}\frac{s^{Ag}}{\sqrt{150}}=1.9599\cdot\frac{0.1485}{\sqrt{150}}\approx 0.0238.$$
+$$
+\Delta_B = z_{0.975}\frac{s^{Ag}}{\sqrt{150}}=1.9599\cdot\frac{0.1485}{\sqrt{150}}\approx 0.0238.
+$$
 
 **Resultado.** $IC_{95\%}(\mu)=0.7396\pm 0.0238=\boxed{(0.716,\;0.763)}$. Aunque la
 guía lo titula "95%", el desarrollo del raw usa el fractil $z_{0.975}$ correcto del
@@ -234,15 +268,21 @@ una semiamplitud de $0.01$. c) porcentaje defectuoso **máximo** con 90% de conf
 $z_{\frac{1+0.9}{2}}=z_{0.95}=1.6449$; para c) unilateral a derecha $z_{0.90}=1.2816$.
 
 **Cálculo a).**
-$$\Delta_B = z_{0.95}\sqrt{\frac{0.06\cdot 0.94}{300}}=1.6449\cdot 0.01369\approx 0.0226 \Rightarrow IC_{90\%}(p)=0.06\pm 0.023=(0.037,\;0.083).$$
+$$
+\Delta_B = z_{0.95}\sqrt{\frac{0.06\cdot 0.94}{300}}=1.6449\cdot 0.01369\approx 0.0226 \Rightarrow IC_{90\%}(p)=0.06\pm 0.023=(0.037,\;0.083).
+$$
 
 **Cálculo c) — máximo (unilateral a derecha).** El extremo derecho del IC
 unilateral usa $z_{0.90}$:
-$$p_{\max}=\hat p + z_{0.90}\sqrt{\frac{\hat p(1-\hat p)}{n}}=0.06+1.2816\cdot 0.01369\approx 0.0776=\boxed{7.76\%}.$$
+$$
+p_{\max}=\hat p + z_{0.90}\sqrt{\frac{\hat p(1-\hat p)}{n}}=0.06+1.2816\cdot 0.01369\approx 0.0776=\boxed{7.76\%}.
+$$
 
 **Cálculo b) — tamaño muestral.** Pedir semiamplitud $E\le 0.01$:
 $z_{0.95}\sqrt{\hat p(1-\hat p)/m}\le 0.01$. Usando la estimación previa $\hat p=0.06$,
-$$m\ge \left(\frac{z_{0.95}}{0.01}\right)^2 0.06\cdot 0.94 = 1.6449^2\cdot\frac{0.0564}{0.0001}\approx 1525.9,$$
+$$
+m\ge \left(\frac{z_{0.95}}{0.01}\right)^2 0.06\cdot 0.94 = 1.6449^2\cdot\frac{0.0564}{0.0001}\approx 1525.9,
+$$
 y como ya se midieron 300, hacen falta $\approx \boxed{1226}$ **más**. (Con la cota
 conservadora $\hat p(1-\hat p)\le\frac14$ saldría $m\approx 6764$, es decir $6464$
 adicionales: mucho más exigente.)

@@ -27,7 +27,10 @@ extracciones **no** son independientes y la probabilidad de éxito cambia en cad
 paso.
 
 ## Función de masa
-$$ p_X(k) = P(X=k) = \frac{\dbinom{M}{k}\dbinom{N-M}{\,n-k\,}}{\dbinom{N}{n}}, \qquad k \in \mathcal{R}_X $$
+
+$$
+p_X(k) = P(X=k) = \frac{\dbinom{M}{k}\dbinom{N-M}{\,n-k\,}}{\dbinom{N}{n}}, \qquad k \in \mathcal{R}_X
+$$
 
 ![[hipergeometrica-pmf.svg]]
 
@@ -47,8 +50,13 @@ muestrear con o sin reposición). El detalle de la derivación combinatoria est�
 ## Esperanza y varianza
 
 Con $p = \dfrac{M}{N}$ (proporción de especiales en la población):
-- $E[X] = \mu_X = n\,\dfrac{M}{N} = n\,p$
-- $V(X) = \sigma_X^2 = n\,\dfrac{M}{N}\left(\dfrac{N-M}{N}\right)\dfrac{N-n}{N-1} = n\,p\,q\,\underbrace{\dfrac{N-n}{N-1}}_{\text{factor de corrección}}$
+
+$$
+\begin{aligned}
+E[X] = \mu_X &= n\,\frac{M}{N} = n\,p \\[4pt]
+V(X) = \sigma_X^2 &= n\,\frac{M}{N}\left(\frac{N-M}{N}\right)\frac{N-n}{N-1} = n\,p\,q\,\underbrace{\frac{N-n}{N-1}}_{\text{factor de corrección}}
+\end{aligned}
+$$
 
 > El **factor de corrección por población finita** $\tfrac{N-n}{N-1}$ hace que la
 > varianza de la hipergeométrica sea **menor** que la de una binomial con el mismo
@@ -95,12 +103,22 @@ la distribución y sus parámetros. ¿Cómo cambia si el muestreo es con sustitu
 Recorrido $\mathcal{R}_X = \{0, 1, 2\}$.
 
 **Cálculo (sin reposición).**
-$$ p_X(0) = \frac{\binom{2}{0}\binom{8}{3}}{\binom{10}{3}} = \frac{56}{120} = \tfrac{7}{15} \approx 0{,}467 $$
-$$ p_X(1) = \frac{\binom{2}{1}\binom{8}{2}}{\binom{10}{3}} = \frac{2\cdot 28}{120} = \tfrac{7}{15} \approx 0{,}467 $$
-$$ p_X(2) = \frac{\binom{2}{2}\binom{8}{1}}{\binom{10}{3}} = \frac{8}{120} = \tfrac{1}{15} \approx 0{,}067 $$
+$$
+p_X(0) = \frac{\binom{2}{0}\binom{8}{3}}{\binom{10}{3}} = \frac{56}{120} = \tfrac{7}{15} \approx 0{,}467
+$$
+$$
+p_X(1) = \frac{\binom{2}{1}\binom{8}{2}}{\binom{10}{3}} = \frac{2\cdot 28}{120} = \tfrac{7}{15} \approx 0{,}467
+$$
+$$
+p_X(2) = \frac{\binom{2}{2}\binom{8}{1}}{\binom{10}{3}} = \frac{8}{120} = \tfrac{1}{15} \approx 0{,}067
+$$
 Con $p = M/N = 0{,}2$:
-$$ E[X] = n\,p = 3\cdot 0{,}2 = 0{,}6 $$
-$$ V(X) = n\,p\,q\,\frac{N-n}{N-1} = 3\cdot 0{,}2\cdot 0{,}8\cdot \frac{7}{9} = 0{,}373 $$
+$$
+E[X] = n\,p = 3\cdot 0{,}2 = 0{,}6
+$$
+$$
+V(X) = n\,p\,q\,\frac{N-n}{N-1} = 3\cdot 0{,}2\cdot 0{,}8\cdot \frac{7}{9} = 0{,}373
+$$
 
 **Con sustitución** (con reposición) pasa a ser
 $X \sim \text{Binomial}(3,\ 0{,}2)$: misma media $E[X] = np = 0{,}6$, pero varianza

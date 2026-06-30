@@ -52,7 +52,9 @@ tabla. Las **combinaciones** $\binom{n}{r}$ son las variaciones $\tfrac{n!}{(n-r
 Para 2 conjuntos: $|A_1\cup A_2| = |A_1| + |A_2| - |A_1\cap A_2|$.
 Para 3: $|A\cup B\cup C| = |A|+|B|+|C| - |A\cap B|-|A\cap C|-|B\cap C| + |A\cap B\cap C|$.
 General ($n$ conjuntos):
-$$ \left|\bigcup_{i=1}^{n} A_i\right| = \sum_i |A_i| - \sum_{i<j}|A_i\cap A_j| + \sum_{i<j<k}|A_i\cap A_j\cap A_k| - \cdots + (-1)^{n+1}|A_1\cap\cdots\cap A_n|. $$
+$$
+\left|\bigcup_{i=1}^{n} A_i\right| = \sum_i |A_i| - \sum_{i<j}|A_i\cap A_j| + \sum_{i<j<k}|A_i\cap A_j\cap A_k| - \cdots + (-1)^{n+1}|A_1\cap\cdots\cap A_n|.
+$$
 (Mismo esquema vale reemplazando $|\cdot|$ por $P(\cdot)$; ver [[axiomas-de-probabilidad]].)
 
 ### Regla del palomar (pigeonhole)
@@ -61,9 +63,15 @@ más de un objeto. General: si $n=km+1$ objetos van a $m$ conjuntos, al menos un
 contiene $\ge k+1$. (En un grupo de $>366$ personas, al menos 2 cumplen años el mismo día.)
 
 ### Identidades de números combinatorios útiles
-$$ \binom{n}{r}=\binom{n}{n-r}, \qquad \binom{n+1}{r}=\binom{n}{r}+\binom{n}{r-1}\ \text{(Pascal)}, $$
-$$ \sum_{k=0}^{n}\binom{n}{k}=2^{n}, \qquad \sum_{k=0}^{n}(-1)^k\binom{n}{k}=0, $$
-$$ (x+y)^n=\sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}\ \text{(binomio de Newton)}. $$
+$$
+\binom{n}{r}=\binom{n}{n-r}, \qquad \binom{n+1}{r}=\binom{n}{r}+\binom{n}{r-1}\ \text{(Pascal)},
+$$
+$$
+\sum_{k=0}^{n}\binom{n}{k}=2^{n}, \qquad \sum_{k=0}^{n}(-1)^k\binom{n}{k}=0,
+$$
+$$
+(x+y)^n=\sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}\ \text{(binomio de Newton)}.
+$$
 
 ### Con reposición vs. sin reposición
 Cuando el tamaño de la población y de cada clase son **mucho mayores** que el tamaño
@@ -88,12 +96,16 @@ Casos posibles: $\#S = 8!$ (ordenamientos equiprobables).
 - Hay $7$ formas de elegir el bloque de 2 posiciones consecutivas ($\{1,2\},\dots,\{7,8\}$).
 - Por cada una, $2!$ formas de permutar a Jorge y Alejandro dentro del bloque.
 - Por cada una, $6!$ formas de ubicar a las otras 6 personas.
-$$ P(E) = \frac{\#E}{\#S} = \frac{7\cdot 2!\cdot 6!}{8!} = \frac{1}{4}. $$
+$$
+P(E) = \frac{\#E}{\#S} = \frac{7\cdot 2!\cdot 6!}{8!} = \frac{1}{4}.
+$$
 
 **(b) Exactamente dos entre ellos.** Las posiciones de Jorge y Alejandro distan 3
 (p. ej. 1 y 4): hay $5$ pares posibles ($\{1,4\},\dots,\{5,8\}$); luego $2!$ por permutar
 a los dos y $6!$ por el resto:
-$$ P(F) = \frac{5\cdot 2!\cdot 6!}{8!} = \frac{5}{28}. $$
+$$
+P(F) = \frac{5\cdot 2!\cdot 6!}{8!} = \frac{5}{28}.
+$$
 
 > ⚠️ Al contar "casos favorables" hay que **no olvidar las permutaciones** ($2!$) ni
 > cubrir todos los casos m.e.; el TP2 advierte que omitir el $2!$ da un resultado erróneo.
@@ -127,14 +139,18 @@ El ej. 4 del TP2 deriva **desde Laplace/conteo** las dos distribuciones del mues
 - **Posibles**: $\binom{52}{5}=2\,598\,960$ manos.
 - **Favorables**: elegir el valor del cuarteto ($13$ opciones) y la 5ª carta entre
   las $48$ restantes → $13\times 48 = 624$.
-$$ P(\text{póker}) = \frac{624}{\binom{52}{5}} = \frac{624}{2\,598\,960} \approx 0.00024. $$
+$$
+P(\text{póker}) = \frac{624}{\binom{52}{5}} = \frac{624}{2\,598\,960} \approx 0.00024.
+$$
 
 ## Ejercicio resuelto — problema del cumpleaños
 *En una reunión de $n$ personas, ¿probabilidad de que al menos dos cumplan el mismo
 día?* (365 días equiprobables.)
 
 **Resolución.** Conviene el **complemento** (todos distintos):
-$$ P(\text{al menos 2 iguales}) = 1 - \frac{365\cdot 364\cdots (365-n+1)}{365^{\,n}}. $$
+$$
+P(\text{al menos 2 iguales}) = 1 - \frac{365\cdot 364\cdots (365-n+1)}{365^{\,n}}.
+$$
 Para $n=23$ ya supera $0.5$ (resultado contraintuitivo).
 
 ## Relación

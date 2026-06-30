@@ -23,7 +23,9 @@ la t de Student cuando $\sigma$ es desconocido y $n$ no es grande.
      desvío muestral $S_n$.
 - **¿Y si $n$ no es grande y $\sigma$ desconocido?** El caso general es
   complicado; para v.a. **normales** se usa el estadístico
-  $$T_{n-1} = \frac{\overline X_n - \mu}{S_n/\sqrt n} \sim t_{n-1}$$
+  $$
+  T_{n-1} = \frac{\overline X_n - \mu}{S_n/\sqrt n} \sim t_{n-1}
+  $$
   (t de Student con $n-1$ grados de libertad). Aquí $\mu\to\overline X_n$ y
   $\sigma\to S_n$.
 

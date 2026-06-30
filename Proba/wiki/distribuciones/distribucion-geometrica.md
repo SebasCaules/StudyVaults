@@ -41,7 +41,10 @@ Se nota $X \sim \text{Geométrica}(p)$.
 > de fracasos ($E=q/p$).
 
 ## Función de masa
-$$ p_X(k) = P(X=k) = q^{\,k}\,p, \qquad k \in \mathbb{N}_0 $$
+
+$$
+p_X(k) = P(X=k) = q^{\,k}\,p, \qquad k \in \mathbb{N}_0
+$$
 
 ![[geometrica-pmf.svg]]
 
@@ -56,20 +59,30 @@ $$ p_X(k) = P(X=k) = q^{\,k}\,p, \qquad k \in \mathbb{N}_0 $$
 > **Observación.** En la Geométrica el **orden de los resultados importa**: $p_X(k)=q^k p$ dice exactamente que los primeros $k$ intentos fueron fracasos y el $(k+1)$-ésimo, el éxito. No se puede reubicar el éxito en otra posición (como hace el factor combinatorio $\binom{n}{k}$ en la [[distribucion-binomial|Binomial]]), porque moverlo cambiaría el valor mismo de la variable.
 
 ## Esperanza y varianza
-- $E[X] = \mu_X = \dfrac{q}{p} = \dfrac{1-p}{p}$
-- $V(X) = \sigma_X^2 = \dfrac{q}{p^2} = \dfrac{1-p}{p^2}$
+
+$$
+\begin{aligned}
+E[X] = \mu_X &= \frac{q}{p} = \frac{1-p}{p} \\[4pt]
+V(X) = \sigma_X^2 &= \frac{q}{p^2} = \frac{1-p}{p^2}
+\end{aligned}
+$$
 
 > $E[X]$ sale de $\sum_k k\,q^k = \tfrac{d}{dq}\sum_k q^k = \tfrac{q}{(1-q)^2}$,
 > multiplicado por $p$ da $q/p$.
 
 ## Función generadora de momentos
-$$ M_X(t) = \frac{p}{1 - q\,e^t}, \qquad t < -\ln q $$
+
+$$
+M_X(t) = \frac{p}{1 - q\,e^t}, \qquad t < -\ln q
+$$
 (ver [[funcion-generadora-de-momentos|FGM]]).
 
 ## Propiedad de falta de memoria
 
 Para $L, \Delta \in \mathbb{N}_0$:
-$$ P(X \ge L + \Delta \mid X \ge L) = P(X \ge \Delta) $$
+$$
+P(X \ge L + \Delta \mid X \ge L) = P(X \ge \Delta)
+$$
 porque $P(X \ge m) = q^m$, de modo que $P(X\ge M \mid X\ge L) = q^M/q^L = q^{M-L}$.
 "Haber esperado ya $L$ fracasos no cambia cuánto falta esperar." Es la única
 distribución discreta sin memoria.
@@ -81,7 +94,9 @@ distribución discreta sin memoria.
 > memoria.) Ejemplo ([[geometrica-apunte]]): si cada día un
 enfermo tiene probabilidad $p$ de ser dado de alta (independiente de los días
 previos), entonces
-$$ P(\text{permanecer} \ge 1 \text{ semana más} \mid \text{ya permaneció} \ge 1 \text{ mes}) = P(\text{permanecer} \ge 1 \text{ semana}). $$
+$$
+P(\text{permanecer} \ge 1 \text{ semana más} \mid \text{ya permaneció} \ge 1 \text{ mes}) = P(\text{permanecer} \ge 1 \text{ semana}).
+$$
 
 ## Versión "número de ensayos" (slides Pantazis)
 
@@ -89,18 +104,24 @@ Las slides de la cátedra [[va-discretas-introduccion]] usan la **otra** convenc
 en el ejemplo del casino. Sea $Y$ = **cantidad de apuestas (ensayos) hasta que el
 casino pierde por primera vez**, con $p=\tfrac16$ (el casino "pierde" cuando el
 apostador acierta el 1). Como hay que **incluir el ensayo del éxito**:
-$$ p_Y(k) = P(Y=k) = q^{\,k-1}\,p = \left(\tfrac56\right)^{k-1}\tfrac16, \qquad k \in \mathbb{N} = \{1,2,\dots\} $$
+$$
+p_Y(k) = P(Y=k) = q^{\,k-1}\,p = \left(\tfrac56\right)^{k-1}\tfrac16, \qquad k \in \mathbb{N} = \{1,2,\dots\}
+$$
 Se normaliza con la serie geométrica $\sum_{k=1}^{\infty} q^{k-1} = \tfrac{1}{1-q}$,
 así $\sum_k q^{k-1}p = \tfrac{p}{1-q}=1$.
 
 **Esperanza y varianza** (vía las series $\sum k q^{k-1}=\tfrac{1}{(1-q)^2}$ y
 $\sum k^2 q^{k-1}=\tfrac{1+q}{(1-q)^3}$):
-$$ E[Y] = \frac1p = 6, \qquad E[Y^2]=\frac{1+q}{p^2}=66, \qquad V(Y)=E[Y^2]-E[Y]^2 = 66-36 = 30. $$
+$$
+E[Y] = \frac1p = 6, \qquad E[Y^2]=\frac{1+q}{p^2}=66, \qquad V(Y)=E[Y^2]-E[Y]^2 = 66-36 = 30.
+$$
 
 **Función de la v.a. (linealidad).** La ganancia acumulada del casino hasta esa
 primera derrota es $h(Y) = -4 + 1\cdot(Y-1) = Y-5$, y por
 [[esperanza|linealidad de la esperanza]]:
-$$ E[h(Y)] = E[Y] - 5 = 6 - 5 = 1. $$
+$$
+E[h(Y)] = E[Y] - 5 = 6 - 5 = 1.
+$$
 Es decir, aun cuando el apostador gana por primera vez, el casino lleva ganado en
 promedio \$1 contando las apuestas previas.
 
@@ -130,10 +151,14 @@ $X$ = n.º de personas **sin** talasemia (fracasos) antes de la primera con
 talasemia $\Rightarrow X \sim \text{Geométrica}(0{,}05)$.
 
 **Cálculo.**
-$$ E[X] = \frac{q}{p} = \frac{0{,}95}{0{,}05} = 19 $$
+$$
+E[X] = \frac{q}{p} = \frac{0{,}95}{0{,}05} = 19
+$$
 "Las 12 primeras no tienen talasemia" equivale a $X \ge 12$ (al menos 12 fracasos
 antes del primer éxito):
-$$ P(X \ge 12) = q^{12} = 0{,}95^{12} \approx 0{,}5404 $$
+$$
+P(X \ge 12) = q^{12} = 0{,}95^{12} \approx 0{,}5404
+$$
 
 **Resultado.** En promedio se eligen $19$ personas sin talasemia antes de la
 primera con talasemia; $P(\text{12 primeras sanas}) \approx 0{,}5404$.

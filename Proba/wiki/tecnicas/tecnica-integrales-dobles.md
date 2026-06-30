@@ -25,10 +25,14 @@ El apunte [[complemento-integrales-dobles]] motiva esto con la analogía física
 ## Idea: la integral doble como suma de Riemann (masa de una placa)
 Dividimos la placa en celdas $\Delta x \times \Delta y$. La masa de la celda
 centrada en $(x_i,y_j)$ es aproximadamente densidad por área:
-$$ \Delta\text{masa}(x_i,y_j)\approx d(x_i,y_j)\,\Delta x\,\Delta y. $$
+$$
+\Delta\text{masa}(x_i,y_j)\approx d(x_i,y_j)\,\Delta x\,\Delta y.
+$$
 La masa total es la doble suma, y al refinar la malla ($\Delta x,\Delta y\to 0$)
 se vuelve la integral doble:
-$$ \text{masa}\approx \sum_i\sum_j d(x_i,y_j)\,\Delta x\,\Delta y \;\xrightarrow[]{}\; \text{masa}=\iint_R d(x,y)\,dx\,dy. $$
+$$
+\text{masa}\approx \sum_i\sum_j d(x_i,y_j)\,\Delta x\,\Delta y \;\xrightarrow[]{}\; \text{masa}=\iint_R d(x,y)\,dx\,dy.
+$$
 
 **Diccionario masa ↔ probabilidad:** densidad $d(x,y)$ [kg/m²] $\leftrightarrow$
 densidad conjunta $f_{XY}(x,y)$; masa total $\leftrightarrow$ probabilidad total
@@ -38,7 +42,9 @@ densidad conjunta $f_{XY}(x,y)$; masa total $\leftrightarrow$ probabilidad total
 La integral doble se calcula como dos integrales simples anidadas, y **el orden de
 integración se puede elegir** (ajustando los límites al recinto). Para el triángulo
 $0<x<1,\;0<y<1-x$:
-$$ \iint_R d\,dA = \int_0^1\!\!\left[\int_0^{1-x} d(x,y)\,dy\right]dx = \int_0^1\!\!\left[\int_0^{1-y} d(x,y)\,dx\right]dy. $$
+$$
+\iint_R d\,dA = \int_0^1\!\!\left[\int_0^{1-x} d(x,y)\,dy\right]dx = \int_0^1\!\!\left[\int_0^{1-y} d(x,y)\,dx\right]dy.
+$$
 Clave: al integrar primero en $y$, los límites de $y$ pueden depender de $x$ (y viceversa).
 
 **Intuición.** Pensá la integral interna como **barrer el recinto con una varilla**.
@@ -50,7 +56,9 @@ varillas** moviendo $x$ de extremo a extremo del recinto. Por eso los límites
 externa**: si te quedan dos variables en un límite, casi seguro invertiste el orden.
 
 ## Centro de masa / baricentro (≈ esperanzas)
-$$ \bar x = \frac{\iint_R x\,d(x,y)\,dA}{\text{masa}},\qquad \bar y = \frac{\iint_R y\,d(x,y)\,dA}{\text{masa}}. $$
+$$
+\bar x = \frac{\iint_R x\,d(x,y)\,dA}{\text{masa}},\qquad \bar y = \frac{\iint_R y\,d(x,y)\,dA}{\text{masa}}.
+$$
 En proba, si $d$ es la densidad conjunta normalizada (masa $=1$), entonces
 $\bar x = E[X]$ y $\bar y = E[Y]$.
 
@@ -67,13 +75,19 @@ $\bar x = E[X]$ y $\bar y = E[Y]$.
 
 **Planteo (masa).** Por Fubini, integrando primero en $y$ entre $0$ y $1-x$, y
 luego en $x$ entre $0$ y $1$:
-$$ \text{masa} = \int_0^1\!\!\int_0^{1-x} x\,y\,dy\,dx. $$
+$$
+\text{masa} = \int_0^1\!\!\int_0^{1-x} x\,y\,dy\,dx.
+$$
 
 **Cálculo de la masa (como aparece en el apunte).** El apunte integra primero en
 $y$ y escribe la primitiva como $xy^2$, de modo que
-$$ \int_0^{1-x} xy\,dy \;\overset{\text{apunte}}{=}\; xy^2\Big|_0^{1-x} = x(1-x)^2, $$
+$$
+\int_0^{1-x} xy\,dy \;\overset{\text{apunte}}{=}\; xy^2\Big|_0^{1-x} = x(1-x)^2,
+$$
 y luego
-$$ \int_0^1 x(1-x)^2\,dx = \int_0^1 (x-2x^2+x^3)\,dx = \frac{x^2}{2}-\frac{2x^3}{3}+\frac{x^4}{4}\Big|_0^1 = \frac{1}{2}-\frac{2}{3}+\frac{1}{4}=\frac{6-8+3}{12}=\frac{1}{12}. $$
+$$
+\int_0^1 x(1-x)^2\,dx = \int_0^1 (x-2x^2+x^3)\,dx = \frac{x^2}{2}-\frac{2x^3}{3}+\frac{x^4}{4}\Big|_0^1 = \frac{1}{2}-\frac{2}{3}+\frac{1}{4}=\frac{6-8+3}{12}=\frac{1}{12}.
+$$
 **Masa $=\dfrac{1}{12}$ kg** (valor del apunte). El apunte verifica que invirtiendo
 el orden ($\int_0^1\int_0^{1-y} yx\,dx\,dy$) obtiene lo mismo, $1/12$.
 
@@ -88,11 +102,17 @@ el orden ($\int_0^1\int_0^{1-y} yx\,dx\,dy$) obtiene lo mismo, $1/12$.
 > el parcial; acá se reproduce el resultado del apunte ($1/12$ y $\bar x=1/5$).
 
 **Cálculo del numerador de $\bar x$.**
-$$ \text{masa}\cdot\bar x = \int_0^1\!\!\int_0^{1-x} x\cdot xy\,dy\,dx = \int_0^1 \frac{x^2 y^2}{2}\Big|_0^{1-x}dx = \frac{1}{2}\int_0^1 x^2(1-x)^2\,dx. $$
-$$ = \frac{1}{2}\int_0^1 (x^2-2x^3+x^4)\,dx = \frac{1}{2}\left(\frac{x^3}{3}-\frac{2x^4}{4}+\frac{x^5}{5}\right)\Big|_0^1 = \frac{1}{2}\left(\frac{1}{3}-\frac{1}{2}+\frac{1}{5}\right) = \frac{1}{2}\cdot\frac{10-15+6}{30}=\frac{1}{60}. $$
+$$
+\text{masa}\cdot\bar x = \int_0^1\!\!\int_0^{1-x} x\cdot xy\,dy\,dx = \int_0^1 \frac{x^2 y^2}{2}\Big|_0^{1-x}dx = \frac{1}{2}\int_0^1 x^2(1-x)^2\,dx.
+$$
+$$
+= \frac{1}{2}\int_0^1 (x^2-2x^3+x^4)\,dx = \frac{1}{2}\left(\frac{x^3}{3}-\frac{2x^4}{4}+\frac{x^5}{5}\right)\Big|_0^1 = \frac{1}{2}\left(\frac{1}{3}-\frac{1}{2}+\frac{1}{5}\right) = \frac{1}{2}\cdot\frac{10-15+6}{30}=\frac{1}{60}.
+$$
 
 **Baricentro.**
-$$ \bar x = \frac{\text{masa}\cdot\bar x}{\text{masa}} = \frac{1/60}{1/12} = \frac{12}{60} = \frac{1}{5}. $$
+$$
+\bar x = \frac{\text{masa}\cdot\bar x}{\text{masa}} = \frac{1/60}{1/12} = \frac{12}{60} = \frac{1}{5}.
+$$
 Por simetría del problema en $x\leftrightarrow y$, $\bar y = \dfrac{1}{5}$ también.
 
 **Resultado.** Masa $=\dfrac{1}{12}$ kg; baricentro $\left(\bar x,\bar y\right)=\left(\tfrac15,\tfrac15\right)$.

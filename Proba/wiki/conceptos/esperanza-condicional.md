@@ -24,22 +24,30 @@ A partir de la distribución condicional (según [[teorica-bidimensionales-vac-i
 del [[tp5-2024]], ec. 32-43):
 
 **Caso discreto** ($p_{X\mid Y}(x\mid y)=p_{X,Y}(x,y)/p_Y(y)$):
-$$ E[h(X)\mid Y=y]=\sum_{x\in R_X} h(x)\,p_{X\mid Y}(x\mid y). $$
+$$
+E[h(X)\mid Y=y]=\sum_{x\in R_X} h(x)\,p_{X\mid Y}(x\mid y).
+$$
 
 **Caso continuo** ($f_{X\mid Y}(x\mid y)=f_{X,Y}(x,y)/f_Y(y)$):
-$$ E[h(X)\mid Y=y]=\int_{-\infty}^{\infty} h(x)\,f_{X\mid Y}(x\mid y)\,dx. $$
+$$
+E[h(X)\mid Y=y]=\int_{-\infty}^{\infty} h(x)\,f_{X\mid Y}(x\mid y)\,dx.
+$$
 
 > $E[X\mid Y=y]$ es un **número** (depende del valor $y$ que fijemos). Si dejamos $Y$ libre,
 > $E[X\mid Y]$ es una **función de $Y$**, y por lo tanto **una variable aleatoria** ella misma. Esa
 > distinción es la clave de las dos leyes que siguen.
 
 También se define la **varianza condicional**:
-$$ \text{Var}(X\mid Y)=\sigma_{X\mid Y}^2=E\big[(X-\mu_{X\mid Y})^2\mid Y\big]=E[X^2\mid Y]-\big(E[X\mid Y]\big)^2,\qquad \mu_{X\mid Y}=E[X\mid Y]. $$
+$$
+\text{Var}(X\mid Y)=\sigma_{X\mid Y}^2=E\big[(X-\mu_{X\mid Y})^2\mid Y\big]=E[X^2\mid Y]-\big(E[X\mid Y]\big)^2,\qquad \mu_{X\mid Y}=E[X\mid Y].
+$$
 
 ## Ley de esperanza total
 
 Promediar $E[X\mid Y]$ sobre la distribución de $Y$ recupera la esperanza de $X$ (TP5 ec. 34 y 41):
-$$ E[X]=E\big[E[X\mid Y]\big]=\begin{cases}\displaystyle\sum_{y\in R_Y} E[X\mid Y=y]\,p_Y(y) & (Y \text{ discreta}),\\[2mm]\displaystyle\int_{-\infty}^{\infty} E[X\mid Y=y]\,f_Y(y)\,dy & (Y \text{ continua}).\end{cases} $$
+$$
+E[X]=E\big[E[X\mid Y]\big]=\begin{cases}\displaystyle\sum_{y\in R_Y} E[X\mid Y=y]\,p_Y(y) & (Y \text{ discreta}),\\[2mm]\displaystyle\int_{-\infty}^{\infty} E[X\mid Y=y]\,f_Y(y)\,dy & (Y \text{ continua}).\end{cases}
+$$
 
 Es la versión "esperada" de la [[probabilidad-total-y-bayes|probabilidad total]]: se descompone el
 cálculo por casos (los valores de $Y$) y se promedia con sus pesos.
@@ -56,7 +64,9 @@ cálculo por casos (los valores de $Y$) y se promedia con sus pesos.
 
 La varianza **no** se promedia directamente: a la media de las varianzas condicionales hay que
 sumarle la varianza de las medias condicionales (TP5 ec. 36 y 43):
-$$ \boxed{\;\text{Var}(X)=E\big[\text{Var}(X\mid Y)\big]+\text{Var}\big(E[X\mid Y]\big)\;} $$
+$$
+\boxed{\;\text{Var}(X)=E\big[\text{Var}(X\mid Y)\big]+\text{Var}\big(E[X\mid Y]\big)\;}
+$$
 
 - $E[\text{Var}(X\mid Y)]$ — variabilidad **dentro** de cada grupo (intra).
 - $\text{Var}(E[X\mid Y])$ — variabilidad **entre** las medias de los grupos (inter).
@@ -78,10 +88,14 @@ total para $R$.
 
 **Condicional y esperanza condicional.** La marginal de $H$ es
 $f_H(h)=\int_0^h\tfrac{3}{500}r\,dr=\tfrac{3}{1000}h^2$ en $(0,10)$, de modo que
-$$ f_{R\mid H}(r\mid h)=\frac{\tfrac{3}{500}r}{\tfrac{3}{1000}h^2}=\frac{2r}{h^2}\;(0<r<h),\qquad E[R\mid H=h]=\int_0^h r\,\frac{2r}{h^2}\,dr=\frac{2h}{3}. $$
+$$
+f_{R\mid H}(r\mid h)=\frac{\tfrac{3}{500}r}{\tfrac{3}{1000}h^2}=\frac{2r}{h^2}\;(0<r<h),\qquad E[R\mid H=h]=\int_0^h r\,\frac{2r}{h^2}\,dr=\frac{2h}{3}.
+$$
 
 **Ley de esperanza total.**
-$$ E[R]=E\big[E[R\mid H]\big]=\int_0^{10}\frac{2h}{3}\cdot\frac{3}{1000}h^2\,dh=\int_0^{10}\frac{h^3}{500}\,dh=\frac{10000}{2000}=5. $$
+$$
+E[R]=E\big[E[R\mid H]\big]=\int_0^{10}\frac{2h}{3}\cdot\frac{3}{1000}h^2\,dh=\int_0^{10}\frac{h^3}{500}\,dh=\frac{10000}{2000}=5.
+$$
 
 **Resultado.** $E[R\mid H=h]=\tfrac{2h}{3}$ y $E[R]=5=\mu_R$, que coincide con el cálculo directo de
 la marginal $f_R(r)=\tfrac{3}{500}r(10-r)$. El soporte triangular (no rectangular) muestra que $R$ y
@@ -95,15 +109,23 @@ $T\mid M=0\sim\text{Exp}(1/30)$) y en colectivo el 30 % ($M=1$, $T\mid M=1\sim\t
 Hallar $E[T]$ y $\text{Var}(T)$ usando las dos leyes.
 
 **Esperanzas condicionales.** $E[T\mid M=0]=30$, $E[T\mid M=1]=40$. Por la ley de esperanza total:
-$$ E[T]=E[T\mid M=0]\,P(M=0)+E[T\mid M=1]\,P(M=1)=30(0.7)+40(0.3)=33\text{ min}. $$
+$$
+E[T]=E[T\mid M=0]\,P(M=0)+E[T\mid M=1]\,P(M=1)=30(0.7)+40(0.3)=33\text{ min}.
+$$
 
 **Ley de varianza total.** Para la exponencial $\text{Var}(T\mid M=0)=30^2=900$ y
 $\text{Var}(T\mid M=1)=40^2=1600$.
-$$ E\big[\text{Var}(T\mid M)\big]=900(0.7)+1600(0.3)=1110. $$
+$$
+E\big[\text{Var}(T\mid M)\big]=900(0.7)+1600(0.3)=1110.
+$$
 El término entre-grupos usa que $E[T\mid M]$ toma el valor $30$ con prob. $0.7$ y $40$ con prob.
 $0.3$ (media $33$):
-$$ \text{Var}\big(E[T\mid M]\big)=(30-33)^2(0.7)+(40-33)^2(0.3)=9(0.7)+49(0.3)=6.3+14.7=21. $$
-$$ \text{Var}(T)=E\big[\text{Var}(T\mid M)\big]+\text{Var}\big(E[T\mid M]\big)=1110+21=1131. $$
+$$
+\text{Var}\big(E[T\mid M]\big)=(30-33)^2(0.7)+(40-33)^2(0.3)=9(0.7)+49(0.3)=6.3+14.7=21.
+$$
+$$
+\text{Var}(T)=E\big[\text{Var}(T\mid M)\big]+\text{Var}\big(E[T\mid M]\big)=1110+21=1131.
+$$
 
 **Resultado.** $E[T]=33$ min y $\text{Var}(T)=1131$ min². Coincide con el cálculo por momentos
 ($E[T^2]=2\cdot30^2(0.7)+2\cdot40^2(0.3)=2220$, $\text{Var}=2220-33^2=1131$). Promediar solo las

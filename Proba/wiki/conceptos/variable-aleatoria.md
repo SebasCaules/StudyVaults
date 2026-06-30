@@ -39,9 +39,13 @@ recorrido suman 1.
 
 La **función de probabilidad puntual** o **función de masa de probabilidad
 (PMF)** $p_X$ asigna a cada real su probabilidad:
-$$ p_X : \mathbb{R} \mapsto [0,1] \,/\, p_X(k) = P(X = k) $$
+$$
+p_X : \mathbb{R} \mapsto [0,1] \,/\, p_X(k) = P(X = k)
+$$
 Toma valor 0 fuera del recorrido. Cumple la condición de normalización:
-$$ \sum_{k \in \mathcal{R}_X} p_X(k) = 1 $$
+$$
+\sum_{k \in \mathcal{R}_X} p_X(k) = 1
+$$
 Los eventos $\{X = k\}$ para distintos $k$ son mutuamente excluyentes y forman
 una **partición** de $\mathcal{S}$, por lo que se les puede aplicar
 [[probabilidad-total-y-bayes|probabilidad total y Bayes]].
@@ -49,7 +53,9 @@ una **partición** de $\mathcal{S}$, por lo que se les puede aplicar
 ## Función de distribución acumulada (FDA)
 
 Ver página dedicada: [[funcion-de-distribucion-acumulada|Función de distribución acumulada]].
-$$ F_X(k) = P(X \le k) $$
+$$
+F_X(k) = P(X \le k)
+$$
 Es monótona no decreciente, continua a derecha, con $\lim_{k\to-\infty}F_X=0$ y
 $\lim_{k\to+\infty}F_X=1$. Para una V.A.D. tiene forma escalonada (saltos en los
 valores del recorrido).
@@ -57,13 +63,19 @@ valores del recorrido).
 ## Esperanza, varianza y otros momentos
 
 - **Esperanza (valor esperado / media)**: ver [[esperanza|Esperanza]].
-$$ E[X] = \mu_X = \sum_{k \in \mathcal{R}_X} k\,p_X(k) $$
+$$
+E[X] = \mu_X = \sum_{k \in \mathcal{R}_X} k\,p_X(k)
+$$
 - **Varianza**: ver [[varianza|Varianza]].
-$$ V(X) = \sigma_X^2 = E\!\left[(X-\mu_X)^2\right] = E[X^2] - (E[X])^2 $$
+$$
+V(X) = \sigma_X^2 = E\!\left[(X-\mu_X)^2\right] = E[X^2] - (E[X])^2
+$$
 - **Momentos**: $E[X^k] = \sum_x x^k p_X(x)$. **Momentos centrados**:
   $E[(X-E[X])^k]$.
 - **Asimetría y curtosis** (ver [[asimetria-y-curtosis]]):
-  $$ \gamma(X) = \frac{E[(X-\mu_X)^3]}{\sigma_X^3}, \qquad \kappa(X) = \frac{E[(X-\mu_X)^4]}{\sigma_X^4} - 3 $$
+  $$
+  \gamma(X) = \frac{E[(X-\mu_X)^3]}{\sigma_X^3}, \qquad \kappa(X) = \frac{E[(X-\mu_X)^4]}{\sigma_X^4} - 3
+  $$
 
 > Estas fórmulas son la versión "probabilística" de las de
 > [[datos-agrupados|datos agrupados]]: la frecuencia relativa $f_i/n$ converge a
@@ -104,10 +116,16 @@ constante $C$, $E[D]$ y $V(D)$.
 **Planteo.** Usamos la condición de normalización $\sum_{r} p_D(r) = 1$.
 
 **Cálculo.**
-$$ C\left(\frac{2^1}{1!} + \frac{2^2}{2!} + \frac{2^3}{3!} + \frac{2^4}{4!}\right) = C\left(2 + 2 + \tfrac{8}{6} + \tfrac{16}{24}\right) = C\cdot 6 = 1 \;\Rightarrow\; C = \tfrac{1}{6} $$
+$$
+C\left(\frac{2^1}{1!} + \frac{2^2}{2!} + \frac{2^3}{3!} + \frac{2^4}{4!}\right) = C\left(2 + 2 + \tfrac{8}{6} + \tfrac{16}{24}\right) = C\cdot 6 = 1 \;\Rightarrow\; C = \tfrac{1}{6}
+$$
 Las probabilidades quedan $p_D(1)=\tfrac13,\ p_D(2)=\tfrac13,\ p_D(3)=\tfrac29,\ p_D(4)=\tfrac19$.
-$$ E[D] = 1\cdot\tfrac13 + 2\cdot\tfrac13 + 3\cdot\tfrac29 + 4\cdot\tfrac19 = \tfrac{19}{9} $$
-$$ V(D) = E[D^2] - (E[D])^2 = \left(1^2\tfrac13 + 2^2\tfrac13 + 3^2\tfrac29 + 4^2\tfrac19\right) - \left(\tfrac{19}{9}\right)^2 = \tfrac{80}{81} $$
+$$
+E[D] = 1\cdot\tfrac13 + 2\cdot\tfrac13 + 3\cdot\tfrac29 + 4\cdot\tfrac19 = \tfrac{19}{9}
+$$
+$$
+V(D) = E[D^2] - (E[D])^2 = \left(1^2\tfrac13 + 2^2\tfrac13 + 3^2\tfrac29 + 4^2\tfrac19\right) - \left(\tfrac{19}{9}\right)^2 = \tfrac{80}{81}
+$$
 
 **Resultado.** $C = \tfrac16$, $E[D] = \tfrac{19}{9} \approx 2{,}11$, $V(D) = \tfrac{80}{81} \approx 0{,}99$.
 
@@ -123,7 +141,9 @@ interpretación; (c) $V(X)$ y $\sigma_X$; (d) porcentaje que se desarma.
 
 **Planteo.** Sea $A_i$ = "pasa la prueba $i$". Cada prueba solo se hace si falló la
 anterior, así que los datos son **condicionales**:
-$$P(A_1)=0{,}84,\quad P(A_2\mid \bar A_1)=0{,}75,\quad P(A_3\mid \bar A_2\cap\bar A_1)=0{,}90.$$
+$$
+P(A_1)=0{,}84,\quad P(A_2\mid \bar A_1)=0{,}75,\quad P(A_3\mid \bar A_2\cap\bar A_1)=0{,}90.
+$$
 Ojo con el enunciado: si falla la tercera prueba **no** se reprocesa una tercera
 vez, se desarma. Por eso $X$ se reprocesa **a lo sumo 2 veces** $\Rightarrow
 \mathcal{R}_X=\{0,1,2\}$. Recorriendo el árbol de probabilidades:
@@ -139,11 +159,19 @@ vez, se desarma. Por eso $X$ se reprocesa **a lo sumo 2 veces** $\Rightarrow
 (suman 1).
 
 **Cálculo.**
-$$E[X]=0\cdot 0{,}84 + 1\cdot 0{,}12 + 2\cdot 0{,}04 = 0{,}20$$
-$$E[X^2]=0\cdot 0{,}84 + 1\cdot 0{,}12 + 4\cdot 0{,}04 = 0{,}28$$
-$$V(X)=E[X^2]-(E[X])^2 = 0{,}28 - 0{,}20^2 = 0{,}24, \qquad \sigma_X=\sqrt{0{,}24}\approx 0{,}49$$
+$$
+E[X]=0\cdot 0{,}84 + 1\cdot 0{,}12 + 2\cdot 0{,}04 = 0{,}20
+$$
+$$
+E[X^2]=0\cdot 0{,}84 + 1\cdot 0{,}12 + 4\cdot 0{,}04 = 0{,}28
+$$
+$$
+V(X)=E[X^2]-(E[X])^2 = 0{,}28 - 0{,}20^2 = 0{,}24, \qquad \sigma_X=\sqrt{0{,}24}\approx 0{,}49
+$$
 Para el ítem (d), desarmarse $=$ fallar las **tres** pruebas:
-$$P(D)=P(\bar A_1)\,P(\bar A_2\mid\bar A_1)\,P(\bar A_3\mid\bar A_2\cap\bar A_1)=0{,}16\cdot 0{,}25\cdot 0{,}10=0{,}004.$$
+$$
+P(D)=P(\bar A_1)\,P(\bar A_2\mid\bar A_1)\,P(\bar A_3\mid\bar A_2\cap\bar A_1)=0{,}16\cdot 0{,}25\cdot 0{,}10=0{,}004.
+$$
 
 **Resultado.** $E[X]=0{,}2$ reprocesamientos promedio por controladora (en 100
 controladoras, $\approx 20$ reprocesamientos en total — distinto de la cantidad de

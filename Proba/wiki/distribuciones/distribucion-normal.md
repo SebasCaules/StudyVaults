@@ -21,7 +21,9 @@ parámetro). También llamada **Gaussiana**. Es "la más importante".
 
 ## Función de densidad
 
-$$ f_X(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\,\exp\!\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\},\qquad x\in\mathbb{R}. $$
+$$
+f_X(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\,\exp\!\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\},\qquad x\in\mathbb{R}.
+$$
 
 ![[normal-densidad.svg]]
 
@@ -37,7 +39,9 @@ $$ f_X(x)=\frac{1}{\sqrt{2\pi}\,\sigma}\,\exp\!\left\{-\frac{(x-\mu)^2}{2\sigma^
 
 **No tiene primitiva** (forma cerrada). Se calcula vía la
 [[estandarizacion-y-tabla-normal|normal estándar]]:
-$$ F_X(x)=P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right), $$
+$$
+F_X(x)=P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right),
+$$
 donde $\Phi$ es la FDA de $Z\sim N(0,1)$, tabulada. **Solo hace falta tabular $\Phi$ una vez** para cualquier $\mu,\sigma$.
 
 ![[normal-fda.svg]]
@@ -46,19 +50,27 @@ donde $\Phi$ es la FDA de $Z\sim N(0,1)$, tabulada. **Solo hace falta tabular $\
 
 ## Esperanza y varianza
 
-- $E[X]=\mu$.
-- $V(X)=\sigma^2$.
+$$
+\begin{aligned}
+E[X] &= \mu \\[4pt]
+V(X) &= \sigma^2
+\end{aligned}
+$$
 
 > **Intuición.** $E[X]=\mu$ se deduce escribiendo $X=\mu+\sigma Z$ (con $Z\sim N(0,1)$) y usando $E[Z]=0$: el integrando $z\,f_Z(z)$ es una **función impar** (vale lo mismo a izquierda y derecha del cero pero con signo opuesto), así que las dos mitades se cancelan exactamente. La varianza sale de $V(X)=E[X^2]-\mu^2$ con $X^2=\mu^2+2\mu\sigma Z+\sigma^2 Z^2$: el término cruzado (impar) vuelve a anularse y, como $E[Z^2]=1$, queda $E[X^2]=\mu^2+\sigma^2$, de donde $V(X)=\sigma^2$.
 
 ## Función generadora de momentos
 
-$$ M_X(t)=\exp\!\left\{\mu t+\tfrac12\sigma^2 t^2\right\}. $$
+$$
+M_X(t)=\exp\!\left\{\mu t+\tfrac12\sigma^2 t^2\right\}.
+$$
 (No figura en el apunte; ver [[funcion-generadora-de-momentos|FGM]].)
 
 ## Regla empírica (68–95–99.7)
 
-$$ P(\mu-\sigma<X<\mu+\sigma)\approx0.6827,\quad P(\mu-2\sigma<X<\mu+2\sigma)\approx0.9545,\quad P(\mu-3\sigma<X<\mu+3\sigma)\approx0.9973. $$
+$$
+P(\mu-\sigma<X<\mu+\sigma)\approx0.6827,\quad P(\mu-2\sigma<X<\mu+2\sigma)\approx0.9545,\quad P(\mu-3\sigma<X<\mu+3\sigma)\approx0.9973.
+$$
 ($P(-6\sigma<X-\mu<6\sigma)\approx0.999999998$.)
 
 ![[normal-regla-empirica.svg]]
@@ -122,7 +134,9 @@ $\Phi(0.66)=0.7454$ y $\Phi(0.67)=0.7486$: $\Phi(0.6\overline{6})\approx0.7475\R
 (usar directamente $\Phi(0.67)\approx0.7486$ es una aproximación más basta).
 c) $P(17<X\le21)=\Phi(2)-\Phi(-\tfrac23)=0.9772-0.2525=0.7247\Rightarrow\approx72.5\%$.
 d) Capacidad $c$ tal que $P(X\le c)=0.95$:
-$$ \Phi\!\left(\frac{c-18}{1.5}\right)=0.95 \Rightarrow \frac{c-18}{1.5}=\Phi^{-1}(0.95)=z_{0.95}\approx1.6449 \Rightarrow c\approx 1.5\cdot1.6449+18\approx20.47. $$
+$$
+\Phi\!\left(\frac{c-18}{1.5}\right)=0.95 \Rightarrow \frac{c-18}{1.5}=\Phi^{-1}(0.95)=z_{0.95}\approx1.6449 \Rightarrow c\approx 1.5\cdot1.6449+18\approx20.47.
+$$
 
 **Resultado.** a) $97.7\%$. b) $74.8\%$. c) $72.5\%$. d) $\approx20467$ litros.
 
@@ -139,10 +153,14 @@ $>72$, probabilidad de que sea $>84$.
 **Cálculo a).** $P(X>72)=1-\Phi\!\left(\frac{72-78}{6}\right)=1-\Phi(-1)=\Phi(1)=0.8413$.
 
 **Cálculo b).** Buscamos $x_A$ con $P(X\ge x_A)=0.1$:
-$$ 1-\Phi\!\left(\frac{x_A-78}{6}\right)=0.1 \Rightarrow \frac{x_A-78}{6}=z_{0.9}\approx1.2816 \Rightarrow x_A\approx78+6\cdot1.2816\approx85.7. $$
+$$
+1-\Phi\!\left(\frac{x_A-78}{6}\right)=0.1 \Rightarrow \frac{x_A-78}{6}=z_{0.9}\approx1.2816 \Rightarrow x_A\approx78+6\cdot1.2816\approx85.7.
+$$
 
 **Cálculo e)** (probabilidad **condicional**):
-$$ P(X>84\mid X>72)=\frac{P(X>84)}{P(X>72)}=\frac{1-\Phi(1)}{1-\Phi(-1)}=\frac{1-0.8413}{0.8413}\approx0.1886. $$
+$$
+P(X>84\mid X>72)=\frac{P(X>84)}{P(X>72)}=\frac{1-\Phi(1)}{1-\Phi(-1)}=\frac{1-0.8413}{0.8413}\approx0.1886.
+$$
 
 **Resultado.** a) $0.8413$. b) $\approx85.7$. e) $\approx0.1886$.
 
@@ -155,7 +173,9 @@ estuviera centrado en $10$ ($D\sim N(10,\sigma)$), ¿máximo $\sigma$ que permit
 **no más de una defectuosa entre mil**?
 
 **Cálculo a).** Dentro de especificación: $9.975\le D\le10.025$.
-$$ P(E)=\Phi\!\left(\frac{10.025-10.02}{0.075}\right)-\Phi\!\left(\frac{9.975-10.02}{0.075}\right)=\Phi(0.066)-\Phi(-0.6)=0.5239-0.2743=0.2536. $$
+$$
+P(E)=\Phi\!\left(\frac{10.025-10.02}{0.075}\right)-\Phi\!\left(\frac{9.975-10.02}{0.075}\right)=\Phi(0.066)-\Phi(-0.6)=0.5239-0.2743=0.2536.
+$$
 Fuera: $P(\overline E)=1-0.2536=0.7464$.
 
 > ⚠️ Discrepancia con el raw ([[tp4-variables-aleatorias-continuas]]): la **resolución
@@ -166,8 +186,12 @@ Fuera: $P(\overline E)=1-0.2536=0.7464$.
 > $P(\overline E)\approx0.748$. El número "oficial" del enunciado es $0.7477$.
 
 **Cálculo b).** Centrado: pedir $P(E)=0.999$. Por simetría,
-$$ 0.999=2\Phi\!\left(\frac{0.025}{\sigma}\right)-1 \Rightarrow \Phi\!\left(\frac{0.025}{\sigma}\right)=0.9995 \Rightarrow \frac{0.025}{\sigma}=\Phi^{-1}(0.9995)\approx3.2905, $$
-$$ \sigma\approx\frac{0.025}{3.2905}\approx0.0076\ \text{mm}. $$
+$$
+0.999=2\Phi\!\left(\frac{0.025}{\sigma}\right)-1 \Rightarrow \Phi\!\left(\frac{0.025}{\sigma}\right)=0.9995 \Rightarrow \frac{0.025}{\sigma}=\Phi^{-1}(0.9995)\approx3.2905,
+$$
+$$
+\sigma\approx\frac{0.025}{3.2905}\approx0.0076\ \text{mm}.
+$$
 
 **Resultado.** a) $\approx0.7477$ (Respuestas; la resolución por tabla da $0.7464$, ver
 discrepancia). b) $\sigma\approx0.0076$ mm.

@@ -91,13 +91,17 @@ porcentaje?
 **Paso 1.** Conteo de éxitos sobre total → **proporción**.
 
 **Paso 2.** "Descender / inferior a $0.30$" → cola izquierda:
-$$ H_0: q\ge 0.30 \qquad H_1: q<0.30, \qquad \alpha=0.05. $$
+$$
+H_0: q\ge 0.30 \qquad H_1: q<0.30, \qquad \alpha=0.05.
+$$
 
 **Paso 3.** $n=400$ grande → $Z=\dfrac{\hat q - 0.30}{\sqrt{0.30\cdot 0.70/400}}$,
 con $\hat q = 92/400 = 0.23$.
 
 **Paso 4 (cálculo y decisión).**
-$$ z_{\text{obs}}=\frac{0.23-0.30}{\sqrt{0.21/400}}=\frac{-0.07}{0.0229}\approx -3.055. $$
+$$
+z_{\text{obs}}=\frac{0.23-0.30}{\sqrt{0.21/400}}=\frac{-0.07}{0.0229}\approx -3.055.
+$$
 Región de rechazo (izquierda): $Z<-z_{0.95}=-1.645$. Como
 $z_{\text{obs}}=-3.055 < -1.645$, se **rechaza $H_0$**.
 

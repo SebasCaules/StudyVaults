@@ -26,7 +26,9 @@ cuartil, la mediana, o "qué porcentaje de los datos cae en tal intervalo".
 2. Para el cuartil $q_j$, buscar el intervalo $i$ donde la acumulada cruza
    $j\cdot 0.25 \cdot n$ (para la mediana, $j=2$ ⇒ $n/2$).
 3. Interpolar linealmente dentro de ese intervalo:
-$$ q_{j,Ag} = L_i + \frac{j\cdot 0.25\cdot n - F_{i-1}}{f_i}\,(L_{s,i} - L_i) $$
+$$
+q_{j,Ag} = L_i + \frac{j\cdot 0.25\cdot n - F_{i-1}}{f_i}\,(L_{s,i} - L_i)
+$$
 donde $F_{i-1}$ es la acumulada **hasta el inicio** del intervalo y $f_i$ su
 frecuencia.
 
@@ -38,17 +40,23 @@ frecuencia.
 
 **Ejemplo** (teórica, $q_1$, $n=60$): intervalo $[36,39)$ con $F_{i-1}=12$,
 $f_i=18$:
-$$ q_{1,Ag} = 36 + \frac{0.25\cdot 60 - 12}{18}\,(39-36) = 36 + \frac{3}{18}\cdot 3 = 36.5. $$
+$$
+q_{1,Ag} = 36 + \frac{0.25\cdot 60 - 12}{18}\,(39-36) = 36 + \frac{3}{18}\cdot 3 = 36.5.
+$$
 
 > **Intuición.** Otra forma de verlo: si el intervalo $[L_i, L_{s,i})$ contiene $f_i$ datos y los suponés repartidos parejo, estás partiendo ese intervalo en $f_i$ subintervalos iguales, cada uno de ancho $(L_{s,i} - L_i)/f_i$. Para llegar al dato número $j\cdot 0.25\,n$ arrancás en $L_i$ (que ya tiene acumulados $F_{i-1}$ datos) y avanzás exactamente $(j\cdot 0.25\,n - F_{i-1})$ de esos subintervalos hacia la derecha. La fórmula no dice más que eso.
 
 ## Proporción de datos en un intervalo $(a,b)$
 Sea $P(\cdot)$ la interpolación lineal del **polígono de frecuencias acumuladas**.
 La proporción de datos con valor en $(a,b)$ es
-$$ \frac{P(b) - P(a)}{n}. $$
+$$
+\frac{P(b) - P(a)}{n}.
+$$
 Para interpolar $P(x)$ en un intervalo $(L_i, L_{s,i})$ con acumuladas $F_{i-1}$ y
 $F_i$ en sus extremos:
-$$ P(x) = F_{i-1} + (F_i - F_{i-1})\,\frac{x - L_i}{L_{s,i}-L_i}. $$
+$$
+P(x) = F_{i-1} + (F_i - F_{i-1})\,\frac{x - L_i}{L_{s,i}-L_i}.
+$$
 
 **Ejemplo** (Ej 4 de la guía, 1000 llamadas): % de llamadas $>180$ s
 $= 1 - P(180)/1000$, con $P(180)=(809+549)/2 = 679$ ⇒ **32.1%**.
@@ -63,9 +71,13 @@ Cuando los datos están agrupados, la moda se asigna primero al **intervalo moda
    se busca el punto $M$ del intervalo modal $[L_I, L_D]$ que reparte el "exceso"
    de frecuencia proporcionalmente respecto del intervalo de la izquierda
    (frecuencia $f_I$) y el de la derecha ($f_D$), siendo $f_M$ la frecuencia modal:
-   $$ (M - L_I)\,(f_M - f_D) = (L_D - M)\,(f_M - f_I). $$
+   $$
+   (M - L_I)\,(f_M - f_D) = (L_D - M)\,(f_M - f_I).
+   $$
    Despejando,
-   $$ M = \frac{L_D\,(f_M - f_I) + L_I\,(f_M - f_D)}{(f_M - f_I) + (f_M - f_D)}. $$
+   $$
+   M = \frac{L_D\,(f_M - f_I) + L_I\,(f_M - f_D)}{(f_M - f_I) + (f_M - f_D)}.
+   $$
 
 > La interpolación corre la moda hacia el intervalo vecino con **mayor** frecuencia.
 
@@ -96,23 +108,31 @@ los intervalos centrados en la media de semiamplitud $s, 2s, 3s$; y el % de
 llamadas que superan los 3 minutos.
 
 **1) Media y desvío (datos agrupados).** Con $n=\sum f_i = 1000$:
-$$ \bar x = \frac{1}{n}\sum x_i f_i = \frac{157\,710}{1000} = 157.71 \text{ seg}, \qquad s = \sqrt{\frac{\sum (x_i-\bar x)^2 f_i}{n-1}} \approx 45.37 \text{ seg}. $$
+$$
+\bar x = \frac{1}{n}\sum x_i f_i = \frac{157\,710}{1000} = 157.71 \text{ seg}, \qquad s = \sqrt{\frac{\sum (x_i-\bar x)^2 f_i}{n-1}} \approx 45.37 \text{ seg}.
+$$
 
 **2) Moda por interpolación.** El intervalo modal es el sexto, $(165,195]$, con la
 frecuencia máxima $f_M = 260$; sus vecinos tienen $f_I = 247$ (izquierda) y
 $f_D = 133$ (derecha). Con $L_I = 165$, $L_D = 195$:
-$$ M = \frac{195\,(260-247) + 165\,(260-133)}{(260-247)+(260-133)} = \frac{195\cdot 13 + 165\cdot 127}{13 + 127} \approx 167.79 \text{ seg}. $$
+$$
+M = \frac{195\,(260-247) + 165\,(260-133)}{(260-247)+(260-133)} = \frac{195\cdot 13 + 165\cdot 127}{13 + 127} \approx 167.79 \text{ seg}.
+$$
 (La convención simple daría $M = 180$, el punto medio del intervalo modal.)
 
 **3) Mediana por interpolación** sobre el polígono de frecuencias **acumuladas**.
 La frecuencia acumulada $n/2 = 500$ cae en el intervalo $(135,165]$, cuyos extremos
 acumulan $302$ y $549$:
-$$ m_e = 135 + 30\cdot\frac{500 - 302}{549 - 302} \approx 159.05 \text{ seg}. $$
+$$
+m_e = 135 + 30\cdot\frac{500 - 302}{549 - 302} \approx 159.05 \text{ seg}.
+$$
 
 **4) Proporciones por interpolación.** Sea $P(x)$ la frecuencia acumulada
 interpolada. El intervalo centrado en la media con semiamplitud $s$ es
 $(\bar x - s, \bar x + s) = (112.34, 203.08)$. Interpolando:
-$$ P(112.34) = 122 + (302-122)\tfrac{112.34-105}{30} \approx 166.04, \qquad P(203.08) = 809 + (942-809)\tfrac{203.08-195}{30} \approx 844.82, $$
+$$
+P(112.34) = 122 + (302-122)\tfrac{112.34-105}{30} \approx 166.04, \qquad P(203.08) = 809 + (942-809)\tfrac{203.08-195}{30} \approx 844.82,
+$$
 de donde la proporción en $\bar x \pm s$ es $(844.82 - 166.04)/1000 \approx 0.68$
 (**68%**). Análogamente se obtienen las de $\bar x \pm 2s$ y $\bar x \pm 3s$.
 
@@ -134,7 +154,9 @@ interpolación cuando se da directamente la tabla de marcas y frecuencias.
 intervalo $(3.4, 3.6]$ y la marca $3.7$ el intervalo $(3.6, 3.8]$. La frecuencia
 acumulada hasta $3.6$ es $2+3+14+10+15 = 44$ y hasta $3.8$ es $44+18 = 62$. Como
 $n/2 = 50$ cae en $(3.6, 3.8]$, se interpola:
-$$ m_e = 3.6 + \frac{50 - 44}{62 - 44}\,(3.8 - 3.6) = 3.6667 \text{ kg}. $$
+$$
+m_e = 3.6 + \frac{50 - 44}{62 - 44}\,(3.8 - 3.6) = 3.6667 \text{ kg}.
+$$
 (Para media y desvío de este mismo ejercicio ver [[medidas-de-tendencia-central]] y
 [[medidas-de-dispersion]]: $\bar x = 3.6460$, $s = 0.4234$.)
 

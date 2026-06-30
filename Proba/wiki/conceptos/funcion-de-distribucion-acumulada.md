@@ -16,7 +16,9 @@ intervalos.
 
 Para cualquier [[variable-aleatoria|v.a. discreta]] $X$ se define la **función de
 distribución acumulada (FDA)** $F_X : \mathbb{R} \mapsto [0,1]$ como:
-$$ F_X(k) = P(X \le k) = \sum_{\{y \in \mathcal{R}_X \,:\, y \le k\}} p_X(y) $$
+$$
+F_X(k) = P(X \le k) = \sum_{\{y \in \mathcal{R}_X \,:\, y \le k\}} p_X(y)
+$$
 Es una forma equivalente a la [[variable-aleatoria|PMF]] de describir el
 comportamiento de una v.a.
 
@@ -69,7 +71,9 @@ $f_{XY}=\partial^2 F_{XY}/\partial x\,\partial y$. El detalle de esta inversa de
 
 **Enunciado** ([[tp3-variables-aleatorias-discretas]] ej. 7). El número $X$ de
 defectos importantes en un automóvil tiene FDA:
-$$ F_X(x) = \begin{cases} 0 & x < 0 \\ 0{,}06 & 0 \le x < 1 \\ 0{,}19 & 1 \le x < 2 \\ 0{,}39 & 2 \le x < 3 \\ 0{,}67 & 3 \le x < 4 \\ 0{,}92 & 4 \le x < 5 \\ 0{,}97 & 5 \le x < 6 \\ 1 & x \ge 6 \end{cases} $$
+$$
+F_X(x) = \begin{cases} 0 & x < 0 \\ 0{,}06 & 0 \le x < 1 \\ 0{,}19 & 1 \le x < 2 \\ 0{,}39 & 2 \le x < 3 \\ 0{,}67 & 3 \le x < 4 \\ 0{,}92 & 4 \le x < 5 \\ 0{,}97 & 5 \le x < 6 \\ 1 & x \ge 6 \end{cases}
+$$
 Calcular $p_X(2)$, $P(X > 3)$, $P(2 \le X \le 5)$ y $P(2 < X < 5)$.
 
 **Planteo y cálculo.** Cada salto de la FDA es la PMF en ese punto.

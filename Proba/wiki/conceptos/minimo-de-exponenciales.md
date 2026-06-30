@@ -15,7 +15,9 @@ Si $X_1,\dots,X_n$ son variables aleatorias **exponenciales independientes** de 
 $\lambda_1,\dots,\lambda_n$, entonces el **mínimo** $T=\min(X_1,\dots,X_n)$ vuelve a ser
 [[distribucion-exponencial|exponencial]], con tasa igual a la **suma** de las tasas:
 
-$$ T=\min(X_1,\dots,X_n)\sim\text{Expo}\!\left(\textstyle\sum_{i=1}^n \lambda_i\right). $$
+$$
+T=\min(X_1,\dots,X_n)\sim\text{Expo}\!\left(\textstyle\sum_{i=1}^n \lambda_i\right).
+$$
 
 Modela un **sistema en serie**: $n$ componentes conectados de forma que el sistema falla en
 cuanto falla **alguno** de ellos. La duración del sistema es el primero en fallar, es decir el
@@ -26,11 +28,17 @@ mínimo de las duraciones individuales ([[tp4-variables-aleatorias-continuas]] e
 La clave es trabajar con la [[funcion-de-distribucion-acumulada|FDA]] del mínimo a través de su
 **función de supervivencia** $P(T>t)$. El mínimo supera $t$ si y solo si **todos** lo superan;
 por independencia el producto se factoriza:
-$$ P(T>t)=P(X_1>t,\dots,X_n>t)=\prod_{i=1}^n P(X_i>t)=\prod_{i=1}^n e^{-\lambda_i t} =\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right). $$
+$$
+P(T>t)=P(X_1>t,\dots,X_n>t)=\prod_{i=1}^n P(X_i>t)=\prod_{i=1}^n e^{-\lambda_i t} =\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right).
+$$
 Entonces
-$$ F_T(t)=1-P(T>t)=1-\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right),\qquad f_T(t)=F_T'(t)=\Big(\textstyle\sum_i \lambda_i\Big)\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right), $$
+$$
+F_T(t)=1-P(T>t)=1-\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right),\qquad f_T(t)=F_T'(t)=\Big(\textstyle\sum_i \lambda_i\Big)\exp\!\left(-\Big(\textstyle\sum_i \lambda_i\Big)t\right),
+$$
 que es exactamente la distribución de una $\text{Expo}\big(\sum_i \lambda_i\big)$. Por lo tanto
-$$ E[T]=\frac{1}{\sum_i \lambda_i}. $$
+$$
+E[T]=\frac{1}{\sum_i \lambda_i}.
+$$
 
 > El **mínimo** de exponenciales es exponencial. No confundir con la **suma** de exponenciales
 > i.i.d., que es Gamma/Erlang (ver [[distribucion-gamma|Gamma]], forward-link de U7) — la suma
@@ -39,7 +47,9 @@ $$ E[T]=\frac{1}{\sum_i \lambda_i}. $$
 ## Caso idéntico
 
 Si las $n$ tasas son iguales, $\lambda_i=\lambda$, entonces
-$$ T\sim\text{Expo}(n\lambda),\qquad E[T]=\frac{1}{n\lambda}=\frac{E[X_1]}{n}. $$
+$$
+T\sim\text{Expo}(n\lambda),\qquad E[T]=\frac{1}{n\lambda}=\frac{E[X_1]}{n}.
+$$
 Cuantos más componentes en serie, **antes** falla el sistema (la vida media cae como $1/n$).
 
 **Intuición (las tasas se suman).** La tasa exponencial es un "ritmo de fallar" (ver [[tasa-de-fallas|tasa de fallas]], donde la exponencial es el caso de tasa constante). Si $n$ componentes pueden fallar en paralelo y el primero que falla tumba al sistema, los ritmos individuales se **acumulan**: el sistema falla a ritmo $\sum_i\lambda_i$. Por eso el mínimo es más "peligroso" que cada componente por separado, y su vida media $1/\sum_i\lambda_i$ es menor que la de cualquiera.
@@ -67,10 +77,16 @@ obtener $F_T(t)=P(T<t)$ y la densidad $f_T(t)$. ¿Qué distribución tiene $T$? 
 $P(\text{todos}\ge t)=\prod_i P(A_i)=\prod_i e^{-\lambda t}=e^{-n\lambda t}$.
 
 **Cálculo.** Con $\lambda=0.01=\tfrac{1}{100}$:
-$$ P(T\ge t)=\Big(e^{-0.01t}\Big)^n=e^{-n t/100}\;\Rightarrow\; F_T(t)=1-e^{-n t/100}\quad(t>0), $$
-$$ f_T(t)=F_T'(t)=\frac{n}{100}\,e^{-n t/100}=0.01\,n\,e^{-n t/100}. $$
+$$
+P(T\ge t)=\Big(e^{-0.01t}\Big)^n=e^{-n t/100}\;\Rightarrow\; F_T(t)=1-e^{-n t/100}\quad(t>0),
+$$
+$$
+f_T(t)=F_T'(t)=\frac{n}{100}\,e^{-n t/100}=0.01\,n\,e^{-n t/100}.
+$$
 Esta es la densidad de una **exponencial de parámetro** $n\lambda=\dfrac{n}{100}$, así que
-$$ T\sim\text{Expo}\!\left(\frac{n}{100}\right),\qquad E[T]=\frac{1}{n/100}=\frac{100}{n}\ \text{horas}. $$
+$$
+T\sim\text{Expo}\!\left(\frac{n}{100}\right),\qquad E[T]=\frac{1}{n/100}=\frac{100}{n}\ \text{horas}.
+$$
 
 **Resultado.** $F_T(t)=1-e^{-nt/100}$, $f_T(t)=0.01\,n\,e^{-nt/100}$; $T$ es exponencial de
 tasa $n/100$ y $E[T]=100/n$ horas (coincide con las Respuestas de la guía, ej. 11).

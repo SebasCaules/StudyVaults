@@ -18,7 +18,9 @@ Describen la **forma** de la distribución de los datos, más allá del centro y
 dispersión. Ambas son **adimensionales** (no dependen de la unidad).
 
 ## Coeficiente de asimetría (simetría)
-$$ \gamma = \frac{\sum_{i=1}^n (x_i - \bar{x})^3}{n\, s^3} $$
+$$
+\gamma = \frac{\sum_{i=1}^n (x_i - \bar{x})^3}{n\, s^3}
+$$
 ($s$ = [[medidas-de-dispersion|desvío estándar]].) Interpretación:
 - $\gamma \approx 0$ → distribución **simétrica** respecto de la
   [[medidas-de-tendencia-central|media]].
@@ -35,7 +37,9 @@ $$ \gamma = \frac{\sum_{i=1}^n (x_i - \bar{x})^3}{n\, s^3} $$
 > (cola a derecha).
 
 ## Coeficiente de curtosis (kurtosis)
-$$ \kappa = \frac{\sum_{i=1}^n (x_i - \bar{x})^4}{n\, s^4} - 3 $$
+$$
+\kappa = \frac{\sum_{i=1}^n (x_i - \bar{x})^4}{n\, s^4} - 3
+$$
 Mide cuánto **peso** tienen las colas (qué tanto se concentran los datos lejos de
 la media). El $-3$ usa como referencia la [[distribucion-normal|distribución normal]]
 (convención usual; ver nota de discrepancia abajo):

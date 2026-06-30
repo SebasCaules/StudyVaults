@@ -43,13 +43,17 @@ Se cumple $N(0)=0$, $N(t)\in\mathbb{N}_0$ y el recorrido $R_{N(k)}=\{0,1,\dots,k
 ## Distribución de los conteos
 $N(k)$ = número de éxitos en $k$ experimentos i.i.d. Por lo tanto
 $N(k)\sim$ [[distribucion-binomial|Binomial]]$(k,p)$:
-$$ P(N(k)=n)=\binom{k}{n}p^n(1-p)^{k-n}. $$
+$$
+P(N(k)=n)=\binom{k}{n}p^n(1-p)^{k-n}.
+$$
 
 ![[bernoulli-proceso.svg]]
 
 ## Incrementos
 Por incrementos estacionarios e independientes, para $k\le m$:
-$$ P\big(N(m)-N(k)=n\big)\overset{\text{inc. est.}}{=}P\big(N(m{-}k)=n\big)\;\Rightarrow\; N(m)-N(k)\sim\text{Binomial}(m{-}k,p). $$
+$$
+P\big(N(m)-N(k)=n\big)\overset{\text{inc. est.}}{=}P\big(N(m{-}k)=n\big)\;\Rightarrow\; N(m)-N(k)\sim\text{Binomial}(m{-}k,p).
+$$
 Además, a partir de los incrementos independientes se prueba que $N(t)$ es un
 [[procesos-estocasticos#Proceso de Markov|proceso de Markov]]:
 $P(N(m)=n_m\mid N(\ell)=n_\ell, N(k)=n_k)=P(N(m)=n_m\mid N(\ell)=n_\ell)$.
@@ -81,18 +85,26 @@ v.a. i.i.d. y dar $E[X_n]$, $\text{Var}[X_n]$.*
 
 **Planteo.** Sea $G_n\sim\text{Bernoulli}(1/2)$ = "gana la jugada $n$" y la
 ganancia $Y_n=2G_n-1\in\{-1,+1\}$ con $P(Y_n=\pm1)=\tfrac12$. Entonces
-$$ X_n=\sum_{k=1}^{n}Y_k. $$
+$$
+X_n=\sum_{k=1}^{n}Y_k.
+$$
 
 **Momentos del sumando.**
-$$ E[Y_n]=(-1)\tfrac12+(+1)\tfrac12=0,\qquad \text{Var}[Y_n]=E[Y_n^2]=(-1)^2\tfrac12+(+1)^2\tfrac12=1. $$
+$$
+E[Y_n]=(-1)\tfrac12+(+1)\tfrac12=0,\qquad \text{Var}[Y_n]=E[Y_n^2]=(-1)^2\tfrac12+(+1)^2\tfrac12=1.
+$$
 
 **Esperanza y varianza de $X_n$.** Por linealidad y, para la varianza, por
 independencia de los $Y_k$:
-$$ E[X_n]=\sum_{k=1}^n E[Y_k]=0,\qquad \text{Var}[X_n]=\sum_{k=1}^n \text{Var}[Y_k]=n. $$
+$$
+E[X_n]=\sum_{k=1}^n E[Y_k]=0,\qquad \text{Var}[X_n]=\sum_{k=1}^n \text{Var}[Y_k]=n.
+$$
 
 **Distribución.** Con $H_n=\sum_{k=1}^n G_n\sim\text{Binomial}(n,1/2)$ (¡suma de
 Bernoulli i.i.d.!) y $X_n=2H_n-n$, el recorrido es $\{-n,-n+2,\dots,n-2,n\}$ y
-$$ P(X_n=x)=\binom{n}{\frac{n+x}{2}}\Big(\tfrac12\Big)^n. $$
+$$
+P(X_n=x)=\binom{n}{\frac{n+x}{2}}\Big(\tfrac12\Big)^n.
+$$
 
 **Resultado.** $E[X_n]=0$, $\text{Var}[X_n]=n$. El proceso tiene incrementos
 independientes y estacionarios pero **no** es estacionario (la varianza crece con

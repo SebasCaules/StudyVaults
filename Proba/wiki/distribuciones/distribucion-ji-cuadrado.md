@@ -30,7 +30,9 @@ Según [[teorica-estimacion-puntual-conocidos]], si $X_i\sim\mathcal N(\mu,\sigm
 i.i.d. y $S_n^2=\frac{1}{n-1}\sum(X_i-\overline X_n)^2$ es la
 [[varianza-muestral]], entonces
 
-$$\boxed{\;\frac{(n-1)\,S_n^2}{\sigma^2}\sim\chi^2_{n-1}\;}$$
+$$
+\boxed{\;\frac{(n-1)\,S_n^2}{\sigma^2}\sim\chi^2_{n-1}\;}
+$$
 
 es decir, una ji-cuadrado con $n-1$ grados de libertad (uno se "consume" al
 estimar la media con $\overline X_n$). Más en general, si $Z_1,\dots,Z_k$ son
@@ -43,7 +45,9 @@ $N(0,1)^2$ es ji-cuadrado).
 Con $k$ grados de libertad, según [[teorica-estimacion-puntual-conocidos]]
 (escrita allí con $k=n-1$):
 
-$$f_{\chi^2_k}(x) = \begin{cases} \dfrac{x^{\frac{k}{2}-1}\,e^{-x/2}}{2^{\frac{k}{2}}\,\Gamma\!\left(\frac{k}{2}\right)} & x>0,\\[2mm] 0 & x\le 0, \end{cases}$$
+$$
+f_{\chi^2_k}(x) = \begin{cases} \dfrac{x^{\frac{k}{2}-1}\,e^{-x/2}}{2^{\frac{k}{2}}\,\Gamma\!\left(\frac{k}{2}\right)} & x>0,\\[2mm] 0 & x\le 0, \end{cases}
+$$
 
 donde $\Gamma(\cdot)$ es la función gamma ($\Gamma(m+1)=m!$, $\Gamma(1/2)=\sqrt\pi$).
 
@@ -56,8 +60,13 @@ es decir la misma fórmula con $k=n-1$.
 ## Esperanza y varianza
 
 Con $k$ grados de libertad:
-- $E[X] = k$.
-- $V(X) = 2k$.
+
+$$
+\begin{aligned}
+E[X] &= k \\[4pt]
+V(X) &= 2k
+\end{aligned}
+$$
 
 > **Intuición.** Como $\chi^2_k=\sum_{i=1}^k Z_i^2$ con $Z_i\sim\mathcal N(0,1)$, y
 > cada $E[Z_i^2]=V(Z_i)=1$, por linealidad $E[X]=k\cdot 1=k$: la esperanza
@@ -105,9 +114,13 @@ $W\sim\chi^2_{n-1}$, así que $E[W]=n-1$ (grados de libertad).
 
 **Cálculo.** Despejando $S_n^2=\frac{\sigma^2}{n-1}W$ y tomando esperanza por
 linealidad:
-$$E[S_n^2]=\frac{\sigma^2}{n-1}\,E[W]=\frac{\sigma^2}{n-1}\,(n-1)=\sigma^2.$$
+$$
+E[S_n^2]=\frac{\sigma^2}{n-1}\,E[W]=\frac{\sigma^2}{n-1}\,(n-1)=\sigma^2.
+$$
 Análogamente, usando $V(W)=2(n-1)$,
-$$V(S_n^2)=\left(\frac{\sigma^2}{n-1}\right)^2 V(W)=\frac{\sigma^4}{(n-1)^2}\,2(n-1)=\frac{2\sigma^4}{n-1},$$
+$$
+V(S_n^2)=\left(\frac{\sigma^2}{n-1}\right)^2 V(W)=\frac{\sigma^4}{(n-1)^2}\,2(n-1)=\frac{2\sigma^4}{n-1},
+$$
 que coincide con el caso normal ($\kappa=0$) de la fórmula del ECM de $S_n^2$ del
 [[formulario-inferencia]].
 

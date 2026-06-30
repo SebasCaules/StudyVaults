@@ -20,10 +20,14 @@ conjunta se factoriza como producto de las marginales.
 ## Definición
 
 **Caso discreto** (según [[teorica-independencia-vad]]):
-$$ X,Y \text{ independientes} \iff p_{X,Y}(x,y)=p_X(x)\,p_Y(y)\quad\forall x\in R_X,\,y\in R_Y. $$
+$$
+X,Y \text{ independientes} \iff p_{X,Y}(x,y)=p_X(x)\,p_Y(y)\quad\forall x\in R_X,\,y\in R_Y.
+$$
 
 **Caso continuo** (según [[teorica-bidimensionales-vac-intro]]):
-$$ X,Y \text{ independientes} \iff f_{X,Y}(x,y)=f_X(x)\,f_Y(y)\quad\forall (x,y)\in\mathbb{R}^2. $$
+$$
+X,Y \text{ independientes} \iff f_{X,Y}(x,y)=f_X(x)\,f_Y(y)\quad\forall (x,y)\in\mathbb{R}^2.
+$$
 
 Equivalentemente, vía condicionales: $X,Y$ independientes sii $f_{X\mid Y}(x\mid y)=f_X(x)$ (o
 $p_{X\mid Y}=p_X$), es decir la condicional coincide con la marginal.
@@ -56,10 +60,14 @@ Si $X,Y$ son independientes:
 $P(X=Y)$ y mostrar que $Z=X+Y\sim\text{Binomial}(6,0.5)$.
 
 **Conjunta (por independencia).**
-$$ p_{X,Y}(i,j)=P(X=i)P(Y=j)=\binom{3}{i}\binom{3}{j}\,0.5^{6},\qquad 0\le i,j\le3. $$
+$$
+p_{X,Y}(i,j)=P(X=i)P(Y=j)=\binom{3}{i}\binom{3}{j}\,0.5^{6},\qquad 0\le i,j\le3.
+$$
 
 **Cálculo de $P(X=Y)$.** Suma sobre la diagonal $i=j$:
-$$ P(X=Y)=\sum_{i=0}^{3}\binom{3}{i}^2 0.5^{6}=\big(1+9+9+1\big)\,0.5^{6}=20\cdot0.5^6=\frac{5}{16}=0.3125. $$
+$$
+P(X=Y)=\sum_{i=0}^{3}\binom{3}{i}^2 0.5^{6}=\big(1+9+9+1\big)\,0.5^{6}=20\cdot0.5^6=\frac{5}{16}=0.3125.
+$$
 (Se usó $\sum_i\binom{3}{i}^2=\binom{6}{3}=20$, identidad de Vandermonde.)
 
 **Distribución de $Z=X+Y$.** Para cada $k\in\{0,\dots,6\}$ se suman las anti-diagonales $i+j=k$.
@@ -83,10 +91,14 @@ que había). Eso ya garantiza que $X$ e $Y$ **no** son independientes. Confirmé
 marginales.
 
 **Marginales.**
-$$ f_X(x)=\int_0^x 2\,dy=2x\quad(0<x<1),\qquad f_Y(y)=\int_y^1 2\,dx=2(1-y)\quad(0<y<1). $$
+$$
+f_X(x)=\int_0^x 2\,dy=2x\quad(0<x<1),\qquad f_Y(y)=\int_y^1 2\,dx=2(1-y)\quad(0<y<1).
+$$
 
 **Test de factorización.**
-$$ f_X(x)\,f_Y(y)=2x\cdot2(1-y)=4x(1-y)\neq 2=f_{X,Y}(x,y). $$
+$$
+f_X(x)\,f_Y(y)=2x\cdot2(1-y)=4x(1-y)\neq 2=f_{X,Y}(x,y).
+$$
 La conjunta no es el producto de las marginales, así que $X$ e $Y$ **no** son independientes.
 
 **Resultado.** $X,Y$ dependientes. El argumento decisivo es el **soporte no rectangular**: cuando

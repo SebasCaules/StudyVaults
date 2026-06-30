@@ -26,7 +26,9 @@ fuera cierta.
 
 ## Regla de decisión con el valor p
 
-$$ \boxed{\ \text{Se rechaza } H_0 \iff \text{valor p} < \alpha\ } $$
+$$
+\boxed{\ \text{Se rechaza } H_0 \iff \text{valor p} < \alpha\ }
+$$
 
 Equivalente a la regla de la región crítica, pero más informativa: el valor p es
 el **nivel de significación más chico** al cual todavía se rechazaría $H_0$. Como
@@ -80,10 +82,14 @@ valor p.
 desconocido y $n$ chico, estadístico $T=\dfrac{\bar X - \mu_0}{S/\sqrt n}\sim t_9$.
 
 **Cálculo.**
-$$ t_{\text{obs}}=\frac{10.985-9.5}{1.1489/\sqrt{10}}=\frac{1.485}{0.3633}\approx 4.087. $$
+$$
+t_{\text{obs}}=\frac{10.985-9.5}{1.1489/\sqrt{10}}=\frac{1.485}{0.3633}\approx 4.087.
+$$
 Valor crítico: $t_{9,\,0.95}=1.8331$. Como $t_{\text{obs}}=4.087 > 1.8331$, cae en
 la región de rechazo. El valor p es
-$$ \text{valor p}=P_{\mu_0}(T \ge t_{\text{obs}})=1-\Xi_{9}(4.087)\approx 0.0014. $$
+$$
+\text{valor p}=P_{\mu_0}(T \ge t_{\text{obs}})=1-\Xi_{9}(4.087)\approx 0.0014.
+$$
 
 **Resultado.** Como valor p $\approx 0.0014 < 0.05 = \alpha$, se **rechaza $H_0$**:
 hay evidencia de que la eficiencia media aumentó. De hecho se rechazaría para
