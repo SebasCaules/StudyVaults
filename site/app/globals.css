@@ -442,18 +442,84 @@
   cursor: help;
 }
 
-/* definiciones / teoremas: blockquote con etiqueta en negrita */
+/* ----------------------------------------------------------------------------
+   Entornos tipo "apunte LaTeX" (amsthm). El plugin rehypeEnv (lib/content/render.ts)
+   clasifica cada blockquote por su etiqueta en negrita inicial y le pone
+   `data-env="def|thm|proof|ex|note|intu|warn"`. Acá se pintan como cajas
+   etiquetadas; el blockquote sin etiqueta reconocida cae al estilo genérico.
+   --------------------------------------------------------------------------- */
 .prose-sv blockquote {
-  margin: 20px 0;
+  margin: 22px 0;
   padding: 14px 20px;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--hairline-strong);
   background: var(--surface-2);
   border-radius: 0 var(--r-card) var(--r-card) 0;
   color: var(--text-primary);
 }
-.prose-sv blockquote p { margin: 0 0 8px; }
+.prose-sv blockquote p { margin: 0 0 10px; }
 .prose-sv blockquote p:last-child { margin-bottom: 0; }
-.prose-sv blockquote strong:first-child { color: var(--accent-text); }
+.prose-sv blockquote ul,
+.prose-sv blockquote ol { margin: 8px 0; }
+/* la etiqueta en negrita inicial actúa como "encabezado run-in" del entorno */
+.prose-sv blockquote strong:first-child { color: var(--text-secondary); }
+/* blockquotes anidados (sub-notas dentro de un entorno) */
+.prose-sv blockquote blockquote { margin: 12px 0 4px; }
+
+/* Definición — el entorno protagonista: barra coral + fondo tenue */
+.prose-sv blockquote[data-env="def"] {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+}
+.prose-sv blockquote[data-env="def"] strong:first-child { color: var(--accent-text); }
+
+/* Teorema / Proposición / Lema / Corolario / Propiedad — caja "demostrable":
+   borde completo en los 4 lados, el sello más formal del apunte */
+.prose-sv blockquote[data-env="thm"] {
+  border: 1px solid var(--accent-line);
+  border-left-width: 3px;
+  background: var(--surface-2);
+}
+.prose-sv blockquote[data-env="thm"] strong:first-child { color: var(--accent-text); }
+
+/* Demostración — subordinada, neutra, con guion punteado y final ∎ */
+.prose-sv blockquote[data-env="proof"] {
+  border-left: 2px dashed var(--hairline-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 6px 20px;
+}
+.prose-sv blockquote[data-env="proof"] strong:first-child {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Ejemplo — acento secundario (azul) para separarlo de la teoría */
+.prose-sv blockquote[data-env="ex"] {
+  border-left: 3px solid var(--primary);
+  background: var(--primary-soft);
+}
+.prose-sv blockquote[data-env="ex"] strong:first-child { color: var(--link); }
+
+/* Intuición — azul tenue: la lectura "informal" que acompaña a la formal */
+.prose-sv blockquote[data-env="intu"] {
+  border-left: 3px solid var(--primary-line);
+  background: color-mix(in srgb, var(--primary-soft) 55%, transparent);
+}
+.prose-sv blockquote[data-env="intu"] strong:first-child { color: var(--link); }
+
+/* Observación / Nota / Interpretación / Variante — neutro, no compite con la teoría */
+.prose-sv blockquote[data-env="note"] {
+  border-left: 3px solid var(--hairline-strong);
+  background: var(--surface-2);
+}
+.prose-sv blockquote[data-env="note"] strong:first-child { color: var(--ink-strong); }
+
+/* Atención / Cuidado — advertencia: coral saturado + barra gruesa */
+.prose-sv blockquote[data-env="warn"] {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+}
+.prose-sv blockquote[data-env="warn"] strong:first-child { color: var(--accent-text); }
 
 /* inline code */
 .prose-sv :not(pre) > code {

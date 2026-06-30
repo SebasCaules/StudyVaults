@@ -55,8 +55,12 @@ export function FinText({ text }: { text: string }) {
         ),
       );
     } else {
-      // **negrita**
-      out.push(<strong key={key++}>{tok.slice(2, -2)}</strong>);
+      // **negrita** — el contenido puede tener $math$ inline: render recursivo
+      out.push(
+        <strong key={key++}>
+          <FinText text={tok.slice(2, -2)} />
+        </strong>,
+      );
     }
     last = i + tok.length;
   }

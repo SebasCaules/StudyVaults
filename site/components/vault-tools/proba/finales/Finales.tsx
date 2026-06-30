@@ -3,15 +3,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Note } from "@studyvaults/ui";
 import ExerciseCard from "./ExerciseCard";
+import MethodCard from "./MethodCard";
 import TFDeck from "./TFDeck";
 import { EX_TYPES, EXAMS, TPS } from "./catalog";
 import { EXERCISES, TF_ITEMS } from "./data";
+import { METHOD_BY_TYPE } from "./metodos";
 import type { ExType, ExamKind } from "./types";
 
 /* ============================================================================
- * Banco de finales — file system de exámenes resueltos paso a paso, filtro por
- * tipo de ejercicio (visor uno por uno), ejercicios propuestos (TPs) y mazo de
- * verdadero/falso. Contenido fiel a las resoluciones de la cátedra.
+ * Banco de finales — file system de exámenes resueltos paso a paso. Cada examen
+ * y cada tipo de ejercicio abre su propia vista (drill-down con breadcrumb).
+ * Modos: Exámenes · Por tipo · Propuestos (TPs) · Verdadero/Falso.
  * ========================================================================== */
 
 type Mode = "examenes" | "tipo" | "tps" | "vf";
@@ -51,12 +53,12 @@ function loadDone(): Record<string, boolean> {
 
 export default function Finales() {
   const [mode, setMode] = useState<Mode>("examenes");
-  const [openExam, setOpenExam] = useState<string | null>(null);
-  const [type, setType] = useState<ExType | null>(null);
+  const [selExam, setSelExam] = useState<string | null>(null);
+  const [selType, setSelType] = useState<ExType | null>(null);
   const [pos, setPos] = useState(0);
   const [vfType, setVfType] = useState<ExType | "all">("all");
 
-  // Progreso (static-export safe: estado por defecto en SSR; carga en montaje).
+  // Progreso (static-export safe: valor por defecto en SSR; carga en montaje).
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -67,8 +69,7 @@ export default function Finales() {
     if (!hydrated || typeof window === "undefined") return;
     window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(done));
   }, [done, hydrated]);
-  const toggleDone = (id: string) =>
-    setDone((d) => ({ ...d, [id]: !d[id] }));
+  const toggleDone = (id: string) => setDone((d) => ({ ...d, [id]: !d[id] }));
 
   const byId = useMemo(
     () => Object.fromEntries(EXERCISES.map((e) => [e.id, e])),
@@ -79,25 +80,34 @@ export default function Finales() {
     [done],
   );
 
-  // Filtro por tipo (visor uno por uno).
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    setSelExam(null);
+    setSelType(null);
+    setPos(0);
+  };
+
+  const typeCount = (t: ExType) =>
+    EXERCISES.filter((e) => e.types.includes(t)).length;
+
   const ofType = useMemo(
-    () =>
-      type ? EXERCISES.filter((e) => e.types.includes(type)) : [],
-    [type],
+    () => (selType ? EXERCISES.filter((e) => e.types.includes(selType)) : []),
+    [selType],
   );
   const current = ofType[pos];
-  const pickType = (t: ExType) => {
-    setType(t);
+  const openType = (t: ExType) => {
+    setSelType(t);
     setPos(0);
   };
 
   const vfItems = useMemo(
-    () => (vfType === "all" ? TF_ITEMS : TF_ITEMS.filter((i) => i.type === vfType)),
+    () =>
+      vfType === "all" ? TF_ITEMS : TF_ITEMS.filter((i) => i.type === vfType),
     [vfType],
   );
 
-  const typeCount = (t: ExType) =>
-    EXERCISES.filter((e) => e.types.includes(t)).length;
+  const exam = selExam ? EXAMS.find((e) => e.id === selExam) : null;
+  const typeMeta = selType ? EX_TYPES.find((t) => t.id === selType) : null;
 
   return (
     <div className="vfin">
@@ -105,8 +115,11 @@ export default function Finales() {
         <h3>Banco de finales</h3>
         <p>
           Parciales y finales resueltos paso a paso (resoluciones de la cátedra),
-          navegables como un file system, filtrables por tipo de ejercicio, más
-          los TPs propuestos y un mazo de verdadero/falso para repasar conceptos.
+          navegables como un file system: cada examen y cada tipo de ejercicio
+          abre su propia vista. En <strong>Por tipo</strong>, cada categoría abre
+          su <strong>método genérico paso a paso</strong> (cómo reconocer el
+          ejercicio, la receta y los teoremas que se usan) antes de los casos
+          concretos. Con TPs propuestos y un mazo de verdadero/falso.
         </p>
       </div>
 
@@ -118,7 +131,7 @@ export default function Finales() {
             role="tab"
             aria-selected={mode === m.id}
             className={`vfin__mode ${mode === m.id ? "is-active" : ""}`}
-            onClick={() => setMode(m.id)}
+            onClick={() => switchMode(m.id)}
           >
             {m.label}
           </button>
@@ -128,8 +141,8 @@ export default function Finales() {
         </span>
       </div>
 
-      {/* ── Exámenes (file system) ── */}
-      {mode === "examenes" && (
+      {/* ── Exámenes ── */}
+      {mode === "examenes" && !exam && (
         <div className="vfin__deck">
           {KIND_GROUPS.map((g) => {
             const exams = EXAMS.filter((e) => e.kind === g.kind);
@@ -143,96 +156,131 @@ export default function Finales() {
                     {String(exams.length).padStart(2, "0")}
                   </span>
                 </h4>
-                {exams.map((ex) => {
-                  const exercises = ex.exerciseIds
-                    .map((id) => byId[id])
-                    .filter(Boolean);
-                  const isOpen = openExam === ex.id;
-                  return (
-                    <div key={ex.id} className="vfin-exam">
+                <div className="vfin__examgrid">
+                  {exams.map((e) => {
+                    const n = e.exerciseIds.filter((id) => byId[id]).length;
+                    return (
                       <button
+                        key={e.id}
                         type="button"
-                        className="vfin-exam__head"
-                        onClick={() =>
-                          setOpenExam(isOpen ? null : ex.id)
-                        }
-                        aria-expanded={isOpen}
+                        className="vfin-examrow"
+                        onClick={() => setSelExam(e.id)}
+                        disabled={n === 0}
+                        title={n === 0 ? "Sin ejercicios transcriptos" : undefined}
                       >
-                        <span className="vfin-exam__chevron" aria-hidden="true">
-                          {isOpen ? "▾" : "▸"}
-                        </span>
-                        <span className="vfin-exam__name">{ex.name}</span>
-                        <span
-                          className={`vfin-exam__solved is-${ex.solved}`}
-                        >
-                          {SOLVED_LABEL[ex.solved]}
-                        </span>
-                        <span className="vfin-exam__n">
-                          {exercises.length > 0
-                            ? `${exercises.length} ej.`
-                            : "—"}
+                        <span className="vfin-examrow__name">{e.name}</span>
+                        <span className="vfin-examrow__meta">
+                          <span className={`vfin-exam__solved is-${e.solved}`}>
+                            {SOLVED_LABEL[e.solved]}
+                          </span>
+                          <span className="vfin-examrow__n">
+                            {n > 0 ? `${n} ej.` : "—"}
+                          </span>
+                          {n > 0 && (
+                            <span className="vfin-examrow__arrow" aria-hidden="true">
+                              →
+                            </span>
+                          )}
                         </span>
                       </button>
-                      {isOpen && (
-                        <div className="vfin-exam__body">
-                          <p className="vfin-exam__topics">{ex.topics}</p>
-                          {exercises.length > 0 ? (
-                            exercises.map((e) => (
-                              <ExerciseCard
-                                key={e.id}
-                                ex={e}
-                                done={done[e.id]}
-                                onToggleDone={() => toggleDone(e.id)}
-                              />
-                            ))
-                          ) : (
-                            <Note>
-                              En el catálogo de la cátedra; todavía sin
-                              ejercicios transcriptos en el banco.
-                            </Note>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </section>
             );
           })}
         </div>
       )}
 
-      {/* ── Por tipo (visor uno por uno) ── */}
-      {mode === "tipo" && (
-        <div className="vfin__bytype">
-          <div className="vfin-types">
-            {EX_TYPES.map((t) => {
-              const n = typeCount(t.id);
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  className={`vfin-type ${type === t.id ? "is-active" : ""}`}
-                  onClick={() => pickType(t.id)}
-                  disabled={n === 0}
-                  title={t.blurb}
-                >
-                  {t.label}
-                  <span className="vfin-type__n">{n}</span>
-                </button>
-              );
-            })}
+      {/* ── Vista de un examen ── */}
+      {mode === "examenes" && exam && (
+        <div className="vfin__detail">
+          <button
+            type="button"
+            className="vfin-back"
+            onClick={() => setSelExam(null)}
+          >
+            ← Exámenes
+          </button>
+          <div className="vfin-detail__head">
+            <h4 className="vfin-detail__title">{exam.name}</h4>
+            <span className={`vfin-exam__solved is-${exam.solved}`}>
+              {SOLVED_LABEL[exam.solved]}
+            </span>
           </div>
+          <p className="vfin-detail__topics">{exam.topics}</p>
+          {exam.exerciseIds
+            .map((id) => byId[id])
+            .filter(Boolean)
+            .map((e) => (
+              <ExerciseCard
+                key={e.id}
+                ex={e}
+                done={done[e.id]}
+                onToggleDone={() => toggleDone(e.id)}
+              />
+            ))}
+        </div>
+      )}
 
-          {!type ? (
+      {/* ── Por tipo ── */}
+      {mode === "tipo" && !selType && (
+        <div className="vfin__typegrid">
+          {EX_TYPES.map((t) => {
+            const n = typeCount(t.id);
+            const hasMethod = !!METHOD_BY_TYPE[t.id];
+            return (
+              <button
+                key={t.id}
+                type="button"
+                className="vfin-typecard"
+                onClick={() => openType(t.id)}
+                disabled={n === 0 && !hasMethod}
+              >
+                <span className="vfin-typecard__top">
+                  <span className="vfin-typecard__label">{t.label}</span>
+                  <span className="vfin-typecard__n">{n}</span>
+                </span>
+                <span className="vfin-typecard__blurb">{t.blurb}</span>
+                <span className="vfin-typecard__foot">
+                  <span className="vfin-typecard__units">{t.units}</span>
+                  {hasMethod && (
+                    <span className="vfin-typecard__method">método paso a paso</span>
+                  )}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Vista de un tipo (uno por uno) ── */}
+      {mode === "tipo" && selType && typeMeta && (
+        <div className="vfin__detail">
+          <button
+            type="button"
+            className="vfin-back"
+            onClick={() => setSelType(null)}
+          >
+            ← Por tipo
+          </button>
+          <div className="vfin-detail__head">
+            <h4 className="vfin-detail__title">{typeMeta.label}</h4>
+            <span className="vfin-detail__sub">{typeMeta.blurb}</span>
+          </div>
+          {METHOD_BY_TYPE[selType] && (
+            <MethodCard method={METHOD_BY_TYPE[selType]!} />
+          )}
+          {ofType.length === 0 ? (
             <Note>
-              Elegí un tipo de ejercicio para recorrer, uno por uno, todos los que
-              aparecieron en parciales y finales.
+              Todavía no hay ejercicios concretos transcriptos de este tipo en el
+              banco, pero el método genérico de arriba cubre el patrón general.
             </Note>
-          ) : ofType.length === 0 ? (
-            <Note>No hay ejercicios de este tipo en el banco.</Note>
           ) : (
             <>
+              <div className="vfin-onebyone__head">
+                <span className="vfin-eyebrow">Ejercicios resueltos del tipo</span>
+              </div>
               <div className="vfin-onebyone">
                 <button
                   type="button"
@@ -245,8 +293,7 @@ export default function Finales() {
                   ← Anterior
                 </button>
                 <span className="vfin-onebyone__count">
-                  {pos + 1} / {ofType.length} ·{" "}
-                  {EX_TYPES.find((t) => t.id === type)?.label}
+                  {pos + 1} / {ofType.length}
                 </span>
                 <button
                   type="button"

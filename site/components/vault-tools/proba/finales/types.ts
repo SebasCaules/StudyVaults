@@ -99,6 +99,29 @@ export interface Tp {
   types: ExType[];
 }
 
+/**
+ * Método genérico de resolución de un TIPO de ejercicio: la "receta" que
+ * generaliza el patrón común de los ejercicios más tomados de ese tipo, paso a
+ * paso, citando los teoremas/resultados que se invocan. Es lo que se muestra
+ * arriba de la lista al entrar a un tipo, para entender el método antes de
+ * mirar casos concretos.
+ */
+export interface GenericMethod {
+  type: ExType;
+  /** Título del método (p. ej. "Probabilidad total y Bayes"). */
+  title: string;
+  /** Por qué este tipo es de los más tomados / qué tan frecuente es. */
+  frequency?: string;
+  /** Cómo RECONOCER que un ejercicio es de este tipo (señales del enunciado). */
+  recognize: Block[];
+  /** Procedimiento genérico paso a paso. */
+  steps: Step[];
+  /** Errores típicos y advertencias al aplicar el método. */
+  pitfalls?: Block[];
+  /** Teoremas/resultados que se invocan (deep-links al wiki). */
+  cites: { slug: string; label: string }[];
+}
+
 /** Ítem de verdadero/falso (derivado de los "errores típicos"/moralejas). */
 export interface TFItem {
   id: string;

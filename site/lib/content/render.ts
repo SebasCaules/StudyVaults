@@ -72,6 +72,79 @@ function headingText(node: AnyNode): string {
   return (node.children ?? []).map(headingText).join("");
 }
 
+/* Entornos tipo "apunte LaTeX" (amsthm): clasifica cada blockquote por su
+ * etiqueta en negrita inicial (**Definición.**, **Teorema.**, …) y le agrega
+ * `data-env` + clase `env env--<slug>` para que el CSS lo pinte como una caja
+ * etiquetada. Si no reconoce la etiqueta, queda como blockquote genérico. */
+const ENV_MAP: Record<string, string> = {
+  definicion: "def",
+  teorema: "thm",
+  proposicion: "thm",
+  lema: "thm",
+  corolario: "thm",
+  propiedad: "thm",
+  propiedades: "thm",
+  demostracion: "proof",
+  prueba: "proof",
+  ejemplo: "ex",
+  ejercicio: "ex",
+  observacion: "note",
+  nota: "note",
+  interpretacion: "note",
+  variante: "note",
+  intuicion: "intu",
+  idea: "intu",
+  atencion: "warn",
+  cuidado: "warn",
+  ojo: "warn",
+};
+
+/** Normaliza una etiqueta: minúsculas, sin tildes, solo la primera palabra. */
+function normLabel(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[^a-z ]/g, "") // quita marcas combinantes (tildes) y puntuación
+    .trim()
+    .split(/\s+/)[0] ?? "";
+}
+
+/** Texto del primer <strong> dentro del primer <p> del blockquote (la etiqueta). */
+function leadingStrongText(bq: AnyNode): string | null {
+  for (const child of bq.children ?? []) {
+    if (child.type === "element" && child.tagName === "p") {
+      for (const c of child.children ?? []) {
+        if (c.type === "element" && c.tagName === "strong")
+          return hastToString(c);
+      }
+      return null;
+    }
+  }
+  return null;
+}
+
+function rehypeEnv() {
+  return (tree: AnyNode) => {
+    visit(tree, "element", (node: AnyNode) => {
+      if (node.tagName !== "blockquote") return;
+      const label = leadingStrongText(node);
+      let env = label ? ENV_MAP[normLabel(label)] : undefined;
+      // El ⚠️ inicial marca advertencia aunque la etiqueta no matchee.
+      if (!env && hastToString(node).trimStart().startsWith("⚠")) env = "warn";
+      if (!env) return;
+      const props = (node.properties ||= {});
+      const cls = Array.isArray(props.className)
+        ? props.className
+        : props.className
+          ? [String(props.className)]
+          : [];
+      cls.push("env", `env--${env}`);
+      props.className = cls;
+      props["data-env"] = env;
+    });
+  };
+}
+
 /** Recolecta headings h2/h3 (con id) en file.data.toc. */
 function rehypeCollectToc() {
   return (tree: AnyNode, file: AnyNode) => {
@@ -102,6 +175,7 @@ function buildProcessor(math: boolean): Processor {
   p = p.use(remarkRehype, { allowDangerousHtml: true });
   if (math) p = p.use(rehypeKatex, { strict: false });
   p = p
+    .use(rehypeEnv)
     .use(rehypeSlug)
     .use(rehypeCollectToc)
     .use(rehypeAutolinkHeadings, { behavior: "wrap" })
