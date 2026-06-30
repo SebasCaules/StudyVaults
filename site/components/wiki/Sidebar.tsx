@@ -133,22 +133,76 @@ export default function Sidebar({
                 </span>
                 <span className="wikinav__caret" aria-hidden="true" />
                 <span className="wikinav__seclabel">{s.label}</span>
-                <span className="wikinav__count">{s.items.length}</span>
+                <span className="wikinav__count">
+                  {s.groups
+                    ? s.groups.reduce(
+                        (a, g) =>
+                          a +
+                          g.subgroups.reduce((b, sg) => b + sg.items.length, 0),
+                        0,
+                      )
+                    : s.items.length}
+                </span>
               </summary>
-              <ul>
-                {s.items.map((it) => (
-                  <li key={it.href}>
-                    <Link
-                      href={it.href}
-                      className={`wikinav__link${
-                        it.href === currentHref ? " is-active" : ""
-                      }`}
-                    >
-                      {it.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              {s.groups ? (
+                <div className="wikinav__groups">
+                  {s.groups.map((g) => (
+                    <div className="wikinav__group" key={g.label}>
+                      <span className="wikinav__grouplabel">{g.label}</span>
+                      {g.subgroups.map((sg) => (
+                        <div className="wikinav__subgroup" key={sg.label}>
+                          <span className="wikinav__subgrouplabel">
+                            {sg.label}
+                          </span>
+                          <ul>
+                            {sg.items.map((it) => (
+                              <li key={it.href}>
+                                <Link
+                                  href={it.href}
+                                  className={`wikinav__link${
+                                    it.href === currentHref ? " is-active" : ""
+                                  }`}
+                                >
+                                  {it.title}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                  <ul className="wikinav__grouppages">
+                    {s.items.map((it) => (
+                      <li key={it.href}>
+                        <Link
+                          href={it.href}
+                          className={`wikinav__link${
+                            it.href === currentHref ? " is-active" : ""
+                          }`}
+                        >
+                          {it.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <ul>
+                  {s.items.map((it) => (
+                    <li key={it.href}>
+                      <Link
+                        href={it.href}
+                        className={`wikinav__link${
+                          it.href === currentHref ? " is-active" : ""
+                        }`}
+                      >
+                        {it.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </details>
           </li>
         ))}
