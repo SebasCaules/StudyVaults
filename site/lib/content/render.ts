@@ -199,6 +199,26 @@ function getProcessor(math: boolean): Processor {
   return math ? g.__svProc.on : g.__svProc.off;
 }
 
+/**
+ * remark-math (v6) sólo trata como *display* (clase `katex-display`, bloque
+ * centrado en su propia línea) a los `$$…$$` cuyos delimitadores van en líneas
+ * propias. Un `$$ x $$` escrito en UNA sola línea cae a *inline*. Casi todas las
+ * notas de los vaults math usan la forma compacta de una línea, así que las
+ * fórmulas pensadas como display se renderizaban inline (apretadas en el texto).
+ * Normalizamos cada línea que es únicamente `$$ … $$` a la forma de bloque
+ * (`$$` / contenido / `$$`), preservando la indentación, antes de parsear.
+ * No toca los `$$…$$` ya multilínea ni el `$…$` inline.
+ */
+function expandDisplayMath(md: string): string {
+  return md.replace(
+    /^([ \t]*)\$\$[ \t]*(\S.*?)[ \t]*\$\$[ \t]*$/gm,
+    (whole, indent: string, inner: string) =>
+      inner.includes("$$")
+        ? whole
+        : `${indent}$$\n${indent}${inner}\n${indent}$$`,
+  );
+}
+
 export async function renderNote(
   note: Note,
   manifest: Manifest,
@@ -207,7 +227,10 @@ export async function renderNote(
   const broken: BrokenLink[] = [];
   const wiki: WikiData = { manifest, note, broken };
 
-  const file = new VFile({ value: note.body });
+  // En vaults con math, ascender los `$$ … $$` de una línea a display (ver doc
+  // de expandDisplayMath). En vaults sin math, `$$` no es LaTeX → no se toca.
+  const body = math ? expandDisplayMath(note.body) : note.body;
+  const file = new VFile({ value: body });
   file.data.wiki = wiki;
 
   const out = await getProcessor(math).process(file);
