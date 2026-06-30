@@ -1,6 +1,7 @@
 "use client";
 
 import ToolkitShell, { type Tool } from "./ToolkitShell";
+import FinalesTool from "./proba/finales/Finales";
 import CombinatoriaTool from "./proba/Combinatoria";
 import BayesTool from "./proba/Bayes";
 import DistribucionesTool from "./proba/Distribuciones";
@@ -22,6 +23,17 @@ import FormularioTool from "./proba/Formulario";
  * ========================================================================== */
 
 const tools: Tool[] = [
+  // ── Práctica de examen ──────────────────────────────────────────────
+  {
+    key: "finales",
+    label: "Banco de finales",
+    group: "Práctica de examen",
+    icon: "clipboard",
+    verb: "Practicar",
+    desc: "Parciales y finales resueltos paso a paso, navegables como un file system, filtrables por tipo de ejercicio, con TPs propuestos y verdadero/falso.",
+    node: <FinalesTool />,
+  },
+
   // ── Probabilidad y conteo (U2) ──────────────────────────────────────
   {
     key: "combinatoria",
