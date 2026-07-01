@@ -15,7 +15,7 @@ import { toTex, toMd, downloadText } from "./exporters";
    ────────────────────────────────────────────────────────────────────────── */
 
 type Mode = "formulas" | "conceptos";
-type Density = "compact" | "normal" | "wide";
+type Density = "compact" | "normal" | "wide" | "book";
 type Cols = "auto" | "2" | "3" | "4";
 
 interface Opts {
@@ -40,6 +40,7 @@ const DENSITY_LABEL: Record<Density, string> = {
   compact: "Compacta",
   normal: "Normal",
   wide: "Amplia",
+  book: "Libro",
 };
 const KIND_ORDER: EntryKind[] = [
   "def",
@@ -53,6 +54,7 @@ const KIND_ORDER: EntryKind[] = [
 /** Columnas efectivas: override explícito o default por densidad y tipo. */
 function colCount(opts: Opts, kind: Mode): number {
   if (opts.cols !== "auto") return Number(opts.cols);
+  if (opts.density === "book") return 1; // lectura tipo libro: una columna
   if (kind === "formulas")
     return opts.density === "compact" ? 3 : 2;
   return opts.density === "compact" ? 4 : opts.density === "wide" ? 2 : 3;
@@ -70,10 +72,13 @@ export default function SheetShell({
   formulas,
   conceptos,
   intro,
+  defaultDensity,
 }: {
   formulas?: Sheet;
   conceptos?: Sheet;
   intro?: ReactNode;
+  /** Densidad inicial cuando no hay preferencia guardada (ej. "book" en Proba). */
+  defaultDensity?: Density;
 }) {
   const modes = ([] as Mode[]).concat(
     formulas ? ["formulas"] : [],
@@ -101,9 +106,12 @@ export default function SheetShell({
   }, [allOpts, hydrated]);
 
   const base = sheet ? `${sheet.vault}-${sheet.kind}` : "";
-  const opts = allOpts[base] ?? DEFAULT_OPTS;
+  const baseDefault: Opts = defaultDensity
+    ? { ...DEFAULT_OPTS, density: defaultDensity }
+    : DEFAULT_OPTS;
+  const opts = allOpts[base] ?? baseDefault;
   const setOpts = (fn: (o: Opts) => Opts) =>
-    setAllOpts((prev) => ({ ...prev, [base]: fn(prev[base] ?? DEFAULT_OPTS) }));
+    setAllOpts((prev) => ({ ...prev, [base]: fn(prev[base] ?? baseDefault) }));
 
   const units = useMemo(() => (sheet ? unitsOf(sheet) : []), [sheet]);
   const kinds = useMemo(() => (sheet ? usedKinds(sheet) : []), [sheet]);
@@ -225,7 +233,7 @@ function Controls({
       <div className="sheet-opts__row">
         <span className="sheet-opts__label">Densidad</span>
         <div className="sheet-seg sheet-seg--sm">
-          {(["compact", "normal", "wide"] as Density[]).map((d) => (
+          {(["compact", "normal", "wide", "book"] as Density[]).map((d) => (
             <button
               key={d}
               className={`sheet-seg__btn${opts.density === d ? " is-active" : ""}`}

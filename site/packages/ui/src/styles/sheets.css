@@ -187,6 +187,7 @@
 }
 .sheet-doc[data-density="compact"] { --sf: 0.88; }
 .sheet-doc[data-density="wide"] { --sf: 1.16; }
+.sheet-doc[data-density="book"] { --sf: 1.18; padding: 34px 40px 30px; }
 
 .sheet-doc__head {
   display: flex;
@@ -239,6 +240,64 @@
 .sheet-doc__cols {
   columns: var(--sheet-cols, 3);
   column-gap: 28px;
+}
+
+/* ---- modo "Libro": lectura tipo libro de texto (menos denso, una columna,
+   fórmulas centradas y con aire, cuerpo de texto amplio) ---- */
+.sheet-doc[data-density="book"] .sheet-doc__cols {
+  columns: var(--sheet-cols, 1);
+  column-gap: 44px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+.sheet-doc[data-density="book"] .sheet-group { margin-bottom: 30px; }
+.sheet-doc[data-density="book"] .sheet-group__title {
+  font-size: calc(var(--sf) * 11.5px);
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+}
+.sheet-doc[data-density="book"] .sheet-group__hint {
+  font-size: calc(var(--sf) * 12.5px);
+  margin: -8px 0 14px;
+}
+.sheet-doc[data-density="book"] .sheet-entry {
+  border-left-width: 3px;
+  padding: 3px 0 3px 16px;
+}
+.sheet-doc[data-density="book"] .sheet-entry + .sheet-entry {
+  margin-top: calc(var(--sf) * 22px);
+}
+.sheet-doc[data-density="book"] .sheet-entry__label { font-size: calc(var(--sf) * 15px); }
+.sheet-doc[data-density="book"] .sheet-entry__body {
+  font-size: calc(var(--sf) * 14.5px);
+  line-height: 1.72;
+  margin-top: 6px;
+}
+/* fórmula display: centrada y con margen vertical, como en un libro */
+.sheet-doc[data-density="book"] .sheet-entry__tex {
+  margin: 14px 0 12px;
+  text-align: center;
+}
+.sheet-doc[data-density="book"] .sheet-entry__tex .katex-display { margin: 0; text-align: center; }
+.sheet-doc[data-density="book"] .sheet-entry__vars {
+  margin-top: 10px;
+  padding-left: 12px;
+}
+.sheet-doc[data-density="book"] .sheet-entry__vars-cap {
+  font-size: calc(var(--sf) * 10px);
+  margin-bottom: 5px;
+}
+.sheet-doc[data-density="book"] .sheet-entry__vars-list { row-gap: 4px; column-gap: 12px; }
+.sheet-doc[data-density="book"] .sheet-entry__var-sym,
+.sheet-doc[data-density="book"] .sheet-entry__var-desc {
+  font-size: calc(var(--sf) * 13px);
+  line-height: 1.6;
+}
+.sheet-doc[data-density="book"] .sheet-entry__cond,
+.sheet-doc[data-density="book"] .sheet-entry__note {
+  font-size: calc(var(--sf) * 13px);
+  line-height: 1.6;
+  margin-top: 6px;
 }
 
 /* ---- banda de unidad (atraviesa todas las columnas) ---- */
@@ -395,6 +454,9 @@
   font-family: var(--font-mono);
   font-size: 11px;
 }
+
+/* negrita de texto enriquecido (**término**) — resalta términos definidos */
+.sheet-strong { font-weight: 700; color: var(--ink-strong); }
 
 /* código inline (identificadores, comandos) — para vaults sin matemática */
 .sheet-code {

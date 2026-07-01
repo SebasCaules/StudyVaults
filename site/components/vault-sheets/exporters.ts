@@ -84,16 +84,19 @@ function texEscape(s: string): string {
     .replace(EMOJI_RE, "");
 }
 
-/** Texto enriquecido → LaTeX: texto escapado, math en `$...$`, code en \texttt. */
+/** Texto enriquecido → LaTeX: texto escapado, math en `$...$`, code en \texttt,
+ *  negrita (`**…**`) en \textbf. */
 function texRich(text: string): string {
   return tokenize(text)
-    .map((s) =>
-      s.type === "math"
-        ? `$${texMath(s.value)}$`
-        : s.type === "code"
-          ? `\\texttt{${texEscape(s.value)}}`
-          : texEscape(s.value),
-    )
+    .map((s) => {
+      const inner =
+        s.type === "math"
+          ? `$${texMath(s.value)}$`
+          : s.type === "code"
+            ? `\\texttt{${texEscape(s.value)}}`
+            : texEscape(s.value);
+      return s.strong ? `\\textbf{${inner}}` : inner;
+    })
     .join("");
 }
 

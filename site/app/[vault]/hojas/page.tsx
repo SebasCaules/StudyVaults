@@ -77,6 +77,7 @@ export default async function SheetsPage({
       <SheetShell
         formulas={sheets.formulas}
         conceptos={sheets.conceptos}
+        defaultDensity={vault === "proba" ? "book" : undefined}
         intro={
           en
             ? "Built to print on the fewest pages possible. Use the toggle to switch sheets, and the toolbar to print or download."
