@@ -33,8 +33,9 @@ export function recommendElectives(
   PL: PlanState,
   approved: Set<string>,
   limit = 6,
+  fixedCom?: Map<string, string>,
 ): Recommendation[] {
-  const base = optimizePlan(PL, approved);
+  const base = optimizePlan(PL, approved, fixedCom);
   const baseUsed = usedCount(base.items);
 
   // áreas ya cubiertas (electivas aprobadas o ya en el plan) → para diversificar
@@ -55,7 +56,7 @@ export function recommendElectives(
   const recs: Recommendation[] = candidates.map((m) => {
     const hypPool = new Set(PL.pool);
     hypPool.add(m.codigo);
-    const hyp = optimizePlan({ ...PL, pool: hypPool }, approved);
+    const hyp = optimizePlan({ ...PL, pool: hypPool }, approved, fixedCom);
     let landingIdx = -1;
     hyp.items.forEach((it, i) => {
       if (it.some((x) => x.m.codigo === m.codigo)) landingIdx = i;

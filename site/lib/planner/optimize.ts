@@ -68,8 +68,13 @@ const chooseCom = (
   coms: Comision[],
   placed: PlacedMateria[],
   avoid: boolean,
+  fixedComision?: string,
 ): Comision | null => {
   if (!coms.length) return null;
+  if (fixedComision) {
+    const fx = coms.find((c) => c.comision === fixedComision);
+    if (fx) return fx;
+  }
   const free = avoid
     ? coms.filter((c) => !placed.some((x) => x.com && comConflict(x.com, c)))
     : coms;
@@ -96,6 +101,7 @@ const chooseCom = (
 export function optimizePlan(
   PL: PlanState,
   approved: Set<string>,
+  fixedCom?: Map<string, string>,
 ): PlanResult {
   const mats = [...PL.pool]
     .filter((c) => !approved.has(c))
@@ -154,7 +160,10 @@ export function optimizePlan(
     const cu = cuatriAt(PL.start, i);
     const place = (m: MateriaM) => {
       const coms = (m.horario && m.horario.comisiones) || [];
-      items[i].push({ m, com: chooseCom(coms, items[i], PL.avoid) });
+      items[i].push({
+        m,
+        com: chooseCom(coms, items[i], PL.avoid, fixedCom?.get(m.codigo)),
+      });
       placedIdx[m.codigo] = i;
     };
     // materias fijadas a este cuatrimestre van sí o sí
@@ -224,7 +233,7 @@ export function optimizePlan(
           let comJ = it.com;
           if (comsM.length) {
             if (PL.avoid && !hasFreeCom(comsM, items[j])) continue;
-            comJ = chooseCom(comsM, items[j], PL.avoid);
+            comJ = chooseCom(comsM, items[j], PL.avoid, fixedCom?.get(it.m.codigo));
           }
           it.com = comJ;
           items[i] = items[i].filter((x) => x !== it);

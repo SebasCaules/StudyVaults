@@ -12,7 +12,7 @@ import {
   PLAN,
 } from "@/lib/planner/model";
 import { approvedCredits, electiveCredits } from "@/lib/planner/metrics";
-import { isAsync, slotsConflict } from "@/lib/planner/time";
+import { isAsync, slotsConflict, comModalidad } from "@/lib/planner/time";
 import {
   optimizePlan,
   cuatriAt,
@@ -270,7 +270,7 @@ function RoadmapStop({
   maxCred: number;
   previewCode: string | null;
 }) {
-  const { dispatch } = usePlanner();
+  const { state, dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
 
   // Drag & drop para mover materias entre cuatrimestres. El código de la materia
@@ -351,9 +351,9 @@ function RoadmapStop({
         <div className="rmap-stop__mats">
           {it.map((x, k) => {
             const isPrev = x.m.codigo === previewCode;
+            const fx = state.plan.fixed.get(x.m.codigo);
             return (
-              <button
-                type="button"
+              <div
                 key={x.m.codigo}
                 className={
                   "rmap-mat" +
@@ -364,19 +364,83 @@ function RoadmapStop({
                   { "--blk": PALETTE[k % PALETTE.length] } as React.CSSProperties
                 }
                 title={`${x.m.codigo} · ${x.m.nombre} — arrastrá para mover de cuatrimestre`}
-                draggable
-                onDragStart={(e: React.DragEvent) => {
-                  e.dataTransfer.setData("text/plain", x.m.codigo);
-                  e.dataTransfer.effectAllowed = "move";
-                  setDraggingCode(x.m.codigo);
-                }}
-                onDragEnd={() => setDraggingCode(null)}
-                onClick={() => dispatch({ type: "OPEN_DRAWER", code: x.m.codigo })}
               >
-                <span className="rmap-mat__abbr">{x.m.abbr}</span>
-                <span className="rmap-mat__cr">{x.m.creditos}</span>
-                {isPrev && <span className="rmap-mat__new">nueva</span>}
-              </button>
+                <button
+                  type="button"
+                  className="rmap-mat__main"
+                  draggable
+                  onDragStart={(e: React.DragEvent) => {
+                    e.dataTransfer.setData("text/plain", x.m.codigo);
+                    e.dataTransfer.effectAllowed = "move";
+                    setDraggingCode(x.m.codigo);
+                  }}
+                  onDragEnd={() => setDraggingCode(null)}
+                  onClick={() =>
+                    dispatch({ type: "OPEN_DRAWER", code: x.m.codigo })
+                  }
+                >
+                  <span className="rmap-mat__abbr">{x.m.abbr}</span>
+                  <span className="rmap-mat__cr">{x.m.creditos}</span>
+                  {isPrev && <span className="rmap-mat__new">nueva</span>}
+                </button>
+                <div
+                  className="rmap-mat__tools"
+                  draggable={false}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <select
+                    className="rmap-mat__sel"
+                    aria-label={`Fijar cuatrimestre de ${x.m.nombre}`}
+                    value={fx === undefined ? "" : String(fx)}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "PLAN_SET_FIXED",
+                        code: x.m.codigo,
+                        idx: e.target.value === "" ? null : +e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">auto</option>
+                    {Array.from({ length: 8 }, (_, ci) => (
+                      <option value={String(ci)} key={ci}>
+                        {cuatriLabel(cuatriAt(start, ci))}
+                      </option>
+                    ))}
+                  </select>
+                  {x.m.horario && x.m.horario.comisiones.length > 1 && (
+                    <select
+                      className="rmap-mat__sel"
+                      aria-label={`Fijar comisión de ${x.m.nombre}`}
+                      value={state.fixedCom.get(x.m.codigo) || ""}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_FIXED_COM",
+                          code: x.m.codigo,
+                          comision: e.target.value || null,
+                        })
+                      }
+                    >
+                      <option value="">com. auto</option>
+                      {x.m.horario.comisiones.map((c) => (
+                        <option value={c.comision} key={c.comision}>
+                          com {c.comision} · {comModalidad(c)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  <button
+                    type="button"
+                    className="rmap-mat__rm"
+                    aria-label={`Quitar ${x.m.nombre} del plan`}
+                    onClick={() =>
+                      dispatch({ type: "PLAN_POOL_REMOVE", code: x.m.codigo })
+                    }
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -603,6 +667,26 @@ function PlanPool({ start }: { start: PlanStart }) {
             <span className="pno-hor">sin horario</span>
           )}
         </span>
+        {m.horario && m.horario.comisiones.length > 1 && (
+          <select
+            aria-label={`Fijar comisión de ${m.nombre}`}
+            value={state.fixedCom.get(m.codigo) || ""}
+            onChange={(e) =>
+              dispatch({
+                type: "SET_FIXED_COM",
+                code: m.codigo,
+                comision: e.target.value || null,
+              })
+            }
+          >
+            <option value="">com. auto</option>
+            {m.horario.comisiones.map((c) => (
+              <option value={c.comision} key={c.comision}>
+                com {c.comision} · {comModalidad(c)}
+              </option>
+            ))}
+          </select>
+        )}
         <select
           aria-label={`Fijar cuatrimestre de ${m.nombre}`}
           value={fx === undefined ? "" : String(fx)}
@@ -731,15 +815,15 @@ export default function PlanView() {
   // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
   // rankeadas. Recommendations las agrupa según si alargan o no la carrera.
   const recs = useMemo(
-    () => recommendElectives(PL, approved, Infinity),
+    () => recommendElectives(PL, approved, Infinity, state.fixedCom),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved],
+    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved, state.fixedCom],
   );
 
   const baseR = useMemo(
-    () => optimizePlan(PL, approved),
+    () => optimizePlan(PL, approved, state.fixedCom),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved],
+    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved, state.fixedCom],
   );
 
   const previewR = useMemo(
@@ -747,10 +831,10 @@ export default function PlanView() {
       if (!preview) return null;
       const pool = new Set(PL.pool);
       pool.add(preview);
-      return optimizePlan({ ...PL, pool } as PlanState, approved);
+      return optimizePlan({ ...PL, pool } as PlanState, approved, state.fixedCom);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [preview, PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved],
+    [preview, PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved, state.fixedCom],
   );
 
   // resultado efectivo: con preview si hay hover, si no el comprometido
