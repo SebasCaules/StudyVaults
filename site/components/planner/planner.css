@@ -611,70 +611,65 @@
 @media (prefers-reduced-motion:reduce){
   .planner .cmb-chip{animation:none}
   .planner .cmb-grid{animation:none}
-  .planner .cmbx-config,.planner .cmbx-stage,.planner .cmbx-sec{animation:none}
+  .planner .cmbx-topbar,.planner .cmbx-picker,.planner .cmbx-stage{animation:none}
   .planner .cmb-row:hover,.planner .cmb-row.is-added:hover{transform:none}
 }
 
 /* =========================================================================
    COMBINADOR v2 — flujo guiado en 3 pasos, calendario-first
    ========================================================================= */
-/* ===== WORKSPACE: rail de control (izq) + escenario en vivo (der) =====
-   El rail agrupa materias + preferencias en UN panel seccionado (sin huecos
-   flotantes); el escenario muestra el resultado grande. En mobile colapsa a una
-   sola columna (rail arriba, escenario abajo). */
-.planner .cmbx{
-  display:grid;gap:18px;margin-top:8px;align-items:start;
-  grid-template-columns:334px minmax(0,1fr);
-}
-/* rail: un panel con secciones divididas por hairline (nada de cards flotando) */
-.planner .cmbx-config{
-  align-self:start;overflow:hidden;
+/* ===== LAYOUT apilado: header compacto (selector) + calendario full-width =====
+   El selector de materias es un header horizontal y bajo; debajo, el escenario
+   ocupa TODO el ancho con el calendario deszoomeado (denso verticalmente). */
+.planner .cmbx{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+
+/* header: selector de materias (izq) + preferencias (der), compacto */
+.planner .cmbx-topbar{
+  display:flex;align-items:center;gap:10px 16px;flex-wrap:nowrap;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
-  animation:cmb-grid-in .32s var(--ease,ease) both;
+  padding:10px 14px;animation:cmb-grid-in .3s var(--ease,ease) both;
 }
-.planner .cmbx-sec{padding:15px 16px}
-.planner .cmbx-sec + .cmbx-sec{border-top:1px solid var(--line)}
-.planner .cmbx-sec--prefs{background:color-mix(in srgb,var(--panel-2) 40%,transparent)}
-/* eyebrow: rótulo técnico mono con bullet brass + meta a la derecha */
-.planner .cmbx-eyebrow{display:flex;align-items:baseline;gap:10px;margin-bottom:13px}
-.planner .cmbx-eyebrow__lbl{
-  position:relative;padding-left:14px;
-  font-family:var(--f-m);font-size:10.5px;font-weight:600;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--ink-soft);
+.planner .cmbx-topbar__mats{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;flex:1 1 auto}
+.planner .cmbx-topbar__prefs{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;flex:none}
+.planner .cmbx-topbar__meta{
+  font-family:var(--f-m);font-size:11px;color:var(--muted);white-space:nowrap;margin-left:2px;
 }
-.planner .cmbx-eyebrow__lbl::before{
+/* eyebrow mono inline en el header */
+.planner .cmbx-topbar .cmbx-eyebrow__lbl{
+  position:relative;padding-left:14px;margin-right:2px;
+  font-family:var(--f-m);font-size:10px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+}
+.planner .cmbx-topbar .cmbx-eyebrow__lbl::before{
   content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
   width:6px;height:6px;border-radius:50%;background:var(--brass);
 }
-.planner .cmbx-eyebrow__meta{
-  margin-left:auto;font-family:var(--f-m);font-size:11px;color:var(--muted);white-space:nowrap;
+
+/* buscador desplegable debajo del header */
+.planner .cmbx-picker{
+  border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+  background:var(--panel-2);animation:cmb-grid-in .22s var(--ease,ease) both;
 }
-/* escenario: panel grande con atmósfera sutil */
+.planner .cmbx-picker .cmb-search{border-bottom:1px solid var(--line)}
+.planner .cmbx-picker .cmb-list{max-height:288px}
+
+/* escenario full-width con atmósfera sutil */
 .planner .cmbx-stage{
   position:relative;overflow:hidden;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:20px 22px;animation:cmb-grid-in .32s var(--ease,ease) both;
+  padding:15px 18px 17px;animation:cmb-grid-in .32s var(--ease,ease) both;
 }
 .planner .cmbx-stage::before{
   content:"";position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(56% 42% at 88% -6%, color-mix(in srgb,var(--brass) 9%,transparent), transparent 68%),
-    radial-gradient(46% 46% at 2% 106%, color-mix(in srgb,var(--slate) 7%,transparent), transparent 70%);
+    radial-gradient(50% 70% at 97% -12%, color-mix(in srgb,var(--brass) 8%,transparent), transparent 64%),
+    radial-gradient(38% 60% at 1% 112%, color-mix(in srgb,var(--slate) 6%,transparent), transparent 70%);
 }
 .planner .cmbx-stage > *{position:relative}
-@media (max-width:980px){
-  .planner .cmbx{grid-template-columns:minmax(0,1fr)}
-  /* el rail se disuelve: sus secciones pasan a ser items del grid, así el
-     calendario se intercala entre materias y preferencias (verlo apenas elegís) */
-  .planner .cmbx-config{display:contents}
-  .planner .cmbx-sec{
-    background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
-    animation:cmb-grid-in .32s var(--ease,ease) both;
-  }
-  .planner .cmbx-sec--prefs{background:var(--panel)}
-  .planner .cmbx-sec--materias{order:1}
-  .planner .cmbx-stage{order:2}
-  .planner .cmbx-sec--prefs{order:3}
+
+@media (max-width:640px){
+  .planner .cmbx-topbar{flex-direction:column;align-items:stretch;gap:11px}
+  .planner .cmbx-topbar__prefs{justify-content:space-between}
 }
 
 /* paso (header con número) */
@@ -725,49 +720,44 @@
 .planner .cmb2-empty svg{color:var(--line-2)}
 .planner .cmb2-empty p{margin:0;color:var(--muted);font-size:14px;max-width:34ch;line-height:1.5}
 
-/* ---------- cabecera del resultado: rótulo + contador + paginador ---------- */
-.planner .cmbx-rhead{
-  display:flex;align-items:flex-end;justify-content:space-between;gap:16px 20px;
-  flex-wrap:wrap;margin-bottom:18px;
+/* ---------- barra de resultado (slim): contador + tag + métricas + paginador ---------- */
+.planner .cmbx-resultbar{
+  display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin-bottom:13px;
 }
-.planner .cmbx-rhead__lead{min-width:0}
-.planner .cmbx-rhead__kick{
-  display:block;margin-bottom:9px;
-  font-family:var(--f-m);font-size:10.5px;font-weight:600;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--muted);
+.planner .cmbx-resultbar__lead{display:flex;align-items:center;gap:11px;flex-wrap:wrap;min-width:0}
+.planner .cmbx-rcount{display:flex;align-items:baseline;gap:9px}
+.planner .cmbx-rcount b{
+  font-family:var(--f-d);font-weight:600;font-size:30px;line-height:.9;letter-spacing:-.02em;
 }
-.planner .cmbx-rhead__count{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.planner .cmbx-rhead__count b{
-  font-family:var(--f-d);font-weight:600;font-size:clamp(38px,4.4vw,54px);line-height:.86;letter-spacing:-.02em;
-}
-.planner .cmbx-rhead__count.ok b{color:var(--sage)}
-.planner .cmbx-rhead__count.warn b{color:var(--brass)}
-.planner .cmbx-rhead__count span{
-  font-family:var(--f-m);font-size:12px;letter-spacing:.02em;color:var(--muted);
-  max-width:15ch;line-height:1.3;
+.planner .cmbx-rcount.ok b{color:var(--sage)}
+.planner .cmbx-rcount.warn b{color:var(--brass)}
+.planner .cmbx-rcount span{
+  font-family:var(--f-m);font-size:11.5px;letter-spacing:.02em;color:var(--muted);
+  max-width:16ch;line-height:1.25;
 }
 .planner .cmbx-tag{
-  display:inline-flex;align-items:center;gap:4px;margin-top:12px;
+  display:inline-flex;align-items:center;gap:4px;
   font-family:var(--f-m);font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--sage);
   background:color-mix(in srgb,var(--sage) 13%,transparent);
   border:1px solid color-mix(in srgb,var(--sage) 32%,transparent);
   border-radius:999px;padding:4px 10px;white-space:nowrap;
 }
-.planner .cmbx-rhead__sub{
-  margin:10px 0 0;font-size:12px;color:var(--muted);line-height:1.5;max-width:46ch;
+/* tira de métricas inline (número serif + rótulo mono) */
+.planner .cmbx-statstrip{
+  display:flex;align-items:center;flex-wrap:wrap;gap:5px 16px;margin-left:auto;
+  font-family:var(--f-m);font-size:11px;color:var(--muted);
 }
-.planner .cmbx-rhead__sub kbd{
-  font-family:var(--f-m);font-size:10.5px;color:var(--ink-soft);
-  background:var(--panel-3);border:1px solid var(--line-2);border-bottom-width:2px;
-  border-radius:4px;padding:1px 5px;margin:0 1px;
-}
+.planner .cmbx-statstrip>span{display:inline-flex;align-items:baseline;gap:5px;white-space:nowrap}
+.planner .cmbx-statstrip b{font-family:var(--f-d);font-weight:600;font-size:16px;color:var(--ink);line-height:1}
+.planner .cmbx-statstrip__range{color:var(--ink-soft);letter-spacing:.02em}
+
 .planner .cmbx-pager{
   display:inline-flex;align-items:center;gap:4px;flex:none;
-  background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:4px;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:3px;
 }
 .planner .cmbx-pager__btn{
-  width:34px;height:34px;flex:none;border-radius:50%;border:1px solid transparent;
-  background:var(--panel);color:var(--ink-soft);font-size:19px;line-height:1;cursor:pointer;
+  width:32px;height:32px;flex:none;border-radius:50%;border:1px solid transparent;
+  background:var(--panel);color:var(--ink-soft);font-size:18px;line-height:1;cursor:pointer;
   display:grid;place-items:center;transition:border-color .15s,color .15s,background .15s,transform .1s;
 }
 .planner .cmbx-pager__btn:hover{border-color:var(--brass);color:var(--brass);background:var(--panel-3)}
@@ -778,29 +768,6 @@
 }
 .planner .cmbx-pager__txt b{color:var(--ink);font-weight:600;font-size:13px}
 .planner .cmbx-pager__txt i{font-style:normal;color:var(--faint);font-size:10px}
-
-/* ---------- barra de métricas de la opción activa (celdas unidas) ---------- */
-.planner .cmbx-statbar{
-  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;margin-bottom:18px;
-  background:color-mix(in srgb,var(--panel-2) 55%,transparent);
-}
-.planner .cmbx-statcell{
-  padding:11px 15px;border-right:1px solid var(--line);
-  display:flex;flex-direction:column;gap:5px;min-width:0;
-}
-.planner .cmbx-statcell:last-child{border-right:none}
-.planner .cmbx-statcell b{font-family:var(--f-d);font-weight:600;font-size:22px;line-height:1;color:var(--ink)}
-.planner .cmbx-statcell i{
-  font-style:normal;font-family:var(--f-m);font-size:9.5px;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--muted);
-}
-.planner .cmbx-statcell--range b{font-size:15px;letter-spacing:.01em;color:var(--ink-soft)}
-@media (max-width:520px){
-  .planner .cmbx-statbar{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .planner .cmbx-statcell:nth-child(2){border-right:none}
-  .planner .cmbx-statcell:nth-child(-n+2){border-bottom:1px solid var(--line)}
-}
 
 /* ---------- timetable diseñado ---------- */
 .planner .cmbcal-wrap{animation:cmb-grid-in .32s var(--ease,ease) both}
@@ -888,6 +855,14 @@
   border-radius:4px;padding:0 4px;
   max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
+/* denso: escala intermedia del Combinador full-width — más bajo y ajustado */
+.planner .cmbcal--dense .cmbcal__day{padding:6px 4px;font-size:9.5px}
+.planner .cmbcal--dense .cmbcal__day i{font-size:8.5px;min-width:14px}
+.planner .cmbcal--dense .cmbcal__hour span{font-size:8.5px}
+.planner .cmbcal--dense .cmbcal-blk{padding:3px 7px;gap:0;border-radius:6px}
+.planner .cmbcal--dense .cmbcal-blk__abbr{font-size:11.5px}
+.planner .cmbcal--dense .cmbcal-blk__time{font-size:9px}
+.planner .cmbcal--dense .cmbcal-blk__room{font-size:8.5px}
 
 /* =========================================================================
    HERO — boleto a recibirte (lead · destino · medidor de créditos)

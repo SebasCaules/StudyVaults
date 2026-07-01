@@ -12,15 +12,19 @@ export default function CursadaCalendar({
   blocks,
   days,
   compact = false,
+  dense = false,
   onBlockClick,
 }: {
   blocks: WeekBlock[];
   days: string[];
   compact?: boolean;
+  // `dense`: escala intermedia, más "deszoomeada" que la completa pero con rango
+  // horario y aula (para el calendario full-width del Combinador).
+  dense?: boolean;
   // Click en un bloque con código → abre la materia (drawer/ficha) en el caller.
   onBlockClick?: (code: string) => void;
 }) {
-  const PX = compact ? 0.44 : 0.82;
+  const PX = compact ? 0.44 : dense ? 0.56 : 0.82;
   let minM = 8 * 60;
   let maxM = 22 * 60;
   blocks.forEach((b) => {
@@ -32,11 +36,17 @@ export default function CursadaCalendar({
   const hours: number[] = [];
   for (let t = minM; t < maxM; t += 60) hours.push(t);
   const bodyH = (maxM - minM) * PX;
-  const cols = `${compact ? 32 : 46}px repeat(${days.length}, minmax(0, 1fr))`;
+  const cols = `${compact ? 32 : dense ? 42 : 46}px repeat(${days.length}, minmax(0, 1fr))`;
   let order = 0;
 
   return (
-    <div className={"cmbcal" + (compact ? " cmbcal--compact" : "")}>
+    <div
+      className={
+        "cmbcal" +
+        (compact ? " cmbcal--compact" : "") +
+        (dense ? " cmbcal--dense" : "")
+      }
+    >
       <div className="cmbcal__head" style={{ gridTemplateColumns: cols }}>
         <span className="cmbcal__corner" />
         {days.map((d) => {
@@ -121,7 +131,7 @@ export default function CursadaCalendar({
                         {b.desde}–{b.hasta}
                       </span>
                     )}
-                    {b.sala && h > (compact ? 18 : 38) && (
+                    {b.sala && h > (compact ? 18 : dense ? 30 : 38) && (
                       <span className="cmbcal-blk__room">{b.sala}</span>
                     )}
                   </div>

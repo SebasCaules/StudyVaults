@@ -276,25 +276,17 @@ export default function CombinadorView() {
     );
   };
 
-  // ---------- sub-render: rail de configuración (materias + preferencias) ----------
-  const configRail = (
-    <aside className="cmbx-config">
-      <div className="cmbx-sec cmbx-sec--materias">
-        <div className="cmbx-eyebrow">
-          <span className="cmbx-eyebrow__lbl">Materias</span>
-          {selected.length > 0 && (
-            <span className="cmbx-eyebrow__meta">
-              {selected.length} · {cred} cr{elc > 0 ? ` · ${elc} elec.` : ""}
-            </span>
-          )}
-        </div>
-
+  // ---------- sub-render: header compacto (selector de materias + preferencias) ----------
+  const topbar = (
+    <header className="cmbx-topbar">
+      <div className="cmbx-topbar__mats">
+        <span className="cmbx-eyebrow__lbl">Materias</span>
         {selected.length > 0 ? (
-          <div className="cmb-chips">
+          <>
             {selected.map(chip)}
             <button
               type="button"
-              className="cmb2-add"
+              className={"cmb2-add" + (showPicker ? " is-open" : "")}
               onClick={() => setPickerOpen((o) => !o)}
             >
               {showPicker ? "Listo" : "＋ Agregar"}
@@ -306,111 +298,110 @@ export default function CombinadorView() {
             >
               Vaciar
             </button>
-          </div>
+          </>
         ) : (
-          <p className="cmb2-hint">
-            Buscá y tocá <b>+</b> para sumar las materias que querés cursar este
-            cuatrimestre.
-          </p>
-        )}
-
-        {showPicker && (
-          <div className="cmb2-picker">
-            <div className="cmb-search">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.2-3.2" />
-              </svg>
-              <input
-                type="text"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Buscá una materia (código o nombre)…"
-                autoComplete="off"
-              />
-              {q && (
-                <button
-                  type="button"
-                  className="cmb-search__clear"
-                  aria-label="Limpiar búsqueda"
-                  onClick={() => setQ("")}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-            <div className="cmb-list">
-              {filtered.obs.length > 0 && (
-                <div className="cmb-group">
-                  <div className="cmb-grouph">
-                    <span className="dot dot--ob" /> Obligatorias
-                    <i>{filtered.obs.length}</i>
-                  </div>
-                  {filtered.obs.map(row)}
-                </div>
-              )}
-              {filtered.els.length > 0 && (
-                <div className="cmb-group">
-                  <div className="cmb-grouph">
-                    <span className="dot dot--el" /> Electivas
-                    <i>{filtered.els.length}</i>
-                  </div>
-                  {filtered.els.map(row)}
-                </div>
-              )}
-              {noResults && (
-                <p className="cmb-noresults">No hay materias con “{q}”.</p>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="cmbx-sec cmbx-sec--prefs">
-        <div className="cmbx-eyebrow">
-          <span className="cmbx-eyebrow__lbl">Preferencias</span>
-        </div>
-        <div className="cmb-prefs">
           <button
             type="button"
-            className={"cmb-switch" + (comboParams.allowOverlap ? " on" : "")}
-            role="switch"
-            aria-checked={comboParams.allowOverlap}
-            onClick={() =>
-              dispatch({
-                type: "SET_ALLOW_OVERLAP",
-                value: !comboParams.allowOverlap,
-              })
-            }
+            className="cmb2-add"
+            onClick={() => setPickerOpen((o) => !o)}
           >
-            <span className="cmb-switch__track">
-              <span className="cmb-switch__knob" />
-            </span>
-            Permitir que se superpongan
+            ＋ Elegí las materias a cursar
           </button>
-          <div className="cmb-prefs__modal">
-            <span className="cmb-prefs__lbl">Modalidad</span>
-            {MODAL_KEYS.map((k) => (
-              <button
-                type="button"
-                key={k}
-                className={"cmb-pill" + (comboParams.modal[k] ? " on" : "")}
-                aria-pressed={comboParams.modal[k]}
-                onClick={() =>
-                  dispatch({
-                    type: "SET_MODAL",
-                    key: k,
-                    value: !comboParams.modal[k],
-                  })
-                }
-              >
-                {k}
-              </button>
-            ))}
-          </div>
+        )}
+      </div>
+
+      <div className="cmbx-topbar__prefs">
+        <button
+          type="button"
+          className={"cmb-switch" + (comboParams.allowOverlap ? " on" : "")}
+          role="switch"
+          aria-checked={comboParams.allowOverlap}
+          title="Permitir cursadas que se superponen"
+          onClick={() =>
+            dispatch({
+              type: "SET_ALLOW_OVERLAP",
+              value: !comboParams.allowOverlap,
+            })
+          }
+        >
+          <span className="cmb-switch__track">
+            <span className="cmb-switch__knob" />
+          </span>
+          Superponer
+        </button>
+        <div className="cmb-prefs__modal" title="Modalidad de cursada">
+          {MODAL_KEYS.map((k) => (
+            <button
+              type="button"
+              key={k}
+              className={"cmb-pill" + (comboParams.modal[k] ? " on" : "")}
+              aria-pressed={comboParams.modal[k]}
+              onClick={() =>
+                dispatch({
+                  type: "SET_MODAL",
+                  key: k,
+                  value: !comboParams.modal[k],
+                })
+              }
+            >
+              {k}
+            </button>
+          ))}
         </div>
       </div>
-    </aside>
+    </header>
+  );
+
+  // ---------- sub-render: buscador desplegable (debajo del header) ----------
+  const picker = showPicker && (
+    <div className="cmbx-picker">
+      <div className="cmb-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.7">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.2-3.2" />
+        </svg>
+        <input
+          type="text"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscá una materia (código o nombre)…"
+          autoComplete="off"
+        />
+        {q && (
+          <button
+            type="button"
+            className="cmb-search__clear"
+            aria-label="Limpiar búsqueda"
+            onClick={() => setQ("")}
+          >
+            ×
+          </button>
+        )}
+      </div>
+      <div className="cmb-list">
+        {filtered.obs.length > 0 && (
+          <div className="cmb-group">
+            <div className="cmb-grouph">
+              <span className="dot dot--ob" /> Obligatorias
+              <i>{filtered.obs.length}</i>
+            </div>
+            {filtered.obs.map(row)}
+          </div>
+        )}
+        {filtered.els.length > 0 && (
+          <div className="cmb-group">
+            <div className="cmb-grouph">
+              <span className="dot dot--el" /> Electivas
+              <i>{filtered.els.length}</i>
+            </div>
+            {filtered.els.map(row)}
+          </div>
+        )}
+        {noResults && (
+          <p className="cmb-noresults">No hay materias con “{q}”.</p>
+        )}
+      </div>
+    </div>
   );
 
   // ---------- sub-render: stage (área "stage") ----------
@@ -428,13 +419,11 @@ export default function CombinadorView() {
         </div>
       ) : result && total > 0 && grid ? (
         <>
-          <div className="cmbx-rhead">
-            <div className="cmbx-rhead__lead">
-              <span className="cmbx-rhead__kick">Tu cursada</span>
+          <div className="cmbx-resultbar">
+            <div className="cmbx-resultbar__lead">
               <div
                 className={
-                  "cmbx-rhead__count" +
-                  (comboParams.allowOverlap ? " warn" : " ok")
+                  "cmbx-rcount" + (comboParams.allowOverlap ? " warn" : " ok")
                 }
               >
                 <b>
@@ -454,16 +443,30 @@ export default function CombinadorView() {
               {isCompact && (
                 <span className="cmbx-tag">✦ la más compacta</span>
               )}
-              {total > 1 && (
-                <p className="cmbx-rhead__sub">
-                  Ordenadas de más compacta a menos. Usá <kbd>←</kbd> <kbd>→</kbd>{" "}
-                  para recorrerlas.
-                </p>
-              )}
             </div>
 
+            {insights && (
+              <div className="cmbx-statstrip">
+                <span className="cmbx-statstrip__cred">
+                  <b>{cred}</b> créditos{elc > 0 ? ` · ${elc} elec.` : ""}
+                </span>
+                <span>
+                  <b>{insights.dias}</b>{" "}
+                  {insights.dias === 1 ? "día con clase" : "días con clase"}
+                </span>
+                <span>
+                  <b>{insights.libres}</b>{" "}
+                  {insights.libres === 1 ? "libre" : "libres"}
+                </span>
+                <span>
+                  <b>{insights.horas}</b> h/sem
+                </span>
+                <span className="cmbx-statstrip__range">{insights.rango}</span>
+              </div>
+            )}
+
             {total > 1 && (
-              <div className="cmbx-pager">
+              <div className="cmbx-pager" title="Recorré las opciones con ← →">
                 <button
                   type="button"
                   className="cmbx-pager__btn"
@@ -488,31 +491,11 @@ export default function CombinadorView() {
             )}
           </div>
 
-          {insights && (
-            <div className="cmbx-statbar">
-              <span className="cmbx-statcell">
-                <b>{insights.dias}</b>
-                <i>{insights.dias === 1 ? "día con clase" : "días con clase"}</i>
-              </span>
-              <span className="cmbx-statcell">
-                <b>{insights.libres}</b>
-                <i>{insights.libres === 1 ? "día libre" : "días libres"}</i>
-              </span>
-              <span className="cmbx-statcell">
-                <b>{insights.horas}</b>
-                <i>horas / sem</i>
-              </span>
-              <span className="cmbx-statcell cmbx-statcell--range">
-                <b>{insights.rango}</b>
-                <i>franja horaria</i>
-              </span>
-            </div>
-          )}
-
           <div className="cmbcal-wrap" key={safeIdx}>
             <CursadaCalendar
               blocks={grid.blocks}
               days={DAYS6}
+              dense
               onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
             />
             {grid.asyncs.length > 0 && (
@@ -580,7 +563,8 @@ export default function CombinadorView() {
       </div>
 
       <div className="cmbx">
-        {configRail}
+        {topbar}
+        {picker}
         {stage}
       </div>
     </section>
