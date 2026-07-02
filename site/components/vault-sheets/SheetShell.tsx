@@ -5,6 +5,7 @@ import type { Sheet, SheetEntry, SheetGroup } from "./types";
 import { defaultKind, KIND_META, type EntryKind } from "./types";
 import { Math, FitMath, RichText } from "./SheetMath";
 import { toTex, toMd, downloadText } from "./exporters";
+import { useUrlState, setOrDelete } from "@/lib/url-state/core";
 
 /* ──────────────────────────────────────────────────────────────────────────
    SheetShell — chrome de una "hoja de estudio": toolbar (modo + export),
@@ -80,11 +81,27 @@ export default function SheetShell({
   /** Densidad inicial cuando no hay preferencia guardada (ej. "book" en Proba). */
   defaultDensity?: Density;
 }) {
-  const modes = ([] as Mode[]).concat(
-    formulas ? ["formulas"] : [],
-    conceptos ? ["conceptos"] : [],
+  // Estable entre renders (solo depende de qué sheets llegan por props), para
+  // que decode/encode del modo en la URL siempre vean el mismo `modes`.
+  const modes = useMemo(
+    () =>
+      ([] as Mode[]).concat(
+        formulas ? ["formulas"] : [],
+        conceptos ? ["conceptos"] : [],
+      ),
+    [!!formulas, !!conceptos],
   );
-  const [mode, setMode] = useState<Mode>(modes[0]);
+  // Modo en la URL (?hoja=formulas|conceptos): recargar/compartir reproduce la
+  // vista. Si la hoja tiene un solo modo, `?hoja` nunca se escribe (siempre
+  // ese modo, sin ensuciar la URL) y un `?hoja` inválido/ajeno cae al default.
+  const [mode, setMode] = useUrlState<Mode>({
+    initial: modes[0],
+    decode: (p) => {
+      const m = p.get("hoja");
+      return m && (modes as string[]).includes(m) ? (m as Mode) : modes[0];
+    },
+    encode: (v, p) => setOrDelete(p, "hoja", v, v !== modes[0]),
+  });
   const sheet = mode === "formulas" ? formulas : conceptos;
 
   // Persistencia per (vault,kind) bajo una sola key; hidratada post-mount.

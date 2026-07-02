@@ -46,6 +46,7 @@ export function NavLink({
         rel="noopener noreferrer"
         className={classes}
         onClick={onClick}
+        aria-current={active ? "page" : undefined}
         {...rest}
       >
         {children}
@@ -54,7 +55,13 @@ export function NavLink({
   }
 
   return (
-    <Link href={href} className={classes} onClick={onClick} {...rest}>
+    <Link
+      href={href}
+      className={classes}
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      {...rest}
+    >
       {children}
     </Link>
   );

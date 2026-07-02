@@ -14,10 +14,23 @@ import {
 } from "@/lib/planner/model";
 import { comModalidad, isAsync, slotsConflict, toMin } from "@/lib/planner/time";
 import { generateCombos } from "@/lib/planner/combos";
+import { isAvailable } from "@/lib/planner/metrics";
+import { charFiltersActive, hasPrograma, matchesChars } from "@/lib/planner/programa";
+import { buildComboHTML } from "@/lib/planner/exportPlan";
+import { openForPrint } from "@/lib/planner/download";
 import { Legend } from "@/components/planner/WeekGrid";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
+import { ComingSoonBadge, ProgramaChips } from "@/components/planner/ProgramaChips";
+import { IconPlus, IconPrinter, IconSliders } from "@/components/planner/icons";
 import type { LegendEntry } from "@/components/planner/WeekGrid";
-import type { Materia, MateriaM, PlacedMateria, Slot, WeekBlock } from "@/lib/planner/types";
+import type {
+  CharFilters,
+  Materia,
+  MateriaM,
+  PlacedMateria,
+  Slot,
+  WeekBlock,
+} from "@/lib/planner/types";
 
 interface AsyncChip extends Slot {
   abbr: string;
@@ -25,6 +38,23 @@ interface AsyncChip extends Slot {
 }
 
 const MODAL_KEYS = ["Presencial", "Virtual", "Blended"] as const;
+const REGIMEN_OPTS: {
+  value: CharFilters["regimen"];
+  label: string;
+  title: string;
+}[] = [
+  { value: "any", label: "Cualquiera", title: "No filtra por régimen" },
+  {
+    value: "promocionable",
+    label: "Promociona",
+    title: "Se aprueba sin final (según el programa)",
+  },
+  {
+    value: "sin-final",
+    label: "Sin final",
+    title: "El programa no menciona examen final",
+  },
+];
 const norm = (s: string) =>
   s
     .toLowerCase()
@@ -75,6 +105,9 @@ export default function CombinadorView() {
   const [q, setQ] = useState("");
   const [idx, setIdx] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [charOpen, setCharOpen] = useState(false);
+  const [suggestMsg, setSuggestMsg] = useState<string | null>(null);
+  const charActive = charFiltersActive(state.charFilters);
 
   // ---------- materias combinables ----------
   const pool = useMemo(() => {
@@ -97,6 +130,40 @@ export default function CombinadorView() {
       !needle || norm(`${m.codigo} ${m.nombre} ${m.abbr}`).includes(needle);
     return { obs: pool.obs.filter(match), els: pool.els.filter(match) };
   }, [pool, q]);
+
+  // ---------- "Sugerir materias": candidatas que matchean charFilters ----------
+  // Universo: obligatorias + electivas con oferta horaria, disponibles según
+  // correlativas/créditos (isAvailable) y no aprobadas. matchesChars filtra por
+  // régimen/asistencia/programa/hs semanales (state.charFilters).
+  const suggestable = useMemo(() => {
+    const all = [...PLAN.obligatorias, ...PLAN.electivas];
+    return all
+      .filter(
+        (m) =>
+          hasHorario(m.codigo) &&
+          isAvailable(m, state.approved) &&
+          matchesChars(m.codigo, state.charFilters),
+      )
+      .map((m) => byId.get(m.codigo)!);
+  }, [state.approved, state.charFilters]);
+
+  useEffect(() => {
+    setSuggestMsg(null);
+  }, [state.charFilters]);
+
+  const handleSuggest = () => {
+    const toAdd = suggestable.filter((m) => !combo.has(m.codigo));
+    toAdd.forEach((m) => dispatch({ type: "TOGGLE_COMBO", code: m.codigo }));
+    const n = suggestable.length;
+    setSuggestMsg(
+      n === 0
+        ? "Ninguna materia matchea estos filtros"
+        : toAdd.length === 0
+          ? `${n} materia${n === 1 ? "" : "s"} sugerida${n === 1 ? "" : "s"} · ya estaban en tu combo`
+          : `${n} materia${n === 1 ? "" : "s"} sugerida${n === 1 ? "" : "s"} · +${toAdd.length} nueva${toAdd.length === 1 ? "" : "s"}`,
+    );
+    setPickerOpen(false);
+  };
 
   // selección, ordenada por código (igual que generateCombos → colores alineados)
   const selected = useMemo(
@@ -225,6 +292,11 @@ export default function CombinadorView() {
             <span>· {m.creditos} cr</span>
             {coms > 1 && <span>· {coms} com.</span>}
           </span>
+          {hasPrograma(m.codigo) ? (
+            <ProgramaChips codigo={m.codigo} showEval={false} />
+          ) : (
+            <ComingSoonBadge short />
+          )}
         </span>
         <span className="cmb-row__cr">{m.creditos}</span>
       </button>
@@ -348,8 +420,128 @@ export default function CombinadorView() {
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          className={"cmbx-charbtn" + (charOpen ? " is-open" : "")}
+          aria-expanded={charOpen}
+          onClick={() => setCharOpen((o) => !o)}
+          title="Filtrar candidatas por régimen, asistencia y programa"
+        >
+          <IconSliders size={13} />
+          Características
+          {charActive && <span className="cmbx-charbtn__dot" aria-hidden="true" />}
+        </button>
       </div>
     </header>
+  );
+
+  // ---------- sub-render: panel "filtrar por características" ----------
+  const charPanel = charOpen && (
+    <div className="cmbx-charpanel">
+      <div className="cmbx-charpanel__row">
+        <span className="cmbx-charpanel__lbl">Régimen</span>
+        <div className="cmb-prefs__modal" role="radiogroup" aria-label="Régimen de cursada">
+          {REGIMEN_OPTS.map((o) => (
+            <button
+              type="button"
+              key={o.value}
+              className={
+                "cmb-pill" + (state.charFilters.regimen === o.value ? " on" : "")
+              }
+              aria-pressed={state.charFilters.regimen === o.value}
+              title={o.title}
+              onClick={() =>
+                dispatch({ type: "SET_CHAR_FILTERS", patch: { regimen: o.value } })
+              }
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <label className="cmbx-charpanel__check">
+        <input
+          type="checkbox"
+          checked={state.charFilters.sinAsistenciaObligatoria}
+          onChange={(e) =>
+            dispatch({
+              type: "SET_CHAR_FILTERS",
+              patch: { sinAsistenciaObligatoria: e.target.checked },
+            })
+          }
+        />
+        Sin asistencia obligatoria
+      </label>
+
+      <label className="cmbx-charpanel__check">
+        <input
+          type="checkbox"
+          checked={state.charFilters.soloConPrograma}
+          onChange={(e) =>
+            dispatch({
+              type: "SET_CHAR_FILTERS",
+              patch: { soloConPrograma: e.target.checked },
+            })
+          }
+        />
+        Solo con programa disponible
+      </label>
+
+      <label className="cmbx-charpanel__hs" title="Dejalo vacío para no limitar">
+        Máx. hs/sem
+        <input
+          type="number"
+          min={1}
+          max={40}
+          inputMode="numeric"
+          placeholder="—"
+          value={state.charFilters.maxHsSemanales ?? ""}
+          onChange={(e) => {
+            const raw = e.target.value.trim();
+            if (raw === "") {
+              dispatch({
+                type: "SET_CHAR_FILTERS",
+                patch: { maxHsSemanales: null },
+              });
+              return;
+            }
+            const n = Number(raw);
+            if (Number.isFinite(n)) {
+              dispatch({
+                type: "SET_CHAR_FILTERS",
+                patch: { maxHsSemanales: Math.max(1, Math.min(40, Math.round(n))) },
+              });
+            }
+          }}
+        />
+      </label>
+
+      {charActive && (
+        <button
+          type="button"
+          className="cmb2-clear"
+          onClick={() => dispatch({ type: "RESET_CHAR_FILTERS" })}
+        >
+          Limpiar
+        </button>
+      )}
+
+      <div className="cmbx-charpanel__suggest">
+        <button
+          type="button"
+          className="cmbx-suggest-btn"
+          disabled={suggestable.length === 0}
+          onClick={handleSuggest}
+          title="Agrega al combo las materias disponibles que matchean estos filtros"
+        >
+          <IconPlus size={13} />
+          Sugerir materias
+          <b>{suggestable.length}</b>
+        </button>
+        {suggestMsg && <span className="cmbx-suggest-msg">{suggestMsg}</span>}
+      </div>
+    </div>
   );
 
   // ---------- sub-render: buscador desplegable (debajo del header) ----------
@@ -489,6 +681,32 @@ export default function CombinadorView() {
                 </button>
               </div>
             )}
+
+            <button
+              type="button"
+              className="cmbx-dlbtn"
+              title="Exporta un PDF con el calendario y todas las especificaciones de las materias elegidas"
+              onClick={() => {
+                const placed = ranked[safeIdx];
+                if (!placed) return;
+                const generado = new Date().toLocaleDateString("es-AR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                });
+                openForPrint(
+                  buildComboHTML({
+                    placed,
+                    generado,
+                    periodo: "2.º cuatrimestre 2026",
+                    autoPrint: true,
+                  }),
+                  "programa-de-cursada.html",
+                );
+              }}
+            >
+              <IconPrinter size={13} /> Descargar programa completo
+            </button>
           </div>
 
           <div className="cmbcal-wrap" key={safeIdx}>
@@ -564,6 +782,7 @@ export default function CombinadorView() {
 
       <div className="cmbx">
         {topbar}
+        {charPanel}
         {picker}
         {stage}
       </div>

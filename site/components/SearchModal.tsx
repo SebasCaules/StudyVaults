@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { withBase } from "@/lib/content/slug";
+import { readParams, writeParams } from "@/lib/url-state/core";
 
 interface Result {
   url: string;
@@ -18,6 +19,7 @@ export default function SearchModal() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [ready, setReady] = useState<boolean | null>(null); // null=sin cargar
+  const [hydrated, setHydrated] = useState(false);
   const pfRef = useRef<Pagefind | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -40,6 +42,34 @@ export default function SearchModal() {
     };
   }, []);
 
+  // Deep-link: `?q=<term>` abre el modal con la query precargada (recargar /
+  // compartir link reproduce la búsqueda). Se hidrata tras montar (SSR-safe) y
+  // se sincroniza con atrás/adelante vía popstate. Ver lib/url-state/README.md.
+  useEffect(() => {
+    const sync = () => {
+      const q = readParams().get("q") ?? "";
+      if (q) {
+        setOpen(true);
+        setQuery(q);
+      }
+    };
+    sync();
+    setHydrated(true);
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
+
+  // Escribir la query en la URL (solo tras hidratar, para no pisar el `q` que
+  // vino en el link al montar). Modal cerrado o query vacía → se borra la clave.
+  useEffect(() => {
+    if (!hydrated) return;
+    const term = open ? query.trim() : "";
+    writeParams((p) => {
+      if (term) p.set("q", term);
+      else p.delete("q");
+    });
+  }, [open, query, hydrated]);
+
   const loadPagefind = useCallback(async () => {
     if (pfRef.current) return pfRef.current;
     try {
@@ -59,11 +89,14 @@ export default function SearchModal() {
     if (open) {
       loadPagefind();
       setTimeout(() => inputRef.current?.focus(), 30);
-    } else {
+    } else if (hydrated) {
+      // Limpiar solo al CERRAR de verdad, no en el primer mount: si no, este
+      // effect (open=false inicial) pisaría la query que la hidratación de `?q=`
+      // acaba de setear (ver deep-link abajo).
       setQuery("");
       setResults([]);
     }
-  }, [open, loadPagefind]);
+  }, [open, hydrated, loadPagefind]);
 
   // búsqueda con debounce
   useEffect(() => {

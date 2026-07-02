@@ -37,7 +37,10 @@ const sig = (s: string) => (
     fontSize="10"
     letterSpacing="1.5"
     fill="var(--ink-strong)"
-    opacity="0.8"
+    stroke="var(--surface-3)"
+    strokeWidth="3"
+    strokeLinejoin="round"
+    paintOrder="stroke"
   >
     {s}
   </text>

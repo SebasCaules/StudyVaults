@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "../cn";
 import { Icon } from "../primitives/Icon";
 import Brand from "./Brand";
@@ -59,18 +59,72 @@ export function Navbar({
   const [open, setOpen] = useState(false);
   // Sección in-page actualmente a la vista (solo aplica en la home, p. ej. "materias").
   const [section, setSection] = useState("");
+  const burgerRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const wasOpen = useRef(false);
 
-  // Cerrar el menú al cambiar de ruta o con Escape.
+  // Cerrar el menú al cambiar de ruta o con Escape. El mismo listener de
+  // teclado atrapa Tab dentro de #mobileMenu mientras está abierto (drawer
+  // mobile), igual que WikiRail.
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !open) return;
+      const menu = mobileMenuRef.current;
+      if (!menu) return;
+      const focusables = menu.querySelectorAll<HTMLElement>(
+        "a[href], button:not([disabled])",
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, []);
+  }, [open]);
+
+  // Foco: al abrir, salta al primer link del drawer; al cerrar (si estaba
+  // abierto), lo devuelve al botón burger. `wasOpen` evita robar el foco en
+  // el montaje inicial (donde `open` arranca en false).
+  useEffect(() => {
+    if (open) {
+      wasOpen.current = true;
+      const first = mobileMenuRef.current?.querySelector<HTMLElement>(
+        "a[href], button:not([disabled])",
+      );
+      first?.focus();
+    } else if (wasOpen.current) {
+      wasOpen.current = false;
+      burgerRef.current?.focus();
+    }
+  }, [open]);
+
+  // Mobile (<900px): bloquear el scroll del body mientras el drawer está
+  // abierto. Gateado por matchMedia — en desktop el burger nunca se abre,
+  // así que esto no debería dispararse, pero se replica el guard de
+  // WikiRail por las dudas (p. ej. un resize con el menú abierto).
+  useEffect(() => {
+    if (!open) return;
+    const mq = window.matchMedia("(max-width: 900px)");
+    if (!mq.matches) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   // Anclas in-page declaradas en los links (p. ej. "/#materias").
   const anchors = links
@@ -171,6 +225,7 @@ export function Navbar({
         {showThemeToggle && <ThemeToggle variant="desktop" />}
 
         <button
+          ref={burgerRef}
           className="nav__burger"
           type="button"
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -182,7 +237,19 @@ export function Navbar({
         </button>
       </div>
 
-      <div className={cn("nav__mobile", open && "is-open")} id="mobileMenu">
+      {open && (
+        <div
+          className="nav__scrim"
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      <div
+        className={cn("nav__mobile", open && "is-open")}
+        id="mobileMenu"
+        ref={mobileMenuRef}
+      >
         {links.map((l) => (
           <NavLink
             key={l.href}

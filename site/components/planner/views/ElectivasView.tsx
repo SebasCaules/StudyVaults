@@ -5,6 +5,7 @@ import { usePlanner } from "@/components/planner/state";
 import { PLAN, AREA_COLOR, hasHorario } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
 import { FICHAS } from "@/lib/planner/fichas";
+import { ProgramaChips, ComingSoonBadge } from "@/components/planner/ProgramaChips";
 import type { Materia } from "@/lib/planner/types";
 
 export default function ElectivasView() {
@@ -88,6 +89,11 @@ export default function ElectivasView() {
             )
           ) : null}
         </div>
+        {hasFicha ? (
+          <ProgramaChips codigo={m.codigo} showEval={false} />
+        ) : (
+          <ComingSoonBadge short />
+        )}
         <div className="card__acts">
           <button
             className={"mini btn-ap" + (appr ? " on" : "")}

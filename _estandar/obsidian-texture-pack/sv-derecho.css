@@ -1,0 +1,22 @@
+/* ============================================================================
+   Variante DERECHO — Derecho   ·   acento sepia + grano pergamino + capitular
+   Activar por nota:  cssclasses: [sv-derecho]
+   ========================================================================== */
+
+.theme-dark  .sv-derecho{ --sv-accent:#cf9578; --sv-accent-2:#e2b39b; --sv-on-accent:#1c0f08; }
+.theme-light .sv-derecho{ --sv-accent:#8a4433; --sv-accent-2:#a4573f; --sv-on-accent:#ffffff; }
+
+/* grano de pergamino (ruido SVG self-contained, sin margen vertical) */
+.markdown-reading-view .markdown-preview-view.sv-derecho{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+.theme-dark  .markdown-reading-view .markdown-preview-view.sv-derecho{ background-blend-mode:overlay; }
+.theme-light .markdown-reading-view .markdown-preview-view.sv-derecho{ background-blend-mode:multiply; }
+
+/* capitular: primera letra del primer párrafo de la nota */
+.sv-derecho .markdown-preview-sizer > .el-p:first-of-type p::first-letter,
+.sv-derecho .markdown-rendered > p:first-of-type::first-letter{
+  font-size:3em; line-height:.8; float:left; padding:.1em .12em 0 0;
+  color:var(--sv-accent); font-weight:600; font-family:var(--font-text);
+}

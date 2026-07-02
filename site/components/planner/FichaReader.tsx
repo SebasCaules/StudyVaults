@@ -15,6 +15,7 @@ import { createPortal } from "react-dom";
 import { usePlanner } from "@/components/planner/state";
 import { FICHAS } from "@/lib/planner/fichas";
 import { withBase } from "@/lib/content/slug";
+import { ProgramaChips } from "@/components/planner/ProgramaChips";
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -158,6 +159,7 @@ export default function FichaReader() {
             <span className="fr-head__code">{ficha.codigo}</span>
             <h1 className="fr-title">{ficha.materia}</h1>
             {meta ? <p className="fr-head__meta">{meta}</p> : null}
+            <ProgramaChips codigo={code} />
             <div className="fr-chips">
               {ch!.total != null ? (
                 <span className="fr-chip">

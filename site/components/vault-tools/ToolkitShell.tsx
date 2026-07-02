@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { cn } from "@studyvaults/ui";
+import { useUrlState, setOrDelete } from "@/lib/url-state/core";
 import ToolIcon, { type ToolIconName } from "./ToolIcon";
 
 export interface Tool {
@@ -40,7 +41,18 @@ export default function ToolkitShell({
   tools: Tool[];
 }) {
   const base = useId();
-  const [active, setActive] = useState<string | null>(null);
+  // `tool` en la URL = key de la herramienta activa (ausente = grilla). Deep-link:
+  // recargar y compartir el link reproducen la tool abierta. `push` para que
+  // Atrás del navegador vuelva de la tool a la grilla (ver lib/url-state/README.md).
+  const [active, setActive] = useUrlState<string | null>({
+    initial: null,
+    decode: (p) => {
+      const t = p.get("tool");
+      return t && tools.some((tool) => tool.key === t) ? t : null; // validar contra ESTE toolkit
+    },
+    encode: (v, p) => setOrDelete(p, "tool", v ?? "", v != null),
+    mode: "push",
+  });
 
   const order = useMemo(() => tools.map((t) => t.key), [tools]);
   const activeIdx = active ? order.indexOf(active) : -1;

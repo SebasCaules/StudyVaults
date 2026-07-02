@@ -69,43 +69,56 @@ export async function GET() {
     }
   }
 
-  // anclas por materia (en círculo) para clusterizar
+  // anclas por materia en una ELIPSE APAISADA (más ancha que alta): así el
+  // grafo, ya de por sí clusterizado por materia, adopta una forma horizontal
+  // que llena los canvases anchos en vez de quedar en un cuadrado central.
   const anchors: Record<string, { x: number; y: number }> = {};
   VAULTS.forEach((vlt, i) => {
     const a = (i / VAULTS.length) * Math.PI * 2 - Math.PI / 2;
-    anchors[vlt.id] = { x: Math.cos(a) * 320, y: Math.sin(a) * 320 };
+    anchors[vlt.id] = { x: Math.cos(a) * 660, y: Math.sin(a) * 320 };
   });
   nodes.forEach((n) => {
     const an = anchors[n.v];
-    n.x = an.x + (Math.random() - 0.5) * 60;
-    n.y = an.y + (Math.random() - 0.5) * 60;
+    n.x = an.x + (Math.random() - 0.5) * 110;
+    n.y = an.y + (Math.random() - 0.5) * 110;
   });
 
   const sim = forceSimulation(nodes)
-    .force("charge", forceManyBody().strength(-26))
+    // repulsión fuerte pero ACOTADA (distanceMax) → nodos bien separados y
+    // "descomprimidos", sin que el grafo explote ni se deshagan los clusters.
+    .force("charge", forceManyBody().strength(-105).distanceMax(540))
     .force(
       "link",
       forceLink<SimNode, { source: string; target: string }>(links)
         .id((d) => d.id)
-        .distance(26)
-        .strength(0.35),
+        .distance(52)
+        .strength(0.14),
     )
-    .force("x", forceX<SimNode>((n) => anchors[n.v].x).strength(0.07))
-    .force("y", forceY<SimNode>((n) => anchors[n.v].y).strength(0.07))
-    .force("collide", forceCollide(3.2))
+    .force("x", forceX<SimNode>((n) => anchors[n.v].x).strength(0.05))
+    .force("y", forceY<SimNode>((n) => anchors[n.v].y).strength(0.06))
+    .force("collide", forceCollide(8).strength(0.9))
     .stop();
-  for (let i = 0; i < 320; i++) sim.tick();
+  // más ticks → el layout se asienta de forma suave y natural
+  for (let i = 0; i < 440; i++) sim.tick();
 
-  // normalizar a un viewBox 0..1000 (cuadrado), preservando aspecto
+  // normalizar centrando el layout en (500,500) y ajustando al ALTO (fit
+  // vertical): como el layout es apaisado, el ancho se extiende más allá de
+  // 0..1000 y el renderer —que escala 1000 → min(ancho,alto) centrado en la
+  // cámara— lo despliega a lo ancho, llenando el canvas.
   const xs = nodes.map((n) => n.x!);
   const ys = nodes.map((n) => n.y!);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
-  const span = Math.max(maxX - minX, maxY - minY) || 1;
-  const pad = 40;
-  const scale = (1000 - pad * 2) / span;
+  const ySpan = (maxY - minY) || 1;
+  const xSpan = (maxX - minX) || 1;
+  const pad = 56;
+  const scale = (1000 - pad * 2) / ySpan;
   const cx = (minX + maxX) / 2;
   const cy = (minY + maxY) / 2;
+  // La repulsión isótropa redondea la elipse, así que el resultado queda ~1.4:1.
+  // Un estirón horizontal suave y ACOTADO lleva el aspecto a ~1.9:1 para llenar
+  // canvases anchos, sin deformar de más (tope 1.5×).
+  const xStretch = Math.min(1.5, Math.max(1, 1.9 / (xSpan / ySpan)));
 
   // color por nodo, resuelto en build y POR TEMA (AA en dark y light).
   // base = tint de materia (mismas mezclas que --vt-* de globals.css);
@@ -144,18 +157,29 @@ export async function GET() {
     s: n.s,
     cDark: cDark(n.v),
     cLight: cLight(n.v),
-    x: Math.round((n.x! - cx) * scale + 500),
+    x: Math.round((n.x! - cx) * scale * xStretch + 500),
     y: Math.round((n.y! - cy) * scale + 500),
-    r: Math.round((1.6 + Math.sqrt(n.deg) * 0.9) * 10) / 10,
+    r: Math.round((2.0 + Math.sqrt(n.deg) * 1.05) * 10) / 10,
   }));
   const outLinks = links.map((l) => [
     idx.get(typeof l.source === "string" ? l.source : (l.source as SimNode).id)!,
     idx.get(typeof l.target === "string" ? l.target : (l.target as SimNode).id)!,
   ]);
 
+  // semiejes reales del contenido (centrado en 500,500) → el cliente hace un
+  // contain-fit a estos límites: llena el eje más ajustado en cualquier canvas
+  // (ancho en desktop) sin recortar ni deformar.
+  let hx = 1, hy = 1;
+  for (const n of outNodes) {
+    const dx = Math.abs(n.x - 500), dy = Math.abs(n.y - 500);
+    if (dx > hx) hx = dx;
+    if (dy > hy) hy = dy;
+  }
+
   return Response.json({
     nodes: outNodes,
     links: outLinks,
     vaults: VAULTS.map((v) => ({ id: v.id, short: v.short })),
+    bounds: { hx, hy },
   });
 }

@@ -8,8 +8,11 @@ import {
   type ReactNode,
 } from "react";
 import { PLAN, remainingOblig } from "@/lib/planner/model";
+import { DEFAULT_CHAR_FILTERS } from "@/lib/planner/programa";
 import type { Persisted } from "@/lib/planner/persist";
+import type { PlannerUrlState } from "@/lib/planner/url-state";
 import type {
+  CharFilters,
   OptMethod,
   PlacedMateria,
   PlannerState,
@@ -54,12 +57,14 @@ export function initialState(): PlannerState {
     sideCollapsed: false,
     drawerCode: null,
     fichaCode: null,
+    charFilters: { ...DEFAULT_CHAR_FILTERS },
     hydrated: false,
   };
 }
 
 export type Action =
   | { type: "HYDRATE"; payload: Persisted }
+  | { type: "HYDRATE_URL"; payload: PlannerUrlState }
   | { type: "SET_VIEW"; view: ViewKey }
   | { type: "TOGGLE_APPROVED"; code: string }
   | { type: "TOGGLE_COMBO"; code: string }
@@ -88,7 +93,9 @@ export type Action =
   | { type: "OPEN_DRAWER"; code: string }
   | { type: "CLOSE_DRAWER" }
   | { type: "OPEN_FICHA"; code: string }
-  | { type: "CLOSE_FICHA" };
+  | { type: "CLOSE_FICHA" }
+  | { type: "SET_CHAR_FILTERS"; patch: Partial<CharFilters> }
+  | { type: "RESET_CHAR_FILTERS" };
 
 export function reducer(s: PlannerState, a: Action): PlannerState {
   switch (a.type) {
@@ -125,6 +132,25 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
         },
         sideCollapsed: p.sideCollapsed,
         hydrated: true,
+      };
+    }
+    // Mergea las slices de vista/navegación que trajo la URL al montar (pisan
+    // lo que haya puesto HYDRATE de localStorage en esas mismas claves — la
+    // intención explícita del link gana). Campos ausentes en el payload no
+    // tocan el estado. Se despacha en el mismo effect, justo después de
+    // HYDRATE, para no dejar un frame con el estado a medio hidratar.
+    case "HYDRATE_URL": {
+      const u = a.payload;
+      return {
+        ...s,
+        view: u.view ?? s.view,
+        search: u.search ?? s.search,
+        areasOn: u.areasOn ? new Set(u.areasOn) : s.areasOn,
+        fDisp: u.fDisp ?? s.fDisp,
+        fHor: u.fHor ?? s.fHor,
+        combo: u.combo ? new Set(u.combo) : s.combo,
+        drawerCode: u.drawerCode ?? s.drawerCode,
+        fichaCode: u.fichaCode ?? s.fichaCode,
       };
     }
     case "SET_VIEW":
@@ -252,6 +278,10 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return { ...s, fichaCode: a.code };
     case "CLOSE_FICHA":
       return { ...s, fichaCode: null };
+    case "SET_CHAR_FILTERS":
+      return { ...s, charFilters: { ...s.charFilters, ...a.patch } };
+    case "RESET_CHAR_FILTERS":
+      return { ...s, charFilters: { ...DEFAULT_CHAR_FILTERS } };
     default:
       return s;
   }

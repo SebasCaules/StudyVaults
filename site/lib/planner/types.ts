@@ -91,6 +91,32 @@ export interface Ficha {
   pdf: string; // ruta pública SIN basePath (envolver con withBase), p. ej. "/electivas-fichas/10.07.pdf"
 }
 
+/** Características derivadas del programa analítico (heurística determinista sobre
+ *  el texto de `evaluacion`). Convención: se marca un valor SOLO si la señal aparece
+ *  explícita en el texto; `null` cuando no se detecta (nunca se infiere un dato ausente).
+ *  El texto crudo de `evaluacion` siempre se muestra para que el usuario verifique.
+ *  Se computa en runtime desde la `Ficha` (lib/planner/programa.ts) — no se persiste
+ *  en fichas.ts, así se re-deriva sin re-parsear los PDFs. */
+export interface FichaDerivado {
+  tieneParcial: boolean; // aparece "parcial(es)"
+  tieneFinal: boolean; // aparece "examen final" / "final" como instancia de examen
+  tieneTP: boolean; // aparece "trabajo práctico" / "TP"
+  /** promociona sin examen final: true si hay "promoc"; false si hay final; null si es dudoso. */
+  promocionable: boolean | null;
+  /** asistencia/presentismo obligatorio detectado en "Requisitos de aprobación". */
+  asistenciaObligatoria: boolean | null;
+  /** porcentaje mínimo de asistencia si el texto lo explicita (ej. 75). */
+  asistenciaPct: number | null;
+}
+
+/** Filtros por características para "armar plan" (Combinador). `any`/false = sin filtrar. */
+export interface CharFilters {
+  regimen: "any" | "promocionable" | "sin-final";
+  sinAsistenciaObligatoria: boolean;
+  maxHsSemanales: number | null;
+  soloConPrograma: boolean;
+}
+
 export interface Edge {
   from: string;
   to: string;
@@ -175,6 +201,8 @@ export interface PlannerState {
   sideCollapsed: boolean;
   drawerCode: string | null;
   fichaCode: string | null; // electiva abierta en el lector full-screen (efímero, sin persistir)
+  /** filtros por características del programa para el Combinador (efímero, sin persistir). */
+  charFilters: CharFilters;
   hydrated: boolean;
 }
 

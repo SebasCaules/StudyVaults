@@ -1,16 +1,31 @@
-// Export del plan de cursada a un documento HTML autocontenido y bien formateado
-// (sirve para descargar como .html o para imprimir → PDF). Sin dependencias ni
-// DOM: devuelve un string. Los colores son literales (no usa color-mix) para que
-// imprima y se vea bien en cualquier visor.
+// Export del plan de cursada / combinación a un documento HTML autocontenido y
+// bien formateado (sirve para descargar como .html o imprimir → PDF). Sin
+// dependencias ni DOM: devuelve un string. Los colores son literales (no usa
+// color-mix) para que imprima y se vea bien en cualquier visor.
 import { cuatriAt, cuatriLabel, cuatriName } from "./optimize";
 import { isAsync, slotsConflict, toMin } from "./time";
 import { DAYS, PALETTE } from "./model";
+import { FICHAS } from "./fichas";
+import resumenesData from "./resumenes.json";
 import type {
+  Comision,
+  Ficha,
   PlacedMateria,
   PlanResult,
   PlanStart,
   WeekBlock,
 } from "./types";
+
+/** Resumen por bloques extraído de los PDFs (Electivas/build-resumenes.py). */
+interface ResumenEntry {
+  codigo: string;
+  materia: string;
+  puntosClave: string[];
+  contenidosMinimos: string;
+  evaluacion: { resumen: string; texto: string };
+  bibliografia: { obligatoria: string[]; complementaria: string[] };
+}
+const RESUMENES = resumenesData as unknown as Record<string, ResumenEntry>;
 
 const esc = (s: unknown): string =>
   String(s ?? "").replace(
@@ -138,81 +153,135 @@ function asyncRowHTML(asyncs: { abbr: string; txt: string }[]): string {
     .join("")}</div>`;
 }
 
-export interface ExportArgs {
-  result: PlanResult;
-  start: PlanStart;
-  maxCred: number;
-  maxMat: number;
-  avoid: boolean;
-  approvedCreditsNow: number;
-  generado: string; // fecha legible
-  autoPrint?: boolean;
+// ---- especificaciones completas por materia (programa analítico) -----------
+
+/** Multi-párrafo ("\n\n") → <p> serializados. */
+const proseHTML = (text: string): string =>
+  String(text || "")
+    .split("\n\n")
+    .filter((p) => p.trim())
+    .map((p) => `<p>${esc(p)}</p>`)
+    .join("");
+
+const block = (title: string, body: string): string =>
+  body ? `<div class="mat-block"><h4>${esc(title)}</h4>${body}</div>` : "";
+
+/** Horario de la comisión elegida (día · franja · aula/sede · modalidad). */
+function comHorarioHTML(com: Comision | null): string {
+  if (!com || !com.slots.length) return "";
+  const slots = com.slots
+    .map((s) => {
+      const aula = [s.sala ? "Aula " + esc(s.sala) : "", s.sede ? esc(s.sede) : ""]
+        .filter(Boolean)
+        .join(" · ");
+      return `<li><span class="d">${esc(s.dia)}</span><span class="h">${esc(s.desde)}–${esc(s.hasta)}</span><span class="au">${aula}</span><span class="mo">${esc(s.modalidad || "—")}</span></li>`;
+    })
+    .join("");
+  const profs = com.profesores ? `<p class="mat-com__profs">${esc(com.profesores)}</p>` : "";
+  return `<div class="mat-com"><div class="mat-com__h">Comisión <b>${esc(com.comision)}</b>${com.cupo ? ` · <span class="mat-com__cupo">${esc(com.cupo)}</span>` : ""}</div><ul class="mat-slots">${slots}</ul>${profs}</div>`;
 }
 
-export function buildPlanHTML(a: ExportArgs): string {
-  const { result: R, start, approvedCreditsNow } = a;
-  const used = R.items
-    .map((it, i) => ({ it, i }))
-    .filter((x) => x.it.length);
-  const flat = R.items.flat();
-  const totalCred = flat.reduce((s, x) => s + (x.m.creditos || 0), 0);
-  const finalCred = approvedCreditsNow + totalCred;
-  const elecPlan = flat
-    .filter((x) => x.m.tipo === "electiva")
-    .reduce((s, x) => s + (x.m.creditos || 0), 0);
-  const lastIdx = used.length ? used[used.length - 1].i : 0;
-  const gradCu = cuatriAt(start, lastIdx);
+function cargaHTML(ficha: Ficha): string {
+  const ch = ficha.cargaHoraria;
+  const chips = [
+    ch.total != null ? `<span><b>${ch.total}</b> hs totales</span>` : "",
+    ch.semanales != null ? `<span><b>${ch.semanales}</b> hs semanales</span>` : "",
+    ch.teoricas != null ? `<span><b>${ch.teoricas}</b> teóricas</span>` : "",
+    ch.practicas != null ? `<span><b>${ch.practicas}</b> prácticas</span>` : "",
+    ch.laboratorio ? `<span><b>${ch.laboratorio}</b> laboratorio</span>` : "",
+    ch.distancia ? `<span><b>${ch.distancia}</b> a distancia</span>` : "",
+  ].filter(Boolean);
+  return chips.length ? `<div class="mat-carga">${chips.join("")}</div>` : "";
+}
 
-  const cuatriSection = ({ it, i }: { it: PlacedMateria[]; i: number }) => {
-    const cu = cuatriAt(start, i);
-    const cred = credOf(it);
-    const { blocks, asyncs } = computeCuatriBlocks(it);
-    const calHTML = blocks.length
-      ? weekGridHTML(blocks)
-      : `<p class="cg-empty">Sólo materias sin grilla semanal.</p>`;
-    // Lista compacta de materias: identidad + créditos + comisión. La grilla de
-    // arriba ya muestra los horarios, así que no repetimos el detalle.
-    const rows = it
-      .slice()
-      .sort((x, y) => (y.m.creditos || 0) - (x.m.creditos || 0))
-      .map((x) => {
-        const com = x.com
-          ? `Com. <span class="mono">${esc(x.com.comision)}</span>`
-          : `<span class="muted">sin horario</span>`;
-        return `<li class="mrow">
-          <span class="mrow__abbr">${esc(x.m.abbr)}</span>
-          <span class="mrow__name">${esc(x.m.nombre)}${x.m.tipo === "electiva" ? ' <span class="pill-el">electiva</span>' : ""}</span>
-          <span class="mrow__com">${com}</span>
-          <span class="mrow__cr">${esc(x.m.creditos)} cr</span>
-        </li>`;
-      })
-      .join("");
-    return `<section class="cuatri">
-      <div class="cuatri__h">
-        <h2>${esc(cuatriName(cu))} <span class="tag">${esc(cuatriLabel(cu))}</span></h2>
-        <div class="cuatri__meta">${it.length} materia${it.length === 1 ? "" : "s"} · <b>${cred}</b> créditos</div>
-      </div>
-      <div class="cuatri__cal">
-        ${calHTML}
-        ${asyncRowHTML(asyncs)}
-      </div>
-      <ul class="mlist">${rows}</ul>
-    </section>`;
-  };
+/** Sección con TODAS las especificaciones de una materia elegida. */
+function materiaSpecsHTML(x: PlacedMateria): string {
+  const m = x.m;
+  const ficha: Ficha | undefined = FICHAS[m.codigo];
+  const ob = m.tipo === "obligatoria";
+  const sub = [
+    ob ? "Obligatoria" : "Electiva",
+    `${m.creditos} créditos`,
+    m.horario?.depto || (ficha ? ficha.departamento : ""),
+  ]
+    .filter(Boolean)
+    .map((s) => esc(s))
+    .join(" · ");
 
-  const sectionsHTML = used.map(cuatriSection).join("");
+  let fichaBody = "";
+  if (ficha) {
+    const temario = ficha.programa.length
+      ? `<ol class="mat-units">${ficha.programa
+          .map(
+            (u) =>
+              `<li><b>${esc(u.titulo)}</b>${u.descripcion ? " — " + esc(u.descripcion) : ""}</li>`,
+          )
+          .join("")}</ol>`
+      : "";
+    const biblioList = (label: string, list: string[]) =>
+      list.length
+        ? `<p class="mat-biblio__lbl">${esc(label)}</p><ul class="mat-biblio">${list.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`
+        : "";
+    const biblio =
+      biblioList("Obligatoria", ficha.bibliografiaObligatoria) +
+      biblioList("Complementaria", ficha.bibliografiaComplementaria);
+    fichaBody =
+      cargaHTML(ficha) +
+      block("Presentación", proseHTML(ficha.presentacion)) +
+      block("Objetivos de aprendizaje", proseHTML(ficha.objetivos)) +
+      block("Contenidos mínimos", proseHTML(ficha.contenidosMinimos)) +
+      block("Temario", temario) +
+      block("Estrategias de enseñanza", proseHTML(ficha.estrategias)) +
+      block("Modalidad de evaluación y aprobación", proseHTML(ficha.evaluacion)) +
+      block("Bibliografía", biblio);
+  } else {
+    fichaBody = `<p class="mat-soon">Programa analítico no disponible — próximamente.</p>`;
+  }
 
-  const autoPrintScript = a.autoPrint
-    ? `<script>window.addEventListener('load',function(){setTimeout(function(){window.focus();window.print();},250);});</script>`
-    : "";
+  // Resumen (antes del programa completo): puntos clave + evaluación, extraídos
+  // del PDF por Electivas/build-resumenes.py.
+  const r = RESUMENES[m.codigo];
+  let resumenBox = "";
+  if (r && (r.puntosClave.length || r.evaluacion.resumen)) {
+    const pk = r.puntosClave.length
+      ? `<div class="mat-res__col"><h4>Puntos clave</h4><ul class="mat-res__pk">${r.puntosClave
+          .map((p) => `<li>${esc(p)}</li>`)
+          .join("")}</ul></div>`
+      : "";
+    const ev = r.evaluacion.resumen
+      ? `<div class="mat-res__col"><h4>Evaluación</h4><p>${esc(r.evaluacion.resumen)}</p></div>`
+      : "";
+    resumenBox = `<div class="mat-resumen">${pk}${ev}</div>`;
+  }
 
-  return `<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Plan de cursada — ITBA</title>
-<style>
+  return `<section class="mat-spec">
+    <div class="mat-spec__h">
+      <span class="mat-spec__code">${esc(m.codigo)} · ${esc(m.abbr)}</span>
+      <h3 class="mat-spec__t">${esc(m.nombre)}</h3>
+      <p class="mat-spec__sub">${sub}</p>
+      ${comHorarioHTML(x.com)}
+    </div>
+    ${resumenBox}
+    ${fichaBody}
+  </section>`;
+}
+
+/** Bloque "Programas de las materias" (dedup por código, orden por código). */
+function specsSectionHTML(placed: PlacedMateria[]): string {
+  const seen = new Set<string>();
+  const uniq = placed
+    .filter((x) => (seen.has(x.m.codigo) ? false : (seen.add(x.m.codigo), true)))
+    .sort((a, b) => a.m.codigo.localeCompare(b.m.codigo));
+  if (!uniq.length) return "";
+  return `<section class="specs">
+    <h2 class="specs__h">Programas de las materias</h2>
+    ${uniq.map(materiaSpecsHTML).join("")}
+  </section>`;
+}
+
+// ---- estilos compartidos ----------------------------------------------------
+
+const BASE_CSS = `
   :root{
     --ink:#2b211c; --soft:#5a4d45; --muted:#8a7d73; --line:#e3d9cf;
     --paper:#fbf8f4; --panel:#fff; --coral:#d2754f; --slate:#5b7290;
@@ -288,14 +357,149 @@ export function buildPlanHTML(a: ExportArgs): string {
   .cg-async{margin-top:11px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
   .cg-async__lbl{font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .cg-async__chip{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:#f6efe7;border:1px solid var(--line);color:var(--soft)}
+`;
+
+// Estilos del bloque "Programas de las materias" (specs completas).
+const SPECS_CSS = `
+  .specs{margin-top:24px}
+  .specs__h{font-size:19px;margin:0 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  .mat-spec{margin:0 0 22px;padding:0 0 18px;border-bottom:1px solid var(--line)}
+  .mat-spec:last-child{border-bottom:none;margin-bottom:0}
+  .mat-spec__h{page-break-inside:avoid;break-inside:avoid;margin-bottom:10px}
+  .mat-spec__code{font-family:"SFMono-Regular",Menlo,monospace;font-size:11px;color:var(--coral);letter-spacing:.05em}
+  .mat-spec__t{font-size:19px;margin:4px 0 3px;line-height:1.15}
+  .mat-spec__sub{font-family:"SFMono-Regular",Menlo,monospace;font-size:11.5px;color:var(--soft);margin:0}
+  .mat-com{margin-top:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:8px 12px}
+  .mat-com__h{font-size:12px;color:var(--ink)}
+  .mat-com__cupo{font-family:"SFMono-Regular",Menlo,monospace;font-size:10.5px;color:var(--muted)}
+  .mat-slots{list-style:none;margin:6px 0 0;padding:0}
+  .mat-slots li{display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;padding:2px 0;border-top:1px dashed var(--line)}
+  .mat-slots li:first-child{border-top:none}
+  .mat-slots .d{font-weight:bold;min-width:70px}
+  .mat-slots .h{font-family:"SFMono-Regular",Menlo,monospace;color:var(--soft);min-width:92px}
+  .mat-slots .au{color:var(--soft);flex:1;min-width:110px}
+  .mat-slots .mo{font-family:"SFMono-Regular",Menlo,monospace;font-size:10.5px;color:var(--muted)}
+  .mat-com__profs{font-size:10.5px;color:var(--muted);margin:6px 0 0}
+  .mat-carga{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .mat-carga span{font-family:"SFMono-Regular",Menlo,monospace;font-size:10.5px;color:var(--soft);background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:3px 8px}
+  .mat-carga b{color:var(--coral);font-weight:600}
+  .mat-block{margin:12px 0}
+  .mat-block h4{font-family:"SFMono-Regular",Menlo,monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--coral);margin:0 0 5px}
+  .mat-block p{font-size:12.5px;line-height:1.6;color:var(--ink);margin:0 0 7px}
+  .mat-units{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+  .mat-units li{font-size:12px;line-height:1.5}
+  .mat-biblio{margin:0 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+  .mat-biblio li{font-size:11.5px;line-height:1.45;color:var(--soft)}
+  .mat-biblio__lbl{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 5px}
+  .mat-soon{font-size:12px;color:var(--muted);font-style:italic;margin:8px 0 0}
+  /* caja "resumen" (puntos clave + evaluación) antes del programa completo */
+  .mat-resumen{display:flex;flex-wrap:wrap;gap:12px 26px;margin:10px 0 14px;padding:12px 16px;border:1px solid var(--line);border-left:3px solid var(--coral);border-radius:8px;background:#f9f2ea;page-break-inside:avoid;break-inside:avoid}
+  .mat-res__col{flex:1;min-width:220px}
+  .mat-res__col h4{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--coral);margin:0 0 6px}
+  .mat-res__col p{font-size:12px;line-height:1.5;color:var(--ink);margin:0}
+  .mat-res__pk{margin:0;padding-left:16px;display:flex;flex-direction:column;gap:4px}
+  .mat-res__pk li{font-size:11.5px;line-height:1.45;color:var(--ink)}
+  @media print{ .specs__h,.mat-spec__t{page-break-after:avoid} }
+`;
+
+const PAGE_CSS = `
   @page{size:A4;margin:14mm}
   @media print{ .wrap{padding:0;max-width:none} body{background:#fff} }
-</style>
+`;
+
+/** Envuelve el contenido en un documento HTML autocontenido e imprimible. */
+function docPage(title: string, inner: string, autoPrint?: boolean): string {
+  const autoPrintScript = autoPrint
+    ? `<script>window.addEventListener('load',function(){setTimeout(function(){window.focus();window.print();},250);});</script>`
+    : "";
+  return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<style>${BASE_CSS}${SPECS_CSS}${PAGE_CSS}</style>
 ${autoPrintScript}
 </head>
 <body>
 <div class="wrap">
-  <header class="doc">
+${inner}
+</div>
+</body>
+</html>`;
+}
+
+// ---- export del PLAN de cursada (multi-cuatrimestre) -----------------------
+
+export interface ExportArgs {
+  result: PlanResult;
+  start: PlanStart;
+  maxCred: number;
+  maxMat: number;
+  avoid: boolean;
+  approvedCreditsNow: number;
+  generado: string; // fecha legible
+  autoPrint?: boolean;
+  /** incluir las especificaciones completas de cada materia (default true). */
+  includeSpecs?: boolean;
+}
+
+export function buildPlanHTML(a: ExportArgs): string {
+  const { result: R, start, approvedCreditsNow } = a;
+  const used = R.items
+    .map((it, i) => ({ it, i }))
+    .filter((x) => x.it.length);
+  const flat = R.items.flat();
+  const totalCred = flat.reduce((s, x) => s + (x.m.creditos || 0), 0);
+  const finalCred = approvedCreditsNow + totalCred;
+  const elecPlan = flat
+    .filter((x) => x.m.tipo === "electiva")
+    .reduce((s, x) => s + (x.m.creditos || 0), 0);
+  const lastIdx = used.length ? used[used.length - 1].i : 0;
+  const gradCu = cuatriAt(start, lastIdx);
+
+  const cuatriSection = ({ it, i }: { it: PlacedMateria[]; i: number }) => {
+    const cu = cuatriAt(start, i);
+    const cred = credOf(it);
+    const { blocks, asyncs } = computeCuatriBlocks(it);
+    const calHTML = blocks.length
+      ? weekGridHTML(blocks)
+      : `<p class="cg-empty">Sólo materias sin grilla semanal.</p>`;
+    // Lista compacta de materias: identidad + créditos + comisión. La grilla de
+    // arriba ya muestra los horarios, así que no repetimos el detalle.
+    const rows = it
+      .slice()
+      .sort((x, y) => (y.m.creditos || 0) - (x.m.creditos || 0))
+      .map((x) => {
+        const com = x.com
+          ? `Com. <span class="mono">${esc(x.com.comision)}</span>`
+          : `<span class="muted">sin horario</span>`;
+        return `<li class="mrow">
+          <span class="mrow__abbr">${esc(x.m.abbr)}</span>
+          <span class="mrow__name">${esc(x.m.nombre)}${x.m.tipo === "electiva" ? ' <span class="pill-el">electiva</span>' : ""}</span>
+          <span class="mrow__com">${com}</span>
+          <span class="mrow__cr">${esc(x.m.creditos)} cr</span>
+        </li>`;
+      })
+      .join("");
+    return `<section class="cuatri">
+      <div class="cuatri__h">
+        <h2>${esc(cuatriName(cu))} <span class="tag">${esc(cuatriLabel(cu))}</span></h2>
+        <div class="cuatri__meta">${it.length} materia${it.length === 1 ? "" : "s"} · <b>${cred}</b> créditos</div>
+      </div>
+      <div class="cuatri__cal">
+        ${calHTML}
+        ${asyncRowHTML(asyncs)}
+      </div>
+      <ul class="mlist">${rows}</ul>
+    </section>`;
+  };
+
+  const sectionsHTML = used.map(cuatriSection).join("");
+  const specsHTML =
+    a.includeSpecs === false ? "" : specsSectionHTML(flat);
+
+  const inner = `<header class="doc">
     <p class="kick">StudyVaults · ITBA</p>
     <h1>Plan de cursada</h1>
     <p class="gen">Generado el ${esc(a.generado)}</p>
@@ -322,8 +526,74 @@ ${autoPrintScript}
     <p>${finalCred} créditos · ${esc(cuatriName(gradCu))}</p>
   </div>
 
-  <footer class="doc">Plan de cursada · ${elecPlan} créditos electivos en este plan · studyvaults</footer>
-</div>
-</body>
-</html>`;
+  ${specsHTML}
+
+  <footer class="doc">Plan de cursada · ${elecPlan} créditos electivos en este plan · studyvaults</footer>`;
+
+  return docPage("Plan de cursada — ITBA", inner, a.autoPrint);
+}
+
+// ---- export de la COMBINACIÓN elegida (un cuatrimestre) --------------------
+
+export interface ComboExportArgs {
+  placed: PlacedMateria[]; // la combinación elegida (materia + comisión)
+  generado: string;
+  periodo?: string; // ej. "2.º cuatrimestre 2026"
+  autoPrint?: boolean;
+}
+
+export function buildComboHTML(a: ComboExportArgs): string {
+  const { placed } = a;
+  const cred = credOf(placed);
+  const { blocks, asyncs } = computeCuatriBlocks(placed);
+  const dias = new Set(blocks.map((b) => b.dia)).size;
+  const calHTML = blocks.length
+    ? weekGridHTML(blocks)
+    : `<p class="cg-empty">Sólo materias sin grilla semanal.</p>`;
+
+  const rows = placed
+    .slice()
+    .sort((x, y) => (y.m.creditos || 0) - (x.m.creditos || 0))
+    .map((x) => {
+      const com = x.com
+        ? `Com. <span class="mono">${esc(x.com.comision)}</span>`
+        : `<span class="muted">sin horario</span>`;
+      return `<li class="mrow">
+        <span class="mrow__abbr">${esc(x.m.abbr)}</span>
+        <span class="mrow__name">${esc(x.m.nombre)}${x.m.tipo === "electiva" ? ' <span class="pill-el">electiva</span>' : ""}</span>
+        <span class="mrow__com">${com}</span>
+        <span class="mrow__cr">${esc(x.m.creditos)} cr</span>
+      </li>`;
+    })
+    .join("");
+
+  const inner = `<header class="doc">
+    <p class="kick">StudyVaults · ITBA</p>
+    <h1>Programa de cursada</h1>
+    <p class="gen">${a.periodo ? esc(a.periodo) + " · " : ""}Generado el ${esc(a.generado)}</p>
+  </header>
+
+  <div class="summary">
+    <div class="s accent"><b>${placed.length}</b><span>materias</span></div>
+    <div class="s"><b>${cred}</b><span>créditos</span></div>
+    <div class="s"><b>${dias}</b><span>día${dias === 1 ? "" : "s"} en el campus</span></div>
+  </div>
+
+  <section class="cuatri">
+    <div class="cuatri__h">
+      <h2>Semana de cursada</h2>
+      <div class="cuatri__meta">${placed.length} materia${placed.length === 1 ? "" : "s"} · <b>${cred}</b> créditos</div>
+    </div>
+    <div class="cuatri__cal">
+      ${calHTML}
+      ${asyncRowHTML(asyncs)}
+    </div>
+    <ul class="mlist">${rows}</ul>
+  </section>
+
+  ${specsSectionHTML(placed)}
+
+  <footer class="doc">Programa de cursada · studyvaults · ITBA</footer>`;
+
+  return docPage("Programa de cursada — ITBA", inner, a.autoPrint);
 }

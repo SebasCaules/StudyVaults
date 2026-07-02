@@ -158,6 +158,161 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "pdf": "/electivas-fichas/10.09.pdf"
   },
+  "12.09": {
+    "codigo": "12.09",
+    "materia": "Química",
+    "creditos": 3,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "18/7/2024 15:00:31",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 22,
+      "practicas": 23,
+      "laboratorio": 6,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Estructura de la materia. Equilibrio químico. Metales y no metales. Cinética básica.",
+    "presentacion": "Esta materia, perteneciente al Departamento de Ciencias Exactas y Naturales, se dicta, de forma enteramente presencial, en el segundo año de la carrera de Ingeniería Informática. Se trata de un curso de química general que aborda de manera simple algunas de las principales áreas de la química: enlace químico, geometría molecular, estado sólido, equilibro químico, cinética química y electroquímica. Es una asignatura que pertenece al bloque de las Ciencias Básicas, las cuales están orientadas a contribuir a la formación lógico-deductiva, a proporcionar el conocimiento fundamental de los fenómenos de la naturaleza, incluyendo sus expresiones cuantitativas, y desarrollar la capacidad de su empleo en la ingeniería. La asignatura está pensada para alumnos con conocimientos básicos de química y matemática.",
+    "objetivos": "Que los estudiantes logren: • Incorporar los conceptos, modelos y desarrollos matemáticos presentados en las clases teóricas. • Interpretar las situaciones problemáticas propuestas y desarrollar para ellas soluciones, conceptuales y/o matemáticas,\n\nbasadas en la teoría. • Analizar los resultados obtenidos e identificar aquél que es compatible con el planteo del problema. • Evaluar los resultados obtenidos tanto en problemas teóricos como en situaciones experimentales y obtener conclusiones a partir de los mismos.",
+    "programa": [
+      {
+        "titulo": "Unidad 1. Clasificación periódica.",
+        "descripcion": "Relación entre configuración electrónica y tabla periódica. Propiedades periódicas. Energía de ionización. Afinidad electrónica. Electronegatividad. Radio atómico y radio iónico."
+      },
+      {
+        "titulo": "Unidad 2. Uniones químicas.",
+        "descripcion": "Uniones iónicas, covalentes y metálicas. Estructura molecular y el enlace covalente. Teoría de la repulsión de los pares de electrones de la capa de valencia. Teoría del enlace de valencia. Hibridación de orbitales. Distintos casos."
+      },
+      {
+        "titulo": "Unidad 3. Sólidos y líquidos.",
+        "descripcion": "Propiedades de los sólidos. Distintos tipos. Metales y no metales. Propiedades generales. Tipos de uniones. Semiconductores. Líquidos, propiedades. Presión de vapor. Diagramas de equilibrio de fases. Relación entre propiedades físicas y uniones intermoleculares."
+      },
+      {
+        "titulo": "Unidad 4. Cinética Química.",
+        "descripcion": "Velocidad de reacción, definición y factores que la afectan. Expresiones cinéticas. Constante de velocidad. Orden y molecularidad. Ecuación de Arrhenius. Energía de activación. Catalizadores. Mecanismos de reacción: casos sencillos. Reacciones de orden cero, orden uno y orden dos. Tiempo de vida media."
+      },
+      {
+        "titulo": "Unidad 5. Equilibrio Químico.",
+        "descripcion": "Ley de acción de masas. Constantes de equilibrio en concentraciones y en presiones. Principio de Le Chatelier. Factores que influyen sobre la posición de equilibrio."
+      },
+      {
+        "titulo": "Unidad 6. Equilibrio iónico.",
+        "descripcion": "Equilibrio ácido base. Ácidos y bases según Arrhenius y según Bronsted-Lowry. Producto iónico del agua. Definición y cálculo del pH de ácidos y bases fuertes y de ácidos y bases débiles. Equilibrio en varias etapas. Hidrólisis, pH de sales. Soluciones reguladoras: mecanismo de regulación. Indicadores. Volumetría. Curvas de titulación."
+      },
+      {
+        "titulo": "Unidad 7. Equilibrio de precipitación.",
+        "descripcion": "Sales poco solubles. Producto de solubilidad. Efecto de ión común."
+      },
+      {
+        "titulo": "Unidad 8. Electroquímica.",
+        "descripcion": "Reacciones de óxido reducción. Celdas galvánicas. Potencial normal. Predicción de reacciones. Ecuación de Nernst. Aplicaciones. Diversos tipos de celdas galvánicas. Celdas electrolíticas. Relación entre celdas galvánicas y electrolíticas."
+      }
+    ],
+    "estrategias": "En primer término, el desarrollo de la materia de un modo tal que su carácter integral siempre esté de manifiesto, ya constituye una estrategia. En efecto, que el estudiante pueda comprobar que los conceptos y desarrollos lógico matemáticos abstractos, presentados en las clases teóricas, le permiten hacer cálculos sobre sistemas reales y resolver los problemas concretos planteados en los ejercicios, tiene un alto valor didáctico. Cuando, además, esa situación no se genera a partir de los datos del enunciado de un ejercicio, sino de los valores de las mediciones que el propio alumno realizó en una experimento de laboratorio, el efecto positivo se multiplica. También se presentan numerosos ejemplos de la vida cotidiana y del quehacer industrial y tecnológico donde es imprescindible aplicar los conceptos teóricos desarrollados.",
+    "evaluacion": "Modalidad de evaluación: Exámenes parciales Durante el cuatrimestre se toman dos exámenes parciales. El contenido de dichas evaluaciones se ajusta estrictamente a los temas tratados hasta la semana anterior a la fecha del examen. Los exámenes parciales son escritos y se usa el mismo lenguaje, criterio y grado de dificultad que el desarrollado en las clases. La nota mínima para aprobar cada examen parcial es de 4 puntos, pudiendo recuperarse uno solo de ellos. Laboratorio Se realizarán dos trabajos prácticos de laboratorio en el cuatrimestre. La semana siguiente a la realización del trabajo práctico los estudiantes deberán presentar un informe sobre el mismo, en el cual deben estar los datos, cálculos, gráficos, estimación de los errores y sus fuentes, observaciones y conclusiones. Este informe debe ser aprobado por el docente, en caso contrario se devolverá para corregirlo o rehacerlo. Para ingresar al laboratorio los estudiantes deberán cumplir con todas las normas de seguridad. Examen final Se trata de una evaluación escrita. Las preguntas, ejercicios (conceptuales o numéricos), gráficos, demostraciones o desarrollos que pueden ser tomados abarcan todos los temas de la materia. Se aprueba con una nota de cuatro puntos.\n\nRequisitos de aprobación: Nota de cursada y nota del examen final • La nota de cursada mínima para poder rendir el examen final es de cuatro puntos. • Si el alumno aprobó los dos exámenes parciales la nota de cursada es la media aritmética de las notas de los mismos. • Si el alumno aprobó un parcial, desaprobó el otro y aprobó su recuperatorio, la nota de cursada es la media aritmética de las tres notas (las de los dos exámenes parciales y la del recuperatorio). Si este promedio fuera menor que cuatro la nota de cursada será cuatro • En cualquier otro caso el alumno quedará libre y deberá volver a cursar la asignatura. • El examen final se aprueba con una nota de cuatro puntos.",
+    "bibliografiaObligatoria": [
+      "• Whitten, K. Peck, M. Davies, R. Stanley, G. (2008). Química. Cengage Learning."
+    ],
+    "bibliografiaComplementaria": [
+      "• Kotz, J. Treichel, P. (2003). Química y reactividad química. Thomson. • Brown, T. LeMay, H. Bursten, B. Burge, J. (2004). Química. La ciencia central. Pearson. • Mc Murry, J. Fay, R. (2009). Química General. Pearson. • Chang, R. (2007). Química. Mc Graw-Hill."
+    ],
+    "pdf": "/electivas-fichas/12.09.pdf"
+  },
+  "12.83": {
+    "codigo": "12.83",
+    "materia": "Seguridad Ocupacional y Ambiental",
+    "creditos": 3,
+    "departamento": "Ambiente y Movilidad",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería en Informática / Ingeniería en\n Petróleo / Ingeniería Mecánica / Ingeniería Naval / Ingeniería Química",
+    "actualizado": "17/1/2023 16:32:23",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 34,
+      "practicas": 17,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Introducción. Servicios de Medicina, Higiene y Seguridad. Edificios. Condiciones de Higiene. Condiciones de Seguridad. Accidentes. Actividades sobre Seguridad e Higiene en el Trabajo. Introducción al estudio del medio ambiente. Legislación ambiental. Sistemas de Gestión medioambiental. Etapas de implementación de la ISO 14001. Análisis de casos.",
+    "presentacion": "La materia se encuentra dentro del ciclo profesional de las carreras de ingeniería mecánica, eléctrica, electrónica, naval bioingeniería e informática.\n\nLa materia aborda los conocimientos básicos, y algunas herramientas necesarias para que en su vida profesional, pueda identificar y tener en cuenta los temas relacionados con los riesgos laborales y los aspectos ambientales asociados a cualquier actividad.\n\nCon estos conocimientos podrá interactuar dentro de equipos de trabajo, entendiendo e interpretando la problemática de las distintas áreas y tenerlas en cuenta en el proceso de toma de decisión para la gestión de las actividades precitadas.\n\nAprender conceptos de Sistemas de Gestión y de cómo se integran dentro del funcionamiento de las organizaciones.",
+    "objetivos": "Los objetivos de la asignatura son que el estudiante logre: • comprender los conceptos de higiene, seguridad y medio ambiente (HSMA) con una mirada práctica que le permita situarse rápidamente en estos temas en las organizaciones en las que se desempeñe. • interiorizarse con los sistemas de gestión de salud y seguridad en el trabajo y medio ambiente. • desarrollar una mirada práctica y crítica, integrando los conceptos de la materia con cada especialidad para formarse como un profesional comprometido con estos temas. • describir e interpretar la problemática de las distintas áreas pudiendo priorizar alternativas que alimentaran el proceso de toma de decisión para la gestión de las actividades precitadas.",
+    "programa": [
+      {
+        "titulo": "1. Introducción a la Higiene y Seguridad Ocupacional.",
+        "descripcion": "Riesgos tecnológicos y riesgos laborales: definición y ejemplos. Importancia de tenerlos en cuenta. Principios y definiciones de la Higiene y Seguridad: salud, sitio de trabajo, peligro, riesgo, riesgo aceptable, accidente, accidente in-itienere, enfermedad profesional. ¿Por qué es importante la Higiene y Seguridad Laboral? Consecuencias para el empleador y el empleado. Cifras de referencia."
+      },
+      {
+        "titulo": "2. Conceptos básicos.",
+        "descripcion": "Modelos de accidentes. ¿Por qué ocurren los accidentes? Identificación de peligros y evaluación de riesgos. Concepto de Barreras preventivas y protectivas. Medidas de minimización de riesgos."
+      },
+      {
+        "titulo": "3. Requisitos legales.",
+        "descripcion": "Pirámide de documentación. Principales Leyes, Decretos y resoluciones relacionadas con la Higiene y Seguridad Laboral en Argentina. Fuentes de información. Ley Higiene y Seguridad, Ley de ART, Decreto 351/79, Decreto 658/96. Ley de Riesgos del Trabajo 24.557: ¿Por qué es obligatorio su cumplimiento?. Rol del Empresario y de las Aseguradoras de Riesgos del Trabajo (ART’s). Prestaciones en especie: prevención de riesgos; asistencia médico farmacéutica; servicios de emergencia y traslados; rehabilitación, recalificación profesional; prótesis; servicio fúnebre. Prestaciones dinerarias: salarios caídos, indemnización por incapacidad permanente o muerte."
+      },
+      {
+        "titulo": "4. Temas técnicos.",
+        "descripcion": "Tipos de peligros y riesgos, medidas de prevención y de protección: contaminación del ambiente laboral, riesgos mecánicos, aparatos y aparejos para izar, riesgos eléctricos, conceptos de iluminación, ruidos en el amiente de trabajo, protección contra incendios. Señalizaciones. Espacios confinados. Ergonomía. Herramientas para identificación de causas raíz."
+      },
+      {
+        "titulo": "5. Administración de riesgos.",
+        "descripcion": "El circuito de las pérdidas. Ciclo de gerenciamiento del riesgo: identificación – análisis - evaluación, tratamiento y financiación de los riesgos. Rol de la prevención en el tratamiento y reducción de riesgos. Costo de la protección vs. costo de las no conformidades."
+      },
+      {
+        "titulo": "6. Programa de seguridad efectivo.",
+        "descripcion": "Cómo se mide el éxito de un programa de seguridad. Cuál es el rol de la dirección. Elementos que conforman un Programa de Seguridad Efectivo: • Investigación y análisis de incidentes: cómo se reporta e investiga un incidente/accidente, rol del supervisor en dicha tarea, clasificación por tipo de agentes, análisis de tendencias y de las diversas clases de no conformidades. Fijación de objetivos y planes de acción. Benchmarking. • Relevamientos previos a la no conformidad: su identificación y control. Análisis de seguridad del puesto de trabajo. • Seguridad basada en el comportamiento: teoría del comportamiento humano. Modelos tradicionales de seguridad vs. programa de seguridad basado en el comportamiento de los RRHH. Capacitación (no sé hacerlo) vs. motivación (no quiero hacerlo). Control del comportamiento deseado a través de la administración de consecuencias. • Control de Pérdidas Catastróficas: a través de la administración de Riegos • Salud y primeros auxilios: a través del departamento de medicina laboral (interno o externo) • Comité de seguridad: rol y responsabilidades de sus integrantes. Problemas más comunes que atentan contra su efectividad y cómo manejarlos."
+      },
+      {
+        "titulo": "7. Sistemas de Gestión de Salud y Seguridad Ocupacional.",
+        "descripcion": "Introducción a los Sistemas de Gestión. Concepto de sistema de gestión. Ciclo PDCA. Para qué sirven los sistemas de gestión. Cuáles son los sistemas de gestión más conocidos. Proceso de certificación. Definiciones y metodología. Elementos que constituyen un sistema de gestión. Norma OHSAS 18001:2007. Análisis de las distintas etapas que componen un sistema de gestión. Compromiso de la Dirección. Asignación de recursos. No conformidades, acciones correctivas y acciones preventivas. Preparación y respuesta ante la emergencia. Sistemas integrados."
+      },
+      {
+        "titulo": "8. Introducción al estudio del ambiente",
+        "descripcion": "Los componentes ambientales: litósfera, atmósfera e hidrósfera. La biósfera: composición, balances de materia y energía, biomas principales, taxonomía general, evolución de las especies, extinción. Ecología: niveles de organización (poblaciones, comunidades y ecosistemas), interacciones intra e interespecíficas, concepto de nicho ecológico, estrategias de vida r y K, biogeorgafía de islas, disturbios. Biodiversidad: conceptos e índices de riqueza y abundancia, enfoques de diversidad ?, ? y ?; ejemplos de bioindicación."
+      },
+      {
+        "titulo": "9. Residuos y contaminación ambiental",
+        "descripcion": "Clasificación de contaminantes, impacto sobre suelo, aire y agua, efecto invernadero, lluvia ácida, material particulado, smog, BTEX, PAH, CFC y la ozonósfera, dioxinas, PCBs, metales pesados, agroquímicos y eutroficación. Clasificación general de residuos, tipificación de residuos especiales, peligrosos y patogénicos, responsabilidades legales, alternativas de tratamiento, uso y disposición final. Efluentes líquidos y gaseosos: caracterización de corrientes, algunos analitos comunes (DQO y DBO5); tratamientos primarios, secundarios y terciarios; biodegradación, mineralización, generación de lodos. Concepto de límites de vuelco para el agua tratada e impacto de la contaminación sobre el ambiente y las personas (algunos ejemplos: sólidos sedimentables, cloro libre, lípidos, detergentes, coliformes fecales, pH, temperatura, DQO, DBO5, nitrógeno, fósforo, azufre, arsénico, selenio, mercurio)."
+      },
+      {
+        "titulo": "10. Desarrollo sustentable",
+        "descripcion": "Concepto global de desarrollo sustentable, bienes y servicios ecológicos, factores directos e indirectos de impacto antrópico, aspectos socio-económicos, político-institucionales y ecológicos, indicadores de desarrollo y sustentabilidad, balances de recursos y energía. Cambio climático: GEI y emisiones, informe del IPCC, visión geológica, meteorológica y biológica. Matriz energética en Argentina y el mundo; eficiencia energética, energías renovables. Diseño sustentable: ciclo del carbono, huella de carbono; ciclo del agua, huella hídrica, reúso del agua; huella ecológica, tecnologías para el reciclado de materiales; ejemplos de agricultura y edificación sustentables. Campo profesional de las distintas ingenierías en relación a la temática ambiental."
+      },
+      {
+        "titulo": "11. Legislación ambiental",
+        "descripcion": "Legislación internacional vigente. Principales convenios internacionales sobre residuos y productos industriales. Legislación argentina (jerarquía de la legilslación argentina, Constitución Nacional y ambiente -Art. 41-, leyes de presupuestos mínimos - general del ambiente 25.675, bosques 26.331, glaciares 26.639 y otras). Pactos internacionales. Recurso de amparo ambiental, seguro ambiental y fondo de reparación. Derechos de incidencia colectiva; audiencia pública; rol del ciudadano, del Defensor del Pueblo, de los organismos gubernamentales (OG) y no gubernamentales (ONG) en temas ambientales. Legislación ambiental de la provincia de Buenos Aires y de la Ciudad de Buenos Aires."
+      },
+      {
+        "titulo": "12. Sistemas de Gestión Ambiental.",
+        "descripcion": "Relación entre el medio ambiente y la industria. Serie de normas ISO 14000. Repaso de definiciones y ciclo de mejora continua. Beneficio de un Sistema de Gestión Ambiental. Elementos de un sistema de gestión ambiental. Revisión ambiental inicial, aspectos e impactos ambientales, determinación de la significancia. Desarrollo de las distintas etapas del sistema de gestión. Sistemas integrados de gestión. Cambios en las nuevas revisiones."
+      },
+      {
+        "titulo": "13. Evaluación de Impacto Ambiental",
+        "descripcion": "Definición y utilidad de la EIA. Aspectos legales internacional, nacional y provincial. Etapas de EIA: categorización de solicitudes, manifiesto de impacto ambiental, estudio técnico de impacto ambiental (EsIA), dictamen técnico, declaración de impacto ambiental (DIA), certificado de aptitud ambiental. El Estudio de Impacto Ambiental (EsIA) como eje del procedimiento: contenidos mínimos; identificación de efectos e impactos (aspectos conceptuales y técnicos); uso de índices, diagramas de flujo, superposición de imágenes, listas de chequeo. Evaluación de impactos: metodologías más usuales, métodos cuali y cuantitativos, uso de matrices, modelos y otros instrumentos de análisis; impactos significativos y no significativos; valoración de impactos. Planes de gestión ambiental: formulación de deseos o propuestas de acción; programas de mitigación y programas de vigilancia ambiental y monitoreo como herramientas básicas; control de cumplimiento; planes de contingencias."
+      },
+      {
+        "titulo": "14. Gestión de emergencias ambientales",
+        "descripcion": "Acciones inmediatas, seguimiento, manejo de ecosistemas (rehabilitación, remediación, reemplazo, mitigación, compensación y mejoramiento), gestión ambiental de los ambientes acuáticos y terrestres. Organismos nacionales e internacionales."
+      }
+    ],
+    "estrategias": "Las clases son presenciales de tipo teórico-práctico. Se realizan presentaciones en powerpoint donde se plantean los conceptos teóricos a la vez que se intercalan ejemplos tomados de situaciones reales para fomentar la discusión y aprendizaje. Para fijar los conceptos vistos en clase se realizan trabajos prácticos grupales o individuales que permiten al alumno poner en práctica lo visto.",
+    "evaluacion": "Modalidad de evaluación: Trabajos prácticos donde se evaluará la comprensión y capacidad de aplicar los conceptos vistos de cada tema en clases. Los trabajos prácticos podrán ser individuales o grupales (3 a 5 personas) y serán calificados por el docente quien hará una devolución de los mismos. Dos parciales escritos que podrán ser de desarrollo, multiple-choice o una combinación de ambos. Una instancia de recuperación de ambos parciales.\n\nRequisitos de aprobación: Se tomarán dos parciales que deben ser aprobados con nota 4 o superior. Existirá una instancia de recuperaotorio única, en la cual se podrán recuperar lo o los parciales desaprobados.\n\nSe realizarán trabajos prácticos que serán calificados para que el alumno tenga un seguimiento en la comprensión de los conceptos vistos en las clases.\n\nSe dará por aprobada la materia el promedio de los parciales y/o sus recuperatorios es superior a 4 y se ha realizado al menos el 80% de los trabajos prácticos.",
+    "bibliografiaObligatoria": [
+      "Ley de Higiene y Seguridad en el Trabajo Nro. 19.587 Decreto 351",
+      "Ley de Riesgos del Trabajo Nro. 24.557",
+      "Roberts, H., & Robinson, G. (1999). ISO 14001 EMS manual de sistemas de gestión medioambiental: manual de sistemas de gestión medioambiental. Editorial Paraninfo.",
+      "Norma ISO 14001:2015 Sistemas de gestión ambiental",
+      "Norma ISO 45001:2018 Sistemas de gestión de la seguridad y salud en el trabajo",
+      "CONESA FERNANDEZ-VITORIA, V. I. C. E. N. T. E. (2009). Guía metodológica para la evaluación del impacto ambiental. Mundi-Prensa Libros."
+    ],
+    "bibliografiaComplementaria": [],
+    "pdf": "/electivas-fichas/12.83.pdf"
+  },
   "16.04": {
     "codigo": "16.04",
     "materia": "Neurociencias y Desarrollo Productivo",
@@ -423,6 +578,55 @@ export const FICHAS: Record<string, Ficha> = {
     "bibliografiaComplementaria": [],
     "pdf": "/electivas-fichas/23.15.pdf"
   },
+  "31.08": {
+    "codigo": "31.08",
+    "materia": "Sistemas de Representación",
+    "creditos": 3,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Industrial / Ingeniería Electrónica / Ingeniería Mecánica /\n Ingeniería Naval / Ingeniería en Petróleo / Ingeniería Química / Ingeniería en Informática / Ingeniería Civil",
+    "actualizado": "1/7/2024 14:42:38",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 17,
+      "practicas": 34,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Lenguaje grafico. Instrumentos de dibujo y herramientas de diseño asistido por computadora. Normalización: normas IRAM, dimensionamiento, escala, proyecciones, representación axonométrica isométrica, cortes y secciones. Criterios para la representación de piezas.",
+    "presentacion": "Sistemas de Representación pertenece al Departamento de Ciencias Exactas y Naturales, se dicta en primer año del ciclo básico de todas las especialidades de la Ingeniería del ITBA. En la asignatura se abordan temas relativos a el uso del lenguaje gráfico técnico, utilizando como herramienta modelizadores de solidos paramétricos. El dibujo técnico es el lenguaje gráfico que se utiliza para comunicar, en el marco de actividades industriales y de diseño, desde las ideas más globales hasta los detalles vinculados con contenido tecnológico. Es un sistema de representación gráfica de objetos ya existentes o bien de prototipos, atendiendo a normas y convenciones preestablecidas por instituciones reguladoras. Eso permite describir de forma precisa y con claridad las dimensiones, formas y características de esos objetos materiales.",
+    "objetivos": "Utilizar herramientas de CAD del modelizador de sólidos paramétricos con criterio ingenieril. Comprender el espacio (tridimensión) al leer documentación gráfica (bidimensión) en diferentes métodos de proyección. Aplicar diferentes métodos de proyección y escalas para la confección de documentación gráfica. Generar la documentación de piezas y mecanismos. Comprender la relevancia de los distintos métodos de proyección para poder justificar la elección de los mismos al momento de realizar una documentación gráfica.",
+    "programa": [
+      {
+        "titulo": "MODELIZADORES DE SÓLIDOS",
+        "descripcion": "Los modelizadores para hallar soluciones y abordar distintos aspectos implicados en el proceso de desarrollo de un producto. Trabajar en soluciones que permitan llevar el proceso en paralelo en lugar de secuencialmente, con el fin poder tomar mejores decisiones y crear mejores diseños."
+      },
+      {
+        "titulo": "PROYECCIONES",
+        "descripcion": "Estudio de los Sistemas de Proyección que sirven para expresar gráficamente las ideas. El pasaje de un sistema tridimensional (objetos en el espacio) a un sistema bidimensional (representación de los objetos en el plano)"
+      },
+      {
+        "titulo": "NORMALIZACIÓN",
+        "descripcion": "La normalización en el dibujo técnico para unificar y simplificar el lenguaje gráfico de representación y facilitar su interpretación sin equívocos."
+      },
+      {
+        "titulo": "DOCUMENTACIO N TECNICA",
+        "descripcion": "La representación gráfica del proyecto: los dibujos, esquemas, figuras, perspectivas necesarias para llegar a una comprensión visual del conjunto."
+      }
+    ],
+    "estrategias": "La materia se imparte basándonos en el modelo de aula invertida. Los alumnos gestionarán en forma autónoma el aprendizaje de los contenidos teóricos, para ello disponen de videos breves en Campus. En las clases prácticas presenciales, se formarán pequeños grupos de trabajo para: aclarar conceptos teóricos, resolver ejercicios y casos en el espacio del laboratorio de informática. Para reafirmar conceptos y en función de la dinámica que cada curso tenga en el proceso enseñanza – aprendizaje, se realizarán juegos y/o competencias que permitirán al alumnado verificar, aplicar lo aprendido y analizar críticamente sus trabajos. Se trabajará en los laboratorios de informática donde se utilizarán los siguientes softwares: CATIA (alumnos de la carrera de Mecánica) y SolidWorks (para las restantes especialidades).",
+    "evaluacion": "Modalidad de evaluación: Por un lado, se evaluará la participación de los alumnos en las actividades propuestas. Se espera que interactúen en forma activa y comprometidamente con el/la docente y sus compañeros, y que cumplan con las tareas en tiempo y forma. A lo largo del cuatrimestre, la evaluación de los alumnos abarcará la dimensión del proceso de aprendizaje y la de aplicación de los conocimientos adquiridos. Trabajos Prácticos: Para la verificación del proceso se realizan los cinco trabajos prácticos que se calificarán con dos puntos cada uno. La calificación total de TPs se obtiene por la sumatoria del puntaje. Una vez que el alumno ha obtenido cuatro puntos, mínimo para la aprobación, podrá acumular puntos obtenidos por juegos y competencias. Parciales Los alumnos deben rendir dos exámenes parciales domiciliarios. El primero de resolución individual, el segundo de resolución grupal. En estas instancias se verificará la capacidad de aplicación de los conocimientos adquiridos. En el primer parcial se verificará haber alcanzado los objetivos: • Utilizar correctamente el Modelizador de Sólidos • Leer planos En el segundo parcial se verificará haber alcanzado los objetivos: • Crear planos: definir las proyecciones necesarias, utilizar escalas adecuadas y definir formatos. • Dimensionar piezas de mecánica\n\nRequisitos de aprobación: Trabajos Prácticos (TP): aprobarlos con 4 puntos o más. Parciales (P1 - P2 - R): los dos aprobados con 4 puntos o más, uno de ellos recuperable. Cálculo de la nota de cursada: (TP + P1 + P2 ) / 3 En caso de requerir recuperatorio de alguna instancia se incorpora al cálculo del promedio.",
+    "bibliografiaObligatoria": [
+      "Lieu, D. y Sorby, S. (2018). Dibujo para diseño de ingeniería. Cengage Learning Editores."
+    ],
+    "bibliografiaComplementaria": [
+      "Manual de Normas IRAM de dibujo tecnológico 2017 (2017). Instituto Argentino de Normalización y Certificación.",
+      "Gómez Gonzáles, S. (2023). Solidworks Práctico I y II. Marcombo."
+    ],
+    "pdf": "/electivas-fichas/31.08.pdf"
+  },
   "61.08": {
     "codigo": "61.08",
     "materia": "Derecho Digital",
@@ -575,6 +779,81 @@ export const FICHAS: Record<string, Ficha> = {
     "bibliografiaComplementaria": [],
     "pdf": "/electivas-fichas/61.13.pdf"
   },
+  "61.32": {
+    "codigo": "61.32",
+    "materia": "Derecho para Ingenieros",
+    "creditos": 3,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2025",
+    "carrera": "/ Ingeniería Electrónica / Ingeniería en Informática",
+    "actualizado": "8/4/2025 13:41:25",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 51,
+      "practicas": 0,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "1 Introducción al Derecho 2 Organización del Estado La Constitución Nacional 3 Derecho Civil. 4 Derecho Comercial 5 Propiedad Intelectual 6 Sociedades 7 Derecho de los Recursos Naturales y del Medio Ambiente 8 Contratos 9 Derechos del Consumidor 10 Derecho Laboral",
+    "presentacion": "Se intenta introducir al alumnos en las cuestiones jurídicas generales que resultarán necesaria para su desarrollo profesional, como Derechos Individuales, Contratos, Comercio, tributos, defensa del consumidor y de la competencia, propiedad intelectual, comercio internacional, derecho informáticos, y derechos de las TICS, con el objeto de generarles competencias en los distinto temas que se abarcan a lo largo del curso. Durante el mismo se verán situaciones que se viven diariamente en el mundo empresarial, especialmente orientada a los cambios y especificaciones que exigen las TICS, obtenida de las experiencias personales de los docentes (abogados en ejercicio), de jurisprudencia y las que surgen del asesoramiento empresarial profesional. De esta forma se intenta desarrollar habilidades que le permitan enfrenta contingencias jurídicas en una primera instancia por parte del futuro\n\nprofesional, entendiendo el alcance y urgencia de la problemática que enfrentan, hasta poder obtener el asesoramiento profesional que los termine de ayudar a resolver la misma. No existe en la carrera otra materia en la carrera que genere una base para el entendimiento del derecho por lo que resulta gran importancia que la misma se curse en forma presencial. Las herramientas obtenidas con la materia permitirán al profesional tener una mirada amplia y comprensiva de las obligaciones y responsabilidades de cada una de sus acciones en el mundo empresario.",
+    "objetivos": "Que mediante el curso los alumnos logren comprender los fundamentos de temas muy importantes y dinámicos en la sociedades modernas y de utilidad práctica para el futuro ingeniero como son: Derechos Individuales, Contratos, Comercio, tributos, defensa del consumidor y de la competencia, propiedad intelectual, comercio internacional, derecho informáticos, delitos informáticos y derechos de las TICS. Que mediante la aplicación de un trabajo puedan poner en práctica los conocimientos indicados mediante la creación de una empresa ficticia.",
+    "programa": [
+      {
+        "titulo": "Unidad 1: Introducción al Derecho",
+        "descripcion": "1. Concepto de Derecho. Diferencia con otros órdenes normativos. Moral y Derecho.2. Norma jurídica. Estructura de un orden jurídico.3. Fuentes del derecho: la ley, la costumbre, la jurisprudencia y la doctrina. Interpretación.4. Ramas del Derecho.5. Diversas clasificaciones: Derecho Natural y positivo. Derecho Continental y CommonLaw. Derecho Objetivo y Subjetivo. Derecho Público y Privado. Ramas del Derecho.Transnacionalidad del Derecho. El Derecho, el Tiempo y el Territorio.6. Organización del Estado. División de Poderes. Derechos y Garantías Constitucionales.Tratados Internacionales. Leyes de fondo y forma. Codificación.7. Gobierno Digital. Administración Electrónica. Iniciativas Nacionales e Internacionales"
+      },
+      {
+        "titulo": "Unidad 2: Derecho e Informática.",
+        "descripcion": "1. La informática en el ámbito del Derecho.2. Distinción entre Informática jurídica y Derecho informático.3. Derecho informático. Definición. Objeto. El hecho informático. Caracterización(flexibilidad, armonía, globalidad, transversalidad, transnacionalidad). Contenido. Autonomíade principios, legislativa, científica y didáctica.4. Introducción a algunas cuestiones del Derecho Informático: Conflictos del hechoinformático y la Propiedad Intelectual y protección del derecho de autor. Contratos. Delitos.Responsabilidad civil. Firma Digital.5. Problema de la jurisdicción"
+      },
+      {
+        "titulo": "Unidad 3: Responsabilidad Civil. Parte General",
+        "descripcion": "1. Persona. Definición. Persona Física y Jurídica. Capacidad. Patrimonio. DerechosSubjetivos y Objetivos. Obligaciones. Definición. Clasificación. Obligaciones de Medios yde Resultados. Obligaciones del Ingeniero. Efectos. Extinción.2. Responsabilidad. Concepto. Sistemas de responsabilidad.3. Daño. Daños resarcibles.4. Distinción de la responsabilidad civil y la penal"
+      },
+      {
+        "titulo": "Unidad 4: Responsabilidad. Parte Especial.",
+        "descripcion": "1. Régimen de Banco de Datos. Hábeas Data. Ley 25.326 y su Dec. Reglamentario1558/2001. Derecho a la intimidad. Información nominativa. Ley de Protección de datospersonales 2. Responsabilidad e Internet. Tipos de responsabilidad en Internet: 1- Invocada por elusuario: a) virus; b) intimidad. 2 – Invocada por el proveedor de acceso o el servidor. 3-Invocada por el poseedor de derechos de propiedad intelectual.3 Responsabilidades especiales derivadas de actividades específicas. Responsabilidad pordesarrollo de sistemas de medicina. Responsabilidad por diseño de sistemas de protecciónpersonal y seguridad e higiene. Principio precautorio. Responsabilidad por Manuales deEspecificaciones. Otras Cláusulas Legales.-Responsabilidades emergentes del Derecho del Consumidor. Ley de Defensa delConsumidor. Ley de Defensa de la Competencia. Ley de Lealtad Comercial."
+      },
+      {
+        "titulo": "Unidad 5 Contratos",
+        "descripcion": "1. Contratos. Concepto. Economía tradicional y la nueva economía de la sociedad de lainformación, ventajas, inconvenientes y desafíos. Elementos esenciales del Contrato:Capacidad, consentimiento, objeto y causa. Estructura del contrato. Interpretación2. Etapa pre-contractual. Significación. Responsabilidad. Importancia actual de ladocumentación de las negociaciones en la etapa pre-contractual.3. Contratos típicos civiles y comerciales. Compra-Venta. Permuta. Locación de cosa y deobra. Mandato. Mutuo. Servicios. Consultoría.4. Contratos modernos. Leasing, Franchising, Contrato de distribución, de agencia, deconcesión. Fideicomiso5. Comercio Electrónico: Concepto y elementos según la O.M.C. Contratos informáticos.Concepto. Clasificación. Características específicas. Bienes y servicios informáticos. Laetapa precontractual en este tipo de contrato. Partes contratantes. Cláusulas usuales.Responsabilidad civil de las empresas proveedoras de software y hardware. Clasificación delos contratos informáticos según el objeto y el negocio jurídico. Contratos de Outsourcing deInformación. Contratos de proveedor de hardware.6. Contratos electrónicos. Definición. Caracteres.7. Prueba del contrato. Documentos. Clasificación. Firma digital. Ley 25.506 y su Dec.Reglamentario 2628/2002. Documento Electrónico. Time Stamping o “Sellado del Tiempo”.Contratación por medios informáticos forma y perfeccionamiento del contrato. Sistemasbiométricos de identificación. Regulación8. Cláusulas contractuales especiales. Cláusulas de escape. Pacto comisorio. Resolución decontratos. Normativa específica de calidad: Normas ISO, IRAM. Normativa IEEE.9. Internacionalidad de los contratos. Contratos Internacionales. Legislación aplicable.Comercio Electrónico. Contratos especiales que nacen de las TICs y de Internet: DistintosContratos de Publicidad en la Web. Contratación minorista en Internet. Reg. Jurídico desubastas y compras online. Impuestos. Ley y jurisdicción aplicable en la transnacionalidad delos contratos de comercio electrónico. Distintas soluciones.-. Transferencia electrónica defondos. Contratos Click Rap.10. Compraventa de Software. Licencias. Normas aplicables."
+      },
+      {
+        "titulo": "Unidad 6: Delitos.",
+        "descripcion": "1. Derecho Penal. La responsabilidad penal. Vinculación entre la responsabilidad penal y lacivil. Responsabilidad penal de las personas físicas y jurídicas. Delitos informáticos.Definición. Delitos tipificados por la ley 11.7232. Delitos comunes cometidos a través de medios informáticos. Concepto. Delitos tipificadospor nuestro Código Penal.3. Otros ilícitos tipificados en leyes especiales. Alteración dolosa de registros del FiscoNacional (Ley 24.769) y Violación del secreto de las informaciones de personas físicas ojurídicas almacenadas en medios informáticos. (Ley 24.766)4. Figuras penales tipificadas en la nueva ley de Delitos Informáticos. Ingreso no autorizado aun sistema informático. La cuestión del delito de daño por medio del borrado o destrucciónde programas o virus. Delitos mediante redes P2P. Casos jurisprudenciales.5. Nombres de dominio, Derecho penal, protección Marcaria y derecho de autor. Delitos deextorsión y la ciberocupación"
+      },
+      {
+        "titulo": "Unidad 7: Derecho Empresarial.",
+        "descripcion": "1. Derecho Comercial. Empresa. Empresario. Formas sociales y Fondos de Comercio. Títulosde Crédito y Obligaciones Negociables. Seguros.2. Sociedades: Sociedad Anónima y Sociedad de Responsabilidad Limitada. Diferencias ysimilitudes. Beneficios de cada una. Organización, dirección y control. Trámites en laInspección General de Justicia. Sociedades Extranjeras. Filiales. Unión de Sociedades:Fusiones y adquisiciones. Grupos de control y Holdings. Mercados de Valores y Bolsas.3. Concursos y Quiebras.4. Derecho Tributario. Nociones. Impuestos de la persona física y jurídica. Derechostributarios y e-commerce.-"
+      },
+      {
+        "titulo": "Unidad 8: Propiedad Intelectual",
+        "descripcion": "1. Naturaleza jurídica del software o programas de computación.2. Derecho de autor. Ley 11.723 de propiedad intelectual. (modif. por la Ley 25.036 desoftware)3. Marcas. Ley 22.362 de marcas y designaciones.4. Patentes. Ley 24.481 de Patentes de Invención y Modelos de utilidad. (T.O. dec. 260/96).La patentabilidad de los programas de computación. Conflictos de marcas en Internet.5. Nombres de dominio. Concepto. Gobierno de Internet (ICANN). Política de asignación deN.D. Conflictos y soluciones. NIC.ar"
+      },
+      {
+        "titulo": "Unidad 9: Derecho Laboral.",
+        "descripcion": ". Definición. Principios. Especialidad del Régimen Laboral. Modalidades de Contratación.Modalidades Promovidas.2. Administración de los Recursos Humanos. Régimen de las Licencias. Régimen de lasSanciones. Formas de Extinción del Contrato o la Relación Laboral. Reglamento Interno dela empresa. Uso de recursos informático de la empresa por empleados. Teletrabajo3. Ley de Riesgos de Trabajo. Enfermedades y Accidentes de Trabajo. Diferencias conLicencias por Enfermedad (art. 208 a 212 LCT)"
+      },
+      {
+        "titulo": "UNIDAD 10: Derecho Administrativo",
+        "descripcion": ". El Acto administrativo. Ley de procedimiento administrativo. La Administración Públicacentralizada y descentralizada. Regulación de los servicios públicos Marcos y EntesReguladores. Gas, electricidad, telefonía y comunicaciones. Contratación con el Estado.Licitaciones. Procedimientos administrativos."
+      }
+    ],
+    "estrategias": "Las clases se desarrollan en su mayoría dividiendo el espacio en dos partes. En una primer mitad los alumnos podrán hacer preguntas sobre el tema asignado para el día (que deberán traer leído del libro indicado como bibliografía obligatoria) y se hará una breve presentación a modo de resumen y con el objeto de afianzar conceptos que pudieran haber quedado confusos en la lectura. Las clases que poseen actividad por nota al inicio de la misma, se desarrollan, previa aclaración de las dudas que la lectura previa genere, con el objetivo de poder profundizar en el tema mediante ejemplos prácticos, para que, junto al profesor, los alumnos analicen aplicando los conocimientos que debieron adquirir con la lectura previa. En una segunda parte se aplicará cada tema visto en una empresa ficticia, que los alumnos crearán desde cero, a los fines de volver concretos y prácticos cada uno de los derechos analizados. Esto genera un debate conjunto desde las preguntas que van surgiendo en cada caso y que son puestas en común para su solución. Esta empresa acompañará toda la cursada y es la que deberán presentar a los compañeros como trabajo práctico sobre el final de cuatrimestre. Dicho trabajo consiste, precisamente, en explicar cada problemática y como fue aplicada al emprendimiento. Otro objeto principal de esta aplicación es la de revisar errores jurídicos frecuentes para que sean evitados en la vida profesional del alumno. También se utiliza en el tema de defensa del consumidor (de vital importancia para las empresas), el sistema de aula invertida desarrollado 100% en el tiempo de clase, donde los alumnos realizan una lectura directa y guiada de la ley de defensa del consumidor, e una primera parte, para luego proceder a solucionar distintos casos prácticos aplicando los artículos leídos. Estas soluciones se ponen en común generando un debate que llega a entender los distintos institutos involucrado y su aplicación.",
+    "evaluacion": "Modalidad de evaluación: Se evalúan conocimiento mediante: Cinco actividades previo al dictado de clases donde se evalúa un conocimiento mínimo sobre un texto o caso en video dado. Eso, previo a aclarar dudas antes de la respectiva evaluación. Las actividades integran un punto cada una sobre la nota final de SGA. Dos parciales. Los exámenes (parcial y final) serán escritos u orales a consideración de la cátedra y consistirán en preguntas a contestar en un tiempo a determinar. Los temas no difieren según la modalidad a utilizar por lo que puede variar al mismo momento del examen. Si es necesaria alguna preparación tecnológica se hará saber durante la cursada dependiendo de la cantidad de alumnos cursantes en cada comisión. Las respuestas requerirán diferentes grados de desarrollo según la pregunta. Todo ello se indicará en las instrucciones del examen. La nota de cada parcial equivale a dos puntos y medio de la ntoa final del SGA, cada uno. Asimismo se deberá hacer un trabajo sin nota numérica promediable; pero con un a matriz de evaluación que deberá estar aprobada y; sino, recuperarse. La matriz está en campus al inicio de clases. Los objetivos de los dos tipos de evaluaciones radica en que el derecho es un ciencia teórico-práctica por su propia esencia. La teoría resulta de fácil aprendizaje; sin embargo la aplicación práctica es donde se generan los errores jurídicos más comunes. Siendo que en la vida profesional la aplicación puntual inicial, en la mayoría de los casos, deviene en la primera instancia del profesional involucrado; pero en ultima instancia del asesor letrado de cada empresa, parece adecuado evaluar en forma numérica la parte conceptual y simplemente verificar el grado de entendimiento del alumno con una matriz de aplicación, como requisito ineludible para considerar que el mismo se encuentra en condiciones de aprobar la cursada. De esta forma se certifica que ha entendido la aplicación de los conceptos que rindió en los exámenes de preguntas de conocimiento.\n\nRequisitos de aprobación: Para aprobar el alumno deberá obtener una nota de cursado de por lo menos cuatro(4)puntos. La misma surgirá de promediar la calificación de las actividades (que no tienen recuperatorios ya que los parciales posteriores evalúan temas similares luego de haberse profundizado en el tema), los parciales y del o los recuperatorios(si los hubiese). Todos los parciales deben tener cuando menos una nota de cuatro (4) para aprobar, o en su caso el respectivo recuperatorio y la nota 2 o 0 de corresponder. Si la nota del promedio fuere menor a cuatro; pero se encuentran aprobados los parciales y/o recuperatorios, la nota será cuatro(4) . Deberá tener, asimismo, el trabajo con la matriz evaluatoria sin elementos a revisar.\n\nQuienes falten al parcial sin causa justificada por ante el ITBA podrán presentarse al recuperatorio; pero la nota de éste se promediará con un cero(0). Quienes falte al parcial con justificación documentada suficiente, presentada en plazo razonable, la nota del recuperatorio se le tomará como nota de parcial; pero como fecha examen recuperatorio.\n\nQuien obtenga una nota superior o igual a 7 (siete) en el SGA y haya aprobado ambos exámenes en su primer oportunidad (no en el recuperatorio) con nota mayor a siete (7) cada uno, tendrá la posibilidad (no obligatoria), únicamente en el primer llamado inmediato a finalizar la cursada, de presentar un examen final sobre el desarrollo de un tema aleatório con una extensión determinada, propuesto de un listado que se entregará oportunamente. Al ser una opción, no obligatoria, el alumno puede optar por dar siempre el examen final de la totalidad de la materia",
+    "bibliografiaObligatoria": [
+      "Libro \"Nociones de Derecho\" del Dr. Pablo A. Pérego, editorial Nueva Librería. Debe ser la Segunda Edición actualizada con la reforma del Código Civil y Comercial de la Nación. https://www.nuevalibreria.com.ar/desc/nociones-de-derecho/17786"
+    ],
+    "bibliografiaComplementaria": [
+      "• EDUARDO, A. ZANNONI– MARINA, MARIANI DE VIDAL, JORGE O.ZUNINO; FERNANDO E. SHINA Y GLORIA S. RAMOS.“Código Civil y Comercial. Concordado con el régimen derogado y referenciado con legislación vigente. Exégesis de los fundamentos de la Comisión Redactora y las modificaciones del PEN”..- Ed. Astrea, Abril 2015.-",
+      "ALBERTO J. BUERES (director). Código Civil y Comercial de la Nación, analizado, comparado y concordado. Edición de dos tomos de editorial Hammurabi SRL. José Luis Depalma Editor.-2015.",
+      "• LUZ CLARA, BIBIANA BATRIZ; Manual de Derecho Informático, Editorial Jurídica Nova Tesis,2001, Argentina.",
+      "• ALTMARK, DANIEL RICARDO Y MOLINA QUIROGA, EDUARDO.\"Tratado de Derecho Informático\". Tomo II, Ed. La ley 2012."
+    ],
+    "pdf": "/electivas-fichas/61.32.pdf"
+  },
   "61.50": {
     "codigo": "61.50",
     "materia": "Finanzas de la Empresa",
@@ -650,6 +929,224 @@ export const FICHAS: Record<string, Ficha> = {
       "“Fundamentos de Administración Financiera” Van Horne (Pearson, ed. 2002)"
     ],
     "pdf": "/electivas-fichas/61.50.pdf"
+  },
+  "72.03": {
+    "codigo": "72.03",
+    "materia": "Introducción a la Informática",
+    "creditos": 3,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "21/12/2022 12:43:35",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 11,
+      "practicas": 40,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Evolución histórica de las computadoras. Concepto de software y hardware. Comando básicos de un sistema operativo. Sistemas de numeración. Representación binaria y hexadecimal. Nociones básicas de memoria, CPU y buses. Concepto de Lenguaje Ensamblador. Programación con herramientas para cálculo matemático. Manejo de vectores y matrices. Graficación. Aplicaciones con utilitario tipo Octave o Matlab.",
+    "presentacion": "Esta materia se dicta en el primer año de la ingeniería en informática para proveer a los estudiantes conocimientos mínimos que le sirvan en el resto de la carrera. No se requieren conocimientos previos. Al finalizar la materia se espera que los alumnos logren conocer el funcionamiento interno de una computadora, operar a nivel básico la consola y poder codificar e interpretar pequeños programas de fin específico. La materia se puede dictar de manera híbrida o presencial. Dependiendo del tema, de manera de taller teórico práctico, aula invertida. Todos los temas con una práctica asociada para fijar los conocimientos.",
+    "objetivos": "• Emplear comandos de linux para resolver requerimientos de operación de un sistema. • Describir los comandos a utilizar para resolver situaciones en el editor de texto vi • Codificar mediante expresiones regulares patrones de búsqueda y validación de texto. • Producir y/o modificar código sintácticamente correcto que resuelvan requerimientos específicos utilizando Assembler y/o Bash. • Compilar y analizar el comportamiento de programas codificados en Assembler. • Convertir números entre bases utilizando diversas representaciones numéricas. • Comprender la forma de codificación de la información a nivel bytes dentro de la memoria y storage de las computadoras.",
+    "programa": [
+      {
+        "titulo": "Representación de la información",
+        "descripcion": "Conversión de bases. Representación númerica en Sistemas (P, K) y (P, K, L) Representación decimal IEE-754 Representación de texto ASCII"
+      },
+      {
+        "titulo": "Assembler",
+        "descripcion": "Arquitectura de la memoria y procesador. Instrucciones y directivas de Z80. Compilación y vuelcos Programas y subrutina"
+      },
+      {
+        "titulo": "Linux",
+        "descripcion": "Conceptos de Sistemas Operativo. Uso de consola. Comandos y redirecciones Permisos File System y Paths"
+      },
+      {
+        "titulo": "Expresiones regulares",
+        "descripcion": "Lenguaje de expresiones regulares Definición de patrones Comando de busquedas con expresiones regulares"
+      },
+      {
+        "titulo": "Bash",
+        "descripcion": "Programación en Bash Uso de comandos, ciclos e if para control de flujos Funciones"
+      }
+    ],
+    "estrategias": "Exceptuando la primera clase que es expositiva, las clases se dictan de la siguiente manera. • Al finalizar la clase anterior se habilitan para los alumnos videos con la explicación teórica del tema, material documental como la presentación vista en los videos y la práctica. • El día de la clase se realiza un repaso de la teoría y la resolución de algunos de los ejercicios de la práctica para fijar conceptos, mientras se contestan dudas de los alumnos de ambos.\n\nDe acuerdo a la disponibilidad de fechas puede haber clases enteramente de consulta antes de los Parciales, que se toman en horario a determinar por la facultad.",
+    "evaluacion": "Modalidad de evaluación: La materia consta de dos parciales y un final, todos individuales y presenciales de los temas vistos. Los mismos se toman usando la herramienta campus. Se pueden recuperar ambos parciales. Luego de aprobada la cursada ser rinde un final presencial individual que abarca toda la matería Para todos estos exámenes la modalidad es preguntas y respuestas acerca de los temas vistos hasta el momento de la evaluación, que pueden ser de tipo: - Análisis de código - Desarrollo de código - Ejercicios prácticos similares los vistos en la práctica de cada tema\n\nRequisitos de aprobación:\n\n• Para aprobar la cursada materia se deben aprobar ambos parciales. • Para aprobar cada parcial hay que obtener una nota igual o superior a 4 en el parcial o en su recuperatorio. • Existen casos donde el parcial puede tener algún criterio de aprobación particular (ciertos ejercicios aprobados) • La nota de cursada será el promedio de los dos parciales. • En caso de rendir recuperatorio y aprobar, la “nota del parcial” se calculará mediante a la siguiente formula: (0.25 * parcial desaprobado + 0.75* recuperatorio) ó 4 (si la formula da menos de 4) • El final se aprueba con nota igual o mayor a 4",
+    "bibliografiaObligatoria": [
+      "Videos, presentaciones y documentos complementarios provistos por la cátedra"
+    ],
+    "bibliografiaComplementaria": [],
+    "pdf": "/electivas-fichas/72.03.pdf"
+  },
+  "72.07": {
+    "codigo": "72.07",
+    "materia": "Protocolos de Comunicación",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "22/8/2025 9:52:15",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 51,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Principios de teoría de la información y la comunicación. Componentes básicos de sistemas de comunicación de datos. Introducción a redes LAN y WAN. Propósito del uso de modems, hubs, routers, bridges y gateways. Introducción a Internet. Protocolo TCP/IP. Programación cliente servidor con sockets. Nociones de seguridad. Taller de aplicación sobre una red de computadoras, configurando software y hardware.",
+    "presentacion": "Al finalizar la cursada el alumno podrá administrar una red TCP/IP y aplicaciones montadas sobre ella, como así también diseñar e implementar aplicaciones Cliente/Servidor de dos capas.",
+    "objetivos": "El propósito de la materia es comprender el funcionamiento de los distintos protocolos que conforman Internet, ventajas y desventajas de cada uno, vulnerabilidades y como enfrentarlas, como así también el desarrollo de protocolos propios de aplicación como soporte para aplicaciones cliente/servidor distantes.\n\nLa materia se ecuentra en el ciclo básico de la carrera.",
+    "programa": [
+      {
+        "titulo": "Introducción a las redes",
+        "descripcion": "Principios de teoría de la información y la comunicación. Componentes básicos de sistemas de comunicación de datos. Introducción a redes LAN y WAN. Propósito del uso de modems, hubs, routers, bridges y gateways. Introducción a Internet. Nociones de Ethernet. Configuración básica de redes"
+      },
+      {
+        "titulo": "TCP/IP",
+        "descripcion": "Direccionamiento IP. Direcciones con clase. Subredes. Superredes. VLSM Protocolo TCP/IP. Asignación de direcciones IP. DHCP. Routing estático. Nociones de routing dinámico. Análisis de tráfico."
+      },
+      {
+        "titulo": "Aplicaciones sobre TCP/IP",
+        "descripcion": "Taller de aplicación sobre una red de computadoras, configurando software y hardware. Configuración avanzada de servicios para redes. servidores de nombre (DNS), servidores de archivos (FTP, SAMBA, NFS), servidores de mail (SMTP, IMAP, POP), servidores web (HTTP). RFCs de interés. Análisis de tráfico."
+      },
+      {
+        "titulo": "Programación cliente servidor",
+        "descripcion": "Programación cliente servidor con sockets no bloqueantes. Desarrollo e eimplementación de un protocolo propio."
+      },
+      {
+        "titulo": "Seguridad y privacidad",
+        "descripcion": "Nociones de seguridad. Autenticación. Encriptación. Aplicaciones de SSH. SSL. Firewalls."
+      }
+    ],
+    "estrategias": "En las clases teóricas se presentan los temas, que van acompañados de guías de ejercicios, los cuales tienen como objetivo principal la aplicación de conocimientos adquiridos para la detección y/o solución de problemas de la vida real. En las clases prácticas se detallan y ponen en prácticas las herramientas necesarias para la configuración de servidores y redes, como así también el diseño e implementación de protocolos de comunicación.",
+    "evaluacion": "Modalidad de evaluación: Para evaluar el desempeño de los alumnos se tomarán dos exámenes parciales, individuales, con temas teóricos y ejercicios, uno al promediar el curso y el otro al final. Hacia el final del curso además a los alumnos se les propondrá un Trabajo Práctico Especial para realizar grupalmente.\n\nRequisitos de aprobación: Para aprobar la cursada un alumno debe obtener una calificación mínima de 4 (cuatro) en cada uno de los parciales y obtener una calificación mínima de 4 (cuatro) puntos en el Trabajo Práctico Especial. Ambos parciales son recuperables en la fecha de recuperatorio definida por la cátedra. Para aprobar la materia, un alumno que previamente haya aprobado la cursada, deberá obtener una calificación mínima de 4 (cuatro) puntos en el examen final de la materia, que será un examen escrito teórico / práctico sobre temas de la materia.",
+    "bibliografiaObligatoria": [
+      "James F. Kurose, Computer Networking: A Top-Down Approach (8th Edition)"
+    ],
+    "bibliografiaComplementaria": [
+      "W. Stevens, Advanced Programming in the UNIX Environment, 3rd Edition, Addison-Wesley"
+    ],
+    "pdf": "/electivas-fichas/72.07.pdf"
+  },
+  "72.08": {
+    "codigo": "72.08",
+    "materia": "Arquitectura de Computadoras",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "17/3/2023 11:02:01",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 45,
+      "practicas": 30,
+      "laboratorio": 27,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Circuitos lógicos y sistemas digitales básicos. Organización del computador. Esquema de funcionamiento. Buses de direcciones, datos y control. Decodificación de periféricos y memoria. Tipos de memoria RAM y ROM. Arquitecturas. Conceptos de lenguaje de bajo nivel. Interrupciones y excepciones: rutinas de atención. Taller de aplicación con programación en lenguaje ensamblador.",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico de la carrera y a través de la misma se abordan los conocimientos de hardware necesarios para comprender el funcionamiento de las computadoras a bajo nivel. Es la materia base para que el alumno luego pueda comprender el funcionamiento de los Sistemas Operativos. Al ser una materia de segundo año de la carrera y con un alto contenido practico se prioriza el dictado presencial para favorecer la interacción de los alumnos y de los trabajos en grupo.",
+    "objetivos": "• Comprender y programar diferentes tipos de procesadores.\n\n• Comprender y programar los perifericos de la PC • Incoporar la programación de bajo nivel. • Abordar la base de conocimientos para la materia \"Sistemas Operativos\"",
+    "programa": [
+      {
+        "titulo": "Procesadores",
+        "descripcion": "Conocer y programar diferentes tipos de procesadores."
+      },
+      {
+        "titulo": "Programación en bajo nivel",
+        "descripcion": "Programar la familia de procesadores Intel en bajo nivel, interactuando con lenguaje ASM y C."
+      },
+      {
+        "titulo": "Perifericos",
+        "descripcion": "Conocer y programar los periféricos de la PC. Comprender las conexiones internas de los perifericos de la PC"
+      },
+      {
+        "titulo": "Otros procesadores",
+        "descripcion": "Se analizan y se comparan otros procesadores de la industria en comparación con el procesador Intel."
+      }
+    ],
+    "estrategias": "Se utilizan clases teóricas expositivas para realizar una introducción a los temas y se realizan en clase los primeros ejercicios con el fin de fijar conocimientos.\n\nEn las clases practicas los docentes retoman el tema visto en las clases teóricas, realizan una introducción de los objetivos de la práctica del día y luego los alumnos resuelven los ejercicios de manera autónoma pudiendo consultar a los profesores y ayudantes presentes en el laboratorio.\n\nAl finalizar el cuatrimestre los estudiantes deben formar grupos de tres alumnos como máximo para realiza un Trabajo Practico Especial donde deben aplicar todo lo visto en clase, además tienen que investigar como se implementa una parte del Trabajo la cual no fue dada en clase. El Trabajo dura cuatro semanas y se realiza en su mayoría fuera de las horas de clases. Se habilitan espacio de consultas a los docentes durante las horas de laboratorio para dar seguimiento y apoyo académico a los grupos.",
+    "evaluacion": "Modalidad de evaluación: La evaluación de la materia se realiza a través de dos parciales y un TP especial. En los parciales se evaluarán los conocimientos impartidos en las clases teóricas como así también la aplicación de los conocimientos adquiridos en las clases de laboratorio.\n\nRequisitos de aprobación: En caso que el alumno desapruebe uno de los parciales cuenta con una instancia de recuperatorio. La inasistencia al parcial (con causas justificadas o injustificadas) se califica con cero, disponiendo el alumno de la fecha de recuperatorio correspondiente.\n\nSólo uno de los parciales puede ser desaprobado.\n\nAl desaprobar o no asistir al recuperatorio (teniendo el parcial desaprobado) se desaprueba la cursada de la materia.\n\nTanto el TPE como los parciales/recuperatorio se aprueban con nota mayor o igual a 4 (cuatro). La aprobación de la materia depende de la calificación obtenida en los parciales y el TP especial los requisitos son:\n\n• Parciales o recuperatorio aprobado • TP especial aprobado • Nota de cursada mayor o igual a 4 (cuatro)\n\nLa nota de cursada de la materia se obtiene de: 0.20 * Nota del TPE + 0.40 * Nota del Primer Parcial + 0.40 * Nota del Segundo Parcial.",
+    "bibliografiaObligatoria": [
+      "TANENBAUM, Andrew S. (2013). STRUCTURED COMPUTER ORGANIZATION (6th), PEARSON PRENTICE HALL."
+    ],
+    "bibliografiaComplementaria": [
+      "Barry B. Brey. The Advanced Intel Microprocessors (8th), Prentice Hall",
+      "Peter Abel, IBM/PC Assembler Language and Programming (5th), Prentice Hall",
+      "Steve Furber, ARM System-on-chip architecture , Addison-Wesley. 4"
+    ],
+    "pdf": "/electivas-fichas/72.08.pdf"
+  },
+  "72.11": {
+    "codigo": "72.11",
+    "materia": "Sistemas Operativos",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "",
+    "actualizado": "12/8/2025 12:41:56",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 45,
+      "practicas": 45,
+      "laboratorio": 12,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": null
+    },
+    "contenidosMinimos": "Organización, estructura y servicios de los sistemas operativos. Distintas organizaciones: sistemas monolíticos, multicapas, modularizados, tipo cliente-servidor, micro-kernel. Concepto de proceso e hilos de ejecución. Gestión y administración de procesos. Comunicación y sincronización de procesos (IPC). Concurrencia y sincronización. Gestión de entrada/salida. Gestión y administración de la memoria. Sistema de archivos. Taller de implementación de un sistema operativo tipo Minix o Nachos.",
+    "presentacion": "Sistemas Operativos forma parte del tramo intermedio de la carrera de Ingeniería Informática y se apoya fuertemente en conocimientos previos adquiridos en Arquitectura de Computadoras. Está dirigida a estudiantes con un perfil técnico, interesados en comprender cómo los sistemas operativos gestionan los recursos de hardware y brindan servicios esenciales para la ejecución de programas.\n\nSe trata de una asignatura obligatoria, con una marcada orientación práctica. Además, ofrece un entorno propicio para el desarrollo de habilidades transversales a la ingeniería de software, tales como buenas prácticas de programación, depuración, testing, análisis estático y dinámico, la capacidad de alternar entre conceptos abstractos y detalles técnicos de bajo nivel, y la lectura e interpretación de documentación técnica.\n\nEl enfoque de la asignatura integra teoría y práctica: las clases expositivas abordan teorías clásicas, mientras que las prácticas se centran en problemas concretos, como mecanismos de sincronización y comunicación entre procesos, y la creación de un mini-kernel. A través de este enfoque práctico, se busca que los estudiantes asuman tanto el rol de\n\nusuario como el de desarrollador de un sistema operativo, comprendiendo y aplicando sus principales servicios en el primer caso, e implementándolos y entendiendo sus fundamentos en el segundo.",
+    "objetivos": "• Comprender los fundamentos teóricos y prácticos que sustentan el diseño y funcionamiento de los sistemas operativos. • Desarrollar habilidades para implementar, analizar y depurar software. • Fomentar buenas prácticas de programación y uso eficiente de recursos. • Explorar el sistema operativo desde el rol tanto de usuario como de desarrollador, comprendiendo sus servicios y los mecanismos internos que los hacen posibles.",
+    "programa": [
+      {
+        "titulo": "Introducción a los Sistemas Operativos",
+        "descripcion": "Definición y responsabilidades. Revisión de hardware. Caracterización y estructura. Interfaces y servicios. Virtualización."
+      },
+      {
+        "titulo": "Procesos",
+        "descripcion": "Modelo secuencial. Creación y finalización. Jerarquía, estados e implementación. Multiprogramación."
+      },
+      {
+        "titulo": "Comunicación entre Procesos",
+        "descripcion": "Memoria compartida y pasaje de mensajes. Archivos, pipes, sockets. Condición de carrera. Zona crítica. Semáforos. Problemas clásicos de sincronización. Deadlock."
+      },
+      {
+        "titulo": "Threads",
+        "descripcion": "Definición y justificación. Modelo secuencial. Interfaz. Implementación en espacio de usuario y en kernel. Implementación híbrida."
+      },
+      {
+        "titulo": "Scheduling",
+        "descripcion": "Comportamiento de procesos. Responsabilidades y categorías de schedulers. Objetivos. Algoritmos."
+      },
+      {
+        "titulo": "Memoria",
+        "descripcion": "Memoria virtual. Espacio de direcciones. Implementación de memoria virtual. Paginación, tablas de página y page faults. Administración de memoria libre. Translation Lookaside Buffer Tablas de página multinivel e invertidas. Algoritmos de reemplazo de páginas. Working set."
+      },
+      {
+        "titulo": "Sistema de archivos",
+        "descripcion": "Organización del disco. Mecanismos de asignación. Directorios. Hard y soft links. Log-structured y journaling. Consistencia e integridad. Virtual file system."
+      },
+      {
+        "titulo": "Deadlock",
+        "descripcion": "Tipos de recursos. Definición. Condiciones de Coffman. Modelado. Detección, recuperación y prevención. Tipos de deadlock. Livelock."
+      }
+    ],
+    "estrategias": "La materia adopta un enfoque centrado en el aprendizaje activo, combinando clases teóricas con actividades prácticas que vinculan los contenidos con situaciones reales del ámbito profesional. Se promueve la participación constante a través del estudio de casos, la resolución de problemas concretos y el desarrollo de proyectos, generando espacios donde los estudiantes pueden asumir roles tanto de usuarios como de desarrolladores de un sistema operativo. Estas estrategias se apoyan en el trabajo colaborativo, el acompañamiento docente sostenido y la retroalimentación frecuente, lo que permite a los estudiantes avanzar de manera progresiva en la apropiación de los conceptos y herramientas clave de la disciplina. A su vez, se busca fortalecer la autonomía de los estudiantes mediante propuestas que favorecen la exploración, la toma de decisiones y la creatividad técnica.",
+    "evaluacion": "Modalidad de evaluación: Los contenidos abordados en las clases teóricas, así como los problemas planteados al final de cada módulo, son evaluados a través de dos exámenes parciales, que se realizan al término de cada mitad del cuatrimestre. Estos contenidos también forman parte de la evaluación final. Los exámenes son individuales, presenciales y escritos.\n\nLos contenidos prácticos se evalúan mediante dos trabajos prácticos grupales. Cada uno de ellos incluye una instancia de defensa individual, orientada a verificar la participación y el compromiso de cada estudiante con el trabajo realizado.\n\nRequisitos de aprobación: Parciales: • Se aprueban con nota mínima de 5 (cinco). • La inasistencia se califica con 0 (cero). • Solo uno de los dos parciales puede recuperarse. En ese caso, se realiza un promedio ponderado entre la nota original (25%) y la del recuperatorio (75%). Se considera aprobado si la nota del recuperatorio por sí sola alcanza al\n\nmenos 5, independientemente del promedio el cual solo tiene un efecto en la nota de cursada.\n\nTrabajos prácticos: • Se aprueban con nota mínima de 6 (seis). • Ambos trabajos prácticos cuentan con instancia de recuperación. En caso de aprobar esa segunda entrega, la nota asignada será 6 (seis).\n\nFinal: • Se aprueban con nota mínima de 5 (cinco). • En caso de desaprobar, se registra la nota 2 (dos).\n\nNota de cursada: • Si se aprueban ambos parciales y ambos trabajos prácticos (ya sea en primera instancia o en recuperación), se calcula como el promedio aritmético entre estos cuatro componentes. • En caso contrario, se registra la nota 2 (dos). • Al recursar la asignatura, el estudiante será evaluado nuevamente en los cuatro componentes, sin conservar calificaciones obtenidas en cursadas anteriores.",
+    "bibliografiaObligatoria": [
+      "Tanenbaum, A. S., & Bos, H. (2014). Modern Operating Systems (4a ed.). Pearson. 2 3 4 5 6"
+    ],
+    "bibliografiaComplementaria": [
+      "Kernighan, B. W., & Ritchie, D. (1988). C Programming Language. Prentice Hall.",
+      "Stevens, W. R., & Rago, S. A. (2013). Advanced programming in the UNIX environment (3a ed.). Addison-Wesley Educational.",
+      "Robbins, K. A., & Robbins, S. (2015). UNIX systems programming: Communication, concurrency and threads: Communication, concurrency and threads (2a ed.). Prentice Hall. 4 5 6"
+    ],
+    "pdf": "/electivas-fichas/72.11.pdf"
   },
   "72.18": {
     "codigo": "72.18",
@@ -738,6 +1235,268 @@ export const FICHAS: Record<string, Ficha> = {
       "Bird, Richard. Pearls of functional programming design. Cambridge University Press, 2010."
     ],
     "pdf": "/electivas-fichas/72.18.pdf"
+  },
+  "72.20": {
+    "codigo": "72.20",
+    "materia": "Redes de Información",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "17/3/2023 11:04:16",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 45,
+      "practicas": 30,
+      "laboratorio": 27,
+      "semanales": 6,
+      "presencial": 3,
+      "distancia": 3
+    },
+    "contenidosMinimos": "Modelo de referencia OSI: sus niveles. Tipos y topologías. Tecnologías LAN/WAN. Protocolos y servicios. Estudio avanzado del protocolo TCP/IP. Control de flujo y congestión. Análisis del tráfico. Algoritmos de ruteo. Clases y calidad del servicio. Interconexión de redes. Redes ATM. IP sobre ATM. Seguridad: Firewall, protocolo IPSec. Redes privadas virtuales (VPN). Redes inalámbricas y móviles. Redes GSM. Protocolo SMS. Facilidades de nivel de presentación. Taller de aplicación sobre una red de computadoras, configurando software y hardware",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo profesional de la carrera, en el ultimo cuatrimestre. A través de la misma se abordan temas de redes de comunicación pero con orientación profesional y empresarial ya que el alumno ya ha cursado una materia anterior correlativa (Protocolos de Comunicación) del ciclo básico y por lo tanto los conceptos de esta materia son claves para insertarse en el mundo laboral. Se busca fomentar los conocimientos de redes aplicados a la industria profesional con enfasis en las aplicaciones prácticas que se utilizan en la industria en la actualidad.",
+    "objetivos": "• Fortalecer los conocimientos de Redes y Protocolos de Comunicación. • Poner en práctica herramientas utilizadas en la industria. • Analizar opciones y alternativas de soluciones de Redes de Información. • Programar dispositivos de redes.",
+    "programa": [
+      {
+        "titulo": "Capa fisica",
+        "descripcion": "Se abordan los temas teoricos y practicos que involucran los protocolos y enlaces de la capa fisica de las redes de información."
+      },
+      {
+        "titulo": "Equipos de Red",
+        "descripcion": "Se desarrollan implementaciones practicas de redes de información configurando diferentes equipos."
+      },
+      {
+        "titulo": "Redes WAN",
+        "descripcion": "Se abordan protocolos de capas de de enlace y tranporte que cubren grandes distancias geograficas. Se implementan redes lógicas de protocolos WAN."
+      },
+      {
+        "titulo": "Protocolos avanzados",
+        "descripcion": "Se abordan protocolos de capas superiores, cercanas a los usuarios finales que proveen servicios de implementación tradicional en la industria actual."
+      }
+    ],
+    "estrategias": "Se utilizan clases teóricas expositivas para realizar una introducción a los temas y se realizan en clase los primeros ejercicios con el fin de fijar conocimientos.\n\nEn las clases practicas los docentes retoman el tema visto en las clases teóricas, realizan una introducción de los objetivos de la práctica del día y luego los alumnos resuelven los ejercicios de manera autónoma pudiendo consultar a los profesores y ayudantes presentes en el laboratorio.\n\nAl finalizar el cuatrimestre los estudiantes deben formar grupos de tres alumnos como máximo para realizar un Trabajo Practico Especial donde deben aplicar todo lo visto en clase, además tienen que investigar como se implementa una parte del Trabajo la cual no fue dada en clase. El Trabajo dura cuatro semanas y se realiza en su mayoría fuera de las horas de clases. Se habilitan espacio de consultas a los docentes durante las horas de laboratorio para dar seguimiento y apoyo académico a los grupos.",
+    "evaluacion": "Modalidad de evaluación: La evaluación de la materia se realiza a través de dos parciales y un TP especial. En los parciales se evaluarán los conocimientos impartidos en las clases teóricas como así también la aplicación de los conocimientos adquiridos en las clases de laboratorio.\n\nRequisitos de aprobación: En caso que el alumno desapruebe los parciales cuenta con una instancia de recuperatorio. La inasistencia al parcial (con causas justificadas o injustificadas) se califica con cero, disponiendo el alumno de la fecha de recuperatorio correspondiente.\n\nSólo uno de los parciales puede ser desaprobado.\n\nAl desaprobar o no asistir al recuperatorio (teniendo el parcial desaprobado) se desaprueba la cursada de la materia.\n\nTanto el TPE, como los parciales y el recuperatorio se aprueban con nota mayor o igual a 4 (cuatro). La aprobación de la materia depende de la calificación obtenida en los parciales y el TP especial los requisitos son:\n\n• Parciales o recuperatorio aprobado. • TP especial aprobado. • Nota de cursada mayor o igual a 4 (cuatro)\n\nLa nota de cursada de la materia se obtiene de: 0.20 * Nota del TPE +0.40 * Nota del Primer Parcial + 0.40 * Nota del Segundo Parcial.",
+    "bibliografiaObligatoria": [
+      "Andrew S. Tanenbaum , Redes de computadoras , Quinta Edición - Editorial Pearson",
+      "Apuntes de la materia. Ing. Santiago Vallés."
+    ],
+    "bibliografiaComplementaria": [],
+    "pdf": "/electivas-fichas/72.20.pdf"
+  },
+  "72.41": {
+    "codigo": "72.41",
+    "materia": "Base de Datos II",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Licenciatura en Analítica Empresarial y Social / / Ingeniería en Informática",
+    "actualizado": "21/8/2025 11:58:59",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 26,
+      "laboratorio": 25,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": null
+    },
+    "contenidosMinimos": "Diseño, administración y gestión de bases de datos. Análisis de las características de distintos tipos de índices. Diseño físico y puesta a punto (tuning). Evaluación y optimización de consultas. Procesamiento de transacciones y control de la concurrencia. Recupero frente a errores. Sistemas de Información Geográficos (GIS). Índices y consultas espaciales. Taller de Aplicación",
+    "presentacion": "Esta materia se plantea como una continuación de los primeros cursos de bases de datos, con el objeto de estudiar algunos temas avanzados de las bases de datos SQL estudiadas en dichos cursos y además introducir a los alumnos en otros modelos de bases de datos (bases NoSQL), de amplia utilización en el mundo actual.",
+    "objetivos": "- Aprender a tomar buenas decisiones a la hora de elegir una base de datos para resolver un problema concreto. - Profundizar en los conocimientos adquiridos en Base de Datos I sobre bases de datos SQL. - Conocer las nuevas tendencias en base de datos, en especial las bases NoSQL y su utilización en el procesamiento de grandes volúmenes de datos (Big Data).",
+    "programa": [
+      {
+        "titulo": "Postgresql avanzado",
+        "descripcion": "Relaciones, CRUD y juntas. Consultas avanzadas, Código y Reglas. Full text y cubos multidimensionales."
+      },
+      {
+        "titulo": "HBase",
+        "descripcion": "CRUD, Administración de Tablas. Trabajando con Big Data, MapReduce."
+      },
+      {
+        "titulo": "MongoDB",
+        "descripcion": "CRUD, Nesting, Indices, MapReduce, Conjuntos replicados, Distribución, Datos Geoespaciales y GridFS."
+      },
+      {
+        "titulo": "Cassandra",
+        "descripcion": "CRUD, IDEs y cURL como mecanismo de consulta. Creando y consultando grandes volúmenes de datos. Replicando datos."
+      },
+      {
+        "titulo": "Neo4J",
+        "descripcion": "Grafos, Cypher y CRUD. Índices, Algoritmos y consultas REST."
+      },
+      {
+        "titulo": "DynamoDB",
+        "descripcion": "CRUD. Interactuando con otros servicios de Amazon."
+      },
+      {
+        "titulo": "Redis",
+        "descripcion": "CRUD, Tipo de datos. Uso avanzado. Interactuando con otras bases de datos (persistencia políglota)"
+      }
+    ],
+    "estrategias": "Clases teóricas y prácticas en la primer mitad de la cursada. En la segunda mitad, los alumnos desarrollarán un proyecto (TP especial) donde deberán integrar varias bases de datos.",
+    "evaluacion": "Modalidad de evaluación: Un parcial a mitad de cuatrimestre, donde entran todas las bases de datos vistas en el curso. Este parcial puede contener preguntas teóricas o prácticas. Al final del curso los alumnos expondrán en forma grupal el trabajo práctico especial.\n\nRequisitos de aprobación: Para aprobar la cursada deben obtenerse con 4 (cuatro) puntos como mínimo en el parcial y el trabajo práctico especial. Si un alumno no aprobase el parcial deberá rendir un recuperatorio de dicho examen al final del cuatrimestre. La nota de cursada es igual al promedio entre la notas del parcial y la del TP Especial.\n\nPara aprobar la materia, los alumnos que previamente hayan aprobado la cursada deberán aprobar con un mínimo de 4 (cuatro) puntos el examen final.",
+    "bibliografiaObligatoria": [
+      "[2018] Perkins, Redmond & Wilson. Seven Databases in Seven Weeks: A Guide to Modern Databases and the NoSQL Movement (2nd Edition), ISBN-13: 978-1680502534.",
+      "[2008] Garcia-Molina, Ullman & Widom. Database Systems: The Complete Book (2nd Edition), ISBN-13: 978-0131873254. 3 4 5 6"
+    ],
+    "bibliografiaComplementaria": [
+      "MongoDB, https://www.mongodb.com/docs/ 2 3 4 5 6"
+    ],
+    "pdf": "/electivas-fichas/72.41.pdf"
+  },
+  "72.42": {
+    "codigo": "72.42",
+    "materia": "Programación de Objetos Distribuidos",
+    "creditos": 3,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "21/12/2022 12:46:47",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 19,
+      "practicas": 32,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Sistemas distribuidos: objetivos y tipos. Arquitecturas. Middleware. Threads. Virtualización. Clientes y Servidores. Migración de código. Invocación remota. Mensajes. Calidad de servicio. Diseminación de datos. Búsqueda. Sincronización. Consistencia. Replicación. Tolerancia a fallas. Recuperación. Seguridad.",
+    "presentacion": "La intención de la materia es explorar las estrategias de programación concurrente y distribuida. Ambas estrategias permiten a su manera intentar obtener una mayor capacidad de cómputo y/o almacenamiento para que los sistemas puedan tener un mejor rendimiento. Estas estrategias traen aparejados nuevos potenciales problemas que deben ser prevenidos para evitar fallas o comportamientos no esperados. Al final de la materia se espera que los alumnos puedan analizar y encontrar partes de los sistemas a construir donde estas estrategias puedan ser beneficiosas, implementar las soluciones y detectar posibles puntos de error inherentes a la estrategia utilizada. La materia se dicta de manera presencial con una introducción teórico-práctica (a modo de taller) y prácticas realizadas por los alumnos.",
+    "objetivos": "• Conocer nuevas funcionalidades y revisar funcionalidades conocidas de Java que puedan ser útiles en la materia como programación funcional, streaming y lambdas. • Codificar sistemas concurrentes utilizando Java y las diferentes opciones para correr Threads en paralelo. • Predecir e identificar problemas de concurrencia y fundamentar la elección de protección contra los mismos, por ejemplo sincronización, clases concurrentes o clases inmutables. • Reconocer los componentes de un sistema RPC cliente servidor. • Implementar sistemas en RPC con serialización de parámetros y callbacks asincrónicos. • Explicar las diferentes características de storage distribuidos como particionamiento, consistencia, redundancia, etc. • Conocer las diferentes características de las bases de datos distribuidas de tipo \"NoSQL\". • Detallar diferentes estrategias y herramientas para el procesamiento distribuido. • Implementar aplicaciones de procesamiento de información distribuidas en Map Reduce. • Utilizar la herramienta de storage y procesamiento distribuido. • Analizar el comportamiento de aplicaciones distribuidas al modificar la composición del cluster",
+    "programa": [
+      {
+        "titulo": "Java +",
+        "descripcion": "Java estilo Funcional, Lambdas, Tests. Estructuras y features en las últimas versiones de Java"
+      },
+      {
+        "titulo": "Concurrencia",
+        "descripcion": "Procesadores multiproceso y Programas multithread. Programación de Threads en Java, Executors y pools Problemas de la programación concurrente: Interferencia, Coordinación y Disponibilidad. Sincronización nativa Clases concurrentes de alto nivel Alternativas a la sincronización Completable Futures"
+      },
+      {
+        "titulo": "RPC",
+        "descripcion": "Conceptos de Cliente Servidor RPC como modo de comunicación. Middlewares. Definición de servicios. Implementación de cliente. Semánticas Garbage Collection Distribuido Implementación de servidor. Serialización de Parámetros. Servicios asincrónicos."
+      },
+      {
+        "titulo": "APIS Alternativas",
+        "descripcion": "Revisión de otras estrategía de definición de APIs alternativas a RPC"
+      },
+      {
+        "titulo": "Sistemas Distribuidos",
+        "descripcion": "Conceptos de Sistemas distribuidos. Distribución de responsabilidades, procesamiento y guardado. Particionado, Distribución y Replicación de datos. Modelos de Consistencia. Coordinación, Elasticidad y Tolerancia a fallos."
+      },
+      {
+        "titulo": "Storage Distribuido",
+        "descripcion": "File System Distribuidos yArquitectura de HDFS Uso de Hazelcast como herramienta para guardado distribuido. Conceptos de NoSQL, análisis de tipo de storage, teorema C.A.P. y diversas arquitecturas de estas herramientas."
+      },
+      {
+        "titulo": "Procesamiento Distribuido",
+        "descripcion": "Map Reduce como ejemplo de procesamiento distribuidos. Análisis de la arquitectura y comportamiento de las herramientas de procesamiento distribuidos"
+      }
+    ],
+    "estrategias": "Clases expositivas donde se repasan los temas teórico o las herramientas y formas de codificación. Para el caso de herramientas o código se van mezclando momentos de teoría con ejercicios que los alumnos realizan para fijar los conceptos y disparar discusiones. Como parte de la evaluación realizan dos trabajos especiales grupales y se dispone por cada trabajo:\n\n• una clase de consulta/prueba para que puedan realizar pruebas en conjunto y consultar a la cátedra dudas del trabajo. • una clase de coloquio, donde por grupo se revisa el trabajo, se corren pruebas, se hacen preguntas a modo de evaluación y se charlan soluciones.",
+    "evaluacion": "Modalidad de evaluación: La cursada se evalúa mediante a dos trabajos prácticos especiales grupales. Para estos trabajos prácticos la cátedra provee una lista de requerimientos y pautas a cumplir por un sistema y los alumnos los desarrollan fuera del horario de clase aplicando los conceptos vistos en clase. En caso de que alguno de los trabajos prácticos no sea aprobado se recupera mediante a la corrección del mismo, agregado de más funcionalidad o preguntas teórico/prácticas. La evaluación de la materia se completa con un final teórico/práctico individual presencial con preguntas de los temas vistos en clase. Las preguntas del final pueden ser: - definiciones teóricas - preguntas teóricas a desarrollar - análisis de casos prácticos, - análisis de código - desarrollo de código.\n\nRequisitos de aprobación: Para aprobar la materia se deben tener aprobados ambos trabajos prácticos (ya sea directamente o a través de sus recuperatorios.\n\nLa nota de cursada será el promedio de la nota de ambos.\n\nNotaCursada = 0.5 * Nota1erTPE + 0.5 * Nota2doTPE\n\nLa nota de cada trabajo es la nota del trabajo aprobado en primera instancia, o el promedio entre la nota del trabajo desaprobado y su recuperatorio aprobado.Si este promedio da menor a 4 la nota queda en 4.\n\nEl final se aprueba con 4 o más.",
+    "bibliografiaObligatoria": [
+      "Presentaciones y documentos provistos por la cátedra"
+    ],
+    "bibliografiaComplementaria": [],
+    "pdf": "/electivas-fichas/72.42.pdf"
+  },
+  "72.43": {
+    "codigo": "72.43",
+    "materia": "Gestión de Proyectos Informáticos",
+    "creditos": 3,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "",
+    "actualizado": "5/8/2025 13:18:56",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 34,
+      "practicas": 17,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": null
+    },
+    "contenidosMinimos": "Visión estratégica de la organización. Modelo de negocio. Modelos de calidad en el proceso de desarrollo del software. Modelos de calidad en el producto software. Administración de proyectos de software: estimación, planificación y seguimiento. Gerenciamiento de riesgos. Gestión de la configuración del software. Auditorías y peritajes",
+    "presentacion": "La materia se dicta en 4° año de la carrera. Las habilidades que pretende fomentar, se trabajan con la construcción de una visión sobre la gestión de los proyectos informáticos que combine la previsión inicial con una planificación global combinada con una gestión ágil en la ejecución de un proyecto. El enfoque que acompaña el dictado, apunta a una evolución de los contenidos desde lo mas desagregado de un proyecto de desarrollo, hasta llegar a construir un plan de proyecto completo, que incluya un modelo de negocio digital, la integración de tecnologías, los riesgos asociados y las métricas necesarias.",
+    "objetivos": "- Conocer diferentes estrategias de Gestión de Proyectos - Analizar los diferentes modelos de negocios digitales\n\n- Identificar y evaluar los Riesgos de Proyectos Informáticos - Aplicar modelos, metodologías, técnicas y herramientas para la Administración de Proyectos - Definir y aplicar políticas de Gestión de Configuración y Gestión de Calidad",
+    "programa": [
+      {
+        "titulo": "UNIDAD 1. Gestión en la industria del software",
+        "descripcion": "Desarrollo tecnológico en la industria. Características del proceso software y de la producción industrial. Visión estratégica de la Organización. Plan de Negocios en la industria del software. Modelos de negocios digitales. El proceso de diagnóstico de la empresa. Factores clave para la planificación, conducción y gestión del negocio. Gestión del conocimiento. Gestión del Riesgo en Proyectos Informáticos. Análisis de Riesgos, evaluación y proyección. Planes de Contingencia."
+      },
+      {
+        "titulo": "UNIDAD 2. Modelos de Proceso",
+        "descripcion": "Proceso de construcción de software. Proceso frente a producto. Modelos de Proceso para la Gestión. Metodologías ágiles. Estándares y Normas internacionales aplicables a la Gestión. Procesos básicos. Actividades, Roles y Productos. Madurez del proceso. Taxonomía de productos. Modelos de ciclos de vida del producto. Técnicas de selección de modelos."
+      },
+      {
+        "titulo": "UNIDAD 3. Administración de proyectos",
+        "descripcion": "Conceptualización de Proyectos y de Administración de Proyectos. Marco de la gestión de Proyectos. Manejo de Recursos de un proyecto Informático. Confección del Plan de Proyecto. Sistemas de Control de Proyectos. Proceso de Gestión. Modelos, técnicas y métodos de estimación. Estimación de tamaño de producto. Estimación de esfuerzo. Costos. Planificación de Proyectos. Herramientas de estimación y de planificación. Seguimiento y Control de Proyectos."
+      },
+      {
+        "titulo": "UNIDAD 4. Gestión de la Calidad",
+        "descripcion": "Conceptos de Calidad de Producto y de Proceso. Modelos de Calidad. Gestión de la Calidad. Normas y estándares Internacionales. Evaluación de producto software. Factores, Atributos y métricas de calidad de producto. Conceptos de Configuración del Software. Gestión de la Configuración. Auditorías. Normas y estándares de Configuración."
+      }
+    ],
+    "estrategias": "Determinados contenidos temáticos son presentados a los alumnos utilizando herramientas informáticas de soporte sobre las cuales deben desarrollar las prácticas de resolución de problemas o casos de estudio y hacer uso de laboratorio. Las herramientas a utilizar son preferentemente de software libre ó demos de uso gratuito a la que los alumnos puedan acceder en forma individual. Solo en algún caso excepcional se utiliza alguna herramienta bajo licencia provista por Convenio de colaboración para uso académico. Esta actividad favorece la fijación de conocimientos, a la vez que estimula el trabajo en equipo y provee una experiencia práctica para el uso de herramientas informáticas disponibles.",
+    "evaluacion": "Modalidad de evaluación: La modalidad de evaluación de la materia es de Examen Final obligatorio. Para aprobar la materia y poder rendir el Final, los alumnos deberán aprobar las siguientes instancias de evaluación. 2 (dos) exámenes parciales Habrá una (1) instancia de recuperación de uno de los 2 parciales. 10 Trabajos Prácticos desarrollados en equipo a lo largo del cuatrimestre. El Examen Final consiste en 1 (un) Trabajo Práctico Integrador (TPI) en equipo, que integra la resolución de los 10 TPs desarrollados durante el cuatrimestre. La exposición del TPI es escrita y con defensa oral en equipo.\n\nRequisitos de aprobación: - Aprobar 2 parcial (directamente o en recuperatorio), con una nota igual o superior a 4 (cuatro) puntos. - Aprobar 1 Trabajo Práctico Integrador Final con una nota igual o superior a 6 (seis) puntos. A lo largo de la materia se desarrollan 10 trabajos prácticos en equipo, cuya aprobación es obligatoria. La entrega es semanal y la calificación mínima para cada TP es de 6 seis. La integración de todos los trabajos prácticos en equipo se realiza al finalizar la materia y deben exponerlo en forma oral y presencial.",
+    "bibliografiaObligatoria": [
+      "Agile Alliance. (2022). Agile Alliance. Agile Glossary. https://www.agilealliance.org/agile101/agile-glossary/",
+      "Anand A., Buffington P., Buchanan I., Fok T. (2020). A practical guide to ITIL 4 in anage of agile. Obtenido de www.atlassian.com/whitepapers/itil4#",
+      "ISO/IEC/IEEE. (2017). ISO/IEC/IEEE 12207. Systems and software engineering — Software life cycle processes.",
+      "Davis, A., Alexander, L., Criteria for Selecting Software Process Models, COMPSAC, SEI, 2014.",
+      "Goff S., Distinguishing PM Competence in Training and Development, organizational assessments and certifications, 2003. http://www.projectexperts.com",
+      "• IEEE Standard for Developing Software Life Cycle Processes, IEEE Standard 1074-2022. IEEE, 2022. • ISO/IEC 90003:2014. Quality management and quality assurance standards. Part 3: Guidelines for the application of ISO 9001 to the development, supply, installation and maintenance of computer software. International Organisation for Standardization, ISO, 2014. • ISO/IEC 9001:2014. Quality management systems. Requirements. International Organisation for Standardization, ISO, 2014. • ISO/IEC TR 1. Information Technology – Software process assessment. International Organization for Standardization, International Electrotechnical Commission, ISO, 2008. • ISO/IEC. (2007). ISO/IEC 25021. Software engineering — Software product Quality Requirements and Evaluation (SQuaRE) — Quality measure elements. • ISO/IEC/IEEE FDIS. (2020). 24748-3:2020. Systems and software engineering — Life • ISO/IEC/IEEE. (2017). ISO/IEC/IEEE 12207. Systems and software engineering — Software life cycle processes. • Jackobson, Rumbough, Booch, El proceso UML de desarrollo, Editorial Addison Wesley, Madrid, 2001 PMBok PM Body of Knowledge. A Guide to the Project Management Body of Knowledge (PMBOK® Guide) - Fifth Edition. USA: Project Management Institute Publisher (2013) http://www.pmi.org"
+    ],
+    "bibliografiaComplementaria": [],
+    "pdf": "/electivas-fichas/72.43.pdf"
+  },
+  "72.44": {
+    "codigo": "72.44",
+    "materia": "Criptografía y Seguridad",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "21/12/2022 12:47:16",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 21,
+      "laboratorio": 30,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Criptografía Clásica y Moderna. Métodos simétrico y asimétrico. Algoritmos: encriptación y hashing. Protocolos: vpns, pgp, https. Aplicaciones: dinero electrónico, voto electrónico. Seguridad en bases de datos, sistemas operativos y redes. Auditoría y peritaje en seguridad",
+    "presentacion": "Esta materia del departamento de Sistemas Digitales y Datos se dicta en el primer año del ciclo profesional de la carrera de Ingeniería Informática. Este es un curso que aborda los conceptos teóricos detrás de la seguridad de los sistemas informáticos y su aplicación en el diseño, construcción o evaluación de los mismos. El curso se divide en dos etapas. La primera esta dedicada exclusivamente a adquirir los conocimientos básicos de criptografía que constituyen la base sobre la cual entender las dimensiones de la seguridad, construir soluciones particulares a cada tipo de problema. La segunda parte esta dedicada a la aplicación de los conceptos básicos en sistemas, mostrando problemas recurrentes y la composición de las herramientas vistas para lograr un nivel adecuado de seguridad. La materia esta pensada para alumnos con suficientes conocimientos como para construir aplicaciones funcionalmente completas, y busca introducir requisitos no funcionales de seguridad a cada etapa del ciclo de desarrollo. La seguridad de las aplicaciones, si bien siempre ha sido importante, ha cobrado amplia relevancia en los últimos años, de forma desafortunada – a través de los problemas de no haber sido considerada. El conocimiento de los conceptos y compromisos involucrados en la seguridad de un sistema son un componente imprescindible en la formación profesional.",
+    "objetivos": "• Comprender las herramientas criptográficas básicas y entender su ámbito de aplicación en problemas de Confidencialidad e Integridad • Utilizar eficazmente algoritmos y protocolos criptográficos existentes para garantizar requerimientos de seguridad • Comprender, y poder especificar los requerimientos de seguridad de un sistema. • Participar en un proceso de análisis de vulnerabilidades o test de penetración. Comprender los resultados de un informe de dicho tipo. • Detectar y corregir problemas típicos de aplicaciones con respecto a seguridad",
+    "programa": [
+      {
+        "titulo": "Criptografia",
+        "descripcion": "Introducción a la criptografía. Criptosistemas clásicos. One time Pad. Modelos teóricos. Criptosistemas simétricos de flujo y de bloque. Medios de encadenamiento. Integridad: Macs y funciones de hash. Criptografía asimétrica: cifrado y firma digital. Manejo de claves. Generación. Distribución. Almacenamiento. Intercambio de claves. Protocolos criptográficos."
+      },
+      {
+        "titulo": "Seguridad",
+        "descripcion": "Introducción a la seguridad informática. Aspectos fundamentales. Objetivos. Políticas de seguridad: generalidades, confidencialidad, integridad, modelos híbridos, composición de políticas. Seguridad en aplicaciones. Principios de diseño seguro. Identidad. Representación de identidad. Certificados. Anonimato. Autenticación. Mecanismos challenge-response. Biometría. Multiples factores. Control de acceso. ACLs. Capacidades. L&K. Flujo de información. Confinamiento. Canales ocultos. Problemas frecuentes. Verificación. Auditorías. Penetration testing. Analisis de vulnerabilidades. Programas malignos."
+      }
+    ],
+    "estrategias": "La materia sigue un enfoque basado en resolución de problemas, que busca exponer al alumno a problemas similares a los de aplicación en el campo profesional. También se trabajará sobre un proyecto integrador que involucre la implementación de una función de seguridad aun no vista en el curso, constuirda a partir de los conceptos incorporados. El desarrollo del mismo se realizará durante el ultimo mes del curso de forma grupal.",
+    "evaluacion": "Modalidad de evaluación: • Parciales: Durante el cuatrimestre, se tomarán dos parciales, en los que se evaluarán los contenidos dictados en las clases teóricas y prácticas correspondientes. Para aquellos que no aprueben un parcial, se tomará 1 (un) recuperatorio a fines del cuatrimestre (según cronograma). En caso de no aprobar ambos parciales, el alumno recursará la materia. Los parciales se realizarán por escrito y exclusivamente en forma individual. A aquellos alumnos que falten en las fechas de parcial previstas en la planificación cuatrimestral, se los considerará como ausentes y deberán rendir directamente en la fecha de recuperatorio asignada, sin posibilidad de recuperar el examen.\n\n• Trabajo Práctico: Se llevará a cabo durante la segunda mitad del cuatrimestre y consistirá en el desarrollo de un proyecto basado en un paper de criptografía. El trabajo práctico será realizado en forma grupal. Un trabajo práctico no aprobado podrá ser corregido una única vez.\n\n• Final: Se tomará final escrito sobre los temas vistos durante la materia. El final será de carácter integrador, donde el alumno deberá mostrar su idoneidad en la aplicación de los conceptos vistos en problemas reales de ingeniería. Si la cantidad de alumnos inscriptos a una fecha fuese menor o igual a 5 (cinco), la cátedra puede optar por una evaluación oral. Dicho hecho será notificado con al momento de cierre de las inscripciones.\n\nRequisitos de aprobación: Para aprobar la cursada de la materia, se requiere: • Aprobar los dos parciales (individual). • Aprobar el Trabajo Práctico Cuatrimestral (grupal).\n\nLa nota del curso se determinará con la siguiente formula: Nota Curso = 0.35 * Nota 1er parcial + 0.35 * Nota 2do parcial + 0.3 * Nota TP A fin de definir las notas, cualquier parcial o TP recuperado se considerará aprobado con un 4. Si no se cumpliesen los requisitos enumerados para aprobar el curso, la nota del mismo será el mínimo entre 3 y la nota que surja de la formula anterior.\n\nPara aprobar la materia (Final), es necesario: • Aprobar el examen escrito de la materia o en su defecto, el examen oral correspondiente",
+    "bibliografiaObligatoria": [
+      "Katz, J., & Lindell, Y. (2014). Introduction to modern cryptography (2nd ed.). CRC Press.",
+      "Matt Bishop. (2018). Computer Security – Art and Science (2nd ed.). Addison-Wesley Professional."
+    ],
+    "bibliografiaComplementaria": [
+      "Rosss Anderson. (2008). Security Engineering: A Guide to Building Dependable Distributed Systems (2nd ed.). Willey.",
+      "Alfred J. Menezes, Paul C. Van Oorschot, Scott A. Vanstone. (1997). Handbook of Applied Cryptography. CRC Press.",
+      "Bruce Schneier. (1996). Applied Cryptography: Protocols, Algorithms, and Source Code in C (2nd ed.). Willey.",
+      "Michael Howard, David LeBlanc, John Viega. (2009). 24 Deadly Sins of Software Security: Programming Flaws and How to Fix Them. McGraw-Hill.",
+      "Charles P. Pfleeger, Shari Lawrence Pfleeger. (2006). Security in Computing, (4th Ed.). Prentice Hall."
+    ],
+    "pdf": "/electivas-fichas/72.44.pdf"
   },
   "72.58": {
     "codigo": "72.58",
@@ -2078,6 +2837,66 @@ export const FICHAS: Record<string, Ficha> = {
       "Martin Kleppmann. Designing Data-Intensive Applications. Alistair Croll & Benjamin Yoskovitz. Lean Analytics: Use Data to Build a Better Startup Faster. O'Reilly Media."
     ],
     "pdf": "/electivas-fichas/82.21.pdf"
+  },
+  "94.23": {
+    "codigo": "94.23",
+    "materia": "Formación General III",
+    "creditos": 3,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería en Informática / Ingeniería en\n Petróleo / Ingeniería Industrial / Ingeniería Mecánica / Ingeniería Naval / Ingeniería Química",
+    "actualizado": "2/2/2023 11:34:38",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 21,
+      "practicas": 30,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Primera parte: Introducción y alcances de la teoría. Su carácter científico y sistémico. Segunda parte: Acerca de la capacidad humana o la naturaleza humana en el trabajo. La composición del sistema. Tercera parte: Estructura organizativa de las Jerarquías de Respondibilidad Gerencial. Estructura y entorno del sistema. Cuarta parte: Prácticas de liderazgo gerencial. Subsistemas o mecanismos vinculados con las relaciones entre personas. Quinta parte: Puesta en práctica y conclusiones",
+    "presentacion": "El ámbito de los negocios está transitando un proceso de transformación que amerita debates en cuanto a la flexibilidad que deben tener las personas que allí trabajan y su capacidad para adaptarse a entornos cambiantes, inciertos y de envergadura global.\n\nLa materia se inserta en el marco de la formación profesional de Ingenieros dentro del conjunto de saberes asociados al conocimiento de las ciencias empresariales.\n\nPor ello, entendemos como necesario el desarrollo de capacidades de pensamiento crítico basado en las investigaciones sistémicas de la construcción de organizaciones sustentables.",
+    "objetivos": "• comprender las relaciones funcionales que permiten la ejecución de la misión y visión de la organización • desarrollar una actitud crítica de esta dinámica en relación al entorno actual, el cual se presenta con variables múltiples, inciertas y ambiguas a la vez que representan un desafío de alta complejidad para la toma de decisiones.",
+    "programa": [
+      {
+        "titulo": "Unidad 1. Introducción y marco teórico de la organización",
+        "descripcion": "Comienzos de la organización. La Organización Natural. Enfoque sistémico y científico. El trabajo y otras variables."
+      },
+      {
+        "titulo": "Unidad 2. Estructura de las organizaciones",
+        "descripcion": "Variables de la organización. Tiempo y rol. Nivel de trabajo e intervalo temporal. Estratos universales. Funciones en la organización. Organizaciones estratificadas."
+      },
+      {
+        "titulo": "Unidad 3. Componentes de las organizaciones",
+        "descripcion": "El tiempo y la capacidad humana. Maduración de la capacidad de la persona y desarrollo de la capacidad potencial."
+      },
+      {
+        "titulo": "Unidad 4. La Complejidad",
+        "descripcion": "Complejidad de la información (contexto interno) Complejidad de los problemas (entorno)"
+      },
+      {
+        "titulo": "Unidad 5. Modelos de Organizaciones",
+        "descripcion": "Tipología de las organizaciones según su estratificación. La transformación del modelo organizacional no estratificada."
+      },
+      {
+        "titulo": "Unidad 6. Mecanismos de las organizaciones",
+        "descripcion": "Prácticas de la conducción. Relación entre roles. Responsabilidad y respondibilidad. Delegación de tareas. Confianza y valores. Compensación diferencial. Prácticas disfuncionales. Indicadores de gestión."
+      },
+      {
+        "titulo": "Unidad 7. Estudio integral del caso",
+        "descripcion": "Descripción y análisis crítico de un caso de organización real."
+      }
+    ],
+    "estrategias": "Requisitos de aprobación Son requisitos de aprobación del curso: Se requerirá como condición primaria y general de aprobación la calificación mínima de 4 (cuatro) para cada uno de los parciales en instancias de fecha regular o recuperatorio. Los trabajos prácticos no se recuperan, en caso que el alumno no esté presente el día de la exposición oral del trabajo práctico, la nota individual se considerará Ausente. Solo se podrá acceder a recuperatorio de un solo parcial. En caso de desaprobar ambos parciales la materia se considerará desaprobada. Adicionalmente, es requisito de aprobación 80% de asistencia a clase. Aprobados los parciales con la condición establecida en los párrafos anteriores, la aprobación final de la cursada deberá contar con un promedio mínimo de 4 (cuatro) o superior entre las propuestas de evaluación detalladas. ¿Cómo se calcula la nota de cursada? Promedio ponderado de las evaluaciones una vez ratificada la aprobación de los dos parciales con mínimo de 4 (cuatro) en instancias regulares o de recuperatorio y la asistencia.",
+    "evaluacion": "Modalidad de evaluación: Parciales: 2 (dos) Ponderación: 25% cada uno En ambas ocasiones consiste en dos instancias: 1. Evaluación individual: Multiple choice con preguntas sobre la teoría y resoluciones de casos específicos 2. Evaluación grupal: Resolución de un caso específico.\n\nTrabajo práctico: Ponderación: 30% Si bien la presentación es grupal, la evaluación del trabajo práctico es el promedio de la calificación del trabajo grupal y la presentación individual.\n\nAnálisis de un caso real de una empresa a elección de los alumnos. Este análisis les permitirá comprender el funcionamiento organizacional e interpretar las teorías desarrollas durante la cursada de la materia desde diferentes perspectivas.\n\nConcepto general: Ponderación: 20% La evaluación comprendida por este concepto incluye: 1. Entrega de los trabajos propuestos en cada clase 2. Participación reflexiva y crítica en clase\n\nExamen Final:\n\nIndividual y escrito. Integración teórica / práctica de toda la materia.\n\nRequisitos de aprobación: Son requisitos de aprobación del curso: Se requerirá como condición primaria y general de aprobación la calificación mínima de 4 (cuatro) para cada uno de los parciales en instancias de fecha regular o recuperatorio.\n\nLos trabajos prácticos no se recuperan, en caso que el alumno no esté presente el día de la exposición oral del trabajo práctico, la nota individual se considerará Ausente.\n\nSolo se podrá acceder a recuperatorio de un solo parcial. En caso de desaprobar ambos parciales la materia se considerará desaprobada.\n\nAdicionalmente, es requisito de aprobación, contar con un 80% de asistencia a clase.\n\nAprobados los parciales con la condición establecida en los párrafos anteriores, la aprobación final de la cursada deberá contar con un promedio mínimo de 4 (cuatro) o superior entre las propuestas de evaluación detalladas.\n\n¿Cómo se calcula la nota de cursada? Promedio ponderado de las evaluaciones una vez ratificada la aprobación de los dos parciales con mínimo de 4 (cuatro) en instancias regulares o de recuperatorio y la asistencia.",
+    "bibliografiaObligatoria": [
+      "Jaques, E (2000) La organización requerida, Buenos Aires, Granica Kaplan, R y Norton, D (2004) Organization Capital: Supporting the Change Agenda. That Supports Strategy Execution REPORT. Balanced Scorecard. INSIGHT, EXPERIENCE & IDEAS FOR STRATEGY-FOCUSED ORGANIZATIONS, HARVARD BUSINESS, SCHOOL PUBLISHING,Volume 6, Number 1,January–February 2004 -Part One of a Two-Part Series Mintzberg, H (1980) Structure in 5`s: A synthesis of the research on Organization Design, MANAGEMENT SCIENCE Vol. 26. No. 3. March 1980, U.S.A. Nonaka, I (1999) La empresa creadora de conocimiento. Oxford University Press, Mexico. Ulrich, D (2020) Reinventando las organizaciones, Almuzara, España,"
+    ],
+    "bibliografiaComplementaria": [
+      "GARCÍA, C (2005) Innatismo y Biología: Hacia un concepto biológico de lo innato THEORIA. Revista de Teoría, Historia y Fundamentos de la Ciencia, vol. 20, núm. 2, 2005, pp. 167182 Universidad del País Vasco/Euskal Herriko Unibertsitatea Donostia-San Sebastián, España Golombek, D (1999) Cavernas y Palacios, Siglo XXI, Buenos Aires. Jaques, E (2000) La organización requerida, Buenos Aires, Granica"
+    ],
+    "pdf": "/electivas-fichas/94.23.pdf"
   },
   "94.42": {
     "codigo": "94.42",

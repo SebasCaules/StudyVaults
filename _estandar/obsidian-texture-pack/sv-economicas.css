@@ -1,0 +1,18 @@
+/* ============================================================================
+   Variante ECONÓMICAS — Economía   ·   acento ámbar + renglones de libro mayor
+   Activar por nota:  cssclasses: [sv-economicas]
+   ========================================================================== */
+
+.theme-dark  .sv-economicas{ --sv-accent:#e2b955; --sv-accent-2:#f0d284; --sv-on-accent:#1f1706; }
+.theme-light .sv-economicas{ --sv-accent:#9e731a; --sv-accent-2:#b98e2c; --sv-on-accent:#ffffff; }
+
+/* renglones horizontales tipo libro contable (sin margen vertical) */
+.markdown-reading-view .markdown-preview-view.sv-economicas{
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in srgb,var(--sv-accent) 20%,transparent) 31px 32px);
+  background-size:100% 32px;
+}
+
+/* numeral tabular en tablas (columnas de números prolijas) */
+.sv-economicas .markdown-rendered table{ font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+.sv-economicas .markdown-rendered td{ font-variant-numeric:tabular-nums; }

@@ -14,6 +14,10 @@ import { usePlanner } from "@/components/planner/state";
 import { FICHAS } from "@/lib/planner/fichas";
 import { withBase } from "@/lib/content/slug";
 import {
+  ProgramaChips,
+  ComingSoonBadge,
+} from "@/components/planner/ProgramaChips";
+import {
   IconClose,
   IconCheck,
   IconDownload,
@@ -266,6 +270,8 @@ function FichaSection({ ficha }: { ficha: Ficha }) {
           .filter(Boolean)
           .join(" · ")}
       </p>
+
+      <ProgramaChips codigo={ficha.codigo} />
 
       {ch.total != null || totales.length ? (
         <div className="dr-carga">
@@ -531,6 +537,16 @@ export default function DetailDrawer() {
                 )}
               </div>
             </div>
+            {!ficha ? (
+              <div className="dr-sec">
+                <h4>Programa analítico</h4>
+                <ComingSoonBadge />
+                <p className="muted">
+                  Todavía no cargamos el programa analítico de esta materia.
+                  Va a estar disponible próximamente.
+                </p>
+              </div>
+            ) : null}
             <div className="dr-sec">
               <h4>
                 Horario 2C 2026{" "}

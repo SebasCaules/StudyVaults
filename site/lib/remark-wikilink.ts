@@ -2,6 +2,7 @@ import { visit, SKIP } from "unist-util-visit";
 import type { Manifest } from "./content/manifest";
 import type { Note } from "./content/parse";
 import { resolveTarget, resolveRelativeImage } from "./content/resolve-link";
+import { withBase } from "./content/slug";
 import type { VaultId } from "./content/vaults";
 
 export interface BrokenLink {
@@ -103,7 +104,7 @@ export function remarkWikilink() {
             const label = alias?.trim() || resolved.note.title || target;
             out.push({
               type: "link",
-              url: resolved.note.href,
+              url: withBase(resolved.note.href),
               data: {
                 hProperties: { className: [embed ? "wikiembed" : "wikilink"] },
               },

@@ -172,3 +172,33 @@ Recomendado: **`site/public/programas/<cod>.json` + `index.json` (lazy fetch)**,
 - **Campos difusos mal redactados** → `null` + texto crudo visible; nunca inferir un dato que no está.
 - **Static-export safe**: todo acceso a `window`/`localStorage`/`fetch` en la UI detrás de guards (convención del repo).
 - **PDFs = fuente read-only**: viven en `Electivas/programas-pdf/`; los JSON son derivados regenerables.
+
+---
+
+## 8. EJECUTADO (2026-07-02) — el código gana sobre el plan original
+
+Al implementar se descubrió que **la infraestructura ya existía** en el repo, así que se
+reusó en vez de construir el pipeline Python + `public/programas/*.json` propuesto en §3:
+
+- **Descarga**: 442 PDFs bajados (Chrome MCP) + 33 fichas ya en repo = **475/614**. Faltan **139**.
+- **Ingesta**: `Electivas/programas-pdf/<cod>.pdf` (475, read-only, validados `%PDF`). Las **51**
+  que corresponden a materias del planner de Informática se copiaron a `site/public/electivas-fichas/`.
+- **Pipeline reusado**: `site/scripts/build-fichas-data.mjs` (ya existía, `pdftotext`-based) →
+  `site/lib/planner/fichas.ts` (`FICHAS: Record<cod, Ficha>`), ahora **51 fichas** (antes 37).
+  Se re-corre a mano; no va en CI.
+- **Derivación (D1/D3)**: NO se persiste en fichas.ts. Vive en `site/lib/planner/programa.ts`
+  como heurística determinista sobre `evaluacion` (raw + derivado separados → re-derivable sin
+  re-parsear). `FichaDerivado = {tieneParcial, tieneFinal, tieneTP, promocionable, asistenciaObligatoria, asistenciaPct}`.
+  Verificado adversarialmente contra las 51 (bugs corregidos: `final(es)?` y % de asistencia real vs peso de nota).
+- **UI**: componente compartido `ProgramaChips.tsx` (chips régimen/asistencia + `ComingSoonBadge`),
+  usado por `DetailDrawer`, `FichaReader`, `ElectivasView`, `CombinadorView`. CSS `.prog-*` en planner.css.
+- **Feature (D2)**: filtros por características + "sugerir materias" en `CombinadorView` (view `combo`),
+  atados a `state.charFilters` (`CharFilters`) vía `SET_CHAR_FILTERS`; cruzan con `matchesChars` +
+  `generateCombos`/`hasHorario`. (El optimizador multi-cuatri de `PlanView` ya existía aparte.)
+- **Coming soon (139)**: en el planner, "coming soon" = materia sin ficha (`!hasPrograma(cod)`):
+  **88 de las 139** de Informática (29 de los 139 faltantes + 59 que no figuran en la hoja). Se
+  muestran con `ComingSoonBadge`, no se procesan.
+
+D4 quedó: DB liviana bundleada (`fichas.ts`, 51 fichas ≈ 400 KB) en vez de lazy-fetch, porque el
+consumo actual (`FICHAS`) es síncrono y el único consumidor es el planner de Informática. Los 475
+PDFs completos quedan archivados en `Electivas/programas-pdf/` para futura extensión 614-wide.

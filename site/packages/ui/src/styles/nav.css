@@ -131,6 +131,18 @@
 .nav__burger[aria-expanded="true"] .ico-open { display: none; }
 .nav__burger[aria-expanded="true"] .ico-close { display: block; }
 
+/* scrim del drawer mobile — mismo patrón que .rail__scrim (WikiRail):
+   fixed debajo de la navbar, por detrás de .nav__mobile. */
+.nav__scrim {
+  display: none;
+  position: fixed;
+  inset: var(--nav-h) 0 0 0;
+  background: color-mix(in srgb, var(--hex-brown) 55%, transparent);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+}
+
 .nav__mobile {
   position: fixed;
   top: var(--nav-h);
@@ -160,4 +172,5 @@
   .nav__inner .nav__cta,
   .nav__inner .theme-toggle--desktop { display: none !important; }
   .nav__burger { display: inline-flex; }
+  .nav__scrim { display: block; }
 }

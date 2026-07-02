@@ -1,0 +1,39 @@
+/* ============================================================================
+   Variante SISTEMAS — PAW · SDS · Inge2   ·   acento coral + matriz de puntos
+   Identidad terminal: barra + dots en los bloques de código, sintaxis verde.
+   Activar por nota:  cssclasses: [sv-sistemas]
+   ========================================================================== */
+
+.theme-dark  .sv-sistemas{ --sv-accent:#f47c59; --sv-accent-2:#ffa184; --sv-on-accent:#1a0d07; --sv-term:#7fd6a3; }
+.theme-light .sv-sistemas{ --sv-accent:#cf5230; --sv-accent-2:#e0673f; --sv-on-accent:#ffffff; --sv-term:#2e8f5f; }
+
+/* fondo sobrio: glow tenue + matriz de puntos apenas perceptible (sin rayas) */
+.markdown-reading-view .markdown-preview-view.sv-sistemas{
+  background-image:
+    radial-gradient(70% 50% at 100% 0%, color-mix(in srgb,var(--sv-accent) 6%,transparent), transparent 60%),
+    radial-gradient(color-mix(in srgb,var(--sv-accent) 14%,transparent) 1px, transparent 1.4px);
+  background-size:auto,26px 26px;
+  background-attachment:fixed,scroll;
+}
+
+/* code block → ventana de terminal (barra + 3 dots) */
+.sv-sistemas .markdown-rendered pre{ position:relative; padding-top:2.6em; }
+.sv-sistemas .markdown-rendered pre::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:2em;
+  background:
+    radial-gradient(circle at 16px 50%, var(--sv-accent) 4px, transparent 4.5px),
+    radial-gradient(circle at 33px 50%, var(--sv-term) 4px, transparent 4.5px),
+    radial-gradient(circle at 50px 50%, color-mix(in srgb,var(--text-muted) 55%,transparent) 4px, transparent 4.5px),
+    color-mix(in srgb,var(--sv-accent) 8%, var(--background-secondary));
+  border-bottom:1px solid color-mix(in srgb,var(--text-normal) 12%,transparent);
+  border-radius:10px 10px 0 0;
+}
+
+/* recoloreo de la sintaxis Prism al tono terminal */
+.sv-sistemas .token.comment,.sv-sistemas .token.prolog{ color:color-mix(in srgb,var(--sv-term) 75%,var(--text-muted)); font-style:italic; }
+.sv-sistemas .token.string,.sv-sistemas .token.char{ color:var(--sv-term); }
+.sv-sistemas .token.keyword,.sv-sistemas .token.operator,.sv-sistemas .token.annotation{ color:var(--sv-accent); }
+.sv-sistemas .token.function{ color:var(--sv-accent-2); }
+
+/* tono mono-forward: lead en mono, tags cuadrados */
+.sv-sistemas .markdown-rendered .tag{ border-radius:4px; }

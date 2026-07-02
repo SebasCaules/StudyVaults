@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { usePlanner } from "@/components/planner/state";
 import {
   byId,
@@ -26,16 +27,14 @@ import { buildPlanHTML } from "@/lib/planner/exportPlan";
 import { serializePreferences, parsePreferences } from "@/lib/planner/persist";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import MinorsModal from "@/components/planner/MinorsModal";
+import IOModal from "@/components/planner/IOModal";
 import {
   IconClose,
   IconPlus,
   IconGraduationCap,
   IconCalendar,
   IconRoute,
-  IconFileText,
-  IconPrinter,
   IconDownload,
-  IconUpload,
   IconGrip,
   IconSliders,
 } from "@/components/planner/icons";
@@ -584,12 +583,14 @@ function Recommendations({
   recs,
   onPreview,
   preview,
+  onHide,
 }: {
   start: PlanStart;
   elecTotal: number;
   recs: Recommendation[];
   onPreview: (code: string | null) => void;
   preview: string | null;
+  onHide?: () => void;
 }) {
   const { dispatch } = usePlanner();
 
@@ -656,7 +657,7 @@ function Recommendations({
             onPreview(null);
           }}
         >
-          <IconPlus size={13} /> Agregar al plan
+          <IconPlus size={13} /> Agregar
         </button>
         <button
           type="button"
@@ -704,7 +705,34 @@ function Recommendations({
   return (
     <div className="plan2-recs">
       <div className="plan2-recs__h">
-        <span className="plan2-recs__title">Recomendaciones de electivas</span>
+        <div className="plan2-recs__hrow">
+          <span className="plan2-recs__title">Recomendaciones de electivas</span>
+          {onHide && (
+            <button
+              type="button"
+              className="plan2-recs__collapse"
+              aria-label="Ocultar recomendaciones de electivas"
+              title="Ocultar electivas"
+              onClick={onHide}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.5 6.5 15 12l-5.5 5.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
         <span className="plan2-recs__sub">
           {faltan > 0
             ? `Te faltan ${faltan} créditos electivos. Pasá el cursor sobre una para ver dónde entraría.`
@@ -1079,7 +1107,7 @@ export default function PlanView() {
   /* ---- export/import de PREFERENCIAS (distinto del export del documento del
    * plan de arriba): un .json portable con todo el estado persistible, para
    * llevarlo a otro navegador o guardarlo como plantilla. ---- */
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [ioOpen, setIoOpen] = useState(false);
   const [prefsError, setPrefsError] = useState<string | null>(null);
   const prefsErrTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -1244,37 +1272,6 @@ export default function PlanView() {
           </button>
         </div>
 
-        <div className="plan2-fieldset">
-          <span className="plan2-fieldset__lbl">
-            <IconSliders size={13} className="plan2-fieldset__ic" />
-            Método
-          </span>
-          <div
-            className="plan2-methodseg"
-            role="radiogroup"
-            aria-label="Método de optimización del plan"
-          >
-            {OPT_METHODS.map((m: OptMethodMeta) => (
-              <button
-                key={m.key}
-                type="button"
-                role="radio"
-                aria-checked={PL.method === m.key}
-                title={m.objetivo}
-                className={
-                  "plan2-methodseg__btn" +
-                  (PL.method === m.key ? " is-on" : "")
-                }
-                onClick={() =>
-                  dispatch({ type: "SET_PLAN_METHOD", value: m.key })
-                }
-              >
-                {m.short}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="plan2-controls__grow" />
 
         <div className="plan2-controls__actions">
@@ -1285,71 +1282,48 @@ export default function PlanView() {
           >
             Restablecer
           </button>
-
-          <div className="plan2-actgrp" role="group" aria-label="Exportar el plan">
-            <span className="plan2-actgrp__lbl">Plan</span>
-            <button
-              type="button"
-              className="btn btn--ghost btn--sm"
-              onClick={() => exportPlan("html")}
-            >
-              <IconFileText size={13} /> HTML
-            </button>
-            <button
-              type="button"
-              className="btn btn--go btn--sm"
-              onClick={() => exportPlan("pdf")}
-            >
-              <IconPrinter size={13} /> Descargar PDF
-            </button>
-          </div>
-
-          <div className="plan2-actgrp" role="group" aria-label="Preferencias del planner">
-            <span className="plan2-actgrp__lbl">Preferencias</span>
-            <button
-              type="button"
-              className="btn btn--ghost btn--sm"
-              onClick={exportPrefs}
-            >
-              <IconDownload size={13} /> Exportar
-            </button>
-            <button
-              type="button"
-              className="btn btn--ghost btn--sm"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <IconUpload size={13} /> Importar
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="application/json,.json"
-              hidden
-              onChange={importPrefsFromFile}
-            />
-          </div>
-
-          {prefsError && (
-            <span className="plan2-prefs-err" role="alert">
-              {prefsError}
-            </span>
-          )}
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={() => setIoOpen(true)}
+          >
+            <IconDownload size={13} /> Exportar / importar
+          </button>
         </div>
       </div>
 
-      {previewInfo && previewInfo.m && (
-        <div className="plan2-preview-banner">
-          <span className="plan2-preview-banner__dot" aria-hidden="true" />
-          <span>
-            Vista previa: <b>{previewInfo.m.abbr}</b>{" "}
-            {previewInfo.idx >= 0 ? (
-              <>
-                entraría en <b>{cuatriName(cuatriAt(PL.start, previewInfo.idx))}</b>
-              </>
-            ) : (
-              "no se pudo ubicar en el plan"
-            )}
+      {/* Slot de vista previa: espacio RESERVADO y persistente. Antes el
+          banner se montaba/desmontaba en el flujo por cada hover y empujaba
+          el board ~51px (salto errático). Ahora la altura es fija y solo
+          cambia el contenido: idle = hint tenue, hover = pill brass. */}
+      {used.length > 0 && recs.length > 0 && !recsHidden && (
+        <div
+          className={
+            "plan2-preview-slot" +
+            (previewInfo && previewInfo.m ? " is-on" : "")
+          }
+          aria-live="polite"
+        >
+          <span className="plan2-preview-slot__hint">
+            Pasá el cursor sobre una electiva recomendada para previsualizar
+            dónde entraría en tu plan.
           </span>
+          {previewInfo && previewInfo.m && (
+            <span className="plan2-preview-slot__msg">
+              <span className="plan2-preview-banner__dot" aria-hidden="true" />
+              <span>
+                Vista previa: <b>{previewInfo.m.abbr}</b>{" "}
+                {previewInfo.idx >= 0 ? (
+                  <>
+                    entraría en{" "}
+                    <b>{cuatriName(cuatriAt(PL.start, previewInfo.idx))}</b>
+                  </>
+                ) : (
+                  "no se pudo ubicar en el plan"
+                )}
+              </span>
+            </span>
+          )}
         </div>
       )}
 
@@ -1410,16 +1384,6 @@ export default function PlanView() {
                 </span>
                 Minors por cuatrimestre
               </button>
-              {recs.length > 0 && (
-                <button
-                  type="button"
-                  className="plan2-recs-toggle"
-                  aria-pressed={recsHidden}
-                  onClick={() => setRecsHidden((v) => !v)}
-                >
-                  {recsHidden ? "Mostrar electivas" : "Ocultar electivas"}
-                </button>
-              )}
             </div>
 
             <div className="plan2-board">
@@ -1465,6 +1429,7 @@ export default function PlanView() {
                 recs={recs}
                 onPreview={setPreview}
                 preview={preview}
+                onHide={() => setRecsHidden(true)}
               />
             </aside>
           )}
@@ -1481,7 +1446,76 @@ export default function PlanView() {
         </div>
       )}
 
-      <p className="plan2-method">{methodText(R, PL)}</p>
+      {/* La pestaña de reabrir se monta vía portal en `.planner` (no en esta
+          sección): `.view-panel` arrastra un transform identidad del
+          animation-fill-mode, que crea un containing block y haría que un
+          position:fixed se anclara a la sección (y scrollee) en vez de al
+          viewport. Portalear a `.planner` la deja fixed real —igual que
+          `.side__reveal`— y conserva las variables/estilos del planner. */}
+      {used.length > 0 &&
+        recsHidden &&
+        recs.length > 0 &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <button
+            type="button"
+            className="plan2-recs-reveal"
+            aria-label="Mostrar recomendaciones de electivas"
+            title="Mostrar electivas"
+            onClick={() => setRecsHidden(false)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              aria-hidden="true"
+            >
+              <path
+                d="M14.5 6.5 9 12l5.5 5.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>,
+          document.querySelector(".planner") ?? document.body,
+        )}
+
+      <div className="plan2-optnote">
+        <div className="plan2-optnote__pick">
+          <span className="plan2-optnote__lbl">
+            <IconSliders size={13} className="plan2-fieldset__ic" />
+            Método de optimización
+          </span>
+          <div
+            className="plan2-methodseg"
+            role="radiogroup"
+            aria-label="Método de optimización del plan"
+          >
+            {OPT_METHODS.map((m: OptMethodMeta) => (
+              <button
+                key={m.key}
+                type="button"
+                role="radio"
+                aria-checked={PL.method === m.key}
+                title={m.objetivo}
+                className={
+                  "plan2-methodseg__btn" +
+                  (PL.method === m.key ? " is-on" : "")
+                }
+                onClick={() =>
+                  dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                }
+              >
+                {m.short}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="plan2-method">{methodText(R, PL)}</p>
+      </div>
 
       {warns.length > 0 && (
         <div className="plan2-warns">
@@ -1512,6 +1546,17 @@ export default function PlanView() {
           start={PL.start}
           approved={approved}
           onClose={() => setMinorsOpen(false)}
+        />
+      )}
+
+      {ioOpen && (
+        <IOModal
+          onClose={() => setIoOpen(false)}
+          onExportHTML={() => exportPlan("html")}
+          onExportPDF={() => exportPlan("pdf")}
+          onExportPrefs={exportPrefs}
+          onImportFile={importPrefsFromFile}
+          prefsError={prefsError}
         />
       )}
     </section>

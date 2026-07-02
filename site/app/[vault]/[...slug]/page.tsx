@@ -82,14 +82,14 @@ export default async function NotePage({
     >
       <div data-pagefind-body data-pagefind-filter={`materia:${cfg.short}`}>
         <header className="wiki__head">
-          <Eyebrow>
+          <Eyebrow data-pagefind-ignore>
             {cfg.code} // {sectionLabel}
           </Eyebrow>
           <h1 className="wiki__title" data-pagefind-meta="title">
             {note.title}
           </h1>
           {(note.updated || note.tags.length > 0) && (
-            <div className="wiki__meta">
+            <div className="wiki__meta" data-pagefind-ignore>
               {note.updated && (
                 <span className="wiki__updated">act. {note.updated}</span>
               )}
