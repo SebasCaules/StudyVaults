@@ -9,7 +9,7 @@
 /* renglones horizontales tipo libro contable (sin margen vertical) */
 .markdown-reading-view .markdown-preview-view.sv-economicas{
   background-image:
-    repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in srgb,var(--sv-accent) 20%,transparent) 31px 32px);
+    repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in srgb,var(--sv-accent) 13%,transparent) 31px 32px);
   background-size:100% 32px;
 }
 

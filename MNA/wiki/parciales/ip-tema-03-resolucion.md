@@ -220,3 +220,9 @@ Q = np.column_stack([v1,v2,v3]); R = Q.T @ A
 assert np.allclose(Q @ R, A) and np.allclose(Q.T @ Q, np.eye(3))
 print("Todas las verificaciones OK")
 ```
+
+## Ver también
+
+- [[ip-tema-03]] — enunciado de este parcial.
+- [[../guias/guia-04-transformaciones-lineales]] · [[../guias/guia-05-diagonalizacion]] — transformaciones, núcleo/imagen y diagonalización.
+- [[../guias/guia-06-qr-lu]] — factorizaciones PLU y QR.

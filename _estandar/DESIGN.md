@@ -141,6 +141,8 @@ Reglas:
 
 Obsidian soporta `> [!note]`, `> [!tip]`, `> [!warning]`. **No forman parte del estándar** (cero ocurrencias en los vaults). Solo se permiten si un vault adopta explícitamente la convención en su `CLAUDE.md`; en ese caso se documenta ahí y se usa de forma consistente. Por defecto: **blockquote con etiqueta en negrita**.
 
+El sitio web **sí los renderiza** cuando aparecen: `> [!tipo] Título` mapea al **mismo** sistema visual de cajas etiquetadas `blockquote[data-env]` que `> **Label.**` (`note/info→note`, `tip/hint→intu`, `warning/danger/error→warn`, `important/definition→def`, `theorem→thm`, `proof→proof`, `example→ex`; desconocido→`note`). Es decir: adoptar `[!tipo]` en un vault renderiza consistente con el resto — pero el estilo **canónico y por defecto sigue siendo `> **Label.**`** (ver §12.4).
+
 ---
 
 ## 5. Wikilinks (enlaces internos)
@@ -351,7 +353,9 @@ Lenguaje común: mismo radio (8px en cards/controls, full en pills), borde `--bo
 - **Buttons.** `--radius-control` 8px. **Primario (CTA):** fondo `--accent` coral, texto `surface`/blanco. **Secundario:** outline 1px `--border` sobre `surface`, texto blanco. Hover: lift `translateY(-4px)` + sombra; transición suave. Mismo radio/borde que cards y badges.
 - **Badges / Pills.** `--radius-pill` (full). Mono 12px/600. Variante outline (`--border`) o acento (azul `--primary` / coral). Para eyebrows y metadata técnica.
 - **Nav.** Navbar en `surface`, sticky; ítems en mono o body chico; pills full-radius para el estado activo; acento azul `--primary` en hover/focus.
-- **Code.** Bloques sobre `surface` (o un tono apenas distinto), borde `--border`, `--radius-control` 8px, JetBrains Mono. Inline code en mono con leve fondo.
+- **Code.** Bloques de código con **chrome de terminal**: barra superior con tres dots (semáforo mac: `#ff5f56`/`#ffbd2e`/`#27c93f`), **pill de lenguaje** (mono, se omite si el fence no declara lenguaje) y **botón copy** a la derecha; cuerpo en fondo oscuro **fijo** (`--code-bg`, igual en light y dark — es un terminal), JetBrains Mono, syntax highlighting Shiki. En la wiki lo aplica `rehypeCodeChrome` (post rehype-pretty-code) + la isla cliente `CodeCopy` (un listener delegado que reconstruye el código crudo uniendo los `span[data-line]` con `\n`, no `textContent` pelado). Como componente reusable: `CodeBlockChrome` en `@studyvaults/ui`. Inline code en mono con leve fondo.
+- **Callouts / entornos.** Definiciones, teoremas, notas y avisos se pintan como cajas etiquetadas `blockquote[data-env]` (`def`/`thm`/`proof`/`ex`/`note`/`intu`/`warn`): barra de color por tipo + label run-in en negrita. La wiki las genera desde el estilo canónico `> **Label.**` **o** desde `> [!tipo]` estilo Obsidian — **ambas rutas mapean al mismo sistema visual** (ver §4.2). Como componente reusable: `Callout` en `@studyvaults/ui`.
+- **Headings / figuras.** `h2` con **rombo de acento** (`◆` coral) antes del título, sobre el `border-bottom` de sección. Imágenes envueltas en `<figure>` con `<figcaption>` opcional.
 - **Table.** Cabecera en mono/atenuada (`--text-secondary`), filas separadas por borde `--border` de 1px (sin zebra pesado), texto body blanco.
 - **Forms.** Inputs `surface`, borde 1px `--border`, `--radius-control` 8px, texto blanco, placeholder `--text-secondary`. **Focus:** anillo/borde azul `--primary` (`#92CFF2`).
 

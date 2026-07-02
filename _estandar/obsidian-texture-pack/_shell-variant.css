@@ -1,0 +1,6 @@
+/* Solo para el harness app-shell.html: carga las 4 variantes para poder ciclarlas.
+   En un vault real esto lo hacen los snippets sv-*.css / sv-vault.css. */
+@import "./sv-exactas.css";
+@import "./sv-sistemas.css";
+@import "./sv-economicas.css";
+@import "./sv-derecho.css";

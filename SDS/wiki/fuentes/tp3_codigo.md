@@ -79,6 +79,7 @@ python3 postprocess/plotter.py --all
 - [[tps/TP3]]
 - [[tps/TP4]] (mismo sistema físico, otro motor)
 - [[herramientas/java]]
+- [[herramientas/matplotlib]]
 - [[conceptos/edmd]]
 - [[conceptos/lazy_invalidation]]
 - [[metodos/tiempos_colision_edmd]]

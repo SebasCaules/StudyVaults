@@ -140,3 +140,7 @@ public class MiTag extends SimpleTagSupport {
 - Simplifica operaciones comunes.
 - Compatible con JSP EL.
 - JSPs más legibles y mantenibles.
+
+## Ver también
+
+- [[JSP Views]] — cómo se aplican JSTL Core, EL y los custom tags en las vistas del proyecto.

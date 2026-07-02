@@ -482,3 +482,12 @@ $$L = \frac{P - CMg}{P} = \frac{1}{|\eta|} \quad \Rightarrow \quad \begin{cases}
 6. **Los costos hundidos no entran en decisiones racionales**. Lo gastado se gastó. Sólo importa qué pasa hacia adelante.
 
 > **Si tuvieras que llevarte un solo principio**: identificar el **costo de oportunidad correcto** y compararlo con el **beneficio marginal correcto**. Todo lo demás son aplicaciones.
+
+## Ver también
+
+Unidades cubiertas por esta hoja (Parcial 1):
+
+- [[unidades/unidad-01-introduccion-oferta-demanda-elasticidades]] — oferta, demanda y elasticidades.
+- [[unidades/unidad-02-produccion-y-costos]] — producción y costos.
+- [[unidades/unidad-03-mercados-competencia-perfecta]] — competencia perfecta.
+- [[unidades/unidad-04-mercados-imperfectos]] — monopolio, oligopolio y competencia monopolística.

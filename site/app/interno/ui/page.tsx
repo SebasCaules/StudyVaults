@@ -41,6 +41,8 @@ import {
   DataTable,
   CopyButton,
   CodeBlock,
+  CodeBlockChrome,
+  Callout,
 } from "@studyvaults/ui";
 import { Demo, Specimen } from "./parts";
 
@@ -59,6 +61,7 @@ const TOC: { id: string; label: string }[] = [
   { id: "surfaces", label: "Surfaces" },
   { id: "forms", label: "Forms" },
   { id: "data", label: "Data" },
+  { id: "callouts", label: "Callouts" },
   { id: "overlays", label: "Overlays" },
   { id: "nav", label: "Navigation" },
   { id: "motion", label: "Motion" },
@@ -415,6 +418,56 @@ export default function DesignSystemPage() {
               <CopyButton text={SNIPPET} />
             </Row>
             <CodeBlock>{SNIPPET}</CodeBlock>
+          </div>
+        </Demo>
+
+        {/* ── CALLOUTS & CODE CHROME ── */}
+        <Demo
+          id="callouts"
+          eyebrow="prosa"
+          title="Callout · CodeBlockChrome"
+          description="Entornos tipo apunte LaTeX (definición, teorema, ejemplo…) y el bloque de código con chrome de terminal + copy acoplado. Mismas clases que ya pinta la prosa de la wiki (data-env / .wiki-code*); acá van dentro de un .prose-sv para heredar ese estilo exacto."
+        >
+          <div className="prose-sv">
+            <Stack gap={28}>
+              <Specimen label="Callout — env: def · thm · ex · intu · note · warn" grow>
+                <Stack gap={14} style={{ width: "100%" }}>
+                  <Callout env="def" title="Definición.">
+                    Un grafo es <Mono>conexo</Mono> si existe un camino entre todo
+                    par de vértices.
+                  </Callout>
+                  <Callout env="thm" title="Teorema.">
+                    Toda matriz simétrica definida positiva admite factorización
+                    de Cholesky <Mono>A = LLᵀ</Mono>.
+                  </Callout>
+                  <Callout env="ex" title="Ejemplo.">
+                    Con <Mono>n = 3</Mono> incógnitas, la eliminación gaussiana
+                    hace <Mono>O(n³)</Mono> operaciones.
+                  </Callout>
+                  <Callout env="intu" title="Intuición.">
+                    Pensalo como ir &ldquo;empujando&rdquo; ceros debajo de la
+                    diagonal, columna por columna.
+                  </Callout>
+                  <Callout env="note" title="Nota.">
+                    Reusa el mismo <Mono>data-env</Mono> que ya pinta la prosa de
+                    las páginas de wiki.
+                  </Callout>
+                  <Callout env="warn" title="Atención.">
+                    Sin pivoteo, el método puede volverse numéricamente
+                    inestable.
+                  </Callout>
+                </Stack>
+              </Specimen>
+              <Specimen label="CodeBlockChrome (terminal + copy)" grow>
+                <CodeBlockChrome lang="java" style={{ width: "100%" }}>
+                  {`public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hola, StudyVaults");
+  }
+}`}
+                </CodeBlockChrome>
+              </Specimen>
+            </Stack>
           </div>
         </Demo>
 

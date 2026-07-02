@@ -189,3 +189,9 @@ $$\boxed{P = I_3 = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmat
 Como $P = I$, se trata de una factorización $LU$ directa: $A A^T = LU$.
 
 **Verificación.** sympy/numpy: $L U = A A^T$ exactamente; `scipy.linalg.lu(AA^T)` (pivoteo parcial) devuelve la **misma** $P = I$, $L$ y $U$ ✔, confirmando que no era necesario permutar.
+
+## Ver también
+
+- [[final-tema-14]] — enunciado de este examen.
+- [[../guias/guia-04-transformaciones-lineales]] · [[../guias/guia-05-diagonalizacion]] — transformaciones, cambio de base y diagonalización.
+- [[../guias/guia-06-qr-lu]] · [[../guias/guia-07-svd-mmcc]] — factorizaciones PLU/QR y SVD.

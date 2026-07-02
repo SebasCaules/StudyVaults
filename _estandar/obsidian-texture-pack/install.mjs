@@ -32,6 +32,8 @@ const BASE = "sv-base.css";
 const VARIANTS = ["sv-exactas.css","sv-sistemas.css","sv-economicas.css","sv-derecho.css"];
 const ALL_SNIPPETS = [BASE, ...VARIANTS, "sv-vault.css"];        // para cleanup/uninstall
 const nameOf = (f) => f.replace(/\.css$/,"");
+const THEME_NAME = "StudyVaults";
+const THEME_FILES = ["manifest.json","theme.css"];
 
 /* carpeta de materia (vault multi) -> disciplina */
 const DISCIPLINE = {
@@ -149,9 +151,12 @@ function installVault(vaultDir, { forceVariant, theme, keepTheme, doStamp, onlyD
   if (uninstall) {
     for (const f of ALL_SNIPPETS) { const p = path.join(snipDir, f); if (fs.existsSync(p)) fs.rmSync(p); }
     for (const f of ALL_SNIPPETS) enabled.delete(nameOf(f));
+    const tdir = path.join(obsidian, "themes", THEME_NAME);
+    if (fs.existsSync(tdir)) fs.rmSync(tdir, { recursive:true, force:true });
+    if (app.cssTheme === THEME_NAME) app.cssTheme = "";
     app.enabledCssSnippets = [...enabled];
     fs.writeFileSync(appJson, JSON.stringify(app, null, 2));
-    log(`desinstalado · ${label}`);
+    log(`desinstalado (theme + snippets) · ${label}`);
     return;
   }
 
@@ -164,9 +169,11 @@ function installVault(vaultDir, { forceVariant, theme, keepTheme, doStamp, onlyD
   else if (isMulti(vaultDir)) { mode = "multi"; }
   else { variant = inferVariant(vaultDir); mode = variant ? "mono" : "base"; }
 
-  // copiar base siempre
-  fs.copyFileSync(path.join(HERE, BASE), path.join(snipDir, BASE));
-  enabled.add(nameOf(BASE));
+  // instalar el THEME (chrome completo + contenido base de la nota)
+  const tdir = path.join(obsidian, "themes", THEME_NAME);
+  fs.mkdirSync(tdir, { recursive:true });
+  for (const f of THEME_FILES) fs.copyFileSync(path.join(HERE, "theme", f), path.join(tdir, f));
+  if (!keepTheme) app.cssTheme = THEME_NAME;
 
   if (mode === "multi") {
     for (const f of VARIANTS) { fs.copyFileSync(path.join(HERE, f), path.join(snipDir, f)); enabled.add(nameOf(f)); }
@@ -175,12 +182,9 @@ function installVault(vaultDir, { forceVariant, theme, keepTheme, doStamp, onlyD
     enabled.add("sv-vault");
   }
 
-  if (theme === "default") app.cssTheme = "";
   app.enabledCssSnippets = [...enabled];
   fs.writeFileSync(appJson, JSON.stringify(app, null, 2));
-
-  const themeInfo = theme === "default" ? " · tema→default" : (app.cssTheme ? ` · tema:${app.cssTheme}` : "");
-  log(`${label}  →  ${mode}${variant ? " ("+variant+")" : ""}${themeInfo}`);
+  log(`${label}  →  theme:${app.cssTheme||"(sin cambiar)"} · ${mode}${variant ? " ("+variant+")" : ""}`);
 
   if (doStamp && mode === "multi") {
     let n = 0;

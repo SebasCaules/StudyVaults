@@ -46,6 +46,12 @@
   --dur-slow: 680ms;
 
   --nav-h: 68px;
+
+  /* ---- terminal del code block (fijo: mismos valores en dark y light) ---- */
+  --code-bg: #1b1f24;
+  --code-bar: #22272e;
+  --code-fg: #adbac7;
+  --code-hairline: color-mix(in srgb, #ffffff 9%, transparent);
 }
 
 /* ============================================================

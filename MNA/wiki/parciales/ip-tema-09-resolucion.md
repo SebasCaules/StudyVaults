@@ -150,3 +150,10 @@ $$Q = (v_1 \mid v_2) \approx \begin{pmatrix} 0.4867 & 0.2104 \\ 0.8111 & -0.4693
 **Verificación** (numpy): $QR = A$ con error máximo $\sim 10^{-16}$, y $Q^TQ = I_2$. ✓
 
 $$QR = \begin{pmatrix} 3 & 1 \\ 5 & -1 \\ -2 & -3 \end{pmatrix} = A. \checkmark$$
+
+## Ver también
+
+- [[../guias/guia-04-transformaciones-lineales]] — núcleo e imagen de $T$ (Ejercicio 1).
+- [[../guias/guia-05-diagonalizacion]] — autovalores y diagonalización (Ejercicio 2).
+- [[../guias/guia-06-qr-lu]] — factorización QR por Gram–Schmidt (Ejercicio 3).
+- [[../resueltos/resueltos-diagonalizacion]] · [[../resueltos/resueltos-svd]] — más ejercicios resueltos de estos temas.

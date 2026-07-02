@@ -212,3 +212,9 @@ public class TestConfig {
 
 - `JdbcTestUtils.deleteFromTables()` → limpia sin depender de queries propias
 - `JdbcTestUtils.countRowsInTable()` → verifica filas sin depender del DAO
+
+## Ver también
+
+- [[Persistence (Spring JDBC)]] — `JdbcTemplate`, `SimpleJdbcInsert` y `RowMapper` en el proyecto.
+- [[Testing Practices]] — tests de servicios con Mockito y de DAOs con HSQLDB en memoria.
+- [[Dependency Injection]] — el `DataSource` como `@Bean` inyectado en los DAOs.

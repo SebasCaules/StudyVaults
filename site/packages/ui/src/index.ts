@@ -32,6 +32,7 @@ export * from "./layout/Panel";
 export * from "./layout/SubPanel";
 export * from "./layout/PanelHeader";
 export * from "./layout/Note";
+export * from "./layout/Callout";
 
 // --- navegación & chrome ---
 export * from "./navigation/BrandMark";
@@ -64,3 +65,4 @@ export * from "./data/Readout";
 export * from "./data/DataTable";
 export * from "./data/CopyButton";
 export * from "./data/CodeBlock";
+export * from "./data/CodeCopy";

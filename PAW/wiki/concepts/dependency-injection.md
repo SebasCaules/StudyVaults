@@ -84,3 +84,11 @@ public class ProductJdbcDao implements ProductDao {
     }
 }
 ```
+
+---
+
+## Ver también
+
+- [[Spring Configuration]] — dónde se declaran los beans y el `@ComponentScan` que los detecta.
+- [[Maven Module Structure]] — el scope `runtime` del módulo `services` que hace fallar `new ServiceImpl()`.
+- [[Persistence (Spring JDBC)]] — inyección de `DataSource` por constructor en los DAOs.

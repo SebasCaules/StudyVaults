@@ -7,12 +7,12 @@
 .theme-dark  .sv-sistemas{ --sv-accent:#f47c59; --sv-accent-2:#ffa184; --sv-on-accent:#1a0d07; --sv-term:#7fd6a3; }
 .theme-light .sv-sistemas{ --sv-accent:#cf5230; --sv-accent-2:#e0673f; --sv-on-accent:#ffffff; --sv-term:#2e8f5f; }
 
-/* fondo sobrio: glow tenue + matriz de puntos apenas perceptible (sin rayas) */
+/* glow tenue + matriz de puntos presente pero sin rayas (punto medio) */
 .markdown-reading-view .markdown-preview-view.sv-sistemas{
   background-image:
     radial-gradient(70% 50% at 100% 0%, color-mix(in srgb,var(--sv-accent) 6%,transparent), transparent 60%),
-    radial-gradient(color-mix(in srgb,var(--sv-accent) 14%,transparent) 1px, transparent 1.4px);
-  background-size:auto,26px 26px;
+    radial-gradient(color-mix(in srgb,var(--sv-accent) 18%,transparent) 1px, transparent 1.5px);
+  background-size:auto,22px 22px;
   background-attachment:fixed,scroll;
 }
 

@@ -171,3 +171,9 @@ $$\lim_{\omega\to0}\operatorname{Re}\hat f(\omega) = \frac16,\qquad \lim_{\omega
 como debe ser. (El polinomio en el numerador anula sus términos hasta orden $\omega^3$, dejando un cociente finito.)
 
 **Verificación.** La integración simbólica (sympy) da exactamente esta $\operatorname{Re}/\operatorname{Im}$, y la integración numérica (`scipy.quad`) coincide en varios valores: $\hat f(1) \approx 0.14264 - 0.07792\,i$, $\hat f(2) \approx 0.08136 - 0.12671\,i$, $\hat f(\pi) \approx -0.12901\,i$, y $\hat f(0) = 0.16667 = \tfrac16$ ✓.
+
+## Ver también
+
+- [[final-tema-03]] — enunciado de este examen.
+- [[../guias/guia-04-transformaciones-lineales]] · [[../guias/guia-05-diagonalizacion]] — transformaciones, cambio de base y diagonalización.
+- [[../guias/guia-08-fourier-series]] · [[../guias/guia-09-tf]] — series y transformada de Fourier.

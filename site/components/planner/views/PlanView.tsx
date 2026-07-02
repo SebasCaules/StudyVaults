@@ -24,10 +24,15 @@ import {
 } from "@/lib/planner/optimize";
 import { recommendElectives, type Recommendation } from "@/lib/planner/recommend";
 import { buildPlanHTML } from "@/lib/planner/exportPlan";
+import {
+  openForPrint,
+  downloadHTMLFile,
+  downloadTextFile,
+} from "@/lib/planner/download";
 import { serializePreferences, parsePreferences } from "@/lib/planner/persist";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import MinorsModal from "@/components/planner/MinorsModal";
-import IOModal from "@/components/planner/IOModal";
+import IOModal, { type IOCuatri } from "@/components/planner/IOModal";
 import {
   IconClose,
   IconPlus,
@@ -61,35 +66,6 @@ function nowStr(): string {
   } catch {
     return "";
   }
-}
-
-/** Descarga texto plano como archivo. Genérico: lo usan tanto el export del
- *  documento HTML del plan como el export de preferencias (.json). */
-function downloadTextFile(text: string, filename: string, mime: string) {
-  if (typeof document === "undefined") return;
-  const blob = new Blob([text], { type: `${mime};charset=utf-8` });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
-}
-
-function downloadHTMLFile(html: string, filename: string) {
-  downloadTextFile(html, filename, "text/html");
-}
-
-function openForPrint(html: string) {
-  const w = window.open("", "_blank");
-  if (!w) {
-    // pop-up bloqueado → caemos a descarga de HTML
-    downloadHTMLFile(html, "plan-de-cursada.html");
-    return;
-  }
-  w.document.open();
-  w.document.write(html);
-  w.document.close();
 }
 
 /* ---------- input numérico robusto (arregla el "Máx. …") ---------- */
@@ -1088,7 +1064,7 @@ export default function PlanView() {
     ),
   );
 
-  const exportPlan = (format: "pdf" | "html") => {
+  const exportPlan = (format: "pdf" | "html", cuatris?: number[]) => {
     if (typeof window === "undefined") return;
     const html = buildPlanHTML({
       result: baseR,
@@ -1099,10 +1075,25 @@ export default function PlanView() {
       approvedCreditsNow: accNow,
       generado: nowStr(),
       autoPrint: format === "pdf",
+      cuatris,
     });
     if (format === "html") downloadHTMLFile(html, "plan-de-cursada.html");
     else openForPrint(html);
   };
+
+  // Cuatrimestres disponibles para elegir en el modal de exportar.
+  const ioCuatris = useMemo<IOCuatri[]>(
+    () =>
+      baseR.items
+        .map((it, i) => ({ it, i }))
+        .filter((x) => x.it.length)
+        .map((x) => ({
+          idx: x.i,
+          tag: cuatriLabel(cuatriAt(PL.start, x.i)),
+          materias: x.it.length,
+        })),
+    [baseR, PL.start],
+  );
 
   /* ---- export/import de PREFERENCIAS (distinto del export del documento del
    * plan de arriba): un .json portable con todo el estado persistible, para
@@ -1552,8 +1543,9 @@ export default function PlanView() {
       {ioOpen && (
         <IOModal
           onClose={() => setIoOpen(false)}
-          onExportHTML={() => exportPlan("html")}
-          onExportPDF={() => exportPlan("pdf")}
+          cuatris={ioCuatris}
+          onExportHTML={(sel) => exportPlan("html", sel)}
+          onExportPDF={(sel) => exportPlan("pdf", sel)}
           onExportPrefs={exportPrefs}
           onImportFile={importPrefsFromFile}
           prefsError={prefsError}

@@ -127,6 +127,8 @@ function rehypeEnv() {
   return (tree: AnyNode) => {
     visit(tree, "element", (node: AnyNode) => {
       if (node.tagName !== "blockquote") return;
+      // Ya clasificado por remarkCallout (`> [!tipo]`): no re-procesar.
+      if (node.properties?.["data-env"]) return;
       const label = leadingStrongText(node);
       let env = label ? ENV_MAP[normLabel(label)] : undefined;
       // El ⚠️ inicial marca advertencia aunque la etiqueta no matchee.
@@ -141,6 +143,188 @@ function rehypeEnv() {
       cls.push("env", `env--${env}`);
       props.className = cls;
       props["data-env"] = env;
+    });
+  };
+}
+
+/* ----------------------------------------------------------------------------
+ * Callouts estilo Obsidian: `> [!tipo] Título?` → blockquote[data-env] reusando
+ * EXACTAMENTE el mismo sistema visual que los entornos `> **Label.**`. Corre a
+ * nivel mdast (antes de remark-rehype): setea `data-env` vía hProperties + antepone
+ * un <strong> con el label. rehypeEnv saltea los que ya traen data-env.
+ * -------------------------------------------------------------------------- */
+const CALLOUT_MAP: Record<string, string> = {
+  note: "note",
+  info: "note",
+  todo: "note",
+  abstract: "note",
+  summary: "note",
+  quote: "note",
+  cite: "note",
+  question: "note",
+  faq: "note",
+  help: "note",
+  tip: "intu",
+  hint: "intu",
+  important: "def",
+  definition: "def",
+  def: "def",
+  theorem: "thm",
+  proof: "proof",
+  example: "ex",
+  warning: "warn",
+  caution: "warn",
+  attention: "warn",
+  danger: "warn",
+  error: "warn",
+  failure: "warn",
+  fail: "warn",
+  bug: "warn",
+};
+const ENV_LABEL: Record<string, string> = {
+  def: "Definición",
+  thm: "Teorema",
+  proof: "Demostración",
+  ex: "Ejemplo",
+  note: "Nota",
+  intu: "Intuición",
+  warn: "Atención",
+};
+
+function remarkCallout() {
+  return (tree: AnyNode) => {
+    visit(tree, "blockquote", (node: AnyNode) => {
+      const first = node.children?.[0];
+      if (!first || first.type !== "paragraph") return;
+      const kids: AnyNode[] = first.children ?? [];
+      const t0 = kids[0];
+      if (!t0 || t0.type !== "text") return;
+      const m = /^\[!(\w+)\][+-]?[ \t]*/.exec(t0.value);
+      if (!m) return;
+      const env = CALLOUT_MAP[m[1].toLowerCase()] ?? "note";
+      // Sacar SOLO el marcador del primer text node (deja intacto un título con
+      // formato inline que venga en nodos hermanos).
+      t0.value = t0.value.slice(m[0].length);
+      // Partir los hijos inline del párrafo en "línea del título" vs "cuerpo" en
+      // el primer salto de línea. Así un título como **negrita** / `código` / link
+      // (nodos hermanos, no texto plano) se conserva como título en vez de romperse.
+      const title: AnyNode[] = [];
+      const body: AnyNode[] = [];
+      let inBody = false;
+      for (const child of kids) {
+        if (inBody) {
+          body.push(child);
+          continue;
+        }
+        if (child.type === "text") {
+          const nl = child.value.indexOf("\n");
+          if (nl === -1) {
+            if (child.value !== "") title.push(child);
+          } else {
+            const before = child.value.slice(0, nl);
+            const after = child.value.slice(nl + 1);
+            if (before !== "") title.push({ type: "text", value: before });
+            inBody = true;
+            if (after !== "") body.push({ type: "text", value: after });
+          }
+        } else {
+          title.push(child);
+        }
+      }
+      if (title[0]?.type === "text")
+        title[0].value = title[0].value.replace(/^[ \t]+/, "");
+      const hasTitle = title.some(
+        (n) => n.type !== "text" || n.value.trim() !== "",
+      );
+      // Label = título run-in (envuelto en <strong> si no lo está ya) o, si no hay
+      // título en la línea del marcador, el label por defecto del entorno.
+      const labelNode: AnyNode = hasTitle
+        ? title.length === 1 && title[0].type === "strong"
+          ? title[0]
+          : { type: "strong", children: title }
+        : { type: "strong", children: [{ type: "text", value: ENV_LABEL[env] }] };
+      const newChildren: AnyNode[] = [labelNode];
+      if (body[0]?.type === "text")
+        body[0].value = body[0].value.replace(/^\n+/, "");
+      if (body.length) newChildren.push({ type: "text", value: " " }, ...body);
+      first.children = newChildren;
+      node.data ||= {};
+      node.data.hName = "blockquote";
+      const h = (node.data.hProperties ||= {});
+      h["data-env"] = env;
+      h.className = ["env", `env--${env}`];
+    });
+  };
+}
+
+/* ----------------------------------------------------------------------------
+ * Chrome "terminal" para los code blocks de rehype-pretty-code: envuelve cada
+ * figure con una barra (dots + pill de lenguaje + botón copy ESTÁTICO). El botón
+ * no trae handler; la isla <CodeCopy> lo cablea en runtime (listener delegado que
+ * reconstruye el código crudo uniendo los `[data-line]`). Corre DESPUÉS de
+ * rehypePrettyCode. La barra se inyecta como nodo `raw` (allowDangerousHtml).
+ * -------------------------------------------------------------------------- */
+const COPY_SVG =
+  '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+const CHECK_SVG =
+  '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>';
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function findByTag(node: AnyNode, tag: string): AnyNode | null {
+  if (node?.type === "element" && node.tagName === tag) return node;
+  for (const c of node?.children ?? []) {
+    const r = findByTag(c, tag);
+    if (r) return r;
+  }
+  return null;
+}
+
+function getDataLanguage(node: AnyNode): string | null {
+  const p = node?.properties;
+  if (!p) return null;
+  const v = p["data-language"] ?? p.dataLanguage;
+  return typeof v === "string" && v ? v : null;
+}
+
+function rehypeCodeChrome() {
+  return (tree: AnyNode) => {
+    visit(tree, "element", (node: AnyNode) => {
+      if (node.tagName !== "figure") return;
+      const cls = node.properties?.className;
+      const list = Array.isArray(cls) ? cls : cls ? [String(cls)] : [];
+      if (list.includes("wiki-code")) return; // ya procesado
+      const pre = findByTag(node, "pre");
+      const code = pre ? findByTag(pre, "code") : null;
+      if (!pre || !code) return; // no es un figure de código
+      const lang = getDataLanguage(pre) ?? getDataLanguage(code);
+      const langSpan =
+        lang && lang !== "plaintext" && lang !== "text" && lang !== "plain"
+          ? `<span class="wiki-code__lang">${escapeHtml(lang)}</span>`
+          : "";
+      const bar =
+        '<div class="wiki-code__bar">' +
+        '<span class="wiki-code__dots" aria-hidden="true">' +
+        '<span class="wiki-code__dot"></span>' +
+        '<span class="wiki-code__dot"></span>' +
+        '<span class="wiki-code__dot"></span>' +
+        "</span>" +
+        langSpan +
+        '<button type="button" class="wiki-code__copy" aria-label="Copiar código">' +
+        `<span class="wiki-code__ico wiki-code__ico--copy">${COPY_SVG}</span>` +
+        `<span class="wiki-code__ico wiki-code__ico--check">${CHECK_SVG}</span>` +
+        '<span class="wiki-code__copy-label">copiar</span>' +
+        "</button>" +
+        "</div>";
+      node.properties ||= {};
+      node.properties.className = [...list, "wiki-code"];
+      node.children.unshift({ type: "raw", value: bar });
     });
   };
 }
@@ -170,7 +354,8 @@ function buildProcessor(math: boolean): Processor {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMermaid)
-    .use(remarkWikilink);
+    .use(remarkWikilink)
+    .use(remarkCallout);
   if (math) p = p.use(remarkMath);
   p = p.use(remarkRehype, { allowDangerousHtml: true });
   if (math) p = p.use(rehypeKatex, { strict: false });
@@ -182,7 +367,13 @@ function buildProcessor(math: boolean): Processor {
     .use(rehypePrettyCode, {
       theme: "github-dark-dimmed",
       keepBackground: false,
+      // Sin esto, un fence SIN lenguaje no genera `figure[data-rehype-pretty-code-figure]`
+      // (queda `<pre><code>` pelado) y rehypeCodeChrome no lo envuelve → ~40% de los
+      // code blocks del repo se quedarían sin barra/copy. Con "text" siempre hay figure;
+      // el pill de lenguaje se omite igual porque rehypeCodeChrome filtra "text"/"plain".
+      defaultLang: "text",
     })
+    .use(rehypeCodeChrome)
     .use(rehypeStringify, { allowDangerousHtml: true });
   return p as Processor;
 }

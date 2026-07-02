@@ -681,32 +681,6 @@ export default function CombinadorView() {
                 </button>
               </div>
             )}
-
-            <button
-              type="button"
-              className="cmbx-dlbtn"
-              title="Exporta un PDF con el calendario y todas las especificaciones de las materias elegidas"
-              onClick={() => {
-                const placed = ranked[safeIdx];
-                if (!placed) return;
-                const generado = new Date().toLocaleDateString("es-AR", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                });
-                openForPrint(
-                  buildComboHTML({
-                    placed,
-                    generado,
-                    periodo: "2.º cuatrimestre 2026",
-                    autoPrint: true,
-                  }),
-                  "programa-de-cursada.html",
-                );
-              }}
-            >
-              <IconPrinter size={13} /> Descargar programa completo
-            </button>
           </div>
 
           <div className="cmbcal-wrap" key={safeIdx}>
@@ -732,6 +706,36 @@ export default function CombinadorView() {
               </div>
             )}
             <Legend entries={grid.entries} />
+
+            <div className="cmbx-dlfoot">
+              <span className="cmbx-dlfoot__hint">
+                Incluye el calendario y, por cada materia, un resumen con puntos
+                clave y evaluación.
+              </span>
+              <button
+                type="button"
+                className="btn btn--go btn--sm"
+                onClick={() => {
+                  const placed = ranked[safeIdx];
+                  if (!placed) return;
+                  openForPrint(
+                    buildComboHTML({
+                      placed,
+                      generado: new Date().toLocaleDateString("es-AR", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      }),
+                      periodo: "2.º cuatrimestre 2026",
+                      autoPrint: true,
+                    }),
+                    "programa-de-cursada.html",
+                  );
+                }}
+              >
+                <IconPrinter size={14} /> Descargar programa
+              </button>
+            </div>
           </div>
         </>
       ) : (

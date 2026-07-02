@@ -176,3 +176,10 @@ $$\boxed{V \approx \begin{pmatrix} -0.9131 & 0.3560 & -0.1988 \\ -0.4070 & -0.76
 $$U\Sigma V^T \approx \begin{pmatrix} 1 & -3 & 2 \\ 5 & 2 & 0 \end{pmatrix} = A. \quad ✓$$
 
 (La reconstrucción $U\Sigma V^T = A$ es exacta usando los valores exactos $\sigma_i = \sqrt{(43\pm\sqrt{229})/2}$ y las columnas exactas; los decimales mostrados llevan a $A$ con error $< 10^{-4}$.)
+
+## Ver también
+
+- [[final-tema-08]] — enunciado de este examen.
+- [[../guias/guia-04-transformaciones-lineales]] — núcleo e imagen de $T$.
+- [[../guias/guia-07-svd-mmcc]] — descomposición en valores singulares.
+- [[../guias/guia-08-fourier-series]] — series de Fourier.

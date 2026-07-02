@@ -6,7 +6,7 @@ import { renderNote } from "@/lib/content/render";
 import { buildNav } from "@/lib/content/nav-tree";
 import { getVault } from "@/lib/content/vaults";
 import { humanize } from "@/lib/content/slug";
-import { Eyebrow, Tag } from "@studyvaults/ui";
+import { Eyebrow, Tag, CodeCopy } from "@studyvaults/ui";
 import WikiLayout from "@/components/wiki/WikiLayout";
 import Prose from "@/components/wiki/Prose";
 
@@ -100,6 +100,7 @@ export default async function NotePage({
           )}
         </header>
         <Prose html={html} />
+        <CodeCopy />
       </div>
     </WikiLayout>
   );

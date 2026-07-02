@@ -175,3 +175,9 @@ $$\lVert r\rVert = \sqrt{\tfrac{648}{8125}} \approx \boxed{0.2824.}$$
 Es decir, el ajuste por cuadrados mínimos es $y(x) \approx 1.5077\,x^2 + 0.6138$, con residuo $\approx 0.2824$.
 
 > **Verificación numérica.** `numpy.linalg.qr` reproduce $A = QR$ con $Q^TQ = I$; resolviendo $RX = Q^Tb$ se obtiene $(a,b) = (1.50769\ldots,\ 0.61384\ldots)$. `numpy.linalg.lstsq(A,b)` da exactamente el mismo $(a,b)$ y norma de residuo $0.28241$. El cálculo exacto con fracciones confirma $a=\tfrac{98}{65}$, $b=\tfrac{399}{650}$, $\lVert r\rVert^2 = \tfrac{648}{8125}$. (Atención al término $\sum x_i^2 y_i = 1\cdot1.9 + 4\cdot6.7 = 28.7$, fácil de equivocar.)
+
+## Ver también
+
+- [[ip-tema-02]] — enunciado de este parcial.
+- [[../guias/guia-04-transformaciones-lineales]] — núcleo e imagen de $T$.
+- [[../guias/guia-06-qr-lu]] · [[../guias/guia-07-svd-mmcc]] — QR, SVD y cuadrados mínimos.

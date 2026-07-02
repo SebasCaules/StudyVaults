@@ -69,37 +69,32 @@ export async function GET() {
     }
   }
 
-  // anclas por materia en una ELIPSE APAISADA (más ancha que alta): así el
-  // grafo, ya de por sí clusterizado por materia, adopta una forma horizontal
-  // que llena los canvases anchos en vez de quedar en un cuadrado central.
-  const anchors: Record<string, { x: number; y: number }> = {};
-  VAULTS.forEach((vlt, i) => {
-    const a = (i / VAULTS.length) * Math.PI * 2 - Math.PI / 2;
-    anchors[vlt.id] = { x: Math.cos(a) * 660, y: Math.sin(a) * 320 };
-  });
+  // SIN anclas por materia: eso sembraba los clusters en un ANILLO y dejaba el
+  // centro vacío (donut). Sembramos una nube central y dejamos que los links
+  // formen los clusters; con gravedad al centro el medio queda LLENO.
   nodes.forEach((n) => {
-    const an = anchors[n.v];
-    n.x = an.x + (Math.random() - 0.5) * 110;
-    n.y = an.y + (Math.random() - 0.5) * 110;
+    n.x = (Math.random() - 0.5) * 240;
+    n.y = (Math.random() - 0.5) * 240;
   });
 
   const sim = forceSimulation(nodes)
-    // repulsión fuerte pero ACOTADA (distanceMax) → nodos bien separados y
-    // "descomprimidos", sin que el grafo explote ni se deshagan los clusters.
-    .force("charge", forceManyBody().strength(-105).distanceMax(540))
+    // repulsión de CORTO alcance (distanceMax bajo) → separa vecinos inmediatos
+    // pero NO empuja los clusters lejos entre sí (nada de anillo).
+    .force("charge", forceManyBody().strength(-24).distanceMax(90))
     .force(
       "link",
       forceLink<SimNode, { source: string; target: string }>(links)
         .id((d) => d.id)
-        .distance(52)
-        .strength(0.14),
+        .distance(20)
+        .strength(0.22),
     )
-    .force("x", forceX<SimNode>((n) => anchors[n.v].x).strength(0.05))
-    .force("y", forceY<SimNode>((n) => anchors[n.v].y).strength(0.06))
-    .force("collide", forceCollide(8).strength(0.9))
+    // gravedad al centro (0,0) → todo se apiña hacia el medio → medio lleno.
+    .force("x", forceX<SimNode>(0).strength(0.06))
+    .force("y", forceY<SimNode>(0).strength(0.07))
+    .force("collide", forceCollide(6).strength(0.9))
     .stop();
   // más ticks → el layout se asienta de forma suave y natural
-  for (let i = 0; i < 440; i++) sim.tick();
+  for (let i = 0; i < 480; i++) sim.tick();
 
   // normalizar centrando el layout en (500,500) y ajustando al ALTO (fit
   // vertical): como el layout es apaisado, el ancho se extiende más allá de
@@ -115,10 +110,10 @@ export async function GET() {
   const scale = (1000 - pad * 2) / ySpan;
   const cx = (minX + maxX) / 2;
   const cy = (minY + maxY) / 2;
-  // La repulsión isótropa redondea la elipse, así que el resultado queda ~1.4:1.
-  // Un estirón horizontal suave y ACOTADO lleva el aspecto a ~1.9:1 para llenar
-  // canvases anchos, sin deformar de más (tope 1.5×).
-  const xStretch = Math.min(1.5, Math.max(1, 1.9 / (xSpan / ySpan)));
+  // Sin estirar: warm-start compacto y redondo; el cliente re-simula con imán
+  // fuerte al centro (bola cohesiva), así que no vale la pena deformarlo acá.
+  const xStretch = 1;
+  void xSpan;
 
   // color por nodo, resuelto en build y POR TEMA (AA en dark y light).
   // base = tint de materia (mismas mezclas que --vt-* de globals.css);

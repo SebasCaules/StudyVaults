@@ -9,11 +9,11 @@
 /* glow de acento arriba a la derecha + grilla estilo blueprint */
 .markdown-reading-view .markdown-preview-view.sv-exactas{
   background-image:
-    radial-gradient(80% 55% at 100% 0%, color-mix(in srgb,var(--sv-accent) 12%,transparent), transparent 66%),
-    linear-gradient(color-mix(in srgb,var(--sv-accent) 22%,transparent) 1px,transparent 1px),
-    linear-gradient(90deg,color-mix(in srgb,var(--sv-accent) 22%,transparent) 1px,transparent 1px),
-    linear-gradient(color-mix(in srgb,var(--sv-accent) 10%,transparent) 1px,transparent 1px),
-    linear-gradient(90deg,color-mix(in srgb,var(--sv-accent) 10%,transparent) 1px,transparent 1px);
+    radial-gradient(80% 55% at 100% 0%, color-mix(in srgb,var(--sv-accent) 9%,transparent), transparent 66%),
+    linear-gradient(color-mix(in srgb,var(--sv-accent) 15%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--sv-accent) 15%,transparent) 1px,transparent 1px),
+    linear-gradient(color-mix(in srgb,var(--sv-accent) 7%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--sv-accent) 7%,transparent) 1px,transparent 1px);
   background-size:auto,96px 96px,96px 96px,24px 24px,24px 24px;
   background-attachment:fixed,scroll,scroll,scroll,scroll;
 }

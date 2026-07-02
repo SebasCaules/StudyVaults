@@ -155,17 +155,6 @@ function asyncRowHTML(asyncs: { abbr: string; txt: string }[]): string {
 
 // ---- especificaciones completas por materia (programa analítico) -----------
 
-/** Multi-párrafo ("\n\n") → <p> serializados. */
-const proseHTML = (text: string): string =>
-  String(text || "")
-    .split("\n\n")
-    .filter((p) => p.trim())
-    .map((p) => `<p>${esc(p)}</p>`)
-    .join("");
-
-const block = (title: string, body: string): string =>
-  body ? `<div class="mat-block"><h4>${esc(title)}</h4>${body}</div>` : "";
-
 /** Horario de la comisión elegida (día · franja · aula/sede · modalidad). */
 function comHorarioHTML(com: Comision | null): string {
   if (!com || !com.slots.length) return "";
@@ -177,70 +166,39 @@ function comHorarioHTML(com: Comision | null): string {
       return `<li><span class="d">${esc(s.dia)}</span><span class="h">${esc(s.desde)}–${esc(s.hasta)}</span><span class="au">${aula}</span><span class="mo">${esc(s.modalidad || "—")}</span></li>`;
     })
     .join("");
-  const profs = com.profesores ? `<p class="mat-com__profs">${esc(com.profesores)}</p>` : "";
-  return `<div class="mat-com"><div class="mat-com__h">Comisión <b>${esc(com.comision)}</b>${com.cupo ? ` · <span class="mat-com__cupo">${esc(com.cupo)}</span>` : ""}</div><ul class="mat-slots">${slots}</ul>${profs}</div>`;
+  return `<div class="mat-com"><div class="mat-com__h">Comisión <b>${esc(com.comision)}</b></div><ul class="mat-slots">${slots}</ul></div>`;
 }
 
-function cargaHTML(ficha: Ficha): string {
-  const ch = ficha.cargaHoraria;
-  const chips = [
-    ch.total != null ? `<span><b>${ch.total}</b> hs totales</span>` : "",
-    ch.semanales != null ? `<span><b>${ch.semanales}</b> hs semanales</span>` : "",
-    ch.teoricas != null ? `<span><b>${ch.teoricas}</b> teóricas</span>` : "",
-    ch.practicas != null ? `<span><b>${ch.practicas}</b> prácticas</span>` : "",
-    ch.laboratorio ? `<span><b>${ch.laboratorio}</b> laboratorio</span>` : "",
-    ch.distancia ? `<span><b>${ch.distancia}</b> a distancia</span>` : "",
-  ].filter(Boolean);
-  return chips.length ? `<div class="mat-carga">${chips.join("")}</div>` : "";
-}
-
-/** Sección con TODAS las especificaciones de una materia elegida. */
+/** Ficha compacta de una materia ("menos es más"): identidad + horario, un
+ *  Resumen (puntos clave + evaluación) que carga la esencia, y abajo sólo lo
+ *  complementario y escaneable — los contenidos (títulos del temario) y la
+ *  bibliografía. Sin repetir objetivos/presentación/evaluación en prosa larga. */
 function materiaSpecsHTML(x: PlacedMateria): string {
   const m = x.m;
   const ficha: Ficha | undefined = FICHAS[m.codigo];
+  const r = RESUMENES[m.codigo];
   const ob = m.tipo === "obligatoria";
+  const carga = ficha
+    ? [
+        ficha.cargaHoraria.total != null ? `${ficha.cargaHoraria.total} hs` : "",
+        ficha.cargaHoraria.semanales != null
+          ? `${ficha.cargaHoraria.semanales} hs/sem`
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : "";
   const sub = [
     ob ? "Obligatoria" : "Electiva",
     `${m.creditos} créditos`,
     m.horario?.depto || (ficha ? ficha.departamento : ""),
+    carga,
   ]
     .filter(Boolean)
     .map((s) => esc(s))
     .join(" · ");
 
-  let fichaBody = "";
-  if (ficha) {
-    const temario = ficha.programa.length
-      ? `<ol class="mat-units">${ficha.programa
-          .map(
-            (u) =>
-              `<li><b>${esc(u.titulo)}</b>${u.descripcion ? " — " + esc(u.descripcion) : ""}</li>`,
-          )
-          .join("")}</ol>`
-      : "";
-    const biblioList = (label: string, list: string[]) =>
-      list.length
-        ? `<p class="mat-biblio__lbl">${esc(label)}</p><ul class="mat-biblio">${list.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`
-        : "";
-    const biblio =
-      biblioList("Obligatoria", ficha.bibliografiaObligatoria) +
-      biblioList("Complementaria", ficha.bibliografiaComplementaria);
-    fichaBody =
-      cargaHTML(ficha) +
-      block("Presentación", proseHTML(ficha.presentacion)) +
-      block("Objetivos de aprendizaje", proseHTML(ficha.objetivos)) +
-      block("Contenidos mínimos", proseHTML(ficha.contenidosMinimos)) +
-      block("Temario", temario) +
-      block("Estrategias de enseñanza", proseHTML(ficha.estrategias)) +
-      block("Modalidad de evaluación y aprobación", proseHTML(ficha.evaluacion)) +
-      block("Bibliografía", biblio);
-  } else {
-    fichaBody = `<p class="mat-soon">Programa analítico no disponible — próximamente.</p>`;
-  }
-
-  // Resumen (antes del programa completo): puntos clave + evaluación, extraídos
-  // del PDF por Electivas/build-resumenes.py.
-  const r = RESUMENES[m.codigo];
+  // Resumen: puntos clave + evaluación (de Electivas/build-resumenes.py).
   let resumenBox = "";
   if (r && (r.puntosClave.length || r.evaluacion.resumen)) {
     const pk = r.puntosClave.length
@@ -254,6 +212,24 @@ function materiaSpecsHTML(x: PlacedMateria): string {
     resumenBox = `<div class="mat-resumen">${pk}${ev}</div>`;
   }
 
+  // Complementario (escaneable): contenidos (títulos del temario) + bibliografía.
+  let body = "";
+  if (ficha) {
+    const temas = ficha.programa.length
+      ? `<div class="mat-block"><h4>Contenidos del programa</h4><ul class="mat-temas">${ficha.programa
+          .map((u) => `<li>${esc(u.titulo)}</li>`)
+          .join("")}</ul></div>`
+      : "";
+    const biblio = ficha.bibliografiaObligatoria.length
+      ? `<div class="mat-block"><h4>Bibliografía</h4><ul class="mat-biblio">${ficha.bibliografiaObligatoria
+          .map((b) => `<li>${esc(b)}</li>`)
+          .join("")}</ul></div>`
+      : "";
+    body = temas + biblio;
+  } else {
+    body = `<p class="mat-soon">Programa analítico no disponible — próximamente.</p>`;
+  }
+
   return `<section class="mat-spec">
     <div class="mat-spec__h">
       <span class="mat-spec__code">${esc(m.codigo)} · ${esc(m.abbr)}</span>
@@ -262,7 +238,7 @@ function materiaSpecsHTML(x: PlacedMateria): string {
       ${comHorarioHTML(x.com)}
     </div>
     ${resumenBox}
-    ${fichaBody}
+    ${body}
   </section>`;
 }
 
@@ -388,6 +364,8 @@ const SPECS_CSS = `
   .mat-block p{font-size:12.5px;line-height:1.6;color:var(--ink);margin:0 0 7px}
   .mat-units{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
   .mat-units li{font-size:12px;line-height:1.5}
+  .mat-temas{margin:0;padding-left:18px;columns:2;column-gap:28px}
+  .mat-temas li{font-size:11.5px;line-height:1.45;color:var(--ink);margin-bottom:3px;break-inside:avoid}
   .mat-biblio{margin:0 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:4px}
   .mat-biblio li{font-size:11.5px;line-height:1.45;color:var(--soft)}
   .mat-biblio__lbl{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 5px}
@@ -442,14 +420,17 @@ export interface ExportArgs {
   autoPrint?: boolean;
   /** incluir las especificaciones completas de cada materia (default true). */
   includeSpecs?: boolean;
+  /** índices de cuatrimestre a incluir; si se omite, se incluyen todos. */
+  cuatris?: number[];
 }
 
 export function buildPlanHTML(a: ExportArgs): string {
   const { result: R, start, approvedCreditsNow } = a;
+  const sel = a.cuatris && a.cuatris.length ? new Set(a.cuatris) : null;
   const used = R.items
     .map((it, i) => ({ it, i }))
-    .filter((x) => x.it.length);
-  const flat = R.items.flat();
+    .filter((x) => x.it.length && (!sel || sel.has(x.i)));
+  const flat = used.flatMap((u) => u.it);
   const totalCred = flat.reduce((s, x) => s + (x.m.creditos || 0), 0);
   const finalCred = approvedCreditsNow + totalCred;
   const elecPlan = flat
