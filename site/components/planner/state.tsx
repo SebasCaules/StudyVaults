@@ -10,6 +10,7 @@ import {
 import { PLAN, remainingOblig } from "@/lib/planner/model";
 import type { Persisted } from "@/lib/planner/persist";
 import type {
+  OptMethod,
   PlacedMateria,
   PlannerState,
   ViewKey,
@@ -45,6 +46,9 @@ export function initialState(): PlannerState {
       maxCred: 18,
       maxMat: 5,
       avoid: true,
+      method: "cuatris",
+      capCredByIdx: new Map<number, number>(),
+      capMatByIdx: new Map<number, number>(),
       result: null,
     },
     sideCollapsed: false,
@@ -72,6 +76,9 @@ export type Action =
   | { type: "SET_PLAN_MAXCRED"; value: number }
   | { type: "SET_PLAN_MAXMAT"; value: number }
   | { type: "SET_PLAN_AVOID"; value: boolean }
+  | { type: "SET_PLAN_METHOD"; value: OptMethod }
+  | { type: "SET_PLAN_CAP_CRED"; idx: number; value: number | null }
+  | { type: "SET_PLAN_CAP_MAT"; idx: number; value: number | null }
   | { type: "PLAN_POOL_ADD"; code: string }
   | { type: "PLAN_POOL_REMOVE"; code: string }
   | { type: "PLAN_SET_FIXED"; code: string; idx: number | null }
@@ -104,6 +111,17 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
           maxCred: clampInt(p.planOpts?.maxCred ?? s.plan.maxCred, 3, 40),
           maxMat: clampInt(p.planOpts?.maxMat ?? s.plan.maxMat, 1, 9),
           avoid: p.planOpts?.avoid ?? s.plan.avoid,
+          method: p.planOpts?.method ?? s.plan.method,
+          capCredByIdx: p.planOpts?.capCredByIdx
+            ? new Map(
+                p.planOpts.capCredByIdx.map(([i, v]) => [i, clampInt(v, 3, 40)]),
+              )
+            : s.plan.capCredByIdx,
+          capMatByIdx: p.planOpts?.capMatByIdx
+            ? new Map(
+                p.planOpts.capMatByIdx.map(([i, v]) => [i, clampInt(v, 1, 9)]),
+              )
+            : s.plan.capMatByIdx,
         },
         sideCollapsed: p.sideCollapsed,
         hydrated: true,
@@ -169,6 +187,20 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return { ...s, plan: { ...s.plan, maxMat: clampInt(a.value, 1, 9) } };
     case "SET_PLAN_AVOID":
       return { ...s, plan: { ...s.plan, avoid: a.value } };
+    case "SET_PLAN_METHOD":
+      return { ...s, plan: { ...s.plan, method: a.value } };
+    case "SET_PLAN_CAP_CRED": {
+      const capCredByIdx = new Map(s.plan.capCredByIdx);
+      if (a.value === null) capCredByIdx.delete(a.idx);
+      else capCredByIdx.set(a.idx, clampInt(a.value, 3, 40));
+      return { ...s, plan: { ...s.plan, capCredByIdx } };
+    }
+    case "SET_PLAN_CAP_MAT": {
+      const capMatByIdx = new Map(s.plan.capMatByIdx);
+      if (a.value === null) capMatByIdx.delete(a.idx);
+      else capMatByIdx.set(a.idx, clampInt(a.value, 1, 9));
+      return { ...s, plan: { ...s.plan, capMatByIdx } };
+    }
     case "PLAN_POOL_ADD": {
       const pool = new Set(s.plan.pool);
       pool.add(a.code);
@@ -194,6 +226,8 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
           ...s.plan,
           pool: new Set(remainingOblig(s.approved)),
           fixed: new Map(),
+          capCredByIdx: new Map(),
+          capMatByIdx: new Map(),
         },
       };
     case "RESET_APPROVED": {

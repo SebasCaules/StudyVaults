@@ -13,6 +13,12 @@ import { isAvailable } from "@/lib/planner/metrics";
 import { usePlanner } from "@/components/planner/state";
 import { FICHAS } from "@/lib/planner/fichas";
 import { withBase } from "@/lib/content/slug";
+import {
+  IconClose,
+  IconCheck,
+  IconDownload,
+  IconArrowUpRight,
+} from "@/components/planner/icons";
 import type { Ficha, MateriaM } from "@/lib/planner/types";
 
 /** Render de un texto multi-párrafo (separado por "\n\n") como <p> apilados. */
@@ -351,7 +357,7 @@ function FichaSection({ ficha }: { ficha: Ficha }) {
             dispatch({ type: "CLOSE_DRAWER" });
           }}
         >
-          Leer ficha completa ↗
+          Leer ficha completa <IconArrowUpRight size={13} />
         </button>
         <a
           className="dr-pdf"
@@ -399,6 +405,9 @@ export default function DetailDrawer() {
   const descInline = ficha
     ? ficha.presentacion || ficha.contenidosMinimos
     : "";
+  // sin descripción inline ni ficha: la columna aside queda vacía → no se
+  // renderiza y la columna main pasa a ocupar el ancho completo (dr-grid--solo)
+  const hasAside = !!(descInline || ficha);
 
   const onDownload = () => {
     const html = buildMateriaHTML(m, ficha);
@@ -419,135 +428,162 @@ export default function DetailDrawer() {
       aria-label={m.nombre}
     >
       <div className="dr-modal__bg" onClick={close} />
-      <div className="dr-modal__panel">
-        <button className="dr-close" onClick={close}>
-          ×
+      <div className="dr-modal__panel dr-modal__panel--wide">
+        <button className="dr-close" onClick={close} aria-label="Cerrar">
+          <IconClose size={15} />
         </button>
-        <span className={"dr-code " + (ob ? "ob" : "")}>
-          {m.codigo} · {m.abbr}
-        </span>
-        <h3 className="dr-title">{m.nombre}</h3>
-        <p className="dr-sub">
-          {ob
-            ? `Obligatoria · ${m.ciclo} · Año ${m.anio} (${m.cuatri}.º cuat.)`
-            : "Electiva"}{" "}
-          · {m.creditos} créditos
-          {m.creditosReq ? ` · requiere ${m.creditosReq}` : ""}
-          {hor ? ` · ${hor.depto}` : ""}
-        </p>
-        <div className="dr-x">
-          <button
-            className={"mini btn-ap " + (appr ? "on" : "")}
-            onClick={() => dispatch({ type: "TOGGLE_APPROVED", code })}
-          >
-            {appr ? "aprobada ✓" : "marcar aprobada"}
-          </button>
-          {hasComs ? (
-            <button
-              className={"mini btn-co " + (inCombo ? "on plan" : "")}
-              onClick={() => dispatch({ type: "TOGGLE_COMBO", code })}
-            >
-              {inCombo ? "en combinador ✓" : "al combinador"}
-            </button>
-          ) : null}
-          <button type="button" className="dr-dl" onClick={onDownload}>
-            Descargar ↓
-          </button>
-        </div>
-        {descInline ? <p className="dr-desc">{descInline}</p> : null}
-        {ob ? null : (
-          <div className="dr-sec">
-            <h4>Áreas · Minor</h4>
-            <div className="dr-chips">
-              {areas.length ? (
-                areas.map((a) => (
-                  <span
-                    key={a}
-                    className="tag tag--area"
-                    style={{ background: AREA_COLOR[a] }}
-                  >
-                    {a}
+        {/* grid de dos columnas: main (identidad, acciones, correlativas,
+            horario) + aside (descripción inline y ficha/programa analítico).
+            Sin aside (materia sin ficha ni descripción) → dr-grid--solo,
+            main pasa a ocupar el ancho completo. */}
+        <div className={"dr-grid" + (hasAside ? "" : " dr-grid--solo")}>
+          <div className="dr-col dr-col--main">
+            <span className={"dr-code " + (ob ? "ob" : "")}>
+              {m.codigo} · {m.abbr}
+            </span>
+            <h3 className="dr-title">{m.nombre}</h3>
+            <p className="dr-sub">
+              {ob
+                ? `Obligatoria · ${m.ciclo} · Año ${m.anio} (${m.cuatri}.º cuat.)`
+                : "Electiva"}{" "}
+              · {m.creditos} créditos
+              {m.creditosReq ? ` · requiere ${m.creditosReq}` : ""}
+              {hor ? ` · ${hor.depto}` : ""}
+            </p>
+            <div className="dr-x">
+              <button
+                className={"mini btn-ap " + (appr ? "on" : "")}
+                onClick={() => dispatch({ type: "TOGGLE_APPROVED", code })}
+              >
+                {appr ? (
+                  <>
+                    <IconCheck size={13} /> aprobada
+                  </>
+                ) : (
+                  "marcar aprobada"
+                )}
+              </button>
+              {hasComs ? (
+                <button
+                  className={"mini btn-co " + (inCombo ? "on plan" : "")}
+                  onClick={() => dispatch({ type: "TOGGLE_COMBO", code })}
+                >
+                  {inCombo ? (
+                    <>
+                      <IconCheck size={13} /> en combinador
+                    </>
+                  ) : (
+                    "al combinador"
+                  )}
+                </button>
+              ) : null}
+              <button type="button" className="dr-dl" onClick={onDownload}>
+                <IconDownload size={13} /> Descargar
+              </button>
+            </div>
+            {ob ? null : (
+              <div className="dr-sec">
+                <h4>Áreas · Minor</h4>
+                <div className="dr-chips">
+                  {areas.length ? (
+                    areas.map((a) => (
+                      <span
+                        key={a}
+                        className="tag tag--area"
+                        style={{ background: AREA_COLOR[a] }}
+                      >
+                        {a}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="muted">—</span>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="dr-sec">
+              <h4>Correlativas</h4>
+              <div className="dr-chips">
+                {correlativas.length ? (
+                  correlativas.map((c) => {
+                    const cm = byId.get(c);
+                    const ok = state.approved.has(c);
+                    return (
+                      <span
+                        key={c}
+                        className="tag"
+                        style={
+                          ok
+                            ? {
+                                color: "var(--sage)",
+                                borderColor: "rgba(155,176,131,.3)",
+                              }
+                            : { color: "var(--muted)" }
+                        }
+                      >
+                        {c} {cm ? cm.abbr : ""}{" "}
+                        {ok ? <IconCheck size={12} /> : null}
+                      </span>
+                    );
+                  })
+                ) : (
+                  <span className="muted">Sin correlativas</span>
+                )}
+              </div>
+            </div>
+            <div className="dr-sec">
+              <h4>
+                Horario 2C 2026{" "}
+                {avail && !appr ? (
+                  <span className="tag tag--ok" style={{ marginLeft: 6 }}>
+                    disponible
                   </span>
+                ) : null}
+              </h4>
+              {hasComs ? (
+                hor!.comisiones.map((cm) => (
+                  <div className="dr-com" key={cm.comision}>
+                    <div className="dr-com__h">
+                      <b>Comisión {cm.comision}</b>
+                      <span className="dr-com__cupo">{cm.cupo}</span>
+                    </div>
+                    {cm.slots.map((s, i) => (
+                      <div className="dr-slot" key={i}>
+                        <span className="d">{s.dia}</span>
+                        <span className="h">
+                          {s.desde}–{s.hasta}
+                        </span>
+                        <span className="au">
+                          {s.sala ? "Aula " + s.sala : ""}
+                          {s.sede ? " · " + s.sede : ""}
+                        </span>
+                        <span className="dr-slotmod">
+                          {s.modalidad || "—"}
+                        </span>
+                      </div>
+                    ))}
+                    {cm.profesores ? (
+                      <div
+                        className="muted"
+                        style={{ fontSize: 11, marginTop: 7 }}
+                      >
+                        {cm.profesores}
+                      </div>
+                    ) : null}
+                  </div>
                 ))
               ) : (
-                <span className="muted">—</span>
+                <p className="muted">Sin horario publicado para 2C 2026.</p>
               )}
             </div>
           </div>
-        )}
-        <div className="dr-sec">
-          <h4>Correlativas</h4>
-          <div className="dr-chips">
-            {correlativas.length ? (
-              correlativas.map((c) => {
-                const cm = byId.get(c);
-                const ok = state.approved.has(c);
-                return (
-                  <span
-                    key={c}
-                    className="tag"
-                    style={
-                      ok
-                        ? {
-                            color: "var(--sage)",
-                            borderColor: "rgba(155,176,131,.3)",
-                          }
-                        : { color: "var(--muted)" }
-                    }
-                  >
-                    {c} {cm ? cm.abbr : ""} {ok ? "✓" : ""}
-                  </span>
-                );
-              })
-            ) : (
-              <span className="muted">Sin correlativas</span>
-            )}
-          </div>
+          {hasAside ? (
+            <div className="dr-col dr-col--aside">
+              {descInline ? <p className="dr-desc">{descInline}</p> : null}
+              {ficha ? <FichaSection ficha={ficha} /> : null}
+            </div>
+          ) : null}
         </div>
-        <div className="dr-sec">
-          <h4>
-            Horario 2C 2026{" "}
-            {avail && !appr ? (
-              <span className="tag tag--ok" style={{ marginLeft: 6 }}>
-                disponible
-              </span>
-            ) : null}
-          </h4>
-          {hasComs ? (
-            hor!.comisiones.map((cm) => (
-              <div className="dr-com" key={cm.comision}>
-                <div className="dr-com__h">
-                  <b>Comisión {cm.comision}</b>
-                  <span className="dr-com__cupo">{cm.cupo}</span>
-                </div>
-                {cm.slots.map((s, i) => (
-                  <div className="dr-slot" key={i}>
-                    <span className="d">{s.dia}</span>
-                    <span className="h">
-                      {s.desde}–{s.hasta}
-                    </span>
-                    <span className="au">
-                      {s.sala ? "Aula " + s.sala : ""}
-                      {s.sede ? " · " + s.sede : ""}
-                    </span>
-                    <span className="dr-slotmod">{s.modalidad || "—"}</span>
-                  </div>
-                ))}
-                {cm.profesores ? (
-                  <div
-                    className="muted"
-                    style={{ fontSize: 11, marginTop: 7 }}
-                  >
-                    {cm.profesores}
-                  </div>
-                ) : null}
-              </div>
-            ))
-          ) : (
-            <p className="muted">Sin horario publicado para 2C 2026.</p>
-          )}
-        </div>
-        {ficha ? <FichaSection ficha={ficha} /> : null}
       </div>
     </div>
   );

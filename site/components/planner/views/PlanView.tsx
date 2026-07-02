@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePlanner } from "@/components/planner/state";
 import {
   byId,
@@ -18,13 +18,30 @@ import {
   cuatriAt,
   cuatriLabel,
   cuatriName,
+  OPT_METHODS,
+  type OptMethodMeta,
 } from "@/lib/planner/optimize";
 import { recommendElectives, type Recommendation } from "@/lib/planner/recommend";
 import { buildPlanHTML } from "@/lib/planner/exportPlan";
+import { serializePreferences, parsePreferences } from "@/lib/planner/persist";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import MinorsModal from "@/components/planner/MinorsModal";
+import {
+  IconClose,
+  IconPlus,
+  IconGraduationCap,
+  IconCalendar,
+  IconRoute,
+  IconFileText,
+  IconPrinter,
+  IconDownload,
+  IconUpload,
+  IconGrip,
+  IconSliders,
+} from "@/components/planner/icons";
 import type {
   MateriaM,
+  OptMethod,
   PlacedMateria,
   PlanResult,
   PlanState,
@@ -47,14 +64,21 @@ function nowStr(): string {
   }
 }
 
-function downloadHTMLFile(html: string, filename: string) {
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+/** Descarga texto plano como archivo. Genérico: lo usan tanto el export del
+ *  documento HTML del plan como el export de preferencias (.json). */
+function downloadTextFile(text: string, filename: string, mime: string) {
+  if (typeof document === "undefined") return;
+  const blob = new Blob([text], { type: `${mime};charset=utf-8` });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function downloadHTMLFile(html: string, filename: string) {
+  downloadTextFile(html, filename, "text/html");
 }
 
 function openForPrint(html: string) {
@@ -127,16 +151,17 @@ function NumField({
 /* ---------- texto del método ---------- */
 function methodText(
   R: PlanResult,
-  PL: { maxCred: number; maxMat: number; avoid: boolean },
+  PL: { method: OptMethod; maxCred: number; maxMat: number; avoid: boolean },
 ) {
+  const meta = OPT_METHODS.find((m) => m.key === PL.method);
+  const objetivo = meta?.objetivo ?? "minimizar la cantidad de cuatrimestres";
   return (
     <>
-      <b>Optimización aplicada.</b> Objetivo: minimizar la cantidad de
-      cuatrimestres. Orden de prioridad: obligatorias › camino crítico de
-      correlativas › más créditos › mayor requisito de créditos. Las comisiones
-      se eligen para concentrar la cursada en menos días en el campus.
-      Restricciones respetadas: paridad 1.º/2.º cuatrimestre · correlativas ·
-      créditos requeridos
+      <b>Optimización aplicada.</b> Objetivo: {objetivo} Orden de prioridad:
+      obligatorias · camino crítico de correlativas · más créditos · mayor
+      requisito de créditos. Las comisiones se eligen para concentrar la
+      cursada en menos días en el campus. Restricciones respetadas: paridad
+      1.º/2.º cuatrimestre · correlativas · créditos requeridos
       {PL.avoid
         ? " · sin superposición horaria (incluye traslados entre sedes)"
         : ""}
@@ -199,19 +224,87 @@ function AsyncRow({
   );
 }
 
+/* ---------- override compacto de "máx. créditos / máx. materias" por cuatri ----------
+ * Compartido entre RoadmapStop y el header de CuatriCalCard: cerrado por default
+ * (no ensucia la tarjeta), con fallback visual al valor global cuando no hay
+ * override. `idPrefix` evita colisión de ids entre las dos vistas. */
+function CuatriCaps({
+  i,
+  idPrefix,
+  globalCred,
+  globalMat,
+}: {
+  i: number;
+  idPrefix: string;
+  globalCred: number;
+  globalMat: number;
+}) {
+  const { state, dispatch } = usePlanner();
+  const capCred = state.plan.capCredByIdx.get(i);
+  const capMat = state.plan.capMatByIdx.get(i);
+  const isCapped = capCred !== undefined || capMat !== undefined;
+
+  return (
+    <details className={"rmap-caps" + (isCapped ? " is-capped" : "")}>
+      <summary className="rmap-caps__summary">
+        <IconSliders size={11} />
+        Límites de este cuatri
+        {isCapped && <span className="rmap-caps__dot" aria-hidden="true" />}
+      </summary>
+      <div className="rmap-caps__body">
+        <NumField
+          id={`${idPrefix}CapCred${i}`}
+          label="Máx. créditos"
+          value={capCred ?? globalCred}
+          min={3}
+          max={40}
+          onCommit={(n) =>
+            dispatch({ type: "SET_PLAN_CAP_CRED", idx: i, value: n })
+          }
+        />
+        <NumField
+          id={`${idPrefix}CapMat${i}`}
+          label="Máx. materias"
+          value={capMat ?? globalMat}
+          min={1}
+          max={9}
+          onCommit={(n) =>
+            dispatch({ type: "SET_PLAN_CAP_MAT", idx: i, value: n })
+          }
+        />
+        <button
+          type="button"
+          className="rmap-caps__auto"
+          disabled={!isCapped}
+          onClick={() => {
+            dispatch({ type: "SET_PLAN_CAP_CRED", idx: i, value: null });
+            dispatch({ type: "SET_PLAN_CAP_MAT", idx: i, value: null });
+          }}
+        >
+          auto
+        </button>
+      </div>
+    </details>
+  );
+}
+
 /* ---------- tarjeta de calendario (panorama de cuatrimestres) ---------- */
 function CuatriCalCard({
   it,
   i,
   start,
   previewCode,
+  maxCred,
+  maxMat,
 }: {
   it: PlacedMateria[];
   i: number;
   start: PlanStart;
   previewCode: string | null;
+  maxCred: number;
+  maxMat: number;
 }) {
-  const { dispatch } = usePlanner();
+  const { state, dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
   const { blocks, asyncs, campusDays } = useMemo(
     () => computeCuatriBlocks(it),
@@ -219,9 +312,17 @@ function CuatriCalCard({
   );
   const cred = it.reduce((s, x) => s + (x.m.creditos || 0), 0);
   const hasPreview = it.some((x) => x.m.codigo === previewCode);
+  const isCapped =
+    state.plan.capCredByIdx.has(i) || state.plan.capMatByIdx.has(i);
 
   return (
-    <div className={"cal-card" + (hasPreview ? " has-preview" : "")}>
+    <div
+      className={
+        "cal-card" +
+        (hasPreview ? " has-preview" : "") +
+        (isCapped ? " is-capped" : "")
+      }
+    >
       <div className="cal-card__h">
         <div className="cal-card__when">
           <span className="cal-card__tag">{cuatriLabel(cu)}</span>
@@ -236,6 +337,12 @@ function CuatriCalCard({
             </>
           )}
         </span>
+        <CuatriCaps
+          i={i}
+          idPrefix="cal"
+          globalCred={maxCred}
+          globalMat={maxMat}
+        />
       </div>
       {blocks.length ? (
         <CursadaCalendar
@@ -261,6 +368,7 @@ function RoadmapStop({
   start,
   accBefore,
   maxCred,
+  maxMat,
   previewCode,
 }: {
   it: PlacedMateria[];
@@ -268,6 +376,7 @@ function RoadmapStop({
   start: PlanStart;
   accBefore: number[];
   maxCred: number;
+  maxMat: number;
   previewCode: string | null;
 }) {
   const { state, dispatch } = usePlanner();
@@ -287,13 +396,16 @@ function RoadmapStop({
   const acc = accBefore[i] + cred;
   const load = Math.min(100, Math.round((cred / Math.max(1, maxCred)) * 100));
   const hasPreview = it.some((x) => x.m.codigo === previewCode);
+  const isCapped =
+    state.plan.capCredByIdx.has(i) || state.plan.capMatByIdx.has(i);
 
   return (
     <li
       className={
         "rmap-stop" +
         (hasPreview ? " has-preview" : "") +
-        (dragOver ? " drop-over" : "")
+        (dragOver ? " drop-over" : "") +
+        (isCapped ? " is-capped" : "")
       }
     >
       <div
@@ -344,6 +456,13 @@ function RoadmapStop({
           )}
         </div>
 
+        <CuatriCaps
+          i={i}
+          idPrefix="rmap"
+          globalCred={maxCred}
+          globalMat={maxMat}
+        />
+
         <div className="rmap-stop__load" aria-hidden="true">
           <i style={{ width: `${load}%` }} />
         </div>
@@ -379,6 +498,9 @@ function RoadmapStop({
                     dispatch({ type: "OPEN_DRAWER", code: x.m.codigo })
                   }
                 >
+                  <span className="rmap-mat__grip" aria-hidden="true">
+                    <IconGrip size={12} />
+                  </span>
                   <span className="rmap-mat__abbr">{x.m.abbr}</span>
                   <span className="rmap-mat__cr">{x.m.creditos}</span>
                   {isPrev && <span className="rmap-mat__new">nueva</span>}
@@ -437,7 +559,7 @@ function RoadmapStop({
                       dispatch({ type: "PLAN_POOL_REMOVE", code: x.m.codigo })
                     }
                   >
-                    ×
+                    <IconClose size={13} />
                   </button>
                 </div>
               </div>
@@ -534,7 +656,7 @@ function Recommendations({
             onPreview(null);
           }}
         >
-          + Agregar al plan
+          <IconPlus size={13} /> Agregar al plan
         </button>
         <button
           type="button"
@@ -713,7 +835,7 @@ function PlanPool({ start }: { start: PlanStart }) {
               dispatch({ type: "PLAN_POOL_REMOVE", code: m.codigo })
             }
           >
-            ×
+            <IconClose size={12} />
           </button>
         )}
       </div>
@@ -806,8 +928,10 @@ export default function PlanView() {
   const PL = state.plan;
   const approved = state.approved;
   const [preview, setPreview] = useState<string | null>(null);
+  // el panorama de calendarios es la vista default (más útil de un vistazo
+  // que el roadmap para chequear superposiciones y días en el campus).
   const [boardView, setBoardView] = useState<"roadmap" | "calendars">(
-    "roadmap",
+    "calendars",
   );
   const [minorsOpen, setMinorsOpen] = useState(false);
   const [recsHidden, setRecsHidden] = useState(false);
@@ -817,13 +941,37 @@ export default function PlanView() {
   const recs = useMemo(
     () => recommendElectives(PL, approved, Infinity, state.fixedCom),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved, state.fixedCom],
+    [
+      PL.pool,
+      PL.fixed,
+      PL.start,
+      PL.maxCred,
+      PL.maxMat,
+      PL.avoid,
+      PL.method,
+      PL.capCredByIdx,
+      PL.capMatByIdx,
+      approved,
+      state.fixedCom,
+    ],
   );
 
   const baseR = useMemo(
     () => optimizePlan(PL, approved, state.fixedCom),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved, state.fixedCom],
+    [
+      PL.pool,
+      PL.fixed,
+      PL.start,
+      PL.maxCred,
+      PL.maxMat,
+      PL.avoid,
+      PL.method,
+      PL.capCredByIdx,
+      PL.capMatByIdx,
+      approved,
+      state.fixedCom,
+    ],
   );
 
   const previewR = useMemo(
@@ -834,7 +982,20 @@ export default function PlanView() {
       return optimizePlan({ ...PL, pool } as PlanState, approved, state.fixedCom);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [preview, PL.pool, PL.fixed, PL.start, PL.maxCred, PL.maxMat, PL.avoid, approved, state.fixedCom],
+    [
+      preview,
+      PL.pool,
+      PL.fixed,
+      PL.start,
+      PL.maxCred,
+      PL.maxMat,
+      PL.avoid,
+      PL.method,
+      PL.capCredByIdx,
+      PL.capMatByIdx,
+      approved,
+      state.fixedCom,
+    ],
   );
 
   // resultado efectivo: con preview si hay hover, si no el comprometido
@@ -915,6 +1076,48 @@ export default function PlanView() {
     else openForPrint(html);
   };
 
+  /* ---- export/import de PREFERENCIAS (distinto del export del documento del
+   * plan de arriba): un .json portable con todo el estado persistible, para
+   * llevarlo a otro navegador o guardarlo como plantilla. ---- */
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [prefsError, setPrefsError] = useState<string | null>(null);
+  const prefsErrTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    // limpia el timeout pendiente si el componente se desmonta con el error abierto
+    return () => {
+      if (prefsErrTimeout.current) clearTimeout(prefsErrTimeout.current);
+    };
+  }, []);
+
+  const showPrefsError = (msg: string) => {
+    setPrefsError(msg);
+    if (prefsErrTimeout.current) clearTimeout(prefsErrTimeout.current);
+    prefsErrTimeout.current = setTimeout(() => setPrefsError(null), 4000);
+  };
+
+  const exportPrefs = () => {
+    if (typeof window === "undefined") return;
+    const fecha = nowStr();
+    const text = serializePreferences(state, fecha);
+    downloadTextFile(text, `preferencias-plan-${fecha}.json`, "application/json");
+  };
+
+  const importPrefsFromFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (typeof window === "undefined") return;
+    const file = e.target.files?.[0] ?? null;
+    e.target.value = ""; // permite reimportar el mismo archivo dos veces seguidas
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const payload = parsePreferences(String(reader.result ?? ""));
+      if (payload) dispatch({ type: "HYDRATE", payload });
+      else showPrefsError("El archivo no es un JSON de preferencias válido.");
+    };
+    reader.onerror = () => showPrefsError("No se pudo leer el archivo.");
+    reader.readAsText(file);
+  };
+
   return (
     <section className="view-panel">
       <div className="panel-head">
@@ -940,7 +1143,9 @@ export default function PlanView() {
 
           <div className="plan2-hero__dest">
             <span className="plan2-hero__destlbl">
-              <span className="plan2-hero__cap" aria-hidden="true">🎓</span>
+              <span className="plan2-hero__cap" aria-hidden="true">
+                <IconGraduationCap size={15} />
+              </span>
               Te recibís en
             </span>
             <strong>{cuatriName(gradCu)}</strong>
@@ -1039,6 +1244,37 @@ export default function PlanView() {
           </button>
         </div>
 
+        <div className="plan2-fieldset">
+          <span className="plan2-fieldset__lbl">
+            <IconSliders size={13} className="plan2-fieldset__ic" />
+            Método
+          </span>
+          <div
+            className="plan2-methodseg"
+            role="radiogroup"
+            aria-label="Método de optimización del plan"
+          >
+            {OPT_METHODS.map((m: OptMethodMeta) => (
+              <button
+                key={m.key}
+                type="button"
+                role="radio"
+                aria-checked={PL.method === m.key}
+                title={m.objetivo}
+                className={
+                  "plan2-methodseg__btn" +
+                  (PL.method === m.key ? " is-on" : "")
+                }
+                onClick={() =>
+                  dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                }
+              >
+                {m.short}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="plan2-controls__grow" />
 
         <div className="plan2-controls__actions">
@@ -1049,20 +1285,55 @@ export default function PlanView() {
           >
             Restablecer
           </button>
-          <button
-            type="button"
-            className="btn btn--ghost btn--sm"
-            onClick={() => exportPlan("html")}
-          >
-            HTML
-          </button>
-          <button
-            type="button"
-            className="btn btn--go btn--sm"
-            onClick={() => exportPlan("pdf")}
-          >
-            Descargar PDF
-          </button>
+
+          <div className="plan2-actgrp" role="group" aria-label="Exportar el plan">
+            <span className="plan2-actgrp__lbl">Plan</span>
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={() => exportPlan("html")}
+            >
+              <IconFileText size={13} /> HTML
+            </button>
+            <button
+              type="button"
+              className="btn btn--go btn--sm"
+              onClick={() => exportPlan("pdf")}
+            >
+              <IconPrinter size={13} /> Descargar PDF
+            </button>
+          </div>
+
+          <div className="plan2-actgrp" role="group" aria-label="Preferencias del planner">
+            <span className="plan2-actgrp__lbl">Preferencias</span>
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={exportPrefs}
+            >
+              <IconDownload size={13} /> Exportar
+            </button>
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <IconUpload size={13} /> Importar
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              hidden
+              onChange={importPrefsFromFile}
+            />
+          </div>
+
+          {prefsError && (
+            <span className="plan2-prefs-err" role="alert">
+              {prefsError}
+            </span>
+          )}
         </div>
       </div>
 
@@ -1105,7 +1376,7 @@ export default function PlanView() {
                   }
                   onClick={() => setBoardView("roadmap")}
                 >
-                  Roadmap
+                  <IconRoute size={14} /> Roadmap
                 </button>
                 <button
                   type="button"
@@ -1117,7 +1388,7 @@ export default function PlanView() {
                   }
                   onClick={() => setBoardView("calendars")}
                 >
-                  Calendarios
+                  <IconCalendar size={14} /> Calendarios
                 </button>
               </div>
               {boardView === "calendars" && (
@@ -1161,6 +1432,8 @@ export default function PlanView() {
                       i={i}
                       start={PL.start}
                       previewCode={preview}
+                      maxCred={PL.maxCred}
+                      maxMat={PL.maxMat}
                     />
                   ))}
                 </div>
@@ -1175,6 +1448,7 @@ export default function PlanView() {
                       start={PL.start}
                       accBefore={R.accBefore}
                       maxCred={PL.maxCred}
+                      maxMat={PL.maxMat}
                       previewCode={preview}
                     />
                   ))}

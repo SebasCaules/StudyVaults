@@ -112,6 +112,12 @@ export interface Plan {
 
 export type ViewKey = "cuatri" | "elect" | "combo" | "plan" | "grafo" | "ref";
 
+/** Estrategia de optimización del plan de cursada (elegible por el usuario).
+ *  - "cuatris": minimizar la cantidad de cuatrimestres (recibirse antes).
+ *  - "dias":    minimizar los días distintos en el campus (menos viajes).
+ *  - "balance": repartir la carga (créditos/materias) pareja entre cuatrimestres. */
+export type OptMethod = "cuatris" | "dias" | "balance";
+
 export interface ComboParams {
   allowOverlap: boolean;
   modal: { Presencial: boolean; Virtual: boolean; Blended: boolean };
@@ -142,6 +148,14 @@ export interface PlanState {
   maxCred: number;
   maxMat: number;
   avoid: boolean;
+  /** estrategia de optimización elegida (default "cuatris"). */
+  method: OptMethod;
+  /** override opcional de máx. créditos por índice de cuatrimestre; si no hay
+   *  entrada para un índice, se usa el global `maxCred`. */
+  capCredByIdx: Map<number, number>;
+  /** override opcional de máx. materias por índice de cuatrimestre; si no hay
+   *  entrada para un índice, se usa el global `maxMat`. */
+  capMatByIdx: Map<number, number>;
   result: PlanResult | null;
 }
 

@@ -66,137 +66,152 @@ export default function Sidebar() {
 
   const ec = useMemo(() => electiveCredits(approved), [approved]);
 
+  // Sidebar modular: cada vista muestra solo los controles que consume.
+  //  · búsqueda + filtros → "Plan por cuatrimestre" y "Electivas".
+  //  · áreas/minors + gauge de electivas → solo "Electivas".
+  //  · el resto de las vistas (combinador/plan/correlativas/referencias) tienen
+  //    su propia búsqueda interna, así que el rail queda solo con la navegación.
+  const showFilters = view === "cuatri" || view === "elect";
+  const showElect = view === "elect";
+
   return (
     <aside className="side">
-      <button
-        className="sidetoggle"
-        aria-label="Mostrar u ocultar el panel"
-        title="Mostrar / ocultar panel"
-        onClick={() => dispatch({ type: "TOGGLE_SIDEBAR" })}
-      >
-        <svg
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
+      <div className="side__head">
+        <span className="side__title">Panel de control</span>
+        <button
+          type="button"
+          className="side__collapse"
+          aria-label="Ocultar el panel de control"
+          title="Ocultar panel"
+          onClick={() => dispatch({ type: "TOGGLE_SIDEBAR" })}
         >
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <line x1="9.5" y1="4" x2="9.5" y2="20" />
-        </svg>
-      </button>
-
-      <div className="field">
-        <svg
-          className="field__ic"
-          viewBox="0 0 24 24"
-          width="15"
-          height="15"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.2-3.2" />
-        </svg>
-        <input
-          type="text"
-          placeholder="Buscar código o materia"
-          autoComplete="off"
-          value={searchInput}
-          onChange={(e) => onSearch(e.target.value)}
-        />
+          <svg
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            aria-hidden="true"
+          >
+            <path
+              d="M14.5 6.5 9 12l5.5 5.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
 
+      {showFilters && (
+        <div className="field">
+          <svg
+            className="field__ic"
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.2-3.2" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Buscar código o materia"
+            autoComplete="off"
+            value={searchInput}
+            onChange={(e) => onSearch(e.target.value)}
+          />
+        </div>
+      )}
+
       <nav className="views">
-        {VIEWS.map((v) => (
+        {VIEWS.map((v, i) => (
           <button
             key={v.view}
             className={"view" + (view === v.view ? " is-active" : "")}
             onClick={() => dispatch({ type: "SET_VIEW", view: v.view })}
           >
-            {v.label}
+            <span className="view__ix" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="view__lb">{v.label}</span>
           </button>
         ))}
       </nav>
 
-      <section className="block">
-        <div className="block__h">Filtros</div>
-        <label className="chk">
-          <input type="checkbox" checked readOnly />
-          <span>Obligatorias</span>
-        </label>
-        <label className="chk">
-          <input type="checkbox" checked readOnly />
-          <span>Electivas</span>
-        </label>
-        <label className="chk">
-          <input
-            type="checkbox"
-            checked={fDisp}
-            onChange={(e) =>
-              dispatch({ type: "SET_FILTER", key: "fDisp", value: e.target.checked })
-            }
-          />
-          <span>Solo disponibles</span>
-        </label>
-        <label className="chk">
-          <input
-            type="checkbox"
-            checked={fHor}
-            onChange={(e) =>
-              dispatch({ type: "SET_FILTER", key: "fHor", value: e.target.checked })
-            }
-          />
-          <span>Solo con horario 2C&nbsp;2026</span>
-        </label>
-      </section>
+      {showFilters && (
+        <section className="block">
+          <div className="block__h"><span>Filtros</span></div>
+          <label className="chk">
+            <input
+              type="checkbox"
+              checked={fDisp}
+              onChange={(e) =>
+                dispatch({ type: "SET_FILTER", key: "fDisp", value: e.target.checked })
+              }
+            />
+            <span>Solo disponibles</span>
+          </label>
+          <label className="chk">
+            <input
+              type="checkbox"
+              checked={fHor}
+              onChange={(e) =>
+                dispatch({ type: "SET_FILTER", key: "fHor", value: e.target.checked })
+              }
+            />
+            <span>Solo con horario 2C&nbsp;2026</span>
+          </label>
+        </section>
+      )}
 
+      {showElect && (
+        <>
       <section className="block">
-        <div className="block__h">Áreas · Minors</div>
-        <div className="areas">
-          {PLAN.areas.map((a) => (
-            <button
-              key={a}
-              className={"area-pill" + (areasOn.has(a) ? "" : " off")}
-              onClick={() => dispatch({ type: "TOGGLE_AREA", area: a })}
-            >
-              <span className="swatch" style={{ background: AREA_COLOR[a] }} />
-              {a}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="block">
-        <div className="block__h">Progreso de minors</div>
+        <div className="block__h"><span>Minors · áreas</span></div>
         <div className="minors">
           {PLAN.areas.map((a) => {
             const s = minorCred[a] || 0;
+            const on = areasOn.has(a);
             return (
-              <div className="minor" key={a}>
-                <div className="minor__top">
-                  <span>{a}</span>
+              <button
+                type="button"
+                key={a}
+                className={"minrow" + (on ? "" : " off")}
+                aria-pressed={on}
+                title={on ? "Ocultar esta área del filtro" : "Incluir esta área en el filtro"}
+                onClick={() => dispatch({ type: "TOGGLE_AREA", area: a })}
+              >
+                <span className="minrow__top">
+                  <span className="swatch" style={{ background: AREA_COLOR[a] }} />
+                  <span className="minrow__name">{a}</span>
                   <b>{s}/14</b>
-                </div>
-                <div className="minibar">
+                </span>
+                <span className="minibar">
                   <i
                     style={{
                       width: Math.min(100, (s / 14) * 100) + "%",
                       background: AREA_COLOR[a],
                     }}
                   />
-                </div>
-              </div>
+                </span>
+              </button>
             );
           })}
         </div>
       </section>
 
-      <section className="block">
+      <section className="block side__gauge">
         <div className="block__h">
-          Electivas <span className="hk">27 créditos</span>
+          <span>Electivas</span>
+        </div>
+        <div className="gauge__read">
+          <b>{ec}</b>
+          <span className="gauge__of">/ 27 créditos</span>
+          {ec >= 27 ? <span className="gauge__done">completo</span> : null}
         </div>
         <div className="bar">
           <div
@@ -204,10 +219,9 @@ export default function Sidebar() {
             style={{ width: Math.min(100, (ec / 27) * 100) + "%" }}
           />
         </div>
-        <p className="muted">
-          {ec} / 27{ec >= 27 ? " · completo" : ""}
-        </p>
       </section>
+        </>
+      )}
 
       <button
         className="reset"

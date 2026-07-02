@@ -2,8 +2,8 @@
 
 // Lector full-screen de la ficha (programa analítico) de una electiva.
 // Lee state.fichaCode para saber qué materia mostrar; null = cerrado.
-// Otros componentes despachan OPEN_FICHA para abrirlo. Las flechas (← →) y el
-// botón × navegan entre electivas que tienen ficha y cierran el lector.
+// Otros componentes despachan OPEN_FICHA para abrirlo. Las flechas de navegación
+// y el botón de cerrar recorren las electivas con ficha y cierran el lector.
 //
 // El overlay se monta vía portal en document.body para escapar del stacking
 // context de <main class="page" z-index:1> y poder cubrir el navbar fijo del
@@ -15,6 +15,11 @@ import { createPortal } from "react-dom";
 import { usePlanner } from "@/components/planner/state";
 import { FICHAS } from "@/lib/planner/fichas";
 import { withBase } from "@/lib/content/slug";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconClose,
+} from "@/components/planner/icons";
 import type { Ficha } from "@/lib/planner/types";
 
 /** Render de un texto multi-párrafo (separado por "\n\n") como <p> apilados. */
@@ -99,7 +104,7 @@ export default function FichaReader() {
           onClick={goPrev}
           aria-label="Anterior"
         >
-          ←
+          <IconChevronLeft size={16} />
         </button>
         <button
           className="fr-navbtn"
@@ -107,7 +112,7 @@ export default function FichaReader() {
           onClick={goNext}
           aria-label="Siguiente"
         >
-          →
+          <IconChevronRight size={16} />
         </button>
         {ficha ? (
           <span className="fr-bar__pos">
@@ -117,7 +122,7 @@ export default function FichaReader() {
       </div>
       <span className="fr-bar__title">Programa analítico</span>
       <button className="fr-close" onClick={close} aria-label="Cerrar">
-        ×
+        <IconClose size={16} />
       </button>
     </header>
   );

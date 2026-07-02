@@ -64,12 +64,18 @@ function PlannerInner() {
         maxCred: state.plan.maxCred,
         maxMat: state.plan.maxMat,
         avoid: state.plan.avoid,
+        method: state.plan.method,
+        capCredByIdx: [...state.plan.capCredByIdx],
+        capMatByIdx: [...state.plan.capMatByIdx],
       });
   }, [
     state.plan.start,
     state.plan.maxCred,
     state.plan.maxMat,
     state.plan.avoid,
+    state.plan.method,
+    state.plan.capCredByIdx,
+    state.plan.capMatByIdx,
     state.hydrated,
   ]);
   useEffect(() => {
@@ -87,6 +93,31 @@ function PlannerInner() {
           <View />
         </main>
       </div>
+      {state.sideCollapsed && (
+        <button
+          type="button"
+          className="side__reveal"
+          aria-label="Mostrar el panel de control"
+          title="Mostrar panel"
+          onClick={() => dispatch({ type: "TOGGLE_SIDEBAR" })}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            aria-hidden="true"
+          >
+            <path
+              d="M9.5 6.5 15 12l-5.5 5.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
       <DetailDrawer />
       <FichaReader />
     </div>

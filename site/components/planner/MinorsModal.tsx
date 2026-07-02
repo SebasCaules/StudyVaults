@@ -8,6 +8,7 @@ import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { PLAN, AREA_COLOR, byId, credOf } from "@/lib/planner/model";
 import { cuatriAt, cuatriLabel, cuatriName } from "@/lib/planner/optimize";
+import { IconClose, IconCheck } from "@/components/planner/icons";
 import type { PlacedMateria, PlanStart } from "@/lib/planner/types";
 
 const MINOR_REQ = 14;
@@ -116,7 +117,7 @@ export default function MinorsModal({
       <div className="mnr-modal__bg" onClick={onClose} />
       <div className="mnr-modal__panel">
         <button className="mnr-close" onClick={onClose} aria-label="Cerrar">
-          ×
+          <IconClose size={15} />
         </button>
         <header className="mnr-head">
           <span className="mnr-kick">Minors</span>
@@ -163,7 +164,11 @@ export default function MinorsModal({
                         }
                       >
                         <span className="mnr-cell__n">{c.total}</span>
-                        {done && <span className="mnr-cell__chk">✓</span>}
+                        {done && (
+                          <span className="mnr-cell__chk">
+                            <IconCheck size={11} />
+                          </span>
+                        )}
                         {!r.base && c.delta > 0 && !done && (
                           <span className="mnr-cell__d">+{c.delta}</span>
                         )}

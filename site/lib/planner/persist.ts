@@ -2,7 +2,12 @@
 // para no perder estado de usuarios actuales, + claves nuevas para los inputs
 // del combinador y del plan (preferencias, comisiones fijadas). Solo cliente.
 // (sv-theme lo maneja el portal, no el planner.)
-import type { ComboParams, PlanStart } from "./types";
+import type {
+  ComboParams,
+  OptMethod,
+  PlannerState,
+  PlanStart,
+} from "./types";
 
 const K = {
   approved: "plan_aprobadas_v3",
@@ -20,6 +25,9 @@ export interface PlanOpts {
   maxCred: number;
   maxMat: number;
   avoid: boolean;
+  method?: OptMethod;
+  capCredByIdx?: [number, number][];
+  capMatByIdx?: [number, number][];
 }
 
 export interface Persisted {
@@ -86,3 +94,131 @@ export const saveSidebar = (collapsed: boolean) => {
     /* noop */
   }
 };
+
+/* =========================================================================
+   EXPORT / IMPORT de preferencias (archivo .json portable)
+   Un único bundle autocontenido con TODO el estado persistible del planner,
+   para descargar y volver a cargar el mismo template más adelante (o en otro
+   navegador). El shape mapea 1:1 a `Persisted` → se reimporta vía HYDRATE.
+   ========================================================================= */
+
+export const PREF_VERSION = 1;
+const PREF_APP = "studyvaults-planner";
+
+/** Bundle serializable de preferencias del planner. */
+export interface PreferenceBundle {
+  app: typeof PREF_APP;
+  v: number;
+  exported?: string; // fecha legible, informativa
+  approved: string[];
+  combo: string[];
+  pool: string[];
+  fixed: [string, number][];
+  fixedCom: [string, string][];
+  comboParams: ComboParams;
+  planOpts: PlanOpts;
+  sideCollapsed: boolean;
+}
+
+/** Arma el bundle exportable a partir del estado vivo del planner. */
+export function buildPreferenceBundle(
+  state: PlannerState,
+  exported?: string,
+): PreferenceBundle {
+  return {
+    app: PREF_APP,
+    v: PREF_VERSION,
+    exported,
+    approved: [...state.approved],
+    combo: [...state.combo],
+    pool: [...state.plan.pool],
+    fixed: [...state.plan.fixed],
+    fixedCom: [...state.fixedCom],
+    comboParams: state.comboParams,
+    planOpts: {
+      start: state.plan.start,
+      maxCred: state.plan.maxCred,
+      maxMat: state.plan.maxMat,
+      avoid: state.plan.avoid,
+      method: state.plan.method,
+      capCredByIdx: [...state.plan.capCredByIdx],
+      capMatByIdx: [...state.plan.capMatByIdx],
+    },
+    sideCollapsed: state.sideCollapsed,
+  };
+}
+
+/** Serializa el bundle a texto JSON legible (para descargar como archivo). */
+export const serializePreferences = (
+  state: PlannerState,
+  exported?: string,
+): string => JSON.stringify(buildPreferenceBundle(state, exported), null, 2);
+
+const isStrArr = (x: unknown): x is string[] =>
+  Array.isArray(x) && x.every((v) => typeof v === "string");
+const isPairArr = <B>(x: unknown, second: (v: unknown) => v is B): x is [string, B][] =>
+  Array.isArray(x) &&
+  x.every(
+    (p) => Array.isArray(p) && p.length === 2 && typeof p[0] === "string" && second(p[1]),
+  );
+const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
+const isStr = (v: unknown): v is string => typeof v === "string";
+const isNumPairArr = (x: unknown): x is [number, number][] =>
+  Array.isArray(x) &&
+  x.every((p) => Array.isArray(p) && p.length === 2 && isNum(p[0]) && isNum(p[1]));
+
+/**
+ * Parsea un archivo de preferencias exportado → `Persisted` (lo que consume
+ * HYDRATE). Tolerante: campos faltantes o inválidos caen a `null` (HYDRATE los
+ * ignora y conserva el estado actual). Devuelve `null` si el JSON es inválido o
+ * no parece un bundle del planner.
+ */
+export function parsePreferences(text: string): Persisted | null {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (!raw || typeof raw !== "object") return null;
+  const b = raw as Record<string, unknown>;
+  // acepta bundles nuestros; si viene con `app` debe matchear
+  if ("app" in b && b.app !== PREF_APP) return null;
+
+  const po = (b.planOpts && typeof b.planOpts === "object"
+    ? (b.planOpts as Record<string, unknown>)
+    : {}) as Record<string, unknown>;
+  const start =
+    po.start && typeof po.start === "object"
+      ? (po.start as PlanStart)
+      : null;
+  const planOpts: PlanOpts | null = start
+    ? {
+        start,
+        maxCred: isNum(po.maxCred) ? po.maxCred : 18,
+        maxMat: isNum(po.maxMat) ? po.maxMat : 5,
+        avoid: typeof po.avoid === "boolean" ? po.avoid : true,
+        method: (po.method === "cuatris" ||
+        po.method === "dias" ||
+        po.method === "balance"
+          ? po.method
+          : "cuatris") as OptMethod,
+        capCredByIdx: isNumPairArr(po.capCredByIdx) ? po.capCredByIdx : [],
+        capMatByIdx: isNumPairArr(po.capMatByIdx) ? po.capMatByIdx : [],
+      }
+    : null;
+
+  return {
+    approved: isStrArr(b.approved) ? b.approved : null,
+    combo: isStrArr(b.combo) ? b.combo : null,
+    pool: isStrArr(b.pool) ? b.pool : null,
+    fixed: isPairArr(b.fixed, isNum) ? b.fixed : null,
+    comboParams:
+      b.comboParams && typeof b.comboParams === "object"
+        ? (b.comboParams as ComboParams)
+        : null,
+    fixedCom: isPairArr(b.fixedCom, isStr) ? b.fixedCom : null,
+    planOpts,
+    sideCollapsed: typeof b.sideCollapsed === "boolean" ? b.sideCollapsed : false,
+  };
+}
