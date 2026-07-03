@@ -79,6 +79,24 @@ Reglas:
 - **Display** si: tiene `\sum`, `\int`, `\prod`, `\frac` de varios pisos, matriz, o es el enunciado central que el lector va a querer ubicar de un vistazo.
 - Caso de borde frecuente: una sumatoria corta como $\sum_{i=1}^n x_i$ puede ir inline; $\displaystyle\sum_{i=1}^{n} \frac{x_i^2}{n-1}$ va en display.
 
+### 1.3 bis Estilo libro: prosa + display + leyenda (DESIGN.md §6.1)
+
+Toda fórmula relevante se presenta como en un apunte LaTeX académico, en tres partes:
+
+```markdown
+La función de densidad de la distribución normal con media $\mu$ y desvío $\sigma$ es
+
+$$f(x) = \frac{1}{\sigma\sqrt{2\pi}} \, e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+
+donde $\mu$ es la media, $\sigma > 0$ el desvío estándar y $x \in \mathbb{R}$ el punto evaluado.
+```
+
+- **Intro en prosa** (qué es / cuándo se usa) → **display en renglón propio** → **leyenda de
+  variables** que cubre *todos* los símbolos, incluidos subíndices y argumentos no obvios.
+- **Prohibido** enunciar la fórmula central inline dentro del párrafo ("pared de símbolos"):
+  el inline es para *mencionar* símbolos, no para enunciar resultados.
+- Derivaciones: un bloque display por paso, con la prosa conectando los pasos.
+
 ### 1.4 Multilínea: `aligned` (la única forma de alinear)
 
 Para cadenas de igualdades, despejes, demostraciones por pasos. Va **dentro** de `$$`.

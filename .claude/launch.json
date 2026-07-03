@@ -2,6 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     { "name": "site", "runtimeExecutable": "sh", "runtimeArgs": ["-c", "cd site && npm run dev"], "port": 3000, "autoPort": true },
+    { "name": "site-static", "runtimeExecutable": "sh", "runtimeArgs": ["-c", "./run.sh build"], "port": 3000, "autoPort": true },
     { "name": "texture-preview", "runtimeExecutable": "sh", "runtimeArgs": ["-c", "cd _estandar/obsidian-texture-pack && python3 -m http.server 4599"], "port": 4599 }
   ]
 }

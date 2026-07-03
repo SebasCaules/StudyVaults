@@ -1,0 +1,50 @@
+{
+  "_README": "PROPUESTO por la auditoría de sesiones 2026-07. Revisar y activar con: mv .claude/settings.proposed.json .claude/settings.json (y abrir /hooks o reiniciar la sesión para que cargue). Hooks: (1) bloquea `cd` relativo en Bash — el cwd se resetea entre llamadas y esto causó ~11 errores; (2) bloquea `git commit` con trailer Co-Authored-By: Claude; (3) al iniciar sesión avisa si hay >15 archivos sin commitear (riesgo de pisadas entre sesiones concurrentes). attribution.commit='' evita que el harness agregue el trailer. El allowlist cubre los probes read-only y el loop de verificación (tsc/build/run.sh) que hoy piden permiso a cada rato.",
+  "attribution": {
+    "commit": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit*)",
+      "Bash(npm run build*)",
+      "Bash(npx next build*)",
+      "Bash(./run.sh *)",
+      "Bash(/Users/sebastiancaules/Desktop/ITBA/StudyVaultsITBA/run.sh *)",
+      "Bash(lsof *)",
+      "Bash(which *)",
+      "Bash(ls *)",
+      "Bash(wc *)",
+      "Bash(pgrep *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "c=$(jq -r '.tool_input.command // \"\"'); if printf '%s\\n' \"$c\" | grep -qE \"(^|&&|;)[[:space:]]*cd[[:space:]]+[^/~\\\"'\\$-]\"; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"cd relativo bloqueado: el cwd de Bash se resetea entre llamadas. Reescribí con ruta absoluta bajo /Users/sebastiancaules/Desktop/ITBA/StudyVaultsITBA/\"}}'; fi",
+            "statusMessage": "Chequeando cd relativo"
+          },
+          {
+            "type": "command",
+            "command": "c=$(jq -r '.tool_input.command // \"\"'); case \"$c\" in *\"git commit\"*) if printf '%s' \"$c\" | grep -qi \"co-authored-by: claude\"; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Este repo commitea SIN trailer Co-Authored-By: Claude. Repetí el commit sin el trailer.\"}}'; fi;; esac",
+            "statusMessage": "Chequeando trailer de commit"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "n=$(git -C /Users/sebastiancaules/Desktop/ITBA/StudyVaultsITBA status --porcelain 2>/dev/null | wc -l | tr -d ' '); if [ \"${n:-0}\" -gt 15 ]; then printf '{\"systemMessage\":\"⚠ %s archivos sin commitear — posible sesión concurrente. Commit temprano; no tocar archivos ajenos.\",\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"Hay %s archivos sin commitear en el working tree. Puede haber otras sesiones de Claude activas en este repo: commitear temprano y seguido, Read antes de Edit, y jamás git checkout -- <paths> ni git clean sobre archivos que esta sesión no creó.\"}}' \"$n\" \"$n\"; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

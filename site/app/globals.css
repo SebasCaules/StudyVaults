@@ -915,11 +915,16 @@
   height: clamp(300px, 40vh, 400px);
   border-radius: 6px;
   overflow: hidden;
-  background: radial-gradient(
-    120% 120% at 50% 20%,
-    color-mix(in srgb, var(--surface-3) 55%, transparent),
-    transparent 72%
-  );
+  /* Inset OSCURO en ambos temas (patrón deliberado: la constelación "vive en el
+     espacio"). El glow lo aporta el bloom de los nodos → necesita fondo oscuro
+     para leerse en dark y en light por igual. Deep warm brown con centro lifteado. */
+  background:
+    radial-gradient(
+      125% 115% at 50% 34%,
+      color-mix(in srgb, var(--hex-brown-soft) 60%, #000 40%),
+      transparent 74%
+    ),
+    color-mix(in srgb, var(--hex-brown) 84%, #000 16%);
 }
 .hero-graph__canvas::before {
   content: "";
@@ -927,10 +932,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(46% 52% at 44% 40%, var(--glow-coral), transparent 68%),
-    radial-gradient(50% 56% at 60% 62%, var(--glow-blue), transparent 70%);
-  animation: brainBreath 6.5s var(--ease) infinite;
+  /* viñeta suave para asentar los nodos contra los bordes de la tarjeta */
+  background: radial-gradient(130% 130% at 50% 45%, transparent 56%, rgba(0, 0, 0, 0.5) 100%);
 }
 .hero-graph__canvas canvas {
   position: relative;
@@ -965,11 +968,12 @@
   white-space: normal;
   line-height: 1.35;
 }
-/* nubes difusas + etiquetas de materia sobre el grafo 3D (overlay proyectado) */
+/* etiquetas de materia en PRIMER plano sobre el grafo 3D (overlay proyectado).
+   Pills nítidas con backdrop-blur — posicionadas por frame con anti-solape 2D. */
 .fg3d-labels {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
   overflow: hidden;
 }
@@ -977,39 +981,45 @@
   position: absolute;
   top: 0;
   left: 0;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease, ease);
   will-change: transform, opacity;
-}
-.fg3d-neb {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 138px;
-  height: 138px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--c) 34%, transparent) 0%,
-    transparent 64%
-  );
-  filter: blur(7px);
 }
 .fg3d-lab {
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(-50%, calc(-50% - 46px));
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1;
-  color: var(--c);
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  /* Estilo dark-glass FIJO (el canvas es oscuro en ambos temas): texto de
+     materia claro sobre pill de vidrio oscuro → siempre nítido y legible. */
+  color: color-mix(in srgb, var(--c) 62%, #fff);
+  background: color-mix(in srgb, var(--hex-brown) 80%, transparent);
+  -webkit-backdrop-filter: blur(7px) saturate(1.25);
+  backdrop-filter: blur(7px) saturate(1.25);
   border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
   border-radius: 999px;
-  padding: 3px 9px;
+  padding: 3.5px 10px;
   white-space: nowrap;
+  box-shadow:
+    0 1px 12px color-mix(in srgb, var(--c) 34%, transparent),
+    0 2px 10px rgba(0, 0, 0, 0.35);
+}
+/* punto de color a la izquierda del texto de la pill */
+.fg3d-lab::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--c) 80%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-graph__live,

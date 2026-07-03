@@ -169,6 +169,15 @@ Reglas de cuándo enlazar:
 
 - **Inline:** `$ ... $` para símbolos en medio de prosa: `el espacio $\mathbb{K}^n$ con norma $\|v\|_2$`.
 - **Display:** `$$ ... $$` para fórmulas centradas en su propia línea. Una fórmula por bloque salvo que se alineen con `\quad`/`\qquad`.
+- **Estilo libro (OBLIGATORIO en contenido matemático):** las fórmulas se presentan como en un
+  apunte LaTeX académico, nunca como pared de símbolos inline. Cada fórmula relevante lleva:
+  1. una **línea introductoria en prosa** que dice qué es y cuándo se usa,
+  2. el bloque **display `$$ … $$` en su propio renglón** (no inline dentro del párrafo),
+  3. una **leyenda de variables** inmediatamente después ("donde $\mu$ es la media, $\sigma$ el
+     desvío…"), cubriendo **todos** los símbolos que aparecen — incluidos los de argumentos o
+     subíndices no obvios.
+  Fórmulas encadenadas o derivaciones: un bloque display por paso, con la prosa conectando pasos.
+  Reservar el inline `$…$` para *mencionar* símbolos dentro de la prosa, no para enunciar fórmulas.
 - LaTeX es **fuerte** en MNA, Economía, Proba, SDS; **ausente** en Derecho e Inge2. En PAW `$...$` se usa para *código inline* (nombres de clase/anotaciones), no matemática. Respetar el uso de cada materia: **no introducir LaTeX donde la materia no lo usa**.
 - Matrices con `\begin{pmatrix} … \end{pmatrix}`; conjuntos numéricos con `\mathbb{}`.
 
@@ -282,6 +291,7 @@ Antes de dar por terminada una página, verificar **todos** estos puntos:
 - [ ] Jerarquía de headings sin saltos (`#` → `##` → `###`).
 - [ ] Definiciones/teoremas en **blockquote con etiqueta en negrita** (`> **Definición.**`); **cero** callouts `[!type]`.
 - [ ] LaTeX coherente con la materia (`$` inline, `$$` display); no se introdujo LaTeX donde la materia no lo usa.
+- [ ] Fórmulas en **estilo libro** (§6.1): display en renglón propio + intro en prosa + leyenda de variables; sin paredes de fórmulas inline.
 - [ ] Tablas con cabecera + separador; bloques de código con lenguaje.
 - [ ] Wikilinks con nombre de archivo correcto (kebab-case, sin `.md`); alias `|` donde haga falta.
 - [ ] Nombre de archivo en kebab-case, sin tildes/ñ, con prefijo numérico si el orden importa, en la carpeta temática correcta.

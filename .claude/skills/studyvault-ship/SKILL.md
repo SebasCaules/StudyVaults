@@ -20,6 +20,11 @@ El trabajo se divide en **dos fases**:
 - **Fase B — Publicar**: **SOLO cuando el usuario lo pide explícitamente** ("pushea", "publicá",
   "subilo", "deployá"). Nunca pushees por iniciativa propia.
 
+**Fast path**: si el usuario dice **"no chequees"** (o equivalente: "dejá todo listo para pushear",
+"pushea directo"), **salteá la Fase A entera** — solo `npx tsc --noEmit` como sanity mínimo barato,
+después directo a Fase B. No re-verifiques lo que ya verificaste antes en la misma sesión: el
+usuario interrumpe cuando sobre-chequeamos.
+
 ---
 
 ## Fase A — Verificar
@@ -58,6 +63,21 @@ porque en producción `next.config.ts` aplica `basePath: "/StudyVaults"` (solo c
    - `preview_screenshot` de las páginas tocadas.
    - `preview_console_logs` para confirmar **0 errores de consola**.
 
+   **Higiene de preview** (de la auditoría de sesiones — estos errores costaron ~100 reintentos):
+   - Los únicos servers válidos de `.claude/launch.json` son **`site`** (dev) y **`site-static`**
+     (build estático vía `./run.sh build`). **No inventes nombres** (`site-dev` no existe).
+   - Las rutas **`/[vault]/…` SOLO renderizan en el build estático** (bug conocido de
+     `generateStaticParams` + `output:export` en dev) → verificalas contra `site-static`, nunca dev.
+   - Si `preview_eval` falla con **"Inspected target navigated or closed"**: la página navegó/HMR
+     recompiló. Re-adjuntate (re-navegá a la URL) **UNA vez** y reintentá; si vuelve a fallar,
+     screenshot en vez de eval. No loopees evals contra un target muerto.
+   - Ids de preview-server **no sobreviven** entre fases largas: si `preview_stop`/`preview_eval`
+     dice "Server not found", re-arrancá con `preview_start` en vez de reintentar el id viejo.
+   - Para esperar compilaciones: **Monitor** (cargarlo vía ToolSearch) con until-loop — nunca
+     `sleep` en foreground (está bloqueado).
+   - **NUNCA verifiques con el Chrome del usuario** (`mcp__claude-in-chrome__*`) salvo pedido
+     explícito — regla del usuario: "No chequees con google chrome más, solo cuando yo te diga".
+
 4. **Referencia de build sano**: **~802 páginas** generadas, `tsc` limpio, **0 errores de consola**.
    Si el número de páginas baja mucho o aparecen errores de TS/consola, algo se rompió.
 
@@ -76,6 +96,12 @@ porque en producción `next.config.ts` aplica `basePath: "/StudyVaults"` (solo c
 - **Cache `globalThis` del manifest**: cambios en `lib/content/*` (manifest/processors/wikilinks)
   **sobreviven al HMR**. Tras tocar el pipeline de contenido hay que **reiniciar** el dev server
   (`./run.sh` de nuevo) para ver el cambio.
+- **"No veo los cambios" del usuario** = caché stale hasta demostrar lo contrario. Primera
+  respuesta SIEMPRE: matar el server + `./run.sh` (dev) o `./run.sh build` — ambos limpian `.next`
+  y regeneran todo. No debuggear el código antes de descartar la caché.
+- **Tras una ola de subagentes que tocó `site/`**: correr `npx tsc --noEmit` + `next build` ANTES
+  de reportar terminado. Ya pasó que una migración masiva dejó el build roto y hizo falta una
+  sesión entera para arreglarlo.
 
 ---
 

@@ -87,23 +87,115 @@ const MESAS_OFICIALES: Partial<
   },
 };
 
+// ---------------------------------------------------------------------------
+// 1b. MESAS CARGADAS EN RUNTIME (parser de la planilla oficial) — store reactivo
+//     ---------------------------------------------------------------------
+//     Cuando el usuario trae/sube la planilla real (ver lib/planner/finales/*
+//     y components/planner/FinalesIngesta.tsx), las mesas parseadas se guardan
+//     acá y REEMPLAZAN al MOCK de arriba para ese llamado/año. `mesaOficial` y
+//     `llamadoTieneMesas` consultan primero este store; el mock queda como
+//     fallback (útil para el llamado de muestra sin cargar nada).
+//
+//     Es un store de módulo (no vive en el estado del planner ni se persiste):
+//     los datos oficiales se re-traen con un click. Para que la vista se
+//     re-renderice al cargar, expone `subscribeMesasOficiales` +
+//     `mesasOficialesVersion` (para `useSyncExternalStore`, SSR-safe).
+// ---------------------------------------------------------------------------
+
+/** Clave compuesta llamado|año|código dentro del store de runtime. */
+const runtimeKey = (periodo: FinalPeriodo, anio: number, code: string) =>
+  `${periodo}|${anio}|${code}`;
+
+let RUNTIME_MESAS: Map<string, MesaFinal> | null = null;
+let mesasVersion = 0;
+const mesasListeners = new Set<() => void>();
+
+function emitMesas() {
+  mesasVersion++;
+  for (const l of mesasListeners) l();
+}
+
+/** Suscribe un listener a los cambios del store (para `useSyncExternalStore`). */
+export function subscribeMesasOficiales(fn: () => void): () => void {
+  mesasListeners.add(fn);
+  return () => {
+    mesasListeners.delete(fn);
+  };
+}
+
+/** Snapshot barato: un contador que cambia en cada carga/limpieza. */
+export function mesasOficialesVersion(): number {
+  return mesasVersion;
+}
+
+/**
+ * Carga (o reemplaza) las mesas oficiales de un llamado/año con datos reales
+ * parseados de la planilla. Limpia primero las de ese mismo llamado/año, así
+ * re-traer sobreescribe en vez de acumular.
+ */
+export function setMesasOficiales(
+  periodo: FinalPeriodo,
+  anio: number,
+  entries: Iterable<readonly [string, MesaFinal]>,
+): void {
+  const next = new Map(RUNTIME_MESAS ?? []);
+  const prefix = `${periodo}|${anio}|`;
+  for (const k of [...next.keys()]) if (k.startsWith(prefix)) next.delete(k);
+  for (const [code, mesa] of entries) next.set(runtimeKey(periodo, anio, code), mesa);
+  RUNTIME_MESAS = next;
+  emitMesas();
+}
+
+/**
+ * Limpia el store. Sin argumentos borra todo; con llamado/año borra solo ese
+ * bloque (volviendo al mock para ese llamado).
+ */
+export function clearMesasOficiales(periodo?: FinalPeriodo, anio?: number): void {
+  if (!RUNTIME_MESAS) return;
+  if (periodo === undefined || anio === undefined) {
+    RUNTIME_MESAS = null;
+    emitMesas();
+    return;
+  }
+  const prefix = `${periodo}|${anio}|`;
+  const next = new Map(RUNTIME_MESAS);
+  for (const k of [...next.keys()]) if (k.startsWith(prefix)) next.delete(k);
+  RUNTIME_MESAS = next.size ? next : null;
+  emitMesas();
+}
+
+/** ¿Hay mesas cargadas en runtime para este llamado/año (datos reales)? */
+export function hayMesasOficialesCargadas(
+  periodo: FinalPeriodo,
+  anio: number,
+): boolean {
+  if (!RUNTIME_MESAS) return false;
+  const prefix = `${periodo}|${anio}|`;
+  for (const k of RUNTIME_MESAS.keys()) if (k.startsWith(prefix)) return true;
+  return false;
+}
+
 /**
  * Mesa oficial de un final para un llamado/año, o `undefined` si no hay mesa
  * publicada (el final entra "sin fecha" hasta que el usuario la cargue a mano).
+ * Prioridad: mesas cargadas del parser (reales) → mock de ejemplo.
  */
 export function mesaOficial(
   code: string,
   periodo: FinalPeriodo,
   anio: number,
 ): MesaFinal | undefined {
+  const cargada = RUNTIME_MESAS?.get(runtimeKey(periodo, anio, code));
+  if (cargada) return cargada;
   return MESAS_OFICIALES[periodo]?.[anio]?.[code];
 }
 
-/** ¿El llamado tiene AL MENOS una mesa oficial cargada (datos de ejemplo)? */
+/** ¿El llamado tiene AL MENOS una mesa oficial (cargada del parser o de muestra)? */
 export function llamadoTieneMesas(
   periodo: FinalPeriodo,
   anio: number,
 ): boolean {
+  if (hayMesasOficialesCargadas(periodo, anio)) return true;
   const t = MESAS_OFICIALES[periodo]?.[anio];
   return !!t && Object.keys(t).length > 0;
 }

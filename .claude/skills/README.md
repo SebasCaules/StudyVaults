@@ -12,6 +12,7 @@ convenciones + trampas) — leerlo primero.
 | [`studyvault-sheet`](studyvault-sheet/SKILL.md) | Hojas | armar/extender hojas imprimibles de fórmulas/conceptos (`/[vault]/hojas`) |
 | [`studyvault-ui`](studyvault-ui/SKILL.md) | Design system | agregar/modificar un componente de `@studyvaults/ui` |
 | [`studyvault-data`](studyvault-data/SKILL.md) | Datos | escribir un pipeline `scripts/build-*-data.mjs` desde los vaults |
+| [`studyvault-ingest`](studyvault-ingest/SKILL.md) | Ingesta | traer material externo (PDFs/planillas/transcripts/horarios SGA) al repo y cablearlo al sitio |
 | [`studyvault-ship`](studyvault-ship/SKILL.md) | Operación | verificar (`run.sh` + preview) y publicar (push a `main`, deploy a Pages) |
 | [`studyvault-design`](studyvault-design/SKILL.md) | Estándar | mantener/extender DESIGN.md (las 3 copias byte-idénticas) |
 
@@ -25,6 +26,8 @@ convenciones + trampas) — leerlo primero.
             │ consume              ▼
    studyvault-page ─────────► contenido .md  ──► el sitio (site/) lo renderiza
                                                         ▲
+   studyvault-ingest ─► material externo → repo (raw/, Electivas/, public/)
+            │ delega extracción en
    studyvault-data ─► data.ts/json ─► studyvault-toolkit / studyvault-sheet
                                                         │ usan
                                               studyvault-ui (@studyvaults/ui)

@@ -17,7 +17,12 @@
 // Static-export safe: el .ics se arma client-side (Blob + createObjectURL)
 // detrás de un guard `typeof window !== "undefined"`.
 
-import { useMemo, useState, type CSSProperties } from "react";
+import {
+  useMemo,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+} from "react";
 import { usePlanner } from "@/components/planner/state";
 import { byId, credOf, PALETTE } from "@/lib/planner/model";
 import {
@@ -28,7 +33,11 @@ import {
   periodoAnioReal,
   mesaOficial,
   finalHabilitado,
+  subscribeMesasOficiales,
+  mesasOficialesVersion,
+  hayMesasOficialesCargadas,
 } from "@/lib/planner/finalesData";
+import FinalesIngesta from "@/components/planner/FinalesIngesta";
 import {
   IconCalendar,
   IconCheck,
@@ -120,8 +129,17 @@ export default function FinalesCombinadorView() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [exportMsg, setExportMsg] = useState<string | null>(null);
 
+  // Re-render cuando el store de mesas oficiales cambia (carga del parser de la
+  // planilla). SSR-safe: en el server el snapshot es siempre 0.
+  const mesasVersion = useSyncExternalStore(
+    subscribeMesasOficiales,
+    mesasOficialesVersion,
+    () => 0,
+  );
+
   const { month, year } = periodoMesAnio(periodo, anio);
   const anioReal = periodoAnioReal(periodo, anio);
+  const conMesasReales = hayMesasOficialesCargadas(periodo, anio);
 
   // ----- universo de finales pendientes (approved && !finalDone) -----
   const rows: FinalRow[] = useMemo(() => {
@@ -165,7 +183,9 @@ export default function FinalesCombinadorView() {
         selected: seleccion.has(code),
       };
     });
-  }, [approved, finalDone, mesas, seleccion, periodo, anio, month, year]);
+    // mesasVersion: recomputa cuando el parser carga/limpia mesas oficiales.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [approved, finalDone, mesas, seleccion, periodo, anio, month, year, mesasVersion]);
 
   const eligibles = useMemo(() => rows.filter((r) => !r.blocked), [rows]);
   const blocked = useMemo(() => rows.filter((r) => r.blocked), [rows]);
@@ -416,6 +436,9 @@ export default function FinalesCombinadorView() {
           muy pegados, y te sugiere una combinación con margen de repaso.
         </p>
       </div>
+
+      {/* ---- ingesta de la planilla oficial (autocompleta las mesas) ---- */}
+      <FinalesIngesta />
 
       {/* ---- barra: llamado + año + panel + sugerir ---- */}
       <div className="fin__bar">
@@ -914,9 +937,9 @@ export default function FinalesCombinadorView() {
       <p className="fin__foot">
         <IconInfo size={13} />
         <span>
-          Datos de ejemplo — las fechas reales de mesas y las correlativas de
-          final se cargan aparte (hoy solo el llamado de Julio 2026 tiene mesas
-          de muestra).
+          {conMesasReales
+            ? "Mesas cargadas de la planilla oficial que subiste — verificá siempre con la cátedra. Las correlativas de final son un modelo de referencia."
+            : "Datos de ejemplo — traé la planilla oficial arriba para autocompletar las fechas reales. Las correlativas de final son un modelo de referencia."}
         </span>
       </p>
     </section>
