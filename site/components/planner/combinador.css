@@ -1,0 +1,489 @@
+/* ============================================================================
+   Combinador de horarios — capa NUEVA del overhaul (Módulo E).
+   Complementa a planner.css (NO lo reemplaza): sólo define el layout propio del
+   rediseño — header compacto con controles fijos a la derecha, calendario a todo
+   el ancho, menú de descarga de 3 opciones y el recomendador slim lateral.
+   El calendario, la leyenda, los switches/pills, los chips y el buscador siguen
+   viniendo de planner.css (reusados como consumidor). Todo bajo `.planner` para
+   heredar sus tokens de rol — nada de hex hardcodeado (excepto pasar por roles).
+   ============================================================================ */
+
+/* ---------- container ---------- */
+.planner .cmb9 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- header compacto ---------- */
+.planner .cmb9-header {
+  display: flex;
+  align-items: center;
+  gap: 14px 16px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-1);
+}
+.planner .cmb9-header__left {
+  display: flex;
+  align-items: center;
+  gap: 8px 10px;
+  flex-wrap: wrap;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.planner .cmb9-header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.planner .cmb9-mats {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.planner .cmb9-mats__lbl {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex: none;
+}
+
+/* hairline vertical entre las materias y las preferencias de cursada */
+.planner .cmb9-div {
+  width: 1px;
+  align-self: stretch;
+  min-height: 22px;
+  background: var(--line);
+  flex: none;
+}
+.planner .cmb9-prefs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* CommissionSelect dentro del chip de materia: sin ancho fijo, encaja compacto */
+.planner .cmb9-chip__com {
+  margin-left: 2px;
+}
+
+/* ---------- botones del cluster derecho (Electivas · Descargar · Guardar) ---------- */
+.planner .cmb9-hbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-m);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 7px 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-hbtn:hover:not(:disabled) {
+  background: var(--panel-2);
+  border-color: color-mix(in srgb, var(--brass) 55%, var(--line-2));
+}
+.planner .cmb9-hbtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.planner .cmb9-hbtn svg {
+  flex: none;
+}
+.planner .cmb9-hbtn__count {
+  font-size: 10px;
+  color: var(--muted);
+}
+/* estado "presionado" del toggle de Electivas */
+.planner .cmb9-hbtn.is-on {
+  color: var(--brass);
+  border-color: var(--brass);
+  background: color-mix(in srgb, var(--brass) 12%, var(--panel));
+}
+.planner .cmb9-hbtn.is-on .cmb9-hbtn__count {
+  color: var(--brass);
+}
+/* acción primaria: Guardar preferencia (puente al plan) */
+.planner .cmb9-hbtn--primary {
+  color: var(--block-ink);
+  background: var(--brass);
+  border-color: var(--brass);
+  font-weight: 700;
+}
+.planner .cmb9-hbtn--primary:hover:not(:disabled) {
+  background: var(--brass-2);
+  border-color: var(--brass-2);
+  color: var(--block-ink);
+}
+
+/* ---------- menú Descargar (3 opciones) ---------- */
+.planner .cmb9-dl {
+  position: relative;
+  flex: none;
+}
+.planner .cmb9-dlmenu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 30;
+  min-width: 244px;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-2);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.planner .cmb9-dlitem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 9px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: var(--f-b);
+  font-size: 13px;
+}
+.planner .cmb9-dlitem:hover {
+  background: var(--panel-2);
+}
+.planner .cmb9-dlitem > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--brass);
+}
+.planner .cmb9-dlitem small {
+  display: block;
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ---------- fila calendario + recomendador ---------- */
+.planner .cmb9-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.planner .cmb9-cal {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ---------- recomendador slim lateral ---------- */
+.planner .cmb9-recside {
+  flex: 0 0 250px;
+  align-self: stretch;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  /* sin overflow:hidden — cliparía los tooltips de encaje de las filas de abajo */
+}
+.planner .cmb9-rechead {
+  border-top-left-radius: var(--r);
+  border-top-right-radius: var(--r);
+}
+.planner .cmb9-rechead {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--line);
+}
+.planner .cmb9-rechead__title {
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+}
+.planner .cmb9-rechead__count {
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.planner .cmb9-recempty {
+  padding: 12px 13px;
+  margin: 0;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* lista plana de sugerencias (una fila por materia, lo más fina posible) */
+.planner .cmb9-reclist {
+  list-style: none;
+  margin: 0;
+  padding: 2px 0 7px;
+}
+.planner .cmb9-recrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+}
+.planner .cmb9-recrow:hover,
+.planner .cmb9-recrow:focus-within {
+  background: var(--panel-2);
+}
+.planner .cmb9-recrow:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: -2px;
+}
+.planner .cmb9-recrow__nodot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  flex: none;
+}
+.planner .cmb9-recrow__name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--f-b);
+  font-size: 12.5px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* fila sugerida que se pisa con la semana actual: atenuada, pero agregable */
+.planner .cmb9-recrow.is-clash {
+  opacity: 0.72;
+}
+.planner .cmb9-recrow.is-clash .cmb9-recrow__name {
+  color: var(--muted);
+}
+.planner .cmb9-recrow__cr {
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  color: var(--muted);
+  flex: none;
+}
+.planner .cmb9-recrow__add {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid var(--line-2);
+  background: var(--panel);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-recrow__add:hover:not(:disabled) {
+  border-color: var(--brass);
+  color: var(--brass);
+  background: color-mix(in srgb, var(--brass) 12%, var(--panel));
+}
+.planner .cmb9-recrow__add:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* ---------- Guardar preferencia: popover con selector de cuatrimestre ---------- */
+.planner .cmb9-save {
+  position: relative;
+  flex: none;
+}
+.planner .cmb9-savemenu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 30;
+  width: 288px;
+  max-width: calc(100vw - 32px);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-2);
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.planner .cmb9-savemenu__lead {
+  margin: 0;
+  font-family: var(--f-b);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.planner .cmb9-savemenu__lead b {
+  color: var(--ink);
+}
+.planner .cmb9-savemenu__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.planner .cmb9-savemenu__lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.planner .cmb9-savemenu__sel {
+  width: 100%;
+  max-width: none;
+}
+.planner .cmb9-savemenu__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--f-m);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--block-ink);
+  background: var(--brass);
+  border: 1px solid var(--brass);
+  border-radius: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-savemenu__go:hover {
+  background: var(--brass-2);
+  border-color: var(--brass-2);
+}
+
+/* ---------- label "Comisión: Auto" + info-tooltip en el header ---------- */
+.planner .cmb9-cominfo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.planner .cmb9-cominfo b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- info-tooltip inline (i) — CSS-only, visible en hover/focus ---------- */
+.planner .cmb9-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.planner .cmb9-tip__btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: var(--panel-2);
+  color: var(--muted);
+  font-family: var(--f-m);
+  font-size: 9px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: help;
+}
+.planner .cmb9-tip__btn:hover {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+.planner .cmb9-tip__box {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 7px);
+  transform: translate(-50%, -4px);
+  z-index: 40;
+  width: 214px;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  box-shadow: var(--shadow-2);
+  padding: 8px 10px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-soft);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-tip:hover .cmb9-tip__box,
+.planner .cmb9-tip:focus-within .cmb9-tip__box {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+/* ---------- responsive: apila el recomendador debajo del calendario ---------- */
+@media (max-width: 860px) {
+  .planner .cmb9-row {
+    flex-direction: column;
+  }
+  .planner .cmb9-recside {
+    flex: none;
+    width: 100%;
+  }
+  .planner .cmb9-header__right {
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planner .cmb9-hbtn,
+  .planner .cmb9-recrow__add,
+  .planner .cmb9-savemenu__go,
+  .planner .cmb9-tip__box {
+    transition: none;
+  }
+}

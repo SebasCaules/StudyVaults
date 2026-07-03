@@ -10,6 +10,7 @@ const VIEWS: { view: ViewKey; label: string }[] = [
   { view: "cuatri", label: "Plan por cuatrimestre" },
   { view: "elect", label: "Electivas" },
   { view: "combo", label: "Combinador de horarios" },
+  { view: "finales", label: "Combinador de finales" },
   { view: "plan", label: "Plan de cursada" },
   { view: "grafo", label: "Correlativas" },
   { view: "ref", label: "Referencias" },

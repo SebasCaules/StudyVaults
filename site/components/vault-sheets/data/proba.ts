@@ -1,4 +1,5 @@
 import type { Sheet } from "../types";
+import { FIG } from "./figures";
 
 // Hojas de estudio de Probabilidad y Estadística (93.24 ITBA). Datos puros.
 // Formato académico: cada fórmula en su renglón (entornos aligned) con
@@ -11,12 +12,14 @@ export const probaFormulas: Sheet = {
   "title": "Probabilidad y Estadística",
   "subtitle": "Cheat sheet integral del final (93.24 ITBA): descriptiva, probabilidad, v.a., distribuciones, procesos, suma de v.a., inferencia y pruebas",
   "notation": "$X_i$ i.i.d.; $\\mu=E[X]$, $\\sigma^2=V(X)$; $\\overline X_n=\\frac1n\\sum X_i$, $S_n$ desvío muestral; $q=1-p$; $\\Phi$ FDA de $N(0,1)$, $z_p=\\Phi^{-1}(p)$; $\\gamma$ confianza, $\\alpha$ significación; $\\binom{n}{k}$ combinatorio",
-  "updated": "2026-06-30",
+  "updated": "2026-07-03",
   "groups": [
     {
       "title": "Estadística descriptiva",
       "hint": "Resumen de una muestra {x_i}: centro, dispersión, forma, posición",
       "unit": "1",
+      "unitTitle": "Estadística descriptiva",
+      "unitDesc": "Resumir una muestra: centro, dispersión, forma y posición.",
       "entries": [
         {
           "label": "Media muestral",
@@ -194,7 +197,8 @@ export const probaFormulas: Sheet = {
               "desc": "rango intercuartílico, $\\mathrm{IQR}=q_3-q_1$"
             }
           ],
-          "note": "Outlier: fuera de $[L_W,U_W]$. En una normal, $P(\\text{outlier})\\approx0.7\\%$"
+          "note": "Outlier: fuera de $[L_W,U_W]$. En una normal, $P(\\text{outlier})\\approx0.7\\%$",
+          "figure": FIG.boxplot
         }
       ]
     },
@@ -202,6 +206,8 @@ export const probaFormulas: Sheet = {
       "title": "Probabilidad y conteo",
       "hint": "Axiomas, Laplace, condicional, independencia, Bayes, combinatoria",
       "unit": "2",
+      "unitTitle": "Probabilidad y conteo",
+      "unitDesc": "Axiomas de Kolmogórov, probabilidad condicional, independencia, Bayes y combinatoria.",
       "entries": [
         {
           "label": "Axiomas de Kolmogorov",
@@ -448,6 +454,8 @@ export const probaFormulas: Sheet = {
       "title": "Variable aleatoria discreta",
       "hint": "PMF, FDA, esperanza, varianza, momentos, FGM",
       "unit": "3",
+      "unitTitle": "Variables aleatorias discretas",
+      "unitDesc": "PMF y FDA, esperanza y varianza, y las distribuciones discretas clásicas.",
       "entries": [
         {
           "label": "PMF y FDA",
@@ -914,6 +922,8 @@ export const probaFormulas: Sheet = {
       "title": "Variable aleatoria continua",
       "hint": "FDA, densidad, E/V por integral, tasa de fallas",
       "unit": "4",
+      "unitTitle": "Variables aleatorias continuas",
+      "unitDesc": "Densidad y FDA, y las distribuciones continuas: uniforme, exponencial y normal.",
       "entries": [
         {
           "label": "FDA y densidad",
@@ -1123,7 +1133,8 @@ export const probaFormulas: Sheet = {
               "desc": "varianza, igual a $1/\\lambda^2$"
             }
           ],
-          "note": "Falta de memoria; única con tasa de fallas constante. $M=\\tfrac{\\lambda}{\\lambda-t}$"
+          "note": "Falta de memoria; única con tasa de fallas constante. $M=\\tfrac{\\lambda}{\\lambda-t}$",
+          "figure": FIG.expDecay
         },
         {
           "label": "Normal N(μ,σ)",
@@ -1168,7 +1179,8 @@ export const probaFormulas: Sheet = {
               "desc": "argumento de la función generadora de momentos"
             }
           ],
-          "note": "FDA sin forma cerrada: usar $\\Phi$. 2º parámetro = desvío"
+          "note": "FDA sin forma cerrada: usar $\\Phi$. 2º parámetro = desvío",
+          "figure": FIG.normalBell
         },
         {
           "label": "Falta de memoria (exponencial)",
@@ -1500,6 +1512,8 @@ export const probaFormulas: Sheet = {
       "title": "Bidimensionales, función de v.a.",
       "hint": "Conjunta, marginales, condicionales, covarianza, transformaciones",
       "unit": "5",
+      "unitTitle": "Vectores aleatorios y funciones de v.a.",
+      "unitDesc": "Distribuciones conjuntas, esperanza condicional y transformaciones de variables.",
       "entries": [
         {
           "label": "Conjunta y marginales",
@@ -1902,6 +1916,8 @@ export const probaFormulas: Sheet = {
       "title": "Procesos estocásticos",
       "hint": "Bernoulli (discreto) ↔ Poisson (continuo); cadenas de Markov; caminata",
       "unit": "6",
+      "unitTitle": "Procesos estocásticos",
+      "unitDesc": "Sucesiones de v.a. indexadas en el tiempo: Poisson y cadenas.",
       "entries": [
         {
           "label": "Proceso de Bernoulli",
@@ -2108,6 +2124,8 @@ export const probaFormulas: Sheet = {
       "title": "Suma de v.a.",
       "hint": "E/V de sumas, convolución, casos cerrados con nombre propio",
       "unit": "7",
+      "unitTitle": "Suma de v.a. y teoremas límite",
+      "unitDesc": "Convolución, cotas, ley de los grandes números y Teorema Central del Límite.",
       "entries": [
         {
           "label": "E y V de una suma",
@@ -2471,6 +2489,8 @@ export const probaFormulas: Sheet = {
       "title": "Estimación puntual",
       "hint": "Calidad del estimador y métodos de construcción",
       "unit": "8",
+      "unitTitle": "Inferencia estadística",
+      "unitDesc": "Estimación puntual, distribuciones de muestreo ($t$, $\\chi^2$) e intervalos de confianza.",
       "entries": [
         {
           "label": "ECM, sesgo, consistencia",
@@ -2985,6 +3005,8 @@ export const probaFormulas: Sheet = {
       "title": "Pruebas de hipótesis",
       "hint": "Estadístico, región de rechazo, valor p, errores. Igualdad siempre en H₀",
       "unit": "9",
+      "unitTitle": "Pruebas de hipótesis",
+      "unitDesc": "Contraste de hipótesis: errores tipo I/II, potencia y $p$-valor.",
       "entries": [
         {
           "label": "Errores y potencia",
@@ -3220,12 +3242,14 @@ export const probaConceptos: Sheet = {
   "title": "Probabilidad y Estadística",
   "subtitle": "Hoja de conceptos definitiva: de los axiomas a las pruebas de hipótesis",
   "notation": "$S$ espacio muestral; $X$ v.a.; $E[X]=\\mu$, $V(X)=\\sigma^2$; $q=1-p$; $\\Phi$ FDA de $N(0,1)$; $\\bar X_n$ promedio muestral; $\\hat\\theta$ estimador; $H_0/H_1$ hipótesis.",
-  "updated": "2026-06-30",
+  "updated": "2026-07-03",
   "groups": [
     {
       "title": "Estadística descriptiva",
       "hint": "Resumir una muestra observada (centro, dispersión, forma) sin inferir todavía sobre la población.",
       "unit": "1",
+      "unitTitle": "Estadística descriptiva",
+      "unitDesc": "Resumir una muestra: centro, dispersión, forma y posición.",
       "entries": [
         {
           "label": "Población vs muestra",
@@ -3429,6 +3453,8 @@ export const probaConceptos: Sheet = {
       "title": "Fundamentos de probabilidad",
       "hint": "Modelar la incertidumbre antes de observar: espacio muestral, axiomas y sus consecuencias.",
       "unit": "2",
+      "unitTitle": "Probabilidad y conteo",
+      "unitDesc": "Axiomas de Kolmogórov, probabilidad condicional, independencia, Bayes y combinatoria.",
       "entries": [
         {
           "label": "Espacio muestral y eventos",
@@ -3723,6 +3749,8 @@ export const probaConceptos: Sheet = {
       "title": "Variable aleatoria discreta",
       "hint": "Asignar números a resultados; describir con PMF/FDA y resumir con E y V.",
       "unit": "3",
+      "unitTitle": "Variables aleatorias discretas",
+      "unitDesc": "PMF y FDA, esperanza y varianza, y las distribuciones discretas clásicas.",
       "entries": [
         {
           "label": "V.a. discreta y PMF",
@@ -4262,6 +4290,8 @@ export const probaConceptos: Sheet = {
       "title": "Variable aleatoria continua",
       "hint": "El continuo: densidad, integrales y confiabilidad.",
       "unit": "4",
+      "unitTitle": "Variables aleatorias continuas",
+      "unitDesc": "Densidad y FDA, y las distribuciones continuas: uniforme, exponencial y normal.",
       "entries": [
         {
           "label": "V.a. continua",
@@ -4661,6 +4691,8 @@ export const probaConceptos: Sheet = {
       "title": "Variables bidimensionales",
       "hint": "Conjunta, marginales, condicionales; covarianza, correlación e independencia.",
       "unit": "5",
+      "unitTitle": "Vectores aleatorios y funciones de v.a.",
+      "unitDesc": "Distribuciones conjuntas, esperanza condicional y transformaciones de variables.",
       "entries": [
         {
           "label": "Conjunta y marginales",
@@ -4929,6 +4961,8 @@ export const probaConceptos: Sheet = {
       "title": "Procesos estocásticos",
       "hint": "Familias de v.a. en el tiempo: Bernoulli, Poisson, Markov, caminata.",
       "unit": "6",
+      "unitTitle": "Procesos estocásticos",
+      "unitDesc": "Sucesiones de v.a. indexadas en el tiempo: Poisson y cadenas.",
       "entries": [
         {
           "label": "Proceso estocástico",
@@ -5152,6 +5186,8 @@ export const probaConceptos: Sheet = {
       "title": "Suma de variables aleatorias",
       "hint": "E, V y distribución de S=X+Y; convolución y casos estables.",
       "unit": "7",
+      "unitTitle": "Suma de v.a. y teoremas límite",
+      "unitDesc": "Convolución, cotas, ley de los grandes números y Teorema Central del Límite.",
       "entries": [
         {
           "label": "E y V de una suma",
@@ -5536,6 +5572,8 @@ export const probaConceptos: Sheet = {
       "title": "Inferencia: estimación puntual",
       "hint": "Estimar un parámetro con un valor; medir calidad y métodos.",
       "unit": "8",
+      "unitTitle": "Inferencia estadística",
+      "unitDesc": "Estimación puntual, distribuciones de muestreo ($t$, $\\chi^2$) e intervalos de confianza.",
       "entries": [
         {
           "label": "Estadístico vs estimador vs estimación",
@@ -6047,6 +6085,8 @@ export const probaConceptos: Sheet = {
       "title": "Pruebas de hipótesis",
       "hint": "Decidir entre H0 y H1 controlando la probabilidad de error.",
       "unit": "9",
+      "unitTitle": "Pruebas de hipótesis",
+      "unitDesc": "Contraste de hipótesis: errores tipo I/II, potencia y $p$-valor.",
       "entries": [
         {
           "label": "Hipótesis y tipo de cola",

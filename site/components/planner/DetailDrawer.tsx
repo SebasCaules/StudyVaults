@@ -6,12 +6,16 @@
 // containing block del transform de la vista). Los eventos despachan acciones
 // del state global. Lee state.drawerCode para saber qué materia mostrar.
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { byId, AREA_COLOR } from "@/lib/planner/model";
+import { byId } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
+import { comModalidad, isAsync } from "@/lib/planner/time";
 import { usePlanner } from "@/components/planner/state";
 import { FICHAS } from "@/lib/planner/fichas";
+import { minorsOf } from "@/lib/planner/minors";
+import { MinorBadge } from "@/components/planner/MinorBadge";
+import { CommissionSelect } from "@studyvaults/ui";
 import { withBase } from "@/lib/content/slug";
 import {
   ProgramaChips,
@@ -22,8 +26,51 @@ import {
   IconCheck,
   IconDownload,
   IconArrowUpRight,
+  IconInfo,
 } from "@/components/planner/icons";
-import type { Ficha, MateriaM } from "@/lib/planner/types";
+import type { Comision, Ficha, MateriaM } from "@/lib/planner/types";
+import "./detail-drawer.css";
+
+// ---- preview de semana (mini-calendario de la comisión) ----
+
+/** Nombre completo de día → abreviatura de 2 letras para el preview. */
+const DAY_ABBR: Record<string, string> = {
+  lunes: "Lu",
+  martes: "Ma",
+  miércoles: "Mi",
+  miercoles: "Mi",
+  jueves: "Ju",
+  viernes: "Vi",
+  sábado: "Sá",
+  sabado: "Sá",
+  domingo: "Do",
+};
+const dayAb = (dia: string): string =>
+  DAY_ABBR[dia.trim().toLowerCase()] ?? dia.slice(0, 2);
+
+/** Días base de la semana (Lu–Vi); se agrega Sá sólo si alguna comisión lo usa. */
+const WEEK_BASE: { key: string; ab: string }[] = [
+  { key: "Lunes", ab: "Lu" },
+  { key: "Martes", ab: "Ma" },
+  { key: "Miércoles", ab: "Mi" },
+  { key: "Jueves", ab: "Ju" },
+  { key: "Viernes", ab: "Vi" },
+];
+
+/** Abreviaturas de día en que se dicta una comisión (ignora slots asincrónicos). */
+function comDays(cm: Comision): Set<string> {
+  const s = new Set<string>();
+  for (const sl of cm.slots) if (!isAsync(sl)) s.add(dayAb(sl.dia));
+  return s;
+}
+
+/** Resumen compacto de horario de una comisión, para el tooltip del selector. */
+function comSummary(cm: Comision): string {
+  const parts = cm.slots
+    .filter((s) => !isAsync(s))
+    .map((s) => `${dayAb(s.dia)} ${s.desde}–${s.hasta}`);
+  return parts.length ? parts.join(" · ") : comModalidad(cm) || "";
+}
 
 /** Render de un texto multi-párrafo (separado por "\n\n") como <p> apilados. */
 function Prose({ text }: { text: string }) {
@@ -383,6 +430,10 @@ export default function DetailDrawer() {
   const code = state.drawerCode;
   const m = code ? byId.get(code) : undefined;
 
+  // sombra de la barra de cierre sticky cuando el contenido pasa por debajo
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
   // cierre con Escape (hook siempre montado, antes de cualquier return)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -400,20 +451,44 @@ export default function DetailDrawer() {
   const avail = isAvailable(m, state.approved);
   const hor = m.horario;
   const inCombo = state.combo.has(code);
-  const hasComs = !!(hor && hor.comisiones.length);
+  const coms = hor?.comisiones ?? [];
+  const hasComs = coms.length > 0;
 
   const close = () => dispatch({ type: "CLOSE_DRAWER" });
 
   const areas = m.areas || [];
+  const minors = minorsOf(areas);
   const correlativas = m.correlativas || [];
   const ficha = FICHAS[code];
   // descripción inline: presentación de la materia (o contenidos mínimos como fallback)
   const descInline = ficha
     ? ficha.presentacion || ficha.contenidosMinimos
     : "";
-  // sin descripción inline ni ficha: la columna aside queda vacía → no se
-  // renderiza y la columna main pasa a ocupar el ancho completo (dr-grid--solo)
-  const hasAside = !!(descInline || ficha);
+
+  // comisión fijada (SET_FIXED_COM) — cablea el CommissionSelect del horario
+  const fixed = state.fixedCom.get(code) || "";
+  // el mini-calendario incluye sábado sólo si alguna comisión lo usa
+  const showSat = coms.some((cm) =>
+    cm.slots.some((s) => !isAsync(s) && dayAb(s.dia) === "Sá"),
+  );
+  const weekDays = showSat
+    ? [...WEEK_BASE, { key: "Sábado", ab: "Sá" }]
+    : WEEK_BASE;
+
+  // acciones que se renderizan: aprobar + descargar (siempre) + combinador (si
+  // hay comisiones). El grid se ajusta a 2 o 3 columnas para quedar simétrico.
+  const actionCount = hasComs ? 3 : 2;
+
+  // meta de identidad como items sueltos: el CSS agrega los separadores de punto
+  // (así el ritmo es uniforme y no se concatena una cadena a mano).
+  const metaItems: string[] = [
+    ...(ob
+      ? ["Obligatoria", m.ciclo, `Año ${m.anio}`, `${m.cuatri}.º cuat.`]
+      : ["Electiva"]),
+    `${m.creditos} créditos`,
+    m.creditosReq ? `requiere ${m.creditosReq} cr` : "",
+    hor?.depto ?? "",
+  ].filter(Boolean) as string[];
 
   const onDownload = () => {
     const html = buildMateriaHTML(m, ficha);
@@ -434,29 +509,43 @@ export default function DetailDrawer() {
       aria-label={m.nombre}
     >
       <div className="dr-modal__bg" onClick={close} />
-      <div className="dr-modal__panel dr-modal__panel--wide">
-        <button className="dr-close" onClick={close} aria-label="Cerrar">
-          <IconClose size={15} />
-        </button>
-        {/* grid de dos columnas: main (identidad, acciones, correlativas,
-            horario) + aside (descripción inline y ficha/programa analítico).
-            Sin aside (materia sin ficha ni descripción) → dr-grid--solo,
-            main pasa a ocupar el ancho completo. */}
-        <div className={"dr-grid" + (hasAside ? "" : " dr-grid--solo")}>
-          <div className="dr-col dr-col--main">
-            <span className={"dr-code " + (ob ? "ob" : "")}>
-              {m.codigo} · {m.abbr}
-            </span>
-            <h3 className="dr-title">{m.nombre}</h3>
-            <p className="dr-sub">
-              {ob
-                ? `Obligatoria · ${m.ciclo} · Año ${m.anio} (${m.cuatri}.º cuat.)`
-                : "Electiva"}{" "}
-              · {m.creditos} créditos
-              {m.creditosReq ? ` · requiere ${m.creditosReq}` : ""}
-              {hor ? ` · ${hor.depto}` : ""}
-            </p>
-            <div className="dr-x">
+      {/* .dd-panel = contenedor de las container queries (flex column: barra de
+          cierre sticky + cuerpo scrolleable). */}
+      <div className="dd-panel">
+        <div
+          className="dd-scroll"
+          ref={scrollRef}
+          onScroll={() => {
+            const el = scrollRef.current;
+            if (el) setScrolled(el.scrollTop > 4);
+          }}
+        >
+          {/* FIX A — barra de cierre STICKY: la X queda siempre alcanzable. */}
+          <div className={"dd-closebar" + (scrolled ? " is-scrolled" : "")}>
+            <button className="dd-close" onClick={close} aria-label="Cerrar">
+              <IconClose size={15} />
+            </button>
+          </div>
+
+          {/* cuerpo con margen interno: el contenido no toca los bordes. */}
+          <div className="dd-body">
+            {/* identidad: código · título serif · meta mono con separadores */}
+            <header className="dd-head">
+              <span className={"dr-code " + (ob ? "ob" : "")}>
+                {m.codigo} · {m.abbr}
+              </span>
+              <h3 className="dr-title">{m.nombre}</h3>
+              <div className="dd-meta">
+                {metaItems.map((it, i) => (
+                  <span className="dd-meta__item" key={i}>
+                    {it}
+                  </span>
+                ))}
+              </div>
+            </header>
+
+            {/* FIX B — fila de acciones simétrica (grid 2/3 columnas parejas). */}
+            <div className={"dd-actions" + (actionCount === 2 ? " dd-actions--2" : "")}>
               <button
                 className={"mini btn-ap " + (appr ? "on" : "")}
                 onClick={() => dispatch({ type: "TOGGLE_APPROVED", code })}
@@ -483,122 +572,209 @@ export default function DetailDrawer() {
                   )}
                 </button>
               ) : null}
-              <button type="button" className="dr-dl" onClick={onDownload}>
+              <button type="button" className="dd-dl" onClick={onDownload}>
                 <IconDownload size={13} /> Descargar
               </button>
             </div>
-            {ob ? null : (
-              <div className="dr-sec">
-                <h4>Áreas · Minor</h4>
-                <div className="dr-chips">
-                  {areas.length ? (
-                    areas.map((a) => (
-                      <span
-                        key={a}
-                        className="tag tag--area"
-                        style={{ background: AREA_COLOR[a] }}
-                      >
-                        {a}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="muted">—</span>
-                  )}
-                </div>
-              </div>
-            )}
-            <div className="dr-sec">
-              <h4>Correlativas</h4>
-              <div className="dr-chips">
-                {correlativas.length ? (
-                  correlativas.map((c) => {
-                    const cm = byId.get(c);
-                    const ok = state.approved.has(c);
-                    return (
-                      <span
-                        key={c}
-                        className="tag"
-                        style={
-                          ok
-                            ? {
-                                color: "var(--sage)",
-                                borderColor: "rgba(155,176,131,.3)",
-                              }
-                            : { color: "var(--muted)" }
-                        }
-                      >
-                        {c} {cm ? cm.abbr : ""}{" "}
-                        {ok ? <IconCheck size={12} /> : null}
-                      </span>
-                    );
-                  })
-                ) : (
-                  <span className="muted">Sin correlativas</span>
-                )}
-              </div>
-            </div>
-            {!ficha ? (
-              <div className="dr-sec">
-                <h4>Programa analítico</h4>
-                <ComingSoonBadge />
-                <p className="muted">
-                  Todavía no cargamos el programa analítico de esta materia.
-                  Va a estar disponible próximamente.
-                </p>
-              </div>
-            ) : null}
-            <div className="dr-sec">
-              <h4>
-                Horario 2C 2026{" "}
-                {avail && !appr ? (
-                  <span className="tag tag--ok" style={{ marginLeft: 6 }}>
-                    disponible
-                  </span>
-                ) : null}
-              </h4>
-              {hasComs ? (
-                hor!.comisiones.map((cm) => (
-                  <div className="dr-com" key={cm.comision}>
-                    <div className="dr-com__h">
-                      <b>Comisión {cm.comision}</b>
-                      <span className="dr-com__cupo">{cm.cupo}</span>
-                    </div>
-                    {cm.slots.map((s, i) => (
-                      <div className="dr-slot" key={i}>
-                        <span className="d">{s.dia}</span>
-                        <span className="h">
-                          {s.desde}–{s.hasta}
-                        </span>
-                        <span className="au">
-                          {s.sala ? "Aula " + s.sala : ""}
-                          {s.sede ? " · " + s.sede : ""}
-                        </span>
-                        <span className="dr-slotmod">
-                          {s.modalidad || "—"}
-                        </span>
+
+            {/* grid de dos columnas: main (áreas/correlativas/horario) + aside
+                (descripción + programa analítico). Apila por container query. */}
+            <div className="dd-grid">
+              <div className="dd-col dd-main">
+                {ob ? null : (
+                  <div className="dr-sec">
+                    <h4>Áreas · Minor</h4>
+                    {minors.length ? (
+                      <div className="dd-minors">
+                        {minors.map((mn) => (
+                          <div className="dd-minor-line" key={mn.id}>
+                            <MinorBadge minor={mn} variant="pill" />
+                            <span className="dd-minor-name">{mn.name}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                    {cm.profesores ? (
-                      <div
-                        className="muted"
-                        style={{ fontSize: 11, marginTop: 7 }}
-                      >
-                        {cm.profesores}
+                    ) : (
+                      <span className="muted">—</span>
+                    )}
+                  </div>
+                )}
+
+                <div className="dr-sec">
+                  <h4>Correlativas</h4>
+                  <div className="dr-chips">
+                    {correlativas.length ? (
+                      correlativas.map((c) => {
+                        const cm = byId.get(c);
+                        const ok = state.approved.has(c);
+                        return (
+                          <span
+                            key={c}
+                            className="tag"
+                            style={
+                              ok
+                                ? {
+                                    color: "var(--sage)",
+                                    borderColor:
+                                      "color-mix(in srgb, var(--sage) 30%, transparent)",
+                                  }
+                                : { color: "var(--muted)" }
+                            }
+                          >
+                            {c} {cm ? cm.abbr : ""}{" "}
+                            {ok ? <IconCheck size={12} /> : null}
+                          </span>
+                        );
+                      })
+                    ) : (
+                      <span className="muted">Sin correlativas</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="dr-sec">
+                  <div className="dd-hor__head">
+                    <div className="dd-hor__title">
+                      <h4>Horario 2C 2026</h4>
+                      {avail && !appr ? (
+                        <span className="tag tag--ok">disponible</span>
+                      ) : null}
+                    </div>
+                    {/* control de comisión: label + CommissionSelect (fija la
+                        comisión, SET_FIXED_COM) + tooltip que explica "Auto". */}
+                    {coms.length > 1 ? (
+                      <div className="dd-hor__ctrl">
+                        <label className="dd-hor__lbl" htmlFor="dd-com-select">
+                          Comisión
+                        </label>
+                        <CommissionSelect
+                          id="dd-com-select"
+                          className="dd-hor__pick"
+                          size="sm"
+                          placeholder="Auto"
+                          aria-label="Fijar comisión"
+                          value={fixed}
+                          onChange={(e) =>
+                            dispatch({
+                              type: "SET_FIXED_COM",
+                              code,
+                              comision: e.target.value || null,
+                            })
+                          }
+                          options={coms.map((cm) => ({
+                            value: cm.comision,
+                            label: `com ${cm.comision} · ${comModalidad(cm)}`,
+                            title: comSummary(cm),
+                          }))}
+                        />
+                        <span className="dd-tip">
+                          <button
+                            type="button"
+                            className="dd-tip__btn"
+                            aria-label="Qué hace la opción Auto"
+                          >
+                            <IconInfo size={14} />
+                          </button>
+                          <span className="dd-tip__bubble" role="tooltip">
+                            <b>Auto</b> — el optimizador del combinador elige la
+                            comisión que mejor encaja con el resto de tu cursada.
+                            Fijá una para forzar ese horario.
+                          </span>
+                        </span>
                       </div>
                     ) : null}
                   </div>
-                ))
-              ) : (
-                <p className="muted">Sin horario publicado para 2C 2026.</p>
-              )}
+
+                  {hasComs ? (
+                    <div className="dd-coms">
+                      {coms.map((cm) => {
+                        const days = comDays(cm);
+                        const isFixed = fixed === cm.comision;
+                        return (
+                          <div
+                            className={"dd-com" + (isFixed ? " is-fixed" : "")}
+                            key={cm.comision}
+                          >
+                            <div className="dd-com__top">
+                              {/* preview de semana */}
+                              <span className="dd-week" aria-hidden="true">
+                                {weekDays.map((d) => (
+                                  <span
+                                    key={d.ab}
+                                    className={
+                                      "dd-week__d" + (days.has(d.ab) ? " on" : "")
+                                    }
+                                  >
+                                    {d.ab}
+                                  </span>
+                                ))}
+                              </span>
+                              <span className="dd-com__name">
+                                Comisión {cm.comision}
+                              </span>
+                              {isFixed ? (
+                                <span className="dd-com__pin">fijada</span>
+                              ) : null}
+                              {cm.cupo ? (
+                                <span className="dd-com__cupo">{cm.cupo}</span>
+                              ) : null}
+                            </div>
+                            {cm.slots.map((s, i) => (
+                              <div className="dr-slot" key={i}>
+                                <span className="d">{s.dia}</span>
+                                <span className="h">
+                                  {s.desde}–{s.hasta}
+                                </span>
+                                <span className="au">
+                                  {s.sala ? "Aula " + s.sala : ""}
+                                  {s.sede ? " · " + s.sede : ""}
+                                </span>
+                                <span className="dr-slotmod">
+                                  {s.modalidad || "—"}
+                                </span>
+                              </div>
+                            ))}
+                            {cm.profesores ? (
+                              <div
+                                className="muted"
+                                style={{ fontSize: 11, marginTop: 7 }}
+                              >
+                                {cm.profesores}
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="dd-hor__empty">
+                      Sin horario publicado para 2C 2026.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="dd-col dd-aside">
+                {descInline ? (
+                  <div className="dr-sec">
+                    <h4>Descripción</h4>
+                    <p className="dr-desc">{descInline}</p>
+                  </div>
+                ) : null}
+                {ficha ? (
+                  <FichaSection ficha={ficha} />
+                ) : (
+                  <div className="dr-sec">
+                    <h4>Programa analítico</h4>
+                    <ComingSoonBadge />
+                    <p className="muted">
+                      Todavía no cargamos el programa analítico de esta materia.
+                      Va a estar disponible próximamente.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          {hasAside ? (
-            <div className="dr-col dr-col--aside">
-              {descInline ? <p className="dr-desc">{descInline}</p> : null}
-              {ficha ? <FichaSection ficha={ficha} /> : null}
-            </div>
-          ) : null}
         </div>
       </div>
     </div>

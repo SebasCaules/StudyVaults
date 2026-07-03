@@ -941,6 +941,42 @@ function Reference() {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
+   Afiches bespoke del runner (micro-ilustraciones tinteadas por --k-color)
+   ────────────────────────────────────────────────────────────────────────── */
+
+/** Matriz n×n con la diagonal resaltada — determinante, inversa, rango. */
+const PosterMatrix = (
+  <svg viewBox="0 0 288 150" fill="none">
+    <path d="M100 30 H90 V120 H100" stroke="var(--border)" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M188 30 H198 V120 H188" stroke="var(--border)" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="106" y="36" width="24" height="24" rx="3" fill="color-mix(in srgb, var(--k-color) 24%, transparent)" stroke="var(--k-color)" strokeWidth={1.3} />
+    <rect x="132" y="63" width="24" height="24" rx="3" fill="color-mix(in srgb, var(--k-color) 24%, transparent)" stroke="var(--k-color)" strokeWidth={1.3} />
+    <rect x="158" y="90" width="24" height="24" rx="3" fill="color-mix(in srgb, var(--k-color) 24%, transparent)" stroke="var(--k-color)" strokeWidth={1.3} />
+    <g fill="var(--text-secondary)" opacity={0.55}>
+      <circle cx="144" cy="48" r="2.1" /><circle cx="170" cy="48" r="2.1" />
+      <circle cx="118" cy="75" r="2.1" /><circle cx="170" cy="75" r="2.1" />
+      <circle cx="118" cy="102" r="2.1" /><circle cx="144" cy="102" r="2.1" />
+    </g>
+    <text x="90" y="140" fill="var(--text-secondary)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>det · A⁻¹ · rango</text>
+  </svg>
+);
+
+/** Círculo unitario → elipse con ejes σ: cómo una matriz estira el espacio. */
+const PosterSvd = (
+  <svg viewBox="0 0 288 150" fill="none">
+    <circle cx="92" cy="72" r="32" stroke="var(--border)" strokeWidth={1.6} opacity={0.65} />
+    <ellipse cx="198" cy="72" rx="48" ry="26" fill="color-mix(in srgb, var(--k-color) 12%, transparent)" stroke="var(--k-color)" strokeWidth={2} />
+    <path d="M198 72 H246" stroke="var(--k-color)" strokeWidth={1.6} strokeLinecap="round" />
+    <path d="M198 72 V46" stroke="var(--k-color)" strokeWidth={1.6} strokeLinecap="round" opacity={0.72} />
+    <circle cx="198" cy="72" r="2.6" fill="var(--k-color)" />
+    <path d="M132 72 H158 M151 66 L159 72 L151 78" stroke="var(--text-secondary)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+    <text x="145" y="63" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>A·x</text>
+    <text x="228" y="66" fill="var(--k-color)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>σ₁</text>
+    <text x="203" y="44" fill="var(--k-color)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>σ₂</text>
+  </svg>
+);
+
+/* ──────────────────────────────────────────────────────────────────────────
    Export
    ────────────────────────────────────────────────────────────────────────── */
 
@@ -949,15 +985,18 @@ export default function MnaTools() {
     {
       key: "matriz",
       label: "Calculadora",
-      icon: "calculator",
+      icon: "matrixRows",
+      tone: "def",
       verb: "Calcular",
       desc: "Escribí una matriz y obtené al instante su determinante, inversa, rango y número de condición.",
+      poster: PosterMatrix,
       node: <MatrixCalc />,
     },
     {
       key: "factor",
       label: "LU y QR",
-      icon: "layers",
+      icon: "luFactor",
+      tone: "def",
       verb: "Factorizar",
       desc: "Descompone la matriz en factores LU y QR: el paso previo para resolver sistemas y mínimos cuadrados.",
       node: <Factorizations />,
@@ -965,15 +1004,18 @@ export default function MnaTools() {
     {
       key: "svd",
       label: "Autovalores y SVD",
-      icon: "sigma",
+      icon: "eigen",
+      tone: "def",
       verb: "Descomponer",
       desc: "Autovalores, autovectores y valores singulares: cómo una matriz estira y rota el espacio.",
+      poster: PosterSvd,
       node: <EigenSvd />,
     },
     {
       key: "ref",
       label: "Formulario",
-      icon: "formula",
+      icon: "document",
+      tone: "example",
       verb: "Consultar",
       desc: "Las fórmulas y definiciones clave del curso, a mano para repasar antes del parcial.",
       node: <Reference />,
@@ -982,13 +1024,68 @@ export default function MnaTools() {
 
   return (
     <ToolkitShell
-      intro={
-        <>
-          Álgebra lineal numérica interactiva: editá una matriz y obtené
-          determinante, inversa, factorizaciones LU/QR, autovalores, SVD y
-          número de condición. Todo se recalcula al instante.
-        </>
-      }
+      launcher={{
+        code: "SYS.01",
+        kicker: "Álgebra lineal numérica",
+        title: "Métodos Numéricos Avanzados",
+        accent: "var(--link)",
+        pattern: "grid",
+        variant: "flat",
+        dek: "Kit compacto de álgebra lineal: factorizaciones, autovalores y operaciones matriciales sobre matrices editables n×n. Todo se recalcula al instante.",
+        meta: (
+          <>
+            <span className="tk__hero-metaitem">
+              <b>4</b> herramientas
+            </span>
+            <span className="tk__hero-metaitem">kit único</span>
+            <span className="tk__hero-metaitem">/mna/herramientas</span>
+          </>
+        ),
+        motif: (
+          <svg viewBox="0 0 320 200" fill="none">
+            <path
+              d="M62 22 L50 22 L50 158 L62 158"
+              stroke="var(--border)"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
+            <path
+              d="M210 22 L222 22 L222 158 L210 158"
+              stroke="var(--border)"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
+            <rect x="76" y="30" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" strokeWidth={1.2} />
+            <rect x="76" y="60" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)" />
+            <rect x="106" y="60" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" strokeWidth={1.2} />
+            <rect x="76" y="90" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)" />
+            <rect x="106" y="90" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)" />
+            <rect x="136" y="90" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" strokeWidth={1.2} />
+            <rect x="76" y="120" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)" />
+            <rect x="106" y="120" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)" />
+            <rect x="136" y="120" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)" />
+            <rect x="166" y="120" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" strokeWidth={1.2} />
+            <g stroke="var(--hairline)" strokeWidth={1}>
+              <line x1="76" y1="30" x2="76" y2="150" />
+              <line x1="106" y1="30" x2="106" y2="150" />
+              <line x1="136" y1="30" x2="136" y2="150" />
+              <line x1="166" y1="30" x2="166" y2="150" />
+              <line x1="196" y1="30" x2="196" y2="150" />
+              <line x1="76" y1="30" x2="196" y2="30" />
+              <line x1="76" y1="60" x2="196" y2="60" />
+              <line x1="76" y1="90" x2="196" y2="90" />
+              <line x1="76" y1="120" x2="196" y2="120" />
+              <line x1="76" y1="150" x2="196" y2="150" />
+            </g>
+            <text x="50" y="16" fill="var(--text-secondary)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>
+              A
+            </text>
+            <text x="76" y="175" fill="var(--text-secondary)" fontSize={12} style={{ fontFamily: "var(--font-mono)" }}>
+              A = L · U
+            </text>
+          </svg>
+        ),
+      }}
       tools={tools}
     />
   );

@@ -68,7 +68,7 @@
 
 /* ===================== TOP BAR (stats bar) ===================== */
 .planner .topbar{
-  position:sticky;top:var(--nav-h);z-index:20;display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
   gap:24px;flex-wrap:wrap;padding:18px clamp(16px,3vw,44px);
   background:var(--topbar);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
@@ -2079,4 +2079,64 @@
 
 @media (prefers-reduced-motion:reduce){
   .planner .rmap-mat__grip{transition:none}
+}
+
+/* ============================================================
+   Contratos compartidos (overseer, Fase 0 del overhaul):
+   MinorBadge · EstadoControl. Los usan varias vistas; se definen
+   una sola vez acá para no divergir. Colores de rol (tokens).
+   ============================================================ */
+
+/* ----- MinorBadge: pill de sigla / punto de color ----- */
+.planner .minor-badges{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}
+.planner .minor-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:26px;height:16px;padding:0 5px;
+  font-family:var(--font-mono);font-size:9.5px;font-weight:600;
+  letter-spacing:.02em;line-height:1;white-space:nowrap;
+  color:var(--minor-color);
+  background:color-mix(in srgb, var(--minor-color) 16%, transparent);
+  border:1px solid color-mix(in srgb, var(--minor-color) 42%, transparent);
+  border-radius:var(--r-pill);
+}
+.planner .minor-dot{
+  display:inline-block;width:8px;height:8px;flex:none;border-radius:var(--r-pill);
+  background:var(--minor-color);
+  box-shadow:0 0 0 1px color-mix(in srgb, var(--minor-color) 45%, transparent);
+}
+
+/* ----- EstadoControl: doble-check tri-estado (pestaña aprobadas) ----- */
+.planner .estado-ctl{
+  --_c:var(--text-secondary);
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;flex:none;padding:0;
+  color:var(--_c);
+  background:var(--surface-2);
+  border:1px solid var(--hairline-strong);
+  border-radius:6px;cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.planner .estado-ctl:hover{border-color:var(--accent-line)}
+.planner .estado-ctl:focus-visible{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.planner .estado-ctl svg{width:14px;height:14px}
+.planner .estado-ctl.st-pending{color:transparent}
+.planner .estado-ctl.st-regular{
+  --_c:var(--text-secondary);
+  border-color:color-mix(in srgb, var(--text-secondary) 45%, transparent);
+  background:color-mix(in srgb, var(--text-secondary) 14%, var(--surface-2));
+}
+.planner .estado-ctl.st-final{
+  --_c:#fff;
+  border-color:color-mix(in srgb, var(--status-go) 60%, transparent);
+  background:color-mix(in srgb, var(--status-go) 85%, transparent);
+}
+.planner .estado-ctl.st-final svg{width:19px}
+.planner .estado-ctl.st-promo{
+  --_c:#fff;
+  border-color:color-mix(in srgb, var(--status-promo) 60%, transparent);
+  background:color-mix(in srgb, var(--status-promo) 82%, transparent);
 }

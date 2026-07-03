@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import "./wiki-nav.css";
 import type { NavSection } from "@/lib/content/nav-tree";
 import type { TocItem } from "@/lib/content/render";
 import { Breadcrumbs, type Crumb } from "@studyvaults/ui";

@@ -10,7 +10,7 @@ const COLUMNS: FooterColumn[] = [
   {
     title: "Recursos",
     links: [
-      { label: "Planificador de electivas", href: "/electivas/" },
+      { label: "Planificador de electivas", href: "/electivas/planificar/" },
       { label: "Repositorio en GitHub", href: REPO_URL, external: true },
       { label: "Obsidian", href: "https://obsidian.md/", external: true },
     ],
@@ -20,16 +20,19 @@ const COLUMNS: FooterColumn[] = [
 export default function AppFooter() {
   return (
     <Footer
-      description="Bases de conocimiento de materias del ITBA, destiladas en un wiki navegable. Material de estudio personal, con fines académicos."
+      description={
+        <p>
+          Materias del ITBA destiladas en un wiki navegable, más un planificador
+          de electivas. Material de estudio personal.
+        </p>
+      }
       columns={COLUMNS}
       bottom={
         <>
           <span>
-            SYS.00 // <b>StudyVaults ITBA</b> — 7 vaults
+            SYS.00 // <b>StudyVaults ITBA</b>
           </span>
-          <span>
-            Apuntes de un estudiante · no es material oficial de la cátedra
-          </span>
+          <span>No es material oficial de la cátedra</span>
         </>
       }
     />

@@ -2196,6 +2196,40 @@ function ProgressBar({ pct }: { pct: number }) {
 }
 
 /* ════════════════════════════════ SHELL ════════════════════════════════ */
+/* Afiches bespoke del runner (micro-ilustraciones tinteadas por --k-color). */
+
+/** Barras de dominio por unidad: qué tan listo estás, unidad por unidad. */
+const PosterReadiness = (
+  <svg viewBox="0 0 288 150" fill="none">
+    {[
+      { y: 32, w: 168 },
+      { y: 60, w: 122 },
+      { y: 88, w: 200 },
+      { y: 116, w: 96 },
+    ].map((r, i) => (
+      <g key={i}>
+        <rect x="34" y={r.y - 5} width="10" height="10" rx="2" fill="color-mix(in srgb, var(--k-color) 30%, transparent)" stroke="var(--k-color)" strokeWidth={1.1} />
+        <rect x="56" y={r.y - 4} width="200" height="8" rx="4" fill="var(--surface-2)" stroke="var(--border)" strokeWidth={1} />
+        <rect x="56" y={r.y - 4} width={r.w} height="8" rx="4" fill="var(--k-color)" opacity={0.82} />
+      </g>
+    ))}
+    <text x="34" y="142" fill="var(--text-secondary)" fontSize={10} style={{ fontFamily: "var(--font-mono)" }}>readiness · por unidad</text>
+  </svg>
+);
+
+/** Triángulo CAP: ante una partición, elegís consistencia o disponibilidad. */
+const PosterCap = (
+  <svg viewBox="0 0 288 150" fill="none">
+    <path d="M144 28 L214 116 L74 116 Z" fill="color-mix(in srgb, var(--k-color) 10%, transparent)" stroke="var(--k-color)" strokeWidth={2} strokeLinejoin="round" />
+    <circle cx="144" cy="28" r="6" fill="var(--surface-2)" stroke="var(--k-color)" strokeWidth={1.6} />
+    <circle cx="214" cy="116" r="6" fill="var(--k-color)" />
+    <circle cx="74" cy="116" r="6" fill="var(--surface-2)" stroke="var(--k-color)" strokeWidth={1.6} />
+    <text x="144" y="18" fill="var(--ink-strong)" fontSize={12} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>C</text>
+    <text x="228" y="120" fill="var(--k-color)" fontSize={12} style={{ fontFamily: "var(--font-mono)" }}>A</text>
+    <text x="56" y="120" fill="var(--text-secondary)" fontSize={12} style={{ fontFamily: "var(--font-mono)" }}>P</text>
+  </svg>
+);
+
 export default function Inge2Tools() {
   const tools: Tool[] = [
     {
@@ -2203,8 +2237,10 @@ export default function Inge2Tools() {
       label: "Mapa de estudio",
       group: "Plan de recu",
       icon: "target",
+      tone: "accent",
       verb: "Ver progreso",
       desc: "Tu punto de partida: cuánto dominás cada unidad, qué tan listo estás para el recu y dónde conviene enfocar.",
+      poster: PosterReadiness,
       node: <StudyDashboard />,
     },
     {
@@ -2212,6 +2248,7 @@ export default function Inge2Tools() {
       label: "Flashcards",
       group: "Aprender",
       icon: "cards",
+      tone: "def",
       verb: "Repasar",
       desc: "Memorizá los conceptos clave con recuerdo activo y repetición espaciada: la app te trae lo que más te cuesta.",
       node: <Flashcards />,
@@ -2221,6 +2258,7 @@ export default function Inge2Tools() {
       label: "Trade-offs",
       group: "Aprender",
       icon: "scale",
+      tone: "def",
       verb: "Entrenar",
       desc: "Toda decisión de arquitectura cede algo a cambio de otra cosa. Entrená qué se gana y qué se resigna en cada una.",
       node: <TradeoffTrainer />,
@@ -2230,6 +2268,7 @@ export default function Inge2Tools() {
       label: "Banco de preguntas",
       group: "Practicar",
       icon: "question",
+      tone: "method",
       verb: "Practicar",
       desc: "Cientos de preguntas filtrables por unidad y dificultad, con explicación, para medir qué sabés de verdad.",
       node: <QuizBank />,
@@ -2239,6 +2278,7 @@ export default function Inge2Tools() {
       label: "¿Qué mecanismo?",
       group: "Practicar",
       icon: "gears",
+      tone: "method",
       verb: "Decidir",
       desc: "Te damos un problema de diseño y elegís el mecanismo que lo resuelve: entrená el criterio que toman en el parcial.",
       node: <MechanismPicker />,
@@ -2248,6 +2288,7 @@ export default function Inge2Tools() {
       label: "Anti-patrones",
       group: "Practicar",
       icon: "warning",
+      tone: "method",
       verb: "Detectar",
       desc: "Aprendé a oler el mal diseño: leé un caso y detectá el anti-patrón antes de que se vuelva un problema.",
       node: <AntipatternDrill />,
@@ -2257,6 +2298,7 @@ export default function Inge2Tools() {
       label: "Parcial simulado",
       group: "Práctica de parcial",
       icon: "clipboard",
+      tone: "caution",
       verb: "Rendir",
       desc: "Un parcial completo con el formato real, caso por caso, para ponerte a prueba en condiciones de examen.",
       node: <ParcialSimulado />,
@@ -2266,6 +2308,7 @@ export default function Inge2Tools() {
       label: "Escenarios de calidad",
       group: "Resolver",
       icon: "list",
+      tone: "formula",
       verb: "Resolver",
       desc: "Escribí escenarios de atributos de calidad (rendimiento, seguridad…) con la plantilla estímulo–respuesta–medida.",
       node: <QualityAttributeScenarios />,
@@ -2275,6 +2318,7 @@ export default function Inge2Tools() {
       label: "ADD: caso resuelto",
       group: "Resolver",
       icon: "blueprint",
+      tone: "formula",
       verb: "Recorrer",
       desc: "Recorré un diseño guiado por atributos (ADD) paso a paso sobre un caso real, decisión por decisión.",
       node: <AddWalkthrough />,
@@ -2284,8 +2328,10 @@ export default function Inge2Tools() {
       label: "CAP / PACELC",
       group: "Resolver",
       icon: "triangle",
+      tone: "formula",
       verb: "Clasificar",
       desc: "Ante una partición de red, ¿el sistema elige consistencia o disponibilidad? Clasificá casos con CAP y PACELC.",
+      poster: PosterCap,
       node: <CapClassifier />,
     },
     {
@@ -2293,6 +2339,7 @@ export default function Inge2Tools() {
       label: "Disponibilidad",
       group: "Resolver",
       icon: "pulse",
+      tone: "formula",
       verb: "Calcular",
       desc: 'Cuántos "nueves" da tu sistema: calculá disponibilidad en serie, en paralelo y el tiempo caído al año.',
       node: <AvailabilityCalculator />,
@@ -2302,6 +2349,7 @@ export default function Inge2Tools() {
       label: "Pizarra de diagramas",
       group: "Dibujar",
       icon: "pen",
+      tone: "theorem",
       verb: "Dibujar",
       desc: "Una pizarra para bocetar diagramas de componentes y despliegue, como los que tenés que dibujar en el parcial.",
       node: <DiagramBoard />,
@@ -2311,6 +2359,7 @@ export default function Inge2Tools() {
       label: "Estilos",
       group: "Referencia",
       icon: "blocks",
+      tone: "example",
       verb: "Explorar",
       desc: "Catálogo de estilos arquitectónicos (capas, microservicios, eventos…): cuándo usar cada uno y qué implica.",
       node: <StyleCatalog />,
@@ -2320,6 +2369,7 @@ export default function Inge2Tools() {
       label: "Seguridad",
       group: "Referencia",
       icon: "lock",
+      tone: "example",
       verb: "Explorar",
       desc: "Tácticas de seguridad y las amenazas que mitigan: autenticación, cifrado, auditoría y compañía, a mano.",
       node: <SecurityCatalog />,
@@ -2329,6 +2379,7 @@ export default function Inge2Tools() {
       label: "Patrones GoF",
       group: "Referencia",
       icon: "blocks",
+      tone: "example",
       verb: "Explorar",
       desc: "Los 23 patrones de diseño clásicos explicados con su intención, estructura y ejemplo de uso.",
       node: <PatternCatalog />,
@@ -2338,6 +2389,7 @@ export default function Inge2Tools() {
       label: "¿Qué patrón?",
       group: "Referencia",
       icon: "branch",
+      tone: "example",
       verb: "Decidir",
       desc: "Describí tu problema y la guía te lleva al patrón GoF indicado: una brújula para no quedarte en blanco.",
       node: <WhichPattern />,
@@ -2347,6 +2399,7 @@ export default function Inge2Tools() {
       label: "Review checklist",
       group: "Referencia",
       icon: "checklist",
+      tone: "example",
       verb: "Revisar",
       desc: "La lista de control para repasar tu diseño antes de entregarlo y no perder puntos por descuidos típicos.",
       node: <ReviewChecklist />,
@@ -2355,7 +2408,43 @@ export default function Inge2Tools() {
 
   return (
     <ToolkitShell
-      intro="Todo para llegar listo al recuperatorio de Ingeniería de Software II, ordenado como un plan de estudio: empezá por el mapa para ver dónde estás parado, aprendé y practicá los conceptos, ponete a prueba con un parcial simulado, y tené a mano las herramientas de resolución y la referencia. Cada tarjeta te dice de un vistazo para qué sirve."
+      launcher={{
+        code: "SYS.05",
+        kicker: "Arquitectura de software",
+        title: "Ingeniería de Software II",
+        accent: "var(--link)",
+        pattern: "grid",
+        variant: "grid",
+        dek: "Todo para llegar listo al recuperatorio, ordenado como un plan de estudio: mapá tu progreso, aprendé y practicá los conceptos, rendí un parcial simulado, y tené a mano las herramientas de resolución y la referencia.",
+        meta: (
+          <>
+            <span className="tk__hero-metaitem">
+              <b>17</b> herramientas
+            </span>
+            <span className="tk__hero-metaitem">
+              <b>7</b> etapas
+            </span>
+            <span className="tk__hero-metaitem">/inge2/herramientas</span>
+          </>
+        ),
+        motif: (
+          <svg viewBox="0 0 320 200" fill="none">
+            <rect x="60" y="40" width="200" height="34" rx="6" fill="color-mix(in srgb, var(--link) 12%, transparent)" stroke="var(--link)" strokeWidth={1.4} />
+            <rect x="60" y="86" width="200" height="34" rx="6" fill="var(--surface-3)" stroke="var(--border)" strokeWidth={1.4} />
+            <rect x="60" y="132" width="200" height="34" rx="6" fill="color-mix(in srgb, var(--accent) 12%, transparent)" stroke="var(--accent)" strokeWidth={1.4} />
+            <path d="M110 74 V86 M160 120 V132 M210 74 V86" stroke="var(--border)" strokeWidth={1.4} />
+            <circle cx="110" cy="57" r="3" fill="var(--link)" />
+            <circle cx="160" cy="103" r="3" fill="var(--text-secondary)" />
+            <circle cx="210" cy="149" r="3" fill="var(--accent)" />
+            <text x="62" y="30" fill="var(--text-secondary)" fontSize={10} style={{ fontFamily: "var(--font-mono)" }}>
+              presentación
+            </text>
+            <text x="62" y="184" fill="var(--text-secondary)" fontSize={10} style={{ fontFamily: "var(--font-mono)" }}>
+              datos
+            </text>
+          </svg>
+        ),
+      }}
       tools={tools}
     />
   );

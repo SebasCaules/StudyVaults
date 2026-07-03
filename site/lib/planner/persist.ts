@@ -4,6 +4,9 @@
 // (sv-theme lo maneja el portal, no el planner.)
 import type {
   ComboParams,
+  FinalesState,
+  FinalPeriodo,
+  MesaFinal,
   OptMethod,
   PlannerState,
   PlanStart,
@@ -11,13 +14,16 @@ import type {
 
 const K = {
   approved: "plan_aprobadas_v3",
+  finalDone: "plan_finales_v1",
   combo: "plan_combo_v3",
   pool: "plan_pool_v3",
   fixed: "plan_fixed_v3",
+  locked: "plan_locked_v1",
   sidebar: "plan_sidebar",
   comboParams: "plan_combo_params_v1",
   fixedCom: "plan_fixed_com_v1",
   planOpts: "plan_opts_v1",
+  finalesCombo: "plan_finales_combo_v1",
 } as const;
 
 export interface PlanOpts {
@@ -30,14 +36,27 @@ export interface PlanOpts {
   capMatByIdx?: [number, number][];
 }
 
+/** Forma serializable de `FinalesState` (Map/Set → arrays). */
+export interface PersistedFinales {
+  periodo: FinalPeriodo;
+  anio: number;
+  mesas: [string, MesaFinal][];
+  seleccion: string[];
+  reminderHs: number;
+  margenDias: number;
+}
+
 export interface Persisted {
   approved: string[] | null;
+  finalDone: string[] | null;
   combo: string[] | null;
   pool: string[] | null;
   fixed: [string, number][] | null;
+  lockedIdx: number[] | null;
   comboParams: ComboParams | null;
   fixedCom: [string, string][] | null;
   planOpts: PlanOpts | null;
+  finales: PersistedFinales | null;
   sideCollapsed: boolean;
 }
 
@@ -53,12 +72,15 @@ function read<T>(key: string): T | null {
 export function loadPersisted(): Persisted {
   return {
     approved: read<string[]>(K.approved),
+    finalDone: read<string[]>(K.finalDone),
     combo: read<string[]>(K.combo),
     pool: read<string[]>(K.pool),
     fixed: read<[string, number][]>(K.fixed),
+    lockedIdx: read<number[]>(K.locked),
     comboParams: read<ComboParams>(K.comboParams),
     fixedCom: read<[string, string][]>(K.fixedCom),
     planOpts: read<PlanOpts>(K.planOpts),
+    finales: read<PersistedFinales>(K.finalesCombo),
     sideCollapsed: ((): boolean => {
       try {
         return localStorage.getItem(K.sidebar) === "1";
@@ -78,11 +100,25 @@ const write = (key: string, val: unknown) => {
 };
 
 export const saveApproved = (s: Set<string>) => write(K.approved, [...s]);
+export const saveFinalDone = (s: Set<string>) => write(K.finalDone, [...s]);
 export const saveCombo = (s: Set<string>) => write(K.combo, [...s]);
 export const savePlanPool = (pool: Set<string>, fixed: Map<string, number>) => {
   write(K.pool, [...pool]);
   write(K.fixed, [...fixed]);
 };
+export const saveLocked = (s: Set<number>) => write(K.locked, [...s]);
+
+/** Serializa `FinalesState` (Map/Set) a su forma persistible (arrays). */
+export const serializeFinales = (f: FinalesState): PersistedFinales => ({
+  periodo: f.periodo,
+  anio: f.anio,
+  mesas: [...f.mesas],
+  seleccion: [...f.seleccion],
+  reminderHs: f.reminderHs,
+  margenDias: f.margenDias,
+});
+export const saveFinalesCombo = (f: FinalesState) =>
+  write(K.finalesCombo, serializeFinales(f));
 export const saveComboParams = (p: ComboParams) => write(K.comboParams, p);
 export const saveFixedCom = (m: Map<string, string>) =>
   write(K.fixedCom, [...m]);
@@ -111,12 +147,15 @@ export interface PreferenceBundle {
   v: number;
   exported?: string; // fecha legible, informativa
   approved: string[];
+  finalDone: string[];
   combo: string[];
   pool: string[];
   fixed: [string, number][];
+  lockedIdx: number[];
   fixedCom: [string, string][];
   comboParams: ComboParams;
   planOpts: PlanOpts;
+  finales: PersistedFinales;
   sideCollapsed: boolean;
 }
 
@@ -130,9 +169,11 @@ export function buildPreferenceBundle(
     v: PREF_VERSION,
     exported,
     approved: [...state.approved],
+    finalDone: [...state.finalDone],
     combo: [...state.combo],
     pool: [...state.plan.pool],
     fixed: [...state.plan.fixed],
+    lockedIdx: [...state.plan.lockedIdx],
     fixedCom: [...state.fixedCom],
     comboParams: state.comboParams,
     planOpts: {
@@ -144,6 +185,7 @@ export function buildPreferenceBundle(
       capCredByIdx: [...state.plan.capCredByIdx],
       capMatByIdx: [...state.plan.capMatByIdx],
     },
+    finales: serializeFinales(state.finales),
     sideCollapsed: state.sideCollapsed,
   };
 }
@@ -166,6 +208,39 @@ const isStr = (v: unknown): v is string => typeof v === "string";
 const isNumPairArr = (x: unknown): x is [number, number][] =>
   Array.isArray(x) &&
   x.every((p) => Array.isArray(p) && p.length === 2 && isNum(p[0]) && isNum(p[1]));
+const isNumArr = (x: unknown): x is number[] =>
+  Array.isArray(x) && x.every(isNum);
+
+const isMesa = (v: unknown): v is MesaFinal =>
+  !!v &&
+  typeof v === "object" &&
+  isStr((v as Record<string, unknown>).fecha) &&
+  isStr((v as Record<string, unknown>).hora);
+
+/** Parsea el bloque de finales de un bundle; tolerante (campos inválidos → default). */
+function parseFinales(x: unknown): PersistedFinales | null {
+  if (!x || typeof x !== "object") return null;
+  const f = x as Record<string, unknown>;
+  const periodo: FinalPeriodo =
+    f.periodo === "diciembre" || f.periodo === "febrero"
+      ? f.periodo
+      : "julio";
+  const mesas =
+    Array.isArray(f.mesas) &&
+    f.mesas.every(
+      (p) => Array.isArray(p) && p.length === 2 && isStr(p[0]) && isMesa(p[1]),
+    )
+      ? (f.mesas as [string, MesaFinal][])
+      : [];
+  return {
+    periodo,
+    anio: isNum(f.anio) ? f.anio : 2026,
+    mesas,
+    seleccion: isStrArr(f.seleccion) ? f.seleccion : [],
+    reminderHs: isNum(f.reminderHs) ? f.reminderHs : 72,
+    margenDias: isNum(f.margenDias) ? f.margenDias : 2,
+  };
+}
 
 /**
  * Parsea un archivo de preferencias exportado → `Persisted` (lo que consume
@@ -210,15 +285,18 @@ export function parsePreferences(text: string): Persisted | null {
 
   return {
     approved: isStrArr(b.approved) ? b.approved : null,
+    finalDone: isStrArr(b.finalDone) ? b.finalDone : null,
     combo: isStrArr(b.combo) ? b.combo : null,
     pool: isStrArr(b.pool) ? b.pool : null,
     fixed: isPairArr(b.fixed, isNum) ? b.fixed : null,
+    lockedIdx: isNumArr(b.lockedIdx) ? b.lockedIdx : null,
     comboParams:
       b.comboParams && typeof b.comboParams === "object"
         ? (b.comboParams as ComboParams)
         : null,
     fixedCom: isPairArr(b.fixedCom, isStr) ? b.fixedCom : null,
     planOpts,
+    finales: parseFinales(b.finales),
     sideCollapsed: typeof b.sideCollapsed === "boolean" ? b.sideCollapsed : false,
   };
 }

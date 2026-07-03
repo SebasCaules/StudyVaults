@@ -1008,11 +1008,33 @@ function ReferenceTool() {
  * Toolkit assembly
  * =================================================================== */
 
+/* Runner poster (bespoke micro-illustration tinted by --k-color). */
+
+/** Request → DispatcherServlet → Controller → view, and the response back. */
+const PosterLifecycle = (
+  <svg viewBox="0 0 288 150" fill="none">
+    <path d="M34 40 H254" stroke="var(--k-color)" strokeWidth={2} strokeLinecap="round" />
+    <path d="M246 34 L256 40 L246 46" stroke="var(--k-color)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M254 110 H34" stroke="var(--border)" strokeWidth={2} strokeLinecap="round" />
+    <path d="M42 104 L32 110 L42 116" stroke="var(--border)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="24" y="58" width="60" height="34" rx="8" fill="color-mix(in srgb, var(--k-color) 12%, transparent)" stroke="var(--k-color)" strokeWidth={1.4} />
+    <rect x="114" y="58" width="60" height="34" rx="8" fill="var(--surface-3)" stroke="var(--border)" strokeWidth={1.4} />
+    <rect x="204" y="58" width="60" height="34" rx="8" fill="color-mix(in srgb, var(--k-color) 12%, transparent)" stroke="var(--k-color)" strokeWidth={1.4} />
+    <path d="M84 75 H114 M174 75 H204" stroke="var(--border)" strokeWidth={1.4} />
+    <text x="54" y="79" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>client</text>
+    <text x="144" y="79" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>MVC</text>
+    <text x="234" y="79" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>JSP</text>
+    <text x="26" y="34" fill="var(--k-color)" fontSize={9} style={{ fontFamily: "var(--font-mono)" }}>request</text>
+    <text x="214" y="130" fill="var(--text-secondary)" fontSize={9} style={{ fontFamily: "var(--font-mono)" }}>response</text>
+  </svg>
+);
+
 const tools: Tool[] = [
   {
     key: "snippets",
     label: "Snippet cheatsheet",
     icon: "code",
+    tone: "def",
     verb: "Copiar",
     desc: "Fragmentos de Spring MVC listos para copiar: controllers, validación, formularios y más, con un clic.",
     node: <SnippetTool />,
@@ -1021,14 +1043,17 @@ const tools: Tool[] = [
     key: "lifecycle",
     label: "Request lifecycle",
     icon: "cycle",
+    tone: "def",
     verb: "Recorrer",
     desc: "Seguí una petición paso a paso, del navegador al servlet y de vuelta al JSP, para entender cómo viaja por Spring.",
+    poster: PosterLifecycle,
     node: <LifecycleTool />,
   },
   {
     key: "reference",
     label: "EL & JSTL reference",
     icon: "braces",
+    tone: "example",
     verb: "Consultar",
     desc: "Referencia rápida de Expression Language y etiquetas JSTL: la sintaxis que siempre se olvida, a mano.",
     node: <ReferenceTool />,
@@ -1038,13 +1063,51 @@ const tools: Tool[] = [
 export default function PawTools() {
   return (
     <ToolkitShell
-      intro={
-        <>
-          A reference bench for <b>Spring MVC + JSP</b>: copy-ready snippets from
-          the Rent-The-Slopes stack, the request lifecycle end to end, and an EL
-          / JSTL / annotations quick-reference.
-        </>
-      }
+      launcher={{
+        code: "SYS.04",
+        kicker: "Spring MVC · JSP",
+        title: "Web Application Programming",
+        accent: "var(--link)",
+        pattern: "grid",
+        variant: "flat",
+        dek: "A reference bench for Spring MVC + JSP: copy-ready snippets from the Rent-The-Slopes stack, the request lifecycle end to end, and an EL / JSTL / annotations quick-reference.",
+        meta: (
+          <>
+            <span className="tk__hero-metaitem">
+              <b>3</b> tools
+            </span>
+            <span className="tk__hero-metaitem">Spring MVC + JSP</span>
+            <span className="tk__hero-metaitem">/paw/herramientas</span>
+          </>
+        ),
+        motif: (
+          <svg viewBox="0 0 320 200" fill="none">
+            <path d="M40 58 H282" stroke="var(--link)" strokeWidth={2} strokeLinecap="round" />
+            <path d="M274 52 L284 58 L274 64" stroke="var(--link)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M280 142 H38" stroke="var(--border)" strokeWidth={2} strokeLinecap="round" />
+            <path d="M46 136 L36 142 L46 148" stroke="var(--border)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+            <rect x="24" y="80" width="66" height="40" rx="8" fill="color-mix(in srgb, var(--link) 12%, transparent)" stroke="var(--link)" strokeWidth={1.4} />
+            <rect x="127" y="80" width="66" height="40" rx="8" fill="var(--surface-3)" stroke="var(--border)" strokeWidth={1.4} />
+            <rect x="230" y="80" width="66" height="40" rx="8" fill="color-mix(in srgb, var(--accent) 14%, transparent)" stroke="var(--accent)" strokeWidth={1.4} />
+            <path d="M90 100 H127 M193 100 H230" stroke="var(--border)" strokeWidth={1.4} />
+            <text x="57" y="104" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>
+              client
+            </text>
+            <text x="160" y="104" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>
+              MVC
+            </text>
+            <text x="263" y="104" fill="var(--text-secondary)" fontSize={10} textAnchor="middle" style={{ fontFamily: "var(--font-mono)" }}>
+              JSP
+            </text>
+            <text x="26" y="72" fill="var(--text-secondary)" fontSize={9} style={{ fontFamily: "var(--font-mono)" }}>
+              request
+            </text>
+            <text x="240" y="160" fill="var(--text-secondary)" fontSize={9} style={{ fontFamily: "var(--font-mono)" }}>
+              response
+            </text>
+          </svg>
+        ),
+      }}
       tools={tools}
     />
   );

@@ -56,6 +56,7 @@ export * from "./forms/Field";
 export * from "./forms/TextInput";
 export * from "./forms/TextArea";
 export * from "./forms/Select";
+export * from "./forms/CommissionSelect";
 export * from "./forms/Slider";
 export * from "./forms/Chip";
 

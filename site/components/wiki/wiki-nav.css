@@ -1,0 +1,215 @@
+/* ============================================================
+   WIKI · Navegación secuencial prev/next entre notas.
+   Vive al pie de cada nota y se deriva del árbol del sidebar
+   (misma fuente que buildNav). Selectores propios (.wnav*) y
+   tokens de rol de @studyvaults/ui — sin hex hardcodeado.
+   Importado por WikiLayout.tsx. NO tocar app/globals.css.
+   ============================================================ */
+
+.wnav {
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--hairline);
+}
+
+/* ---- progreso dentro de la sección (X de N) ---- */
+.wnav__progress {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 0 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.wnav__progress-track {
+  flex: 0 1 220px;
+  height: 3px;
+  border-radius: var(--r-pill);
+  background: var(--hairline);
+  overflow: hidden;
+}
+.wnav__progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
+/* ---- pista de teclado (← →); sólo con puntero fino (mouse/trackpad) ---- */
+.wnav__kbd-hint {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.wnav__kbd {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--text-secondary);
+  background: var(--surface-3);
+  border: 1px solid var(--hairline-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 3px 6px;
+  min-width: 17px;
+  text-align: center;
+}
+@media (hover: none), (pointer: coarse) {
+  .wnav__kbd-hint {
+    display: none;
+  }
+}
+
+/* ---- grilla prev/next ---- */
+.wnav__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.wnav__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: var(--r-card);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+/* barra de acento vertical al hover — lado interno de cada card */
+.wnav__card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform var(--dur) var(--ease);
+}
+.wnav__card--prev::before { left: 0; }
+.wnav__card--next::before { right: 0; }
+.wnav__card:hover,
+.wnav__card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--hairline-strong);
+}
+.wnav__card:hover::before,
+.wnav__card:focus-visible::before { transform: scaleY(1); }
+.wnav__card:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.wnav__card--next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.wnav__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease);
+}
+.wnav__card--next .wnav__eyebrow { flex-direction: row-reverse; }
+.wnav__card:hover .wnav__eyebrow,
+.wnav__card:focus-visible .wnav__eyebrow { color: var(--accent-text); }
+.wnav__chevron { width: 13px; height: 13px; flex: 0 0 auto; }
+
+.wnav__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink-strong);
+}
+
+/* ---- estado vacío en el borde de la sección: link mudo al índice ---- */
+.wnav__card--empty {
+  background: transparent;
+  border-color: var(--hairline);
+  box-shadow: none;
+  color: var(--text-secondary);
+}
+.wnav__card--empty::before { content: none; }
+.wnav__card--empty .wnav__title {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.wnav__card--empty:hover,
+.wnav__card--empty:focus-visible {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--hairline-strong);
+  background: var(--row-hover);
+}
+.wnav__card--empty:hover .wnav__eyebrow,
+.wnav__card--empty:focus-visible .wnav__eyebrow { color: var(--text-secondary); }
+
+/* ---- responsive: apilar en una columna en pantallas angostas ---- */
+@media (max-width: 640px) {
+  .wnav__grid { grid-template-columns: 1fr; }
+  .wnav__card--next {
+    text-align: left;
+    align-items: flex-start;
+  }
+  .wnav__card--next .wnav__eyebrow { flex-direction: row; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wnav__card,
+  .wnav__card::before,
+  .wnav__eyebrow { transition: none; }
+}
+
+/* ============================================================
+   SIDEBAR · realce de la nota activa ("estás acá").
+   El sidebar es el navegador principal: la nota abierta tiene que
+   saltar a la vista. Los estilos base de `.wikinav*` viven en
+   app/globals.css (no se tocan); acá sólo REFORZAMOS el estado
+   activo con mayor especificidad (`.wiki …`) para ganar el cascade
+   sin depender del orden de carga. `scroll-margin` deja aire cuando
+   el riel auto-scrollea la nota activa hacia adentro.
+   ============================================================ */
+.wiki .wikinav__link { scroll-margin-block: 28px; }
+
+.wiki .wikinav__link.is-active {
+  background: color-mix(in srgb, var(--primary) 15%, transparent);
+}
+/* punto indicador de "nota actual", coherente con el árbol y prev/next */
+.wiki .wikinav__link.is-active::after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 7px;
+  border-radius: 50%;
+  background: var(--primary);
+  vertical-align: middle;
+}

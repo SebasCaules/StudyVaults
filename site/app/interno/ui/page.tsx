@@ -34,6 +34,7 @@ import {
   TextInput,
   TextArea,
   Select,
+  CommissionSelect,
   Slider,
   Chip,
   KeyValue,
@@ -79,6 +80,7 @@ export default function DesignSystemPage() {
   const [name, setName] = useState("Tu nombre");
   const [bio, setBio] = useState("Escribí algo sobre vos…");
   const [vault, setVault] = useState("mna");
+  const [comm, setComm] = useState("");
   const [credits, setCredits] = useState(18);
   const [picked, setPicked] = useState<string[]>(["álgebra", "grafos"]);
 
@@ -334,7 +336,7 @@ export default function DesignSystemPage() {
         <Demo
           id="forms"
           eyebrow="forms"
-          title="Field · TextInput · TextArea · Select · Slider · Chip"
+          title="Field · TextInput · TextArea · Select · CommissionSelect · Slider · Chip"
           description="Controles de formulario sobre el chrome del toolkit. Interactivos: probalos."
         >
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "18px" }}>
@@ -349,6 +351,17 @@ export default function DesignSystemPage() {
                   { value: "mna", label: "Métodos numéricos" },
                   { value: "proba", label: "Probabilidad" },
                   { value: "paw", label: "PAW" },
+                ]}
+              />
+            </Field>
+            <Field label="Comisión" hint="planner">
+              <CommissionSelect
+                value={comm}
+                onChange={(e) => setComm(e.target.value)}
+                options={[
+                  { value: "A", label: "Com. A · Lun 18–22", title: "Lunes 18:00–22:00" },
+                  { value: "B", label: "Com. B · Mié 8–12", title: "Miércoles 08:00–12:00" },
+                  { value: "S", label: "Com. S · Sáb 9–13 (nombre largo que trunca)", title: "Sábado 09:00–13:00" },
                 ]}
               />
             </Field>

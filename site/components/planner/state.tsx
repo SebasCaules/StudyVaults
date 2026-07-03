@@ -13,11 +13,29 @@ import type { Persisted } from "@/lib/planner/persist";
 import type { PlannerUrlState } from "@/lib/planner/url-state";
 import type {
   CharFilters,
+  FinalPeriodo,
+  FinalesState,
+  MesaFinal,
   OptMethod,
   PlacedMateria,
   PlannerState,
   ViewKey,
 } from "@/lib/planner/types";
+
+/** Estado del combinador de finales al arrancar (determinístico SSR = cliente). */
+export function initialFinales(): FinalesState {
+  return {
+    periodo: "julio",
+    anio: 2026,
+    mesas: new Map<string, MesaFinal>(),
+    seleccion: new Set<string>(),
+    reminderHs: 72,
+    margenDias: 2,
+  };
+}
+
+/** Estado de una materia derivado de approved + finalDone. */
+export type Estado = "pendiente" | "regular" | "final";
 
 const clampInt = (n: number, min: number, max: number) =>
   Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : min;
@@ -30,6 +48,8 @@ export function initialState(): PlannerState {
   return {
     view: "cuatri",
     approved,
+    // migración: lo que arranca aprobado se trata como final aprobado (estado:"final").
+    finalDone: new Set<string>(approved),
     combo: new Set<string>(),
     fixedCom: new Map<string, string>(),
     areasOn: new Set<string>(PLAN.areas),
@@ -52,12 +72,14 @@ export function initialState(): PlannerState {
       method: "cuatris",
       capCredByIdx: new Map<number, number>(),
       capMatByIdx: new Map<number, number>(),
+      lockedIdx: new Set<number>(),
       result: null,
     },
     sideCollapsed: false,
     drawerCode: null,
     fichaCode: null,
     charFilters: { ...DEFAULT_CHAR_FILTERS },
+    finales: initialFinales(),
     hydrated: false,
   };
 }
@@ -67,6 +89,7 @@ export type Action =
   | { type: "HYDRATE_URL"; payload: PlannerUrlState }
   | { type: "SET_VIEW"; view: ViewKey }
   | { type: "TOGGLE_APPROVED"; code: string }
+  | { type: "SET_ESTADO"; code: string; estado: Estado }
   | { type: "TOGGLE_COMBO"; code: string }
   | { type: "SET_FIXED_COM"; code: string; comision: string | null }
   | { type: "SET_SEARCH"; value: string }
@@ -87,6 +110,8 @@ export type Action =
   | { type: "PLAN_POOL_ADD"; code: string }
   | { type: "PLAN_POOL_REMOVE"; code: string }
   | { type: "PLAN_SET_FIXED"; code: string; idx: number | null }
+  | { type: "PLAN_TOGGLE_LOCK"; idx: number }
+  | { type: "PLAN_SAVE_PREFERENCE"; codes: string[]; idx?: number }
   | { type: "PLAN_RESET" }
   | { type: "RESET_APPROVED" }
   | { type: "TOGGLE_SIDEBAR" }
@@ -95,7 +120,13 @@ export type Action =
   | { type: "OPEN_FICHA"; code: string }
   | { type: "CLOSE_FICHA" }
   | { type: "SET_CHAR_FILTERS"; patch: Partial<CharFilters> }
-  | { type: "RESET_CHAR_FILTERS" };
+  | { type: "RESET_CHAR_FILTERS" }
+  | { type: "SET_FINALES_PERIODO"; periodo: FinalPeriodo }
+  | { type: "SET_FINALES_ANIO"; anio: number }
+  | { type: "SET_MESA"; code: string; mesa: MesaFinal | null }
+  | { type: "TOGGLE_FINAL_SEL"; code: string }
+  | { type: "SET_FINALES_REMINDER"; hs: number }
+  | { type: "SET_FINALES_MARGEN"; dias: number };
 
 export function reducer(s: PlannerState, a: Action): PlannerState {
   switch (a.type) {
@@ -105,13 +136,27 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return {
         ...s,
         approved,
+        // migración: sin `finalDone` persistido (datos pre-feature), todo lo
+        // aprobado se toma como final aprobado (estado:"final").
+        finalDone: p.finalDone ? new Set(p.finalDone) : new Set(approved),
         combo: p.combo ? new Set(p.combo) : s.combo,
         fixedCom: p.fixedCom ? new Map(p.fixedCom) : s.fixedCom,
         comboParams: p.comboParams ?? s.comboParams,
+        finales: p.finales
+          ? {
+              periodo: p.finales.periodo,
+              anio: p.finales.anio,
+              mesas: new Map(p.finales.mesas),
+              seleccion: new Set(p.finales.seleccion),
+              reminderHs: p.finales.reminderHs,
+              margenDias: p.finales.margenDias,
+            }
+          : s.finales,
         plan: {
           ...s.plan,
           pool: p.pool ? new Set(p.pool) : new Set(remainingOblig(approved)),
           fixed: p.fixed ? new Map(p.fixed) : s.plan.fixed,
+          lockedIdx: p.lockedIdx ? new Set(p.lockedIdx) : s.plan.lockedIdx,
           start: p.planOpts?.start ?? s.plan.start,
           // clamp defensivo: valores persistidos fuera de rango (de versiones
           // previas con el input roto) no deben romper el plan
@@ -157,8 +202,29 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return { ...s, view: a.view };
     case "TOGGLE_APPROVED": {
       const approved = new Set(s.approved);
-      approved.has(a.code) ? approved.delete(a.code) : approved.add(a.code);
-      return { ...s, approved };
+      const finalDone = new Set(s.finalDone);
+      if (approved.has(a.code)) {
+        approved.delete(a.code);
+        finalDone.delete(a.code); // mantiene la invariante finalDone ⊆ approved
+      } else {
+        approved.add(a.code);
+      }
+      return { ...s, approved, finalDone };
+    }
+    case "SET_ESTADO": {
+      const approved = new Set(s.approved);
+      const finalDone = new Set(s.finalDone);
+      if (a.estado === "pendiente") {
+        approved.delete(a.code);
+        finalDone.delete(a.code);
+      } else if (a.estado === "regular") {
+        approved.add(a.code);
+        finalDone.delete(a.code);
+      } else {
+        approved.add(a.code);
+        finalDone.add(a.code);
+      }
+      return { ...s, approved, finalDone };
     }
     case "TOGGLE_COMBO": {
       const combo = new Set(s.combo);
@@ -245,6 +311,36 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       else fixed.set(a.code, a.idx);
       return { ...s, plan: { ...s.plan, fixed } };
     }
+    case "PLAN_TOGGLE_LOCK": {
+      const lockedIdx = new Set(s.plan.lockedIdx);
+      const fixed = new Map(s.plan.fixed);
+      if (lockedIdx.has(a.idx)) {
+        // desbloquear: liberar los pines de ese cuatrimestre
+        lockedIdx.delete(a.idx);
+        for (const [code, idx] of fixed) if (idx === a.idx) fixed.delete(code);
+      } else {
+        // finalizar: pinear lo que hoy está ubicado en ese cuatrimestre para
+        // que el optimizador lo respete tal cual.
+        lockedIdx.add(a.idx);
+        const placed = s.plan.result?.items[a.idx] ?? [];
+        for (const x of placed) fixed.set(x.m.codigo, a.idx);
+      }
+      return { ...s, plan: { ...s.plan, lockedIdx, fixed } };
+    }
+    case "PLAN_SAVE_PREFERENCE": {
+      // combinador → plan: suma las materias elegidas al pool del plan (las
+      // comisiones ya viajan por el `fixedCom` compartido) y salta a la vista
+      // del plan; el efecto de optimización re-arma el resto alrededor. Si se da
+      // `idx`, además pinea esas materias a ese cuatrimestre (fixed) para que la
+      // combinación caiga tal cual en el cuatri elegido.
+      const pool = new Set(s.plan.pool);
+      const fixed = new Map(s.plan.fixed);
+      for (const c of a.codes) {
+        pool.add(c);
+        if (a.idx !== undefined) fixed.set(c, a.idx);
+      }
+      return { ...s, view: "plan", plan: { ...s.plan, pool, fixed } };
+    }
     case "PLAN_RESET":
       return {
         ...s,
@@ -254,6 +350,7 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
           fixed: new Map(),
           capCredByIdx: new Map(),
           capMatByIdx: new Map(),
+          lockedIdx: new Set(),
         },
       };
     case "RESET_APPROVED": {
@@ -261,10 +358,12 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return {
         ...s,
         approved,
+        finalDone: new Set(approved),
         plan: {
           ...s.plan,
           pool: new Set(remainingOblig(approved)),
           fixed: new Map(),
+          lockedIdx: new Set(),
         },
       };
     }
@@ -282,6 +381,27 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return { ...s, charFilters: { ...s.charFilters, ...a.patch } };
     case "RESET_CHAR_FILTERS":
       return { ...s, charFilters: { ...DEFAULT_CHAR_FILTERS } };
+    case "SET_FINALES_PERIODO":
+      return { ...s, finales: { ...s.finales, periodo: a.periodo } };
+    case "SET_FINALES_ANIO":
+      return { ...s, finales: { ...s.finales, anio: a.anio } };
+    case "SET_MESA": {
+      const mesas = new Map(s.finales.mesas);
+      if (a.mesa === null) mesas.delete(a.code);
+      else mesas.set(a.code, a.mesa);
+      return { ...s, finales: { ...s.finales, mesas } };
+    }
+    case "TOGGLE_FINAL_SEL": {
+      const seleccion = new Set(s.finales.seleccion);
+      seleccion.has(a.code)
+        ? seleccion.delete(a.code)
+        : seleccion.add(a.code);
+      return { ...s, finales: { ...s.finales, seleccion } };
+    }
+    case "SET_FINALES_REMINDER":
+      return { ...s, finales: { ...s.finales, reminderHs: a.hs } };
+    case "SET_FINALES_MARGEN":
+      return { ...s, finales: { ...s.finales, margenDias: a.dias } };
     default:
       return s;
   }

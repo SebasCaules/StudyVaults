@@ -816,6 +816,36 @@ function ElasticidadTool() {
 /* Export — toolkit completo, agrupado por unidad                      */
 /* ================================================================== */
 
+/* Afiches bespoke del runner (micro-ilustraciones tinteadas por --k-color). */
+
+/** Cruce de oferta y demanda con el punto de equilibrio E. */
+const PosterMercado = (
+  <svg viewBox="0 0 288 150" fill="none">
+    <path d="M54 24 V126 H258" stroke="var(--border)" strokeWidth={1.5} strokeLinecap="round" />
+    <path d="M70 34 L236 116" stroke="var(--k-color)" strokeWidth={2.4} strokeLinecap="round" />
+    <path d="M70 116 L236 34" stroke="var(--text-secondary)" strokeWidth={2.4} strokeLinecap="round" opacity={0.75} />
+    <path d="M153 75 V126 M153 75 H54" stroke="var(--border)" strokeWidth={1.1} strokeLinecap="round" opacity={0.7} />
+    <circle cx="153" cy="75" r="4.4" fill="var(--k-color)" />
+    <text x="240" y="112" fill="var(--k-color)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>O</text>
+    <text x="240" y="40" fill="var(--text-secondary)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>D</text>
+    <text x="158" y="70" fill="var(--ink-strong)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>E</text>
+  </svg>
+);
+
+/** Flujo de fondos acumulado que cruza el cero (repago) y sube al VAN. */
+const PosterVanTir = (
+  <svg viewBox="0 0 288 150" fill="none">
+    <path d="M40 82 H258" stroke="var(--border)" strokeWidth={1.4} strokeLinecap="round" />
+    <path d="M52 120 C96 120 96 96 132 82 C176 64 210 44 250 34" stroke="var(--k-color)" strokeWidth={2.6} strokeLinecap="round" />
+    <circle cx="132" cy="82" r="4" fill="var(--k-color)" />
+    <path d="M132 82 V96" stroke="var(--k-color)" strokeWidth={1.1} strokeLinecap="round" opacity={0.6} />
+    <circle cx="52" cy="120" r="2.6" fill="var(--text-secondary)" />
+    <circle cx="250" cy="34" r="2.6" fill="var(--k-color)" />
+    <text x="112" y="112" fill="var(--text-secondary)" fontSize={10} style={{ fontFamily: "var(--font-mono)" }}>repago</text>
+    <text x="222" y="30" fill="var(--k-color)" fontSize={11} style={{ fontFamily: "var(--font-mono)" }}>VAN</text>
+  </svg>
+);
+
 export default function EconomiaTools() {
   const tools: Tool[] = [
     // Práctica integradora
@@ -823,7 +853,8 @@ export default function EconomiaTools() {
       key: "simulador",
       label: "Simulador Parcial 2",
       group: "Práctica de parcial",
-      icon: "clipboard",
+      icon: "exam",
+      tone: "caution",
       verb: "Rendir",
       desc: "Un parcial completo simulado con el formato real: ejercicios de las tres unidades y corrección al terminar.",
       node: <SimuladorTool />,
@@ -834,7 +865,8 @@ export default function EconomiaTools() {
       key: "tasas",
       label: "Tasas equivalentes",
       group: "Cálculo financiero · U7",
-      icon: "percent",
+      icon: "percentEq",
+      tone: "method",
       verb: "Convertir",
       desc: "Pasá entre tasa nominal, efectiva y de distintos períodos sin equivocarte con la capitalización.",
       node: <TasasTool />,
@@ -843,7 +875,8 @@ export default function EconomiaTools() {
       key: "valor-tiempo",
       label: "Valor tiempo del dinero",
       group: "Cálculo financiero · U7",
-      icon: "clock",
+      icon: "timeline",
+      tone: "method",
       verb: "Calcular",
       desc: "Cuánto vale hoy un monto futuro (y al revés): traé capitales en el tiempo con valor actual y futuro.",
       node: <ValorTiempoTool />,
@@ -852,7 +885,8 @@ export default function EconomiaTools() {
       key: "anualidades",
       label: "Anualidades",
       group: "Cálculo financiero · U7",
-      icon: "calendar",
+      icon: "annuity",
+      tone: "method",
       verb: "Calcular",
       desc: "Valuá una serie de pagos iguales y periódicos: cuotas, ahorros o rentas, a valor actual o futuro.",
       node: <AnualidadesTool />,
@@ -861,7 +895,8 @@ export default function EconomiaTools() {
       key: "perpetuidades",
       label: "Perpetuidades",
       group: "Cálculo financiero · U7",
-      icon: "infinity",
+      icon: "perpetuity",
+      tone: "method",
       verb: "Calcular",
       desc: "El valor hoy de un flujo que se paga para siempre, con o sin crecimiento constante.",
       node: <PerpetuidadesTool />,
@@ -870,7 +905,8 @@ export default function EconomiaTools() {
       key: "prestamos",
       label: "Préstamos (francés/alemán/directo)",
       group: "Cálculo financiero · U7",
-      icon: "bank",
+      icon: "loan",
+      tone: "method",
       verb: "Calcular",
       desc: "Armá la tabla de amortización de un préstamo y compará los sistemas francés, alemán y directo.",
       node: <PrestamosTool />,
@@ -879,7 +915,8 @@ export default function EconomiaTools() {
       key: "descuento",
       label: "Descuento comercial y CFT",
       group: "Cálculo financiero · U7",
-      icon: "tag",
+      icon: "discount",
+      tone: "method",
       verb: "Calcular",
       desc: "Cuánto recibís al descontar un documento antes de su vencimiento y el costo financiero total real.",
       node: <DescuentoCftTool />,
@@ -890,7 +927,8 @@ export default function EconomiaTools() {
       key: "flujo",
       label: "Constructor de flujo de fondos",
       group: "Evaluación de proyectos · U8",
-      icon: "flow",
+      icon: "cashflow",
+      tone: "formula",
       verb: "Construir",
       desc: "Armá el flujo de fondos de un proyecto año por año: la base para evaluarlo con VAN y TIR.",
       node: <FlujoProyectoTool />,
@@ -899,9 +937,11 @@ export default function EconomiaTools() {
       key: "van-tir",
       label: "VAN / TIR / criterios",
       group: "Evaluación de proyectos · U8",
-      icon: "trending",
+      icon: "npv",
+      tone: "formula",
       verb: "Evaluar",
       desc: "Decidí si un proyecto conviene: valor actual neto, tasa interna de retorno y período de repago.",
+      poster: PosterVanTir,
       node: <VanTirTool />,
     },
     {
@@ -909,6 +949,7 @@ export default function EconomiaTools() {
       label: "Escudo fiscal y amortización",
       group: "Evaluación de proyectos · U8",
       icon: "shield",
+      tone: "formula",
       verb: "Calcular",
       desc: "Cuánto impuesto ahorra la amortización de un bien y cómo ese escudo fiscal mejora el flujo del proyecto.",
       node: <EscudoFiscalTool />,
@@ -917,7 +958,8 @@ export default function EconomiaTools() {
       key: "cae",
       label: "Valor anual equivalente",
       group: "Evaluación de proyectos · U8",
-      icon: "scale",
+      icon: "equalbars",
+      tone: "formula",
       verb: "Comparar",
       desc: "Compará proyectos de distinta duración llevándolos a un costo o beneficio anual equivalente.",
       node: <CaeTool />,
@@ -928,7 +970,8 @@ export default function EconomiaTools() {
       key: "ratios",
       label: "Ratios financieros y DuPont",
       group: "Información contable · U6",
-      icon: "pie",
+      icon: "ratio",
+      tone: "def",
       verb: "Analizar",
       desc: "Calculá liquidez, endeudamiento y rentabilidad de una empresa y abrí el ROE con el modelo DuPont.",
       node: <RatiosTool />,
@@ -937,7 +980,8 @@ export default function EconomiaTools() {
       key: "equilibrio",
       label: "Punto de equilibrio",
       group: "Información contable · U6",
-      icon: "crossCurves",
+      icon: "breakeven",
+      tone: "def",
       verb: "Calcular",
       desc: "Cuántas unidades hay que vender para no perder plata: punto de equilibrio en cantidad e ingresos.",
       node: <EquilibrioTool />,
@@ -946,7 +990,8 @@ export default function EconomiaTools() {
       key: "capital-trabajo",
       label: "Capital de trabajo / NOF",
       group: "Información contable · U6",
-      icon: "wallet",
+      icon: "worktable",
+      tone: "def",
       verb: "Calcular",
       desc: "Cuánta plata necesita la empresa para operar día a día: capital de trabajo y necesidades operativas de fondos.",
       node: <CapitalTrabajoTool />,
@@ -955,7 +1000,8 @@ export default function EconomiaTools() {
       key: "resultados",
       label: "Estado de resultados",
       group: "Información contable · U6",
-      icon: "document",
+      icon: "ledger",
+      tone: "def",
       verb: "Armar",
       desc: "Construí el estado de resultados desde ventas hasta utilidad neta, viendo cada margen en el camino.",
       node: <ResultadosTool />,
@@ -966,7 +1012,8 @@ export default function EconomiaTools() {
       key: "formulario",
       label: "Formulario Parcial 2",
       group: "Referencia",
-      icon: "formula",
+      icon: "document",
+      tone: "example",
       verb: "Consultar",
       desc: "Todas las fórmulas de las Unidades 6, 7 y 8 reunidas para repasar antes del parcial.",
       node: <FormularioTool />,
@@ -977,16 +1024,19 @@ export default function EconomiaTools() {
       key: "mercado",
       label: "Oferta y demanda",
       group: "Parcial 1 · Microeconomía",
-      icon: "crossCurves",
+      icon: "supplyDemand",
+      tone: "accent",
       verb: "Simular",
       desc: "Mové las curvas de oferta y demanda y mirá cómo se forman el precio y la cantidad de equilibrio.",
+      poster: PosterMercado,
       node: <MercadoTool />,
     },
     {
       key: "elasticidad",
       label: "Elasticidades",
       group: "Parcial 1 · Microeconomía",
-      icon: "percent",
+      icon: "elasticity",
+      tone: "accent",
       verb: "Calcular",
       desc: "Cuánto reacciona la cantidad ante cambios de precio o ingreso: elasticidad y qué significa su valor.",
       node: <ElasticidadTool />,
@@ -995,16 +1045,53 @@ export default function EconomiaTools() {
 
   return (
     <ToolkitShell
-      intro={
-        <>
-          Herramientas interactivas de <b>Economía para Ingenieros</b>, centradas en
-          el <b>Parcial 2</b> (Unidades 6/7/8): cálculo financiero, evaluación de
-          proyectos por VAN/TIR e información contable. Arrancá por el{" "}
-          <b>Simulador</b> para practicar el formato real, o usá cada calculadora
-          como verificador paso a paso. Todo recalcula en vivo y la matemática está
-          validada contra las soluciones oficiales de parciales anteriores.
-        </>
-      }
+      launcher={{
+        code: "SYS.03",
+        kicker: "Mercados, tasas y decisión",
+        title: "Economía para Ingenieros",
+        accent: "var(--status-warn)",
+        pattern: "cross",
+        variant: "grid",
+        dek: "Cálculo financiero, evaluación de proyectos e información contable — armado alrededor del Parcial 2 (U6/U7/U8), con un simulacro completo. La matemática está validada contra las soluciones oficiales.",
+        meta: (
+          <>
+            <span className="tk__hero-metaitem">
+              <b>18</b> herramientas
+            </span>
+            <span className="tk__hero-metaitem">
+              <b>6</b> categorías
+            </span>
+            <span className="tk__hero-metaitem">/economia/herramientas</span>
+          </>
+        ),
+        motif: (
+          <svg viewBox="0 0 320 200" fill="none">
+            <path d="M50 170 L50 20 M50 170 L300 170" stroke="var(--border)" strokeWidth={1.5} />
+            <path d="M50 14 L45 24 L55 24 Z" fill="var(--border)" />
+            <path d="M306 170 L296 165 L296 175 Z" fill="var(--border)" />
+            <text x="36" y="24" fill="var(--text-secondary)" fontSize={12} style={{ fontFamily: "var(--font-mono)" }}>
+              P
+            </text>
+            <text x="294" y="184" fill="var(--text-secondary)" fontSize={12} style={{ fontFamily: "var(--font-mono)" }}>
+              Q
+            </text>
+            <path d="M70 40 L280 150" stroke="var(--link)" strokeWidth={2.5} strokeLinecap="round" />
+            <path d="M70 150 L280 40" stroke="var(--status-warn)" strokeWidth={2.5} strokeLinecap="round" />
+            <line x1="175" y1="95" x2="175" y2="170" stroke="var(--border)" strokeWidth={1} strokeDasharray="3,3" />
+            <line x1="175" y1="95" x2="50" y2="95" stroke="var(--border)" strokeWidth={1} strokeDasharray="3,3" />
+            <circle cx="175" cy="95" r="4.5" fill="var(--accent)" />
+            <text x="182" y="91" fill="var(--accent)" fontSize={12} style={{ fontFamily: "var(--font-mono)" }}>
+              E
+            </text>
+            <text x="30" y="99" fill="var(--text-secondary)" fontSize={10} style={{ fontFamily: "var(--font-mono)" }}>
+              P*
+            </text>
+            <text x="169" y="184" fill="var(--text-secondary)" fontSize={10} style={{ fontFamily: "var(--font-mono)" }}>
+              Q*
+            </text>
+          </svg>
+        ),
+      }}
       tools={tools}
     />
   );

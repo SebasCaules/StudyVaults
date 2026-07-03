@@ -7,7 +7,10 @@ import {
   saveApproved,
   saveCombo,
   saveComboParams,
+  saveFinalDone,
+  saveFinalesCombo,
   saveFixedCom,
+  saveLocked,
   savePlanOpts,
   savePlanPool,
   saveSidebar,
@@ -23,6 +26,7 @@ import ElectivasView from "./views/ElectivasView";
 import CombinadorView from "./views/CombinadorView";
 import PlanView from "./views/PlanView";
 import GrafoView from "./views/GrafoView";
+import FinalesCombinadorView from "./views/FinalesCombinadorView";
 import RefView from "./views/RefView";
 import "./planner.css";
 
@@ -32,6 +36,7 @@ const VIEWS = {
   combo: CombinadorView,
   plan: PlanView,
   grafo: GrafoView,
+  finales: FinalesCombinadorView,
   ref: RefView,
 } as const;
 
@@ -147,11 +152,20 @@ function PlannerInner() {
     if (state.hydrated) saveApproved(state.approved);
   }, [state.approved, state.hydrated]);
   useEffect(() => {
+    if (state.hydrated) saveFinalDone(state.finalDone);
+  }, [state.finalDone, state.hydrated]);
+  useEffect(() => {
     if (state.hydrated) saveCombo(state.combo);
   }, [state.combo, state.hydrated]);
   useEffect(() => {
     if (state.hydrated) savePlanPool(state.plan.pool, state.plan.fixed);
   }, [state.plan.pool, state.plan.fixed, state.hydrated]);
+  useEffect(() => {
+    if (state.hydrated) saveLocked(state.plan.lockedIdx);
+  }, [state.plan.lockedIdx, state.hydrated]);
+  useEffect(() => {
+    if (state.hydrated) saveFinalesCombo(state.finales);
+  }, [state.finales, state.hydrated]);
   useEffect(() => {
     if (state.hydrated) saveComboParams(state.comboParams);
   }, [state.comboParams, state.hydrated]);

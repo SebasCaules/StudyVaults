@@ -53,7 +53,39 @@ export type ToolIconName =
   | "checklist"
   | "lock"
   | "repeat"
-  | "list";
+  | "list"
+  // ── identidades bespoke de los launchers (una por materia) ────────
+  // MNA — matriz / LU / autovalores
+  | "matrixRows"
+  | "luFactor"
+  | "eigen"
+  // Proba — conteo, distribuciones, inferencia, procesos
+  | "exam"
+  | "dice"
+  | "bayesTree"
+  | "tableGrid"
+  | "approxBars"
+  | "histogram"
+  | "intervalCI"
+  | "powerOverlap"
+  | "markov"
+  | "decision"
+  // Economía — tasas, valor tiempo, proyectos, contable, mercado
+  | "percentEq"
+  | "timeline"
+  | "annuity"
+  | "perpetuity"
+  | "loan"
+  | "discount"
+  | "cashflow"
+  | "npv"
+  | "equalbars"
+  | "ratio"
+  | "breakeven"
+  | "worktable"
+  | "ledger"
+  | "supplyDemand"
+  | "elasticity";
 
 const PATHS: Record<ToolIconName, React.ReactNode> = {
   // ── álgebra / cálculo ─────────────────────────────────────────────
@@ -349,6 +381,213 @@ const PATHS: Record<ToolIconName, React.ReactNode> = {
       <path d="m13 1 3 3-3 3" />
       <path d="M20 15a5 5 0 0 1-5 5H8" />
       <path d="m11 23-3-3 3-3" />
+    </>
+  ),
+
+  // ── identidad MNA — álgebra lineal numérica ──────────────────────
+  matrixRows: (
+    <>
+      <path d="M6 3 L4 3 L4 21 L6 21" />
+      <path d="M18 3 L20 3 L20 21 L18 21" />
+      <path d="M8 7h8M8 12h8M8 17h8" />
+    </>
+  ),
+  luFactor: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M4 4L20 20" />
+      <circle cx="8" cy="16" r="1" fill="currentColor" stroke="none" />
+      <circle cx="8" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none" />
+      <circle cx="16" cy="8" r="1" fill="currentColor" stroke="none" />
+      <circle cx="16" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="8" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  eigen: (
+    <>
+      <path d="M4 20L20 4" />
+      <path d="M14 4h6v6" />
+      <circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" />
+    </>
+  ),
+
+  // ── identidad Proba — conteo, distribuciones, inferencia ─────────
+  exam: (
+    <>
+      <path d="M5 3h11l3 3v15H5z" />
+      <path d="M16 3v3h3" />
+      <path d="M9 13l2 2 4-4" />
+    </>
+  ),
+  dice: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+      <circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" />
+    </>
+  ),
+  bayesTree: (
+    <>
+      <circle cx="12" cy="5" r="2" />
+      <circle cx="6" cy="18" r="2" />
+      <circle cx="18" cy="18" r="2" />
+      <path d="M10.5 6.5L7.2 16.3M13.5 6.5L16.8 16.3" />
+    </>
+  ),
+  tableGrid: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="1" />
+      <path d="M4 9h16M4 14h16M9 4v16M14 4v16" />
+    </>
+  ),
+  approxBars: (
+    <>
+      <path d="M3 18c3 0 4-10 9-10s6 10 9 10" opacity={0.5} />
+      <path d="M6 18v-5M10 18v-8M14 18v-8M18 18v-5" />
+    </>
+  ),
+  histogram: (
+    <>
+      <path d="M3 20h18" />
+      <path d="M5 20v-6M9 20v-11M13 20v-8M17 20v-4" />
+    </>
+  ),
+  intervalCI: (
+    <>
+      <path d="M6 5v14M18 5v14" />
+      <path d="M6 12h12" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    </>
+  ),
+  powerOverlap: (
+    <>
+      <path d="M2 18c3 0 4-9 8-9s5 9 8 9" opacity={0.45} />
+      <path d="M6 18c3 0 4-9 8-9s5 9 4 9" />
+    </>
+  ),
+  markov: (
+    <>
+      <circle cx="6" cy="7" r="2.4" />
+      <circle cx="18" cy="7" r="2.4" />
+      <circle cx="12" cy="18" r="2.4" />
+      <path d="M8.2 7h7.6M16.5 9.2l-3 6.8M7.5 9.2l3 6.8" />
+    </>
+  ),
+  decision: (
+    <>
+      <path d="M12 3l5 5-5 5-5-5z" />
+      <path d="M12 13v8M8 21h8" />
+    </>
+  ),
+
+  // ── identidad Economía — tasas, tiempo, proyectos, mercado ───────
+  percentEq: (
+    <>
+      <path d="M5 19L19 5" />
+      <circle cx="7.5" cy="7.5" r="2" />
+      <circle cx="16.5" cy="16.5" r="2" />
+      <path d="M4 12h4M16 12h4" opacity={0.5} />
+    </>
+  ),
+  timeline: (
+    <>
+      <path d="M3 18h18" />
+      <path d="M6 18v-3M12 18v-3M18 18v-3" />
+      <path d="M12 4l2.5 2.5L12 9l-2.5-2.5z" />
+    </>
+  ),
+  annuity: (
+    <>
+      <path d="M3 20h18" />
+      <path d="M6 20v-5M10.5 20v-5M15 20v-5M19 20v-5" />
+    </>
+  ),
+  perpetuity: (
+    <>
+      <path d="M3 20h13" />
+      <path d="M6 20v-4M10 20v-4M14 20v-4" />
+      <path d="M18.4 14.6c-1.4 0-1.4 3 0 3s1.4-3 2.8-3 1.4 3 0 3" />
+    </>
+  ),
+  loan: (
+    <>
+      <path d="M3 20h18" />
+      <path d="M6 20V9M10 20v-7M14 20v-4M18 20v-2" />
+    </>
+  ),
+  discount: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 8l8 8" />
+      <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none" />
+    </>
+  ),
+  cashflow: (
+    <>
+      <path d="M3 12h18" opacity={0.5} />
+      <path d="M6 12v5M10 12v-4M14 12v6M18 12v-3" />
+    </>
+  ),
+  npv: (
+    <>
+      <path d="M3 12h18" opacity={0.4} />
+      <path d="M4 6c4 0 5 12 9 12s5-9 7-9" />
+      <circle cx="12.2" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    </>
+  ),
+  equalbars: (
+    <>
+      <path d="M4 20h16" opacity={0.5} />
+      <path d="M6 20v-9M11 20v-9M16 20v-9" />
+    </>
+  ),
+  ratio: (
+    <>
+      <circle cx="12" cy="6" r="2" />
+      <path d="M5 12h14" />
+      <circle cx="12" cy="18" r="2" />
+    </>
+  ),
+  breakeven: (
+    <>
+      <path d="M3 20h18M3 20V4" opacity={0.45} />
+      <path d="M4 18l16-13" />
+      <path d="M4 6l16 13" opacity={0.7} />
+      <circle cx="12" cy="11.5" r="1.6" fill="currentColor" stroke="none" />
+    </>
+  ),
+  worktable: (
+    <>
+      <path d="M4 8h16M4 16h16" />
+      <path d="M4 8v8M20 8v8" opacity={0.4} />
+    </>
+  ),
+  ledger: (
+    <>
+      <path d="M5 3h14v18H5z" />
+      <path d="M9 8h6M9 12h6M9 16h3" />
+      <path d="M16.5 15.5l1 1 2-2.2" opacity={0.8} />
+    </>
+  ),
+  supplyDemand: (
+    <>
+      <path d="M4 20V4M4 20h18" opacity={0.45} />
+      <path d="M5 18L19 6" />
+      <path d="M5 6l14 12" opacity={0.85} />
+    </>
+  ),
+  elasticity: (
+    <>
+      <path d="M4 20V4M4 20h18" opacity={0.45} />
+      <path d="M5 8c6 0 9 5 15 10" />
+      <path d="M5 16c8-8 10-10 15-11" opacity={0.55} />
     </>
   ),
 };

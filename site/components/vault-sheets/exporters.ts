@@ -107,14 +107,20 @@ const TEX_COLOR: Record<EntryKind, string> = {
   method: "sheetMth",
   caution: "sheetCau",
   example: "sheetEx",
+  code: "sheetCode",
 };
 
-const TEX_COLOR_DEFS = `\\definecolor{sheetDef}{HTML}{2563EB}
-\\definecolor{sheetThm}{HTML}{7C3AED}
-\\definecolor{sheetFml}{HTML}{0F9D8F}
-\\definecolor{sheetMth}{HTML}{D97706}
-\\definecolor{sheetCau}{HTML}{DC2626}
-\\definecolor{sheetEx}{HTML}{6B7280}`;
+// Paleta "refinada" — hex de `light` (KIND_META.*.light): el .tex se imprime en
+// papel blanco, igual que el bloque @media print de sheets.css. SINCRONIZADA
+// BYTE-A-BYTE con KIND_META y sheets.css (ver nota en types.ts). `sheetCode`
+// es neutral y no forma parte de los 6.
+const TEX_COLOR_DEFS = `\\definecolor{sheetDef}{HTML}{275C8C}
+\\definecolor{sheetThm}{HTML}{5A3897}
+\\definecolor{sheetFml}{HTML}{16745C}
+\\definecolor{sheetMth}{HTML}{8A591C}
+\\definecolor{sheetCau}{HTML}{B23A28}
+\\definecolor{sheetEx}{HTML}{695D51}
+\\definecolor{sheetCode}{HTML}{5D5D65}`;
 
 function texEntry(e: SheetEntry, sheetKind: Sheet["kind"]): string {
   const kind = e.kind ?? defaultKind(sheetKind);
@@ -143,6 +149,24 @@ function texEntry(e: SheetEntry, sheetKind: Sheet["kind"]): string {
     lines.push(
       `\\par {\\small\\textcolor{sheetCau}{$\\triangleright$} ${texRich(e.note)}}`,
     );
+  if (e.code) {
+    // Verbatim (fancyvrb) es seguro dentro de multicol; el texto va literal.
+    const cap = e.code.file || e.code.lang;
+    if (cap) lines.push(`\\par {\\scriptsize\\ttfamily\\color{sheetCode} ${texEscape(cap)}}\\nopagebreak`);
+    lines.push(
+      `\\begin{Verbatim}[fontsize=\\scriptsize,frame=single,rulecolor=\\color{sheetCode},framesep=3pt]`,
+    );
+    lines.push(e.code.text);
+    lines.push(`\\end{Verbatim}`);
+  }
+  if (e.figure) {
+    // El SVG no compila en pdflatex; en el .tex la figura se degrada a su
+    // epígrafe (la versión imprimible/PDF-web sí muestra el gráfico).
+    const cap = e.figure.caption || e.figure.alt || "figura";
+    lines.push(
+      `\\par {\\footnotesize\\itshape \\textcolor{sheetEx}{[Figura]}~${texRich(cap)}}`,
+    );
+  }
   return lines.join("\n");
 }
 
@@ -160,6 +184,7 @@ export function toTex(sheet: Sheet, columns = 3): string {
 \\usepackage[a4paper,margin=1.1cm]{geometry}
 \\usepackage{multicol}
 \\usepackage{xcolor}
+\\usepackage{fancyvrb}
 \\usepackage{enumitem}
 \\usepackage{parskip}
 \\usepackage{titlesec}
@@ -187,11 +212,18 @@ ${sheet.notation ? `{\\footnotesize\\itshape ${texRich(sheet.notation)}}\\par` :
       if (g.unit && g.unit !== lastUnit) {
         lastUnit = g.unit;
         const ut = g.unitTitle ? texEscape(g.unitTitle) : `Unidad ${texEscape(g.unit)}`;
-        unitHead = `{\\color{sheetFml}\\rule{\\linewidth}{0.6pt}}\\par\\nobreak\\vspace{1pt}{\\bfseries\\normalsize\\color{sheetFml} U${texEscape(g.unit)} · ${ut}}\\par\\nobreak\\vspace{2pt}\n`;
+        const desc = g.unitDesc
+          ? `\\par\\nobreak{\\scriptsize\\itshape ${texRich(g.unitDesc)}}`
+          : "";
+        unitHead = `{\\color{sheetFml}\\rule{\\linewidth}{0.6pt}}\\par\\nobreak\\vspace{1pt}{\\bfseries\\normalsize\\color{sheetFml} U${texEscape(g.unit)} · ${ut}}${desc}\\par\\nobreak\\vspace{2pt}\n`;
       }
       const items = g.entries.map((e) => texEntry(e, sheet.kind)).join("\n");
       const hint = g.hint ? `\\par{\\scriptsize\\itshape ${texRich(g.hint)}}` : "";
-      return `${unitHead}\\section*{${texEscape(g.title)}}${hint}\n\\begin{itemize}\n${items}\n\\end{itemize}`;
+      // Sub-unidad: el código (ej. "2.1") prefija el título de la sección.
+      const secTitle = g.subunit
+        ? `${texEscape(g.subunit)} · ${texEscape(g.title)}`
+        : texEscape(g.title);
+      return `${unitHead}\\section*{${secTitle}}${hint}\n\\begin{itemize}\n${items}\n\\end{itemize}`;
     })
     .join("\n\n");
 
@@ -211,6 +243,17 @@ function mdEntry(e: SheetEntry): string {
   }
   if (e.cond) line += `\n  _Cuándo:_ ${e.cond}`;
   if (e.note) line += `\n  _⚠ ${e.note}_`;
+  if (e.code) {
+    const fence = "```";
+    line += `\n\n  ${fence}${e.code.lang ?? ""}\n${e.code.text
+      .split("\n")
+      .map((l) => `  ${l}`)
+      .join("\n")}\n  ${fence}`;
+  }
+  if (e.figure) {
+    const cap = e.figure.caption || e.figure.alt;
+    line += `\n  _Figura${cap ? `: ${cap}` : ""}_`;
+  }
   return line;
 }
 
@@ -244,12 +287,14 @@ export function toMd(sheet: Sheet): string {
       let unitHead = "";
       if (g.unit && g.unit !== lastUnit) {
         lastUnit = g.unit;
-        unitHead = `## Unidad ${g.unit}${g.unitTitle ? ` · ${g.unitTitle}` : ""}\n\n`;
+        const desc = g.unitDesc ? `_${g.unitDesc}_\n\n` : "";
+        unitHead = `## Unidad ${g.unit}${g.unitTitle ? ` · ${g.unitTitle}` : ""}\n\n${desc}`;
       }
       const level = hasUnits ? "###" : "##";
       const hint = g.hint ? `\n_${g.hint}_\n` : "";
       const items = g.entries.map(mdEntry).join("\n");
-      return `${unitHead}${level} ${g.title}\n${hint}\n${items}`;
+      const secTitle = g.subunit ? `${g.subunit} · ${g.title}` : g.title;
+      return `${unitHead}${level} ${secTitle}\n${hint}\n${items}`;
     })
     .join("\n\n");
 

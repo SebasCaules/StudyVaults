@@ -50,7 +50,13 @@ const KIND_ORDER: EntryKind[] = [
   "method",
   "caution",
   "example",
+  "code",
 ];
+
+/** Número de unidad para el encabezado: "2" → "02"; no numérico → tal cual. */
+function unitNum(u: string): string {
+  return /^\d+$/.test(u) ? u.padStart(2, "0") : u;
+}
 
 /** Columnas efectivas: override explícito o default por densidad y tipo. */
 function colCount(opts: Opts, kind: Mode): number {
@@ -59,6 +65,22 @@ function colCount(opts: Opts, kind: Mode): number {
   if (kind === "formulas")
     return opts.density === "compact" ? 3 : 2;
   return opts.density === "compact" ? 4 : opts.density === "wide" ? 2 : 3;
+}
+
+/**
+ * Rellena `subunit` con un código auto-derivado `${unit}.${pos}` para cada
+ * sección que pertenece a una unidad y no lo trae explícito. Numeración por
+ * posición dentro de la unidad (respeta un `subunit` ya escrito a mano).
+ */
+function deriveSubunits(sheet: Sheet): Sheet {
+  const counters: Record<string, number> = {};
+  const groups = sheet.groups.map((g) => {
+    if (!g.unit) return g;
+    counters[g.unit] = (counters[g.unit] ?? 0) + 1;
+    if (g.subunit) return g;
+    return { ...g, subunit: `${g.unit}.${counters[g.unit]}` };
+  });
+  return { ...sheet, groups };
 }
 
 /** Unidades presentes, en orden de aparición. */
@@ -102,7 +124,15 @@ export default function SheetShell({
     },
     encode: (v, p) => setOrDelete(p, "hoja", v, v !== modes[0]),
   });
-  const sheet = mode === "formulas" ? formulas : conceptos;
+  const rawSheet = mode === "formulas" ? formulas : conceptos;
+  // Códigos de sub-unidad auto-derivados (2.1, 2.2, …) para que la hoja se lea
+  // como un resumen con divisiones Unidad → Sub-unidad, sin duplicar el número
+  // en cada módulo de datos. Se hace ANTES de filtrar para que la numeración sea
+  // estable (ocultar categorías no renumera). Un `subunit` explícito gana.
+  const sheet = useMemo(
+    () => (rawSheet ? deriveSubunits(rawSheet) : undefined),
+    [rawSheet],
+  );
 
   // Persistencia per (vault,kind) bajo una sola key; hidratada post-mount.
   const [allOpts, setAllOpts] = useState<Record<string, Opts>>({});
@@ -385,15 +415,28 @@ function SheetDoc({
             return (
               <Fragment key={gi}>
                 {showUnit && (
-                  <h3 className="sheet-unit">
-                    <span className="sheet-unit__tag">U{g.unit}</span>
-                    <span className="sheet-unit__title">
-                      {g.unitTitle ?? `Unidad ${g.unit}`}
-                    </span>
-                  </h3>
+                  <header className="sheet-unit">
+                    <span className="sheet-unit__num">{unitNum(g.unit!)}</span>
+                    <div className="sheet-unit__titles">
+                      <span className="sheet-unit__kicker">Unidad</span>
+                      <h3 className="sheet-unit__title">
+                        {g.unitTitle ?? `Unidad ${g.unit}`}
+                      </h3>
+                      {g.unitDesc && (
+                        <p className="sheet-unit__desc">
+                          <RichText text={g.unitDesc} />
+                        </p>
+                      )}
+                    </div>
+                  </header>
                 )}
                 <section className="sheet-group">
-                  <h4 className="sheet-group__title">{g.title}</h4>
+                  <div className="sheet-group__head">
+                    {g.subunit && (
+                      <span className="sheet-group__code">{g.subunit}</span>
+                    )}
+                    <h4 className="sheet-group__title">{g.title}</h4>
+                  </div>
                   {g.hint && (
                     <p className="sheet-group__hint">
                       <RichText text={g.hint} />
@@ -433,6 +476,9 @@ function Entry({
   return (
     <div className="sheet-entry" data-kind={kind}>
       <div className="sheet-entry__head">
+        {showTag && (
+          <span className="sheet-entry__tag">{KIND_META[kind].label}</span>
+        )}
         <span className="sheet-entry__label">
           <RichText text={entry.label} />
         </span>
@@ -441,19 +487,55 @@ function Entry({
             <Math tex={entry.tex!} inline />
           </span>
         )}
-        {showTag && (
-          <span className="sheet-entry__tag">{KIND_META[kind].label}</span>
-        )}
       </div>
       {entry.tex && !entry.inline && (
         <div className="sheet-entry__tex">
-          <FitMath tex={entry.tex} />
+          {/* wrapper interno sin padding: FitMath mide su clientWidth para el
+              zoom-to-fit; el padding/tinte del recuadro van en el div externo. */}
+          <div className="sheet-entry__tex-inner">
+            <FitMath tex={entry.tex} />
+          </div>
         </div>
       )}
       {entry.body && (
         <p className="sheet-entry__body">
           <RichText text={entry.body} />
         </p>
+      )}
+      {entry.code && (
+        <div className="sheet-code-block">
+          {(entry.code.file || entry.code.lang) && (
+            <div className="sheet-code-block__bar">
+              {entry.code.file && (
+                <span className="sheet-code-block__file">{entry.code.file}</span>
+              )}
+              {entry.code.lang && (
+                <span className="sheet-code-block__lang">{entry.code.lang}</span>
+              )}
+            </div>
+          )}
+          <pre className="sheet-code-block__pre">
+            <code>{entry.code.text}</code>
+          </pre>
+        </div>
+      )}
+      {entry.figure && (
+        <figure
+          className="sheet-figure"
+          aria-label={entry.figure.alt ?? entry.figure.caption ?? undefined}
+        >
+          {/* SVG estático e inline: seguro en static export (server render);
+              usa currentColor + tokens de rol, así respeta tema e impresión. */}
+          <div
+            className="sheet-figure__svg"
+            dangerouslySetInnerHTML={{ __html: entry.figure.svg }}
+          />
+          {entry.figure.caption && (
+            <figcaption>
+              <RichText text={entry.figure.caption} />
+            </figcaption>
+          )}
+        </figure>
       )}
       {entry.vars && entry.vars.length > 0 && (
         <div className="sheet-entry__vars">

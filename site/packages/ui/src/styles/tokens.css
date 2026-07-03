@@ -7,8 +7,9 @@
    ============================================================ */
 
 :root {
-  /* ---- paleta base (6 hex) ---- */
-  --hex-brown: #241208; /* marrón casi negro: ancla dark / texto light */
+  /* ---- paleta base (6 hex + brown suave) ---- */
+  --hex-brown: #241208; /* marrón casi negro: ancla de tinta / texto light / sombras */
+  --hex-brown-soft: #382519; /* marrón cálido aclarado: superficies del tema oscuro */
   --hex-zinc: #27272a; /* gris estructural (borde base) */
   --hex-blue: #92cff2; /* azul: links, focos, acento secundario */
   --hex-gray: #a1a1aa; /* gris medio */
@@ -52,15 +53,26 @@
   --code-bar: #22272e;
   --code-fg: #adbac7;
   --code-hairline: color-mix(in srgb, #ffffff 9%, transparent);
+
+  /* ---- estados semánticos (leen bien sobre canvas dark y light) ----
+     Se usan como relleno/borde/ícono a baja opacidad, no como texto sobre
+     superficie. Coherentes con la paleta de hojas (method/caution). */
+  --status-go: #46a86e; /* verde: final aprobado / éxito */
+  --status-promo: #2f9f8f; /* teal: promociona / sin final */
+  --status-warn: #d8b279; /* ámbar: aviso (poco margen de repaso) */
+  --status-caution: #d68f85; /* rojo suave: conflicto (se pisan) */
 }
 
 /* ============================================================
    TEMA OSCURO (default de marca) — canvas marrón suave
    ============================================================ */
 [data-theme="dark"] {
-  --background: color-mix(in srgb, var(--hex-brown) 86%, var(--hex-white));
-  --surface: var(--hex-brown);
-  --secondary: var(--hex-brown);
+  /* canvas y superficies del tema oscuro: marrón cálido aclarado y parejo
+     (~#4c3a30 canvas / #382519 cards / #54463e elevado). La tinta profunda
+     #241208 se reserva para sombras / on-accent. */
+  --background: color-mix(in srgb, var(--hex-brown-soft) 90%, var(--hex-white));
+  --surface: var(--hex-brown-soft);
+  --secondary: var(--hex-brown-soft);
 
   --text-primary: var(--hex-white);
   --text-secondary: var(--hex-gray);
@@ -68,8 +80,8 @@
   --border: var(--hex-zinc);
   --on-accent-ink: var(--hex-brown);
 
-  --surface-2: color-mix(in srgb, var(--hex-brown) 78%, var(--hex-white));
-  --surface-3: color-mix(in srgb, var(--hex-brown) 68%, var(--hex-white));
+  --surface-2: color-mix(in srgb, var(--hex-brown-soft) 84%, var(--hex-white));
+  --surface-3: color-mix(in srgb, var(--hex-brown-soft) 76%, var(--hex-white));
   --nav-bg: color-mix(in srgb, var(--background) 86%, transparent);
 
   --hairline: color-mix(in srgb, var(--hex-white) 10%, transparent);

@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const urls = [
     `${SITE_URL}/`,
     `${SITE_URL}/electivas/`,
+    `${SITE_URL}/electivas/planificar/`,
     ...VAULTS.map((v) => `${SITE_URL}/${v.id}/`),
     ...m.notes.filter((n) => !n.isIndex).map((n) => `${SITE_URL}${n.href}`),
   ];

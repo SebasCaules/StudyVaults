@@ -30,8 +30,11 @@ import {
   downloadTextFile,
 } from "@/lib/planner/download";
 import { serializePreferences, parsePreferences } from "@/lib/planner/persist";
+import { MINORS, MINOR_REQ, minorsOf } from "@/lib/planner/minors";
+import { CommissionSelect } from "@studyvaults/ui";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import MinorsModal from "@/components/planner/MinorsModal";
+import { MinorBadge } from "@/components/planner/MinorBadge";
 import IOModal, { type IOCuatri } from "@/components/planner/IOModal";
 import {
   IconClose,
@@ -42,6 +45,11 @@ import {
   IconDownload,
   IconGrip,
   IconSliders,
+  IconRotateCcw,
+  IconLayers,
+  IconFileText,
+  IconCheck,
+  type IconProps,
 } from "@/components/planner/icons";
 import type {
   MateriaM,
@@ -52,8 +60,84 @@ import type {
   PlanStart,
   WeekBlock,
 } from "@/lib/planner/types";
+import "@/components/planner/planview.css";
 
 const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
+
+/* ---------- iconos locales (no existen en icons.tsx) ---------- */
+const IconDots = ({ size = 16, ...rest }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="currentColor"
+    aria-hidden="true"
+    {...rest}
+  >
+    <circle cx="5" cy="12" r="1.9" />
+    <circle cx="12" cy="12" r="1.9" />
+    <circle cx="19" cy="12" r="1.9" />
+  </svg>
+);
+const IconLock = ({ size = 15, ...rest }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.7}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...rest}
+  >
+    <rect x="5" y="11" width="14" height="9" rx="2" />
+    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+  </svg>
+);
+const IconUnlock = ({ size = 15, ...rest }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.7}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...rest}
+  >
+    <rect x="5" y="11" width="14" height="9" rx="2" />
+    <path d="M8 11V8a4 4 0 0 1 7.5-1.3" />
+  </svg>
+);
+const IconWarnTri = ({ size = 21, ...rest }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.8}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...rest}
+  >
+    <path d="M12 3.6 21 19.2H3L12 3.6Z" />
+    <path d="M12 9.6v4.2" />
+    <circle cx="12" cy="16.6" r="0.9" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+/* ---------- helpers de dominio ---------- */
+/** ¿mostramos el tag "recomendada"? Electiva que aporta a un minor, con el
+ *  recomendador encendido (el dot de minor se muestra siempre; el tag lo
+ *  gatea el toggle, igual que `body.rec-on .rec-tag` del mockup). */
+const isRecTagged = (m: MateriaM, recOn: boolean) =>
+  recOn && m.tipo === "electiva" && minorsOf(m.areas).length > 0;
 
 /* ---------- export HTML / PDF ---------- */
 function nowStr(): string {
@@ -199,10 +283,22 @@ function AsyncRow({
   );
 }
 
-/* ---------- override compacto de "máx. créditos / máx. materias" por cuatri ----------
- * Compartido entre RoadmapStop y el header de CuatriCalCard: cerrado por default
- * (no ensucia la tarjeta), con fallback visual al valor global cuando no hay
- * override. `idPrefix` evita colisión de ids entre las dos vistas. */
+/* ---------- dot(s) de minor de una materia ---------- */
+function MinorDots({ m }: { m: MateriaM }) {
+  const minors = minorsOf(m.areas);
+  if (!minors.length) return null;
+  return (
+    <span className="rmap-mat__minor">
+      {minors.map((mn) => (
+        <MinorBadge key={mn.id} minor={mn} variant="dot" />
+      ))}
+    </span>
+  );
+}
+
+/* ---------- override compacto "máx. créditos / máx. materias" por cuatri ----
+ * Usado en RoadmapStop (cerrado por default, no ensucia la tarjeta) con
+ * fallback visual al valor global cuando no hay override. */
 function CuatriCaps({
   i,
   idPrefix,
@@ -263,14 +359,20 @@ function CuatriCaps({
   );
 }
 
-/* ---------- tarjeta de calendario (panorama de cuatrimestres) ---------- */
-function CuatriCalCard({
+/* ========================================================================= */
+/* ---------- tarjeta de cuatrimestre (tab Calendario) ---------- */
+function SemCard({
   it,
   i,
   start,
   previewCode,
   maxCred,
   maxMat,
+  recOn,
+  locked,
+  onFinalize,
+  onUnlock,
+  onDownload,
 }: {
   it: PlacedMateria[];
   i: number;
@@ -278,6 +380,11 @@ function CuatriCalCard({
   previewCode: string | null;
   maxCred: number;
   maxMat: number;
+  recOn: boolean;
+  locked: boolean;
+  onFinalize: (idx: number) => void;
+  onUnlock: (idx: number) => void;
+  onDownload: (idx: number, scope: "cal" | "both" | "programa") => void;
 }) {
   const { state, dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
@@ -287,56 +394,345 @@ function CuatriCalCard({
   );
   const cred = it.reduce((s, x) => s + (x.m.creditos || 0), 0);
   const hasPreview = it.some((x) => x.m.codigo === previewCode);
-  const isCapped =
-    state.plan.capCredByIdx.has(i) || state.plan.capMatByIdx.has(i);
+  const capCred = state.plan.capCredByIdx.get(i);
+  const capMat = state.plan.capMatByIdx.get(i);
+  const isCapped = capCred !== undefined || capMat !== undefined;
+  const effCred = capCred ?? maxCred;
+  const load = Math.min(100, Math.round((cred / Math.max(1, effCred)) * 100));
+  const electivas = it.filter((x) => x.m.tipo === "electiva");
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const toolsRef = useRef<HTMLDivElement | null>(null);
+
+  // DnD: arrastrar una electiva de esta card y soltarla en otro cuatri fija su
+  // ubicación (deja de ser "auto"). Mismo contrato que el Roadmap: el código
+  // viaja por dataTransfer; el estado local sólo pinta origen/destino.
+  const [dragOver, setDragOver] = useState(false);
+  const [draggingCode, setDraggingCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!menuOpen && !confirmOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+        setConfirmOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        setConfirmOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen, confirmOpen]);
 
   return (
-    <div
+    <article
       className={
-        "cal-card" +
-        (hasPreview ? " has-preview" : "") +
-        (isCapped ? " is-capped" : "")
+        "pv-sem" +
+        (hasPreview ? " is-preview" : "") +
+        (isCapped ? " is-capped" : "") +
+        (locked ? " is-locked" : "") +
+        (dragOver ? " is-drop-over" : "") +
+        (menuOpen || confirmOpen ? " is-menu-open" : "")
       }
+      onDragOver={(e: React.DragEvent) => {
+        // permitimos el drop y marcamos esta card como destino activo
+        if (!e.dataTransfer.types.includes("text/plain")) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        if (!dragOver) setDragOver(true);
+      }}
+      onDragLeave={(e: React.DragEvent) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false);
+      }}
+      onDrop={(e: React.DragEvent) => {
+        e.preventDefault();
+        const code = e.dataTransfer.getData("text/plain");
+        if (code) dispatch({ type: "PLAN_SET_FIXED", code, idx: i });
+        setDragOver(false);
+      }}
     >
-      <div className="cal-card__h">
-        <div className="cal-card__when">
-          <span className="cal-card__tag">{cuatriLabel(cu)}</span>
-          <h3>{cuatriName(cu)}</h3>
+      {dragOver && (
+        <div className="pv-sem__drophint" aria-hidden="true">
+          <span>soltar acá · fija en {cuatriName(cu)}</span>
         </div>
-        <span className="cal-card__meta">
-          <b>{cred}</b> cr · <b>{it.length}</b> mat
-          {campusDays > 0 && (
-            <>
-              {" · "}
-              <b>{campusDays}</b> {campusDays === 1 ? "día" : "días"}
-            </>
-          )}
-        </span>
-        <CuatriCaps
-          i={i}
-          idPrefix="cal"
-          globalCred={maxCred}
-          globalMat={maxMat}
-        />
-      </div>
-      {blocks.length ? (
-        <CursadaCalendar
-          blocks={blocks}
-          days={DAYS}
-          compact
-          onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
-        />
-      ) : (
-        <p className="muted" style={{ padding: "10px 4px" }}>
-          Sólo materias sin grilla semanal.
-        </p>
       )}
-      <AsyncRow asyncs={asyncs} />
-    </div>
+      <div className="pv-sem__head">
+        <div className="pv-sem__when">
+          <span className="pv-sem__tag">{cuatriLabel(cu)}</span>
+          <span className="pv-sem__title">{cuatriName(cu)}</span>
+        </div>
+        <div className="pv-sem__tools" ref={toolsRef}>
+          {locked && (
+            <span className="pv-lockbadge" title="Cuatrimestre finalizado">
+              <IconLock size={15} />
+            </span>
+          )}
+          <button
+            type="button"
+            className="pv-dotbtn"
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            aria-label={`Opciones de ${cuatriName(cu)}`}
+            onClick={() => {
+              setConfirmOpen(false);
+              setMenuOpen((v) => !v);
+            }}
+          >
+            <IconDots size={16} />
+          </button>
+
+          {menuOpen && (
+            <div className="pv-menu" role="menu">
+              {!locked && (
+                <>
+                  <div className="pv-menu__sec">
+                    <span className="pv-menu__lbl">
+                      <IconSliders size={11} /> Límites de este cuatri
+                    </span>
+                    <div className="pv-menu__caps">
+                      <NumField
+                        id={`semCapCred${i}`}
+                        label="Máx. créditos"
+                        value={capCred ?? maxCred}
+                        min={3}
+                        max={40}
+                        onCommit={(n) =>
+                          dispatch({
+                            type: "SET_PLAN_CAP_CRED",
+                            idx: i,
+                            value: n,
+                          })
+                        }
+                      />
+                      <NumField
+                        id={`semCapMat${i}`}
+                        label="Máx. materias"
+                        value={capMat ?? maxMat}
+                        min={1}
+                        max={9}
+                        onCommit={(n) =>
+                          dispatch({
+                            type: "SET_PLAN_CAP_MAT",
+                            idx: i,
+                            value: n,
+                          })
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="pv-menu__auto"
+                        disabled={!isCapped}
+                        onClick={() => {
+                          dispatch({
+                            type: "SET_PLAN_CAP_CRED",
+                            idx: i,
+                            value: null,
+                          });
+                          dispatch({
+                            type: "SET_PLAN_CAP_MAT",
+                            idx: i,
+                            value: null,
+                          });
+                        }}
+                      >
+                        auto
+                      </button>
+                    </div>
+                  </div>
+                  <hr className="pv-menu__sep" />
+                </>
+              )}
+
+              <button
+                type="button"
+                role="menuitem"
+                className="pv-menu__item"
+                onClick={() => {
+                  if (locked) {
+                    onUnlock(i);
+                    setMenuOpen(false);
+                  } else {
+                    setMenuOpen(false);
+                    setConfirmOpen(true);
+                  }
+                }}
+              >
+                {locked ? <IconUnlock size={15} /> : <IconLock size={15} />}
+                {locked ? "Desbloquear cuatrimestre" : "Finalizar cuatrimestre"}
+              </button>
+
+              <hr className="pv-menu__sep" />
+
+              <div className="pv-menu__dl">
+                <span className="pv-menu__lbl">
+                  <IconDownload size={11} /> Descargar este calendario
+                </span>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="pv-menu__item"
+                  onClick={() => {
+                    onDownload(i, "cal");
+                    setMenuOpen(false);
+                  }}
+                >
+                  <IconCalendar size={15} /> Solo calendario
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="pv-menu__item"
+                  onClick={() => {
+                    onDownload(i, "both");
+                    setMenuOpen(false);
+                  }}
+                >
+                  <IconLayers size={15} /> Calendario + programa
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="pv-menu__item"
+                  onClick={() => {
+                    onDownload(i, "programa");
+                    setMenuOpen(false);
+                  }}
+                >
+                  <IconFileText size={15} /> Solo programa
+                </button>
+              </div>
+            </div>
+          )}
+
+          {confirmOpen && !locked && (
+            <div className="pv-confirm-pop" role="dialog" aria-label="Finalizar cuatrimestre">
+              <p className="pv-confirm-pop__t">¿Finalizar {cuatriName(cu)}?</p>
+              <p className="pv-confirm-pop__b">
+                El optimizador dejará de tocar este cuatrimestre mientras iterás
+                el resto. Podés desbloquearlo cuando quieras.
+              </p>
+              <div className="pv-confirm-pop__acts">
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--sm"
+                  onClick={() => setConfirmOpen(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--go btn--sm"
+                  onClick={() => {
+                    onFinalize(i);
+                    setConfirmOpen(false);
+                  }}
+                >
+                  Finalizar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {electivas.length > 0 && (
+        <div className="pv-sem__els">
+          {electivas.map((x) => (
+            <div
+              className={
+                "pv-elrow" +
+                (draggingCode === x.m.codigo ? " is-dragging" : "")
+              }
+              key={x.m.codigo}
+              draggable={!locked}
+              onDragStart={(e: React.DragEvent) => {
+                e.dataTransfer.setData("text/plain", x.m.codigo);
+                e.dataTransfer.effectAllowed = "move";
+                setDraggingCode(x.m.codigo);
+              }}
+              onDragEnd={() => setDraggingCode(null)}
+              title={
+                locked
+                  ? x.m.nombre
+                  : `${x.m.nombre} — arrastrá a otro cuatrimestre para fijarla`
+              }
+            >
+              {!locked && (
+                <span className="pv-elrow__grip" aria-hidden="true">
+                  <IconGrip size={12} />
+                </span>
+              )}
+              <MinorDots m={x.m} />
+              <span className="pv-elrow__abbr">{x.m.abbr}</span>
+              {isRecTagged(x.m, recOn) && (
+                <span className="pv-rectag">recomendada</span>
+              )}
+              <span className="pv-elrow__cr">{x.m.creditos} cr</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="pv-sem__cal">
+        {blocks.length ? (
+          <CursadaCalendar
+            blocks={blocks}
+            days={DAYS}
+            compact
+            onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
+          />
+        ) : (
+          <p className="pv-sem__empty">Sólo materias sin grilla semanal.</p>
+        )}
+        <AsyncRow asyncs={asyncs} />
+      </div>
+
+      <div className="pv-sem__foot">
+        <div className="pv-loadbar" aria-hidden="true">
+          <i style={{ width: `${load}%` }} />
+        </div>
+        <div className="pv-load-meta">
+          <span className="cr">
+            {cred} cr · {it.length} {it.length === 1 ? "materia" : "mat."}
+            {campusDays > 0 && (
+              <>
+                {" · "}
+                {campusDays} {campusDays === 1 ? "día" : "días"}
+              </>
+            )}
+          </span>
+          {!locked && <span className="aux">tope {effCred} cr</span>}
+        </div>
+        {locked && (
+          <div className="pv-lockcap">
+            <span className="pv-lockchip">
+              <IconLock size={12} />
+              <b>finalizado</b> · el optimizador no lo toca
+            </span>
+            <button
+              type="button"
+              className="pv-unlock"
+              onClick={() => onUnlock(i)}
+            >
+              <IconUnlock size={11} /> Desbloquear
+            </button>
+          </div>
+        )}
+      </div>
+    </article>
   );
 }
 
-/* ---------- una parada del roadmap (un cuatrimestre, tarjeta del panorama) ---------- */
+/* ---------- una parada del roadmap (editable, con drag & drop) ---------- */
 function RoadmapStop({
   it,
   i,
@@ -345,6 +741,7 @@ function RoadmapStop({
   maxCred,
   maxMat,
   previewCode,
+  recOn,
 }: {
   it: PlacedMateria[];
   i: number;
@@ -353,6 +750,7 @@ function RoadmapStop({
   maxCred: number;
   maxMat: number;
   previewCode: string | null;
+  recOn: boolean;
 }) {
   const { state, dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
@@ -364,7 +762,7 @@ function RoadmapStop({
   const [dragOver, setDragOver] = useState(false);
 
   // sólo necesitamos los días de campus para el ledger; la grilla semanal
-  // detallada vive en la pestaña "Calendarios".
+  // detallada vive en la pestaña "Calendario".
   const { campusDays } = useMemo(() => computeCuatriBlocks(it), [it]);
 
   const cred = it.reduce((s, x) => s + (x.m.creditos || 0), 0);
@@ -477,7 +875,11 @@ function RoadmapStop({
                     <IconGrip size={12} />
                   </span>
                   <span className="rmap-mat__abbr">{x.m.abbr}</span>
+                  <MinorDots m={x.m} />
                   <span className="rmap-mat__cr">{x.m.creditos}</span>
+                  {isRecTagged(x.m, recOn) && (
+                    <span className="rmap-mat__rec">rec</span>
+                  )}
                   {isPrev && <span className="rmap-mat__new">nueva</span>}
                 </button>
                 <div
@@ -506,8 +908,9 @@ function RoadmapStop({
                     ))}
                   </select>
                   {x.m.horario && x.m.horario.comisiones.length > 1 && (
-                    <select
-                      className="rmap-mat__sel"
+                    <CommissionSelect
+                      size="sm"
+                      placeholder="com. auto"
                       aria-label={`Fijar comisión de ${x.m.nombre}`}
                       value={state.fixedCom.get(x.m.codigo) || ""}
                       onChange={(e) =>
@@ -517,14 +920,11 @@ function RoadmapStop({
                           comision: e.target.value || null,
                         })
                       }
-                    >
-                      <option value="">com. auto</option>
-                      {x.m.horario.comisiones.map((c) => (
-                        <option value={c.comision} key={c.comision}>
-                          com {c.comision} · {comModalidad(c)}
-                        </option>
-                      ))}
-                    </select>
+                      options={x.m.horario.comisiones.map((c) => ({
+                        value: c.comision,
+                        label: `com ${c.comision} · ${comModalidad(c)}`,
+                      }))}
+                    />
                   )}
                   <button
                     type="button"
@@ -552,6 +952,152 @@ function RoadmapStop({
   );
 }
 
+/* ---------- panel de minors (tab Minors) ---------- */
+function MinorsPanel({
+  used,
+  approved,
+  onOpenDetail,
+}: {
+  used: { it: PlacedMateria[]; i: number }[];
+  approved: Set<string>;
+  onOpenDetail: () => void;
+}) {
+  const rows = useMemo(() => {
+    return MINORS.map((minor) => {
+      let cr = 0;
+      approved.forEach((c) => {
+        const m = byId.get(c);
+        if (m && m.tipo === "electiva" && (m.areas || []).includes(minor.id))
+          cr += m.creditos || 0;
+      });
+      used.forEach(({ it }) =>
+        it.forEach((x) => {
+          if (
+            x.m.tipo === "electiva" &&
+            (x.m.areas || []).includes(minor.id)
+          )
+            cr += x.m.creditos || 0;
+        }),
+      );
+      return { minor, cr, done: cr >= MINOR_REQ };
+    });
+  }, [used, approved]);
+
+  const completos = rows.filter((r) => r.done);
+
+  return (
+    <div className="pv-minors">
+      {rows.map(({ minor, cr, done }) => {
+        const pct = Math.min(100, Math.round((cr / MINOR_REQ) * 100));
+        return (
+          <div
+            key={minor.id}
+            className={"pv-minor-row" + (done ? " is-done" : "")}
+            style={{ ["--minor-color" as string]: minor.color }}
+          >
+            <MinorBadge minor={minor} variant="pill" />
+            <div className="pv-minor-name">
+              {minor.name}
+              <span>{minor.short}</span>
+            </div>
+            <div className="pv-minor-prog">
+              <div className="pv-minor-track">
+                <i style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+            <div className={"pv-minor-count" + (done ? " is-done" : "")}>
+              {done && <IconCheck size={12} />}
+              {cr} / {MINOR_REQ} cr
+            </div>
+          </div>
+        );
+      })}
+      <div className="pv-minors__foot">
+        <span className="pv-minors__note">
+          {completos.length > 0 ? (
+            <>
+              Completás <b>{completos.length}</b>{" "}
+              {completos.length === 1 ? "minor" : "minors"} con este plan:{" "}
+              {completos.map((c) => c.minor.short).join(" · ")}.
+            </>
+          ) : (
+            <>
+              Ningún área llega a {MINOR_REQ} créditos todavía. Agregá electivas
+              del área para completar un minor.
+            </>
+          )}
+        </span>
+        <button
+          type="button"
+          className="btn btn--ghost btn--sm"
+          onClick={onOpenDetail}
+        >
+          <IconLayers size={13} /> Avance por cuatrimestre
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- modal de confirmación de reset (portaleado en `.planner`) ---------- */
+function ResetConfirm({
+  onCancel,
+  onConfirm,
+}: {
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  if (typeof document === "undefined") return null;
+  return createPortal(
+    <div className="planner" style={{ padding: 0 }}>
+      <div
+        className="mnr-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pv-reset-title"
+      >
+        <div className="mnr-modal__bg" onClick={onCancel} />
+        <div className="pv-reset">
+          <div className="pv-reset__icon">
+            <IconWarnTri size={21} />
+          </div>
+          <h3 id="pv-reset-title">¿Restablecer el plan de cursada?</h3>
+          <p>
+            Se borran las materias agregadas, los topes por cuatrimestre y los
+            cuatrimestres finalizados. El plan vuelve a Auto. Esta acción no se
+            puede deshacer.
+          </p>
+          <div className="pv-reset__acts">
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={onCancel}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="btn btn--go btn--sm"
+              onClick={onConfirm}
+            >
+              Restablecer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 /* ---------- recomendaciones de electivas ---------- */
 function Recommendations({
   start,
@@ -570,13 +1116,39 @@ function Recommendations({
 }) {
   const { dispatch } = usePlanner();
 
+  // ---- filtros del recomendador (por minor/área · régimen · disponibilidad) ----
+  const [fMinor, setFMinor] = useState<string[]>([]);
+  const [fParity, setFParity] = useState<number[]>([]);
+  const [fHorario, setFHorario] = useState(false);
+  const toggleIn = <T,>(arr: T[], v: T) =>
+    arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
+  const anyFilter = fMinor.length > 0 || fParity.length > 0 || fHorario;
+  const clearFilters = () => {
+    setFMinor([]);
+    setFParity([]);
+    setFHorario(false);
+  };
+
   if (!recs.length) return null;
   const faltan = Math.max(0, ELEC_REQ - elecTotal);
 
+  const passesFilter = (r: Recommendation) => {
+    if (fMinor.length) {
+      const ids = minorsOf(r.m.areas).map((mn) => mn.id);
+      if (!fMinor.some((id) => ids.includes(id))) return false;
+    }
+    // paridad null = indistinta (entra con cualquier régimen elegido)
+    if (fParity.length && r.m.parity !== null && !fParity.includes(r.m.parity))
+      return false;
+    if (fHorario && !hasHorario(r.m.codigo)) return false;
+    return true;
+  };
+  const fRecs = anyFilter ? recs.filter(passesFilter) : recs;
+
   // 3 grupos: entran sin alargar el plan · lo alargan · no se pueden ubicar.
-  const noExtiende = recs.filter((r) => !r.conflict && !r.addsCuatri);
-  const extiende = recs.filter((r) => !r.conflict && r.addsCuatri);
-  const noEntra = recs.filter((r) => r.conflict);
+  const noExtiende = fRecs.filter((r) => !r.conflict && !r.addsCuatri);
+  const extiende = fRecs.filter((r) => !r.conflict && r.addsCuatri);
+  const noEntra = fRecs.filter((r) => r.conflict);
 
   const card = (r: Recommendation) => (
     <div
@@ -715,6 +1287,70 @@ function Recommendations({
             : "Ya cubrís los créditos electivos — estas sumarían extra."}
         </span>
       </div>
+
+      <div className="plan2-recfilt" role="group" aria-label="Filtrar electivas">
+        <div className="plan2-recfilt__grp">
+          <span className="plan2-recfilt__lbl">Minor</span>
+          {MINORS.map((mn) => {
+            const on = fMinor.includes(mn.id);
+            return (
+              <button
+                key={mn.id}
+                type="button"
+                className={"plan2-fchip" + (on ? " is-on" : "")}
+                aria-pressed={on}
+                title={mn.name}
+                style={{ ["--fchip-color" as string]: mn.color }}
+                onClick={() => setFMinor((a) => toggleIn(a, mn.id))}
+              >
+                <span className="plan2-fchip__dot" aria-hidden="true" />
+                {mn.short}
+              </button>
+            );
+          })}
+        </div>
+        <div className="plan2-recfilt__grp">
+          <span className="plan2-recfilt__lbl">Régimen</span>
+          {[
+            { v: 1, l: "1.º cuatri" },
+            { v: 2, l: "2.º cuatri" },
+          ].map((o) => {
+            const on = fParity.includes(o.v);
+            return (
+              <button
+                key={o.v}
+                type="button"
+                className={"plan2-fchip" + (on ? " is-on" : "")}
+                aria-pressed={on}
+                onClick={() => setFParity((a) => toggleIn(a, o.v))}
+              >
+                {o.l}
+              </button>
+            );
+          })}
+        </div>
+        <div className="plan2-recfilt__grp">
+          <span className="plan2-recfilt__lbl">Disponibilidad</span>
+          <button
+            type="button"
+            className={"plan2-fchip" + (fHorario ? " is-on" : "")}
+            aria-pressed={fHorario}
+            onClick={() => setFHorario((v) => !v)}
+          >
+            con horario
+          </button>
+        </div>
+        {anyFilter && (
+          <button
+            type="button"
+            className="plan2-recfilt__clear"
+            onClick={clearFilters}
+          >
+            <IconClose size={11} /> Limpiar
+          </button>
+        )}
+      </div>
+
       {group(
         "No alargan la carrera",
         "entran en los cuatrimestres del plan actual",
@@ -735,6 +1371,14 @@ function Recommendations({
         noEntra,
         "bad",
         false,
+      )}
+      {anyFilter && fRecs.length === 0 && (
+        <p className="plan2-recfilt__empty">
+          Ninguna electiva coincide con los filtros.{" "}
+          <button type="button" onClick={clearFilters}>
+            Limpiar filtros
+          </button>
+        </p>
       )}
     </div>
   );
@@ -794,7 +1438,9 @@ function PlanPool({ start }: { start: PlanStart }) {
           )}
         </span>
         {m.horario && m.horario.comisiones.length > 1 && (
-          <select
+          <CommissionSelect
+            size="sm"
+            placeholder="com. auto"
             aria-label={`Fijar comisión de ${m.nombre}`}
             value={state.fixedCom.get(m.codigo) || ""}
             onChange={(e) =>
@@ -804,14 +1450,11 @@ function PlanPool({ start }: { start: PlanStart }) {
                 comision: e.target.value || null,
               })
             }
-          >
-            <option value="">com. auto</option>
-            {m.horario.comisiones.map((c) => (
-              <option value={c.comision} key={c.comision}>
-                com {c.comision} · {comModalidad(c)}
-              </option>
-            ))}
-          </select>
+            options={m.horario.comisiones.map((c) => ({
+              value: c.comision,
+              label: `com ${c.comision} · ${comModalidad(c)}`,
+            }))}
+          />
         )}
         <select
           aria-label={`Fijar cuatrimestre de ${m.nombre}`}
@@ -927,18 +1570,19 @@ function PlanPool({ start }: { start: PlanStart }) {
 }
 
 /* ========================================================================= */
+type PlanTab = "cal" | "road" | "min";
+
 export default function PlanView() {
   const { state, dispatch } = usePlanner();
   const PL = state.plan;
   const approved = state.approved;
   const [preview, setPreview] = useState<string | null>(null);
-  // el panorama de calendarios es la vista default (más útil de un vistazo
-  // que el roadmap para chequear superposiciones y días en el campus).
-  const [boardView, setBoardView] = useState<"roadmap" | "calendars">(
-    "calendars",
-  );
+  // el calendario es la vista default (más útil de un vistazo que el roadmap
+  // para chequear superposiciones y días en el campus).
+  const [tab, setTab] = useState<PlanTab>("cal");
   const [minorsOpen, setMinorsOpen] = useState(false);
   const [recsHidden, setRecsHidden] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
 
   // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
   // rankeadas. Recommendations las agrupa según si alargan o no la carrera.
@@ -1081,6 +1725,39 @@ export default function PlanView() {
     else openForPrint(html);
   };
 
+  // descarga de UN cuatrimestre desde el menú 3-puntos, con los 3 alcances
+  // (solo calendario / calendario+programa / solo programa) vía exportPlan.
+  const downloadCuatri = (idx: number, scope: "cal" | "both" | "programa") => {
+    if (typeof window === "undefined") return;
+    const html = buildPlanHTML({
+      result: baseR,
+      start: PL.start,
+      maxCred: PL.maxCred,
+      maxMat: PL.maxMat,
+      avoid: PL.avoid,
+      approvedCreditsNow: accNow,
+      generado: nowStr(),
+      autoPrint: true,
+      cuatris: [idx],
+      includeCalendar: scope !== "programa",
+      includeSpecs: scope !== "cal",
+    });
+    openForPrint(html);
+  };
+
+  // Finalizar un cuatrimestre: fija su ubicación actual (para que el optimizador
+  // la respete tal cual) y lo marca como lockeado. Pre-fijamos desde baseR
+  // porque `state.plan.result` no está poblado (ver REPORTE/gaps): así el lock
+  // es funcional aunque el reducer no encuentre `result.items[idx]`.
+  const finalizeCuatri = (idx: number) => {
+    (baseR.items[idx] ?? []).forEach((x) =>
+      dispatch({ type: "PLAN_SET_FIXED", code: x.m.codigo, idx }),
+    );
+    dispatch({ type: "PLAN_TOGGLE_LOCK", idx });
+  };
+  const unlockCuatri = (idx: number) =>
+    dispatch({ type: "PLAN_TOGGLE_LOCK", idx });
+
   // Cuatrimestres disponibles para elegir en el modal de exportar.
   const ioCuatris = useMemo<IOCuatri[]>(
     () =>
@@ -1137,8 +1814,13 @@ export default function PlanView() {
     reader.readAsText(file);
   };
 
+  const recOn = !recsHidden;
+  const showSide = recOn && recs.length > 0 && tab !== "min";
+  const showPreviewSlot =
+    used.length > 0 && recs.length > 0 && recOn && tab !== "min";
+
   return (
-    <section className="view-panel">
+    <section className="view-panel pv">
       <div className="panel-head">
         <h2>Plan de cursada</h2>
         <p>
@@ -1149,145 +1831,241 @@ export default function PlanView() {
       </div>
 
       {used.length > 0 && (
-        <div className="plan2-hero">
-          <div className="plan2-hero__lead">
-            <span className="plan2-hero__num">{used.length}</span>
-            <span className="plan2-hero__unit">
-              {used.length === 1 ? "cuatrimestre" : "cuatrimestres"}
-              <small>por delante</small>
-            </span>
+        <div className="pv-banner">
+          <div className="pv-banner__top">
+            <div className="pv-stat">
+              <span className="pv-stat__num">{used.length}</span>
+              <span className="pv-stat__txt">
+                <span className="lead">
+                  {used.length === 1 ? "cuatrimestre" : "cuatrimestres"}
+                </span>
+                <span className="sub">por delante</span>
+              </span>
+            </div>
+            <div className="pv-grad">
+              <IconGraduationCap size={22} />
+              <div>
+                <span className="pv-grad__lbl">Te recibís en</span>
+                <span className="pv-grad__val">{cuatriName(gradCu)}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="plan2-hero__divider" aria-hidden="true" />
-
-          <div className="plan2-hero__dest">
-            <span className="plan2-hero__destlbl">
-              <span className="plan2-hero__cap" aria-hidden="true">
-                <IconGraduationCap size={15} />
-              </span>
-              Te recibís en
-            </span>
-            <strong>{cuatriName(gradCu)}</strong>
-            <div className="plan2-hero__chips">
-              <span className="plan2-chip">
+          <div className="pv-banner__mid">
+            <div className="pv-chips">
+              <span className="pv-chip">
                 <b>{flat.length}</b> materias
               </span>
-              <span className="plan2-chip">
+              <span className="pv-chip">
                 <b>{totalCred}</b> créditos a cursar
               </span>
-              <span className="plan2-chip">
+              <span className="pv-chip">
                 <b>
                   {elecTotal}/{ELEC_REQ}
                 </b>{" "}
                 electivos
               </span>
             </div>
+            <div className="pv-meter">
+              <div className="pv-meter__top">
+                <span className="pv-meter__lbl">Progreso de créditos</span>
+                <span className="pv-meter__pct">{pct}%</span>
+              </div>
+              <div className="pv-meter__bar">
+                <i style={{ width: `${pct}%` }} />
+              </div>
+              <div className="pv-meter__foot">
+                <span>
+                  <b>{accNow}</b> aprobados
+                </span>
+                <span className="pv-meter__sep">·</span>
+                <span>
+                  faltan <b>{totalCred}</b>
+                </span>
+                <span className="pv-meter__sep">·</span>
+                <span>
+                  meta <b>{finalCred}</b>
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="plan2-hero__meter">
-            <div className="plan2-meter__top">
-              <span className="plan2-meter__lbl">Progreso de créditos</span>
-              <span className="plan2-meter__pct">{pct}%</span>
+          <hr className="pv-banner__divider" />
+
+          <div className="pv-controls">
+            <div className="pv-field">
+              <label className="pv-field__lbl" htmlFor="pcStart">
+                Empiezo a cursar
+              </label>
+              <select
+                id="pcStart"
+                className="commission-select"
+                aria-label="Cuatrimestre de inicio"
+                value={PL.start.parity + "-" + PL.start.year}
+                onChange={(e) => {
+                  const [p, y] = e.target.value.split("-").map(Number);
+                  dispatch({
+                    type: "SET_PLAN_START",
+                    start: { parity: p, year: y },
+                  });
+                }}
+              >
+                {startOptions.map((o) => (
+                  <option value={o.value} key={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="plan2-meter__bar">
-              <i style={{ width: `${pct}%` }} />
+
+            <div className="pv-field pv-field--num">
+              <NumField
+                id="pcMaxMat"
+                label="Máx. materias"
+                value={PL.maxMat}
+                min={1}
+                max={9}
+                onCommit={(n) => dispatch({ type: "SET_PLAN_MAXMAT", value: n })}
+              />
             </div>
-            <div className="plan2-meter__foot">
-              <span><b>{accNow}</b> aprobados</span>
-              <span className="plan2-meter__sep">·</span>
-              <span>faltan <b>{totalCred}</b></span>
-              <span className="plan2-meter__sep">·</span>
-              <span>meta <b>{finalCred}</b></span>
+
+            <div className="pv-field pv-field--num">
+              <NumField
+                id="pcMaxCred"
+                label="Máx. créditos"
+                value={PL.maxCred}
+                min={3}
+                max={40}
+                onCommit={(n) => dispatch({ type: "SET_PLAN_MAXCRED", value: n })}
+              />
+            </div>
+
+            <div className="pv-field pv-field--seg">
+              <span className="pv-field__lbl">
+                Optimizar para{" "}
+                <span className="hint">— cómo arma el plan</span>
+              </span>
+              <div
+                className="pv-seg"
+                role="group"
+                aria-label="Método de optimización del plan"
+              >
+                {OPT_METHODS.map((m: OptMethodMeta) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    className="pv-seg__opt"
+                    aria-pressed={PL.method === m.key}
+                    title={m.objetivo}
+                    onClick={() =>
+                      dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                    }
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pv-field pv-field--sw">
+              <span className="pv-field__lbl">Horario</span>
+              <button
+                type="button"
+                className={"cmb-switch" + (PL.avoid ? " on" : "")}
+                role="switch"
+                aria-checked={PL.avoid}
+                onClick={() =>
+                  dispatch({ type: "SET_PLAN_AVOID", value: !PL.avoid })
+                }
+              >
+                <span className="cmb-switch__track">
+                  <span className="cmb-switch__knob" />
+                </span>
+                Evitar superposiciones
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="plan2-controls">
-        <div className="plan2-fieldset">
-          <span className="plan2-fieldset__lbl">Punto de partida</span>
-          <div className="plan2-field">
-            <label htmlFor="pcStart">Empiezo a cursar</label>
-            <select
-              id="pcStart"
-              value={PL.start.parity + "-" + PL.start.year}
-              onChange={(e) => {
-                const [p, y] = e.target.value.split("-").map(Number);
-                dispatch({ type: "SET_PLAN_START", start: { parity: p, year: y } });
-              }}
+      {used.length > 0 && (
+        <div className="pv-tabs">
+          <div className="pv-tablist" role="tablist" aria-label="Vistas del plan">
+            <button
+              type="button"
+              role="tab"
+              className="pv-tab"
+              aria-selected={tab === "cal"}
+              tabIndex={tab === "cal" ? 0 : -1}
+              onClick={() => setTab("cal")}
             >
-              {startOptions.map((o) => (
-                <option value={o.value} key={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
+              <IconCalendar size={15} /> Calendario
+            </button>
+            <button
+              type="button"
+              role="tab"
+              className="pv-tab"
+              aria-selected={tab === "road"}
+              tabIndex={tab === "road" ? 0 : -1}
+              onClick={() => setTab("road")}
+            >
+              <IconRoute size={15} /> Roadmap
+            </button>
+            <button
+              type="button"
+              role="tab"
+              className="pv-tab"
+              aria-selected={tab === "min"}
+              tabIndex={tab === "min" ? 0 : -1}
+              onClick={() => setTab("min")}
+            >
+              <IconLayers size={15} /> Minors <span className="pv-tab__new">Nuevo</span>
+            </button>
           </div>
-        </div>
 
-        <div className="plan2-fieldset">
-          <span className="plan2-fieldset__lbl">Carga por cuatrimestre</span>
-          <div className="plan2-fieldset__row">
-            <NumField
-              id="pcMaxCred"
-              label="Máx. créditos"
-              value={PL.maxCred}
-              min={3}
-              max={40}
-              onCommit={(n) => dispatch({ type: "SET_PLAN_MAXCRED", value: n })}
-            />
-            <NumField
-              id="pcMaxMat"
-              label="Máx. materias"
-              value={PL.maxMat}
-              min={1}
-              max={9}
-              onCommit={(n) => dispatch({ type: "SET_PLAN_MAXMAT", value: n })}
-            />
-          </div>
-        </div>
-
-        <div className="plan2-fieldset plan2-fieldset--toggle">
-          <span className="plan2-fieldset__lbl">Horario</span>
-          <button
-            type="button"
-            className={"cmb-switch" + (PL.avoid ? " on" : "")}
-            role="switch"
-            aria-checked={PL.avoid}
-            onClick={() => dispatch({ type: "SET_PLAN_AVOID", value: !PL.avoid })}
-          >
-            <span className="cmb-switch__track">
-              <span className="cmb-switch__knob" />
+          <div className="pv-tabs__actions">
+            <button
+              type="button"
+              className="pv-rec-toggle"
+              role="switch"
+              aria-checked={recOn}
+              aria-label="Recomendador de electivas"
+              onClick={() => setRecsHidden((v) => !v)}
+            >
+              Recomendador
+              <span className="pv-switch" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="pv-iconbtn"
+              aria-label="Restablecer plan"
+              title="Restablecer plan"
+              onClick={() => setResetOpen(true)}
+            >
+              <IconRotateCcw size={15} />
+            </button>
+            <span className="pv-tip">
+              <button
+                type="button"
+                className="pv-iconbtn pv-iconbtn--label"
+                aria-describedby="pv-io-tip"
+                onClick={() => setIoOpen(true)}
+              >
+                <IconDownload size={15} /> Importar / Exportar
+              </button>
+              <span className="pv-tip__bubble" role="tooltip" id="pv-io-tip">
+                Descargá el plan como <b>PDF</b> (listo para imprimir) o{" "}
+                <b>HTML</b> para leer offline, guardá tus preferencias en un{" "}
+                <b>.json</b> portable, o importá un plan guardado.
+              </span>
             </span>
-            Evitar superposiciones
-          </button>
+          </div>
         </div>
+      )}
 
-        <div className="plan2-controls__grow" />
-
-        <div className="plan2-controls__actions">
-          <button
-            type="button"
-            className="btn btn--ghost btn--sm"
-            onClick={() => dispatch({ type: "PLAN_RESET" })}
-          >
-            Restablecer
-          </button>
-          <button
-            type="button"
-            className="btn btn--ghost btn--sm"
-            onClick={() => setIoOpen(true)}
-          >
-            <IconDownload size={13} /> Exportar / importar
-          </button>
-        </div>
-      </div>
-
-      {/* Slot de vista previa: espacio RESERVADO y persistente. Antes el
-          banner se montaba/desmontaba en el flujo por cada hover y empujaba
-          el board ~51px (salto errático). Ahora la altura es fija y solo
-          cambia el contenido: idle = hint tenue, hover = pill brass. */}
-      {used.length > 0 && recs.length > 0 && !recsHidden && (
+      {/* Slot de vista previa: espacio RESERVADO y persistente para no empujar
+          el board por cada hover (idle = hint tenue, hover = pill brass). */}
+      {showPreviewSlot && (
         <div
           className={
             "plan2-preview-slot" +
@@ -1319,69 +2097,19 @@ export default function PlanView() {
       )}
 
       {used.length > 0 ? (
-        <div
-          className={
-            "plan2-split" +
-            (recsHidden || !recs.length ? " plan2-split--solo" : "")
-          }
-        >
-          <div className="plan2-split__main">
-            <div className="plan2-boardbar">
-              <div
-                className="plan2-seg"
-                role="tablist"
-                aria-label="Vista del plan"
-              >
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={boardView === "roadmap"}
-                  className={
-                    "plan2-seg__btn" + (boardView === "roadmap" ? " is-on" : "")
-                  }
-                  onClick={() => setBoardView("roadmap")}
-                >
-                  <IconRoute size={14} /> Roadmap
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={boardView === "calendars"}
-                  className={
-                    "plan2-seg__btn" +
-                    (boardView === "calendars" ? " is-on" : "")
-                  }
-                  onClick={() => setBoardView("calendars")}
-                >
-                  <IconCalendar size={14} /> Calendarios
-                </button>
-              </div>
-              {boardView === "calendars" && (
-                <span className="plan2-boardbar__hint">
-                  Todos los cuatrimestres de un vistazo
-                </span>
-              )}
-              <span className="plan2-boardbar__grow" />
-              <button
-                type="button"
-                className="plan2-minors-btn"
-                onClick={() => setMinorsOpen(true)}
-              >
-                <span className="plan2-minors-btn__dots" aria-hidden="true">
-                  <i style={{ background: "#85a2c2" }} />
-                  <i style={{ background: "#c592ab" }} />
-                  <i style={{ background: "#a9b27e" }} />
-                  <i style={{ background: "#a497c0" }} />
-                </span>
-                Minors por cuatrimestre
-              </button>
-            </div>
-
-            <div className="plan2-board">
-              {boardView === "calendars" && (
-                <div className="plan2-cals">
+        tab === "min" ? (
+          <MinorsPanel
+            used={used}
+            approved={approved}
+            onOpenDetail={() => setMinorsOpen(true)}
+          />
+        ) : (
+          <div className={"plan2-split" + (!showSide ? " plan2-split--solo" : "")}>
+            <div className="plan2-split__main">
+              {tab === "cal" && (
+                <div className="pv-semgrid">
                   {used.map(({ it, i }) => (
-                    <CuatriCalCard
+                    <SemCard
                       key={i}
                       it={it}
                       i={i}
@@ -1389,11 +2117,16 @@ export default function PlanView() {
                       previewCode={preview}
                       maxCred={PL.maxCred}
                       maxMat={PL.maxMat}
+                      recOn={recOn}
+                      locked={PL.lockedIdx.has(i)}
+                      onFinalize={finalizeCuatri}
+                      onUnlock={unlockCuatri}
+                      onDownload={downloadCuatri}
                     />
                   ))}
                 </div>
               )}
-              {boardView === "roadmap" && (
+              {tab === "road" && (
                 <ol className="rmap">
                   {used.map(({ it, i }) => (
                     <RoadmapStop
@@ -1405,26 +2138,27 @@ export default function PlanView() {
                       maxCred={PL.maxCred}
                       maxMat={PL.maxMat}
                       previewCode={preview}
+                      recOn={recOn}
                     />
                   ))}
                 </ol>
               )}
             </div>
-          </div>
 
-          {!recsHidden && recs.length > 0 && (
-            <aside className="plan2-split__side">
-              <Recommendations
-                start={PL.start}
-                elecTotal={elecCommitted}
-                recs={recs}
-                onPreview={setPreview}
-                preview={preview}
-                onHide={() => setRecsHidden(true)}
-              />
-            </aside>
-          )}
-        </div>
+            {showSide && (
+              <aside className="plan2-split__side">
+                <Recommendations
+                  start={PL.start}
+                  elecTotal={elecCommitted}
+                  recs={recs}
+                  onPreview={setPreview}
+                  preview={preview}
+                  onHide={() => setRecsHidden(true)}
+                />
+              </aside>
+            )}
+          </div>
+        )
       ) : (
         <div className="plan2-board">
           <div className="plan2-empty">
@@ -1437,76 +2171,11 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* La pestaña de reabrir se monta vía portal en `.planner` (no en esta
-          sección): `.view-panel` arrastra un transform identidad del
-          animation-fill-mode, que crea un containing block y haría que un
-          position:fixed se anclara a la sección (y scrollee) en vez de al
-          viewport. Portalear a `.planner` la deja fixed real —igual que
-          `.side__reveal`— y conserva las variables/estilos del planner. */}
-      {used.length > 0 &&
-        recsHidden &&
-        recs.length > 0 &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <button
-            type="button"
-            className="plan2-recs-reveal"
-            aria-label="Mostrar recomendaciones de electivas"
-            title="Mostrar electivas"
-            onClick={() => setRecsHidden(false)}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              aria-hidden="true"
-            >
-              <path
-                d="M14.5 6.5 9 12l5.5 5.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>,
-          document.querySelector(".planner") ?? document.body,
-        )}
-
-      <div className="plan2-optnote">
-        <div className="plan2-optnote__pick">
-          <span className="plan2-optnote__lbl">
-            <IconSliders size={13} className="plan2-fieldset__ic" />
-            Método de optimización
-          </span>
-          <div
-            className="plan2-methodseg"
-            role="radiogroup"
-            aria-label="Método de optimización del plan"
-          >
-            {OPT_METHODS.map((m: OptMethodMeta) => (
-              <button
-                key={m.key}
-                type="button"
-                role="radio"
-                aria-checked={PL.method === m.key}
-                title={m.objetivo}
-                className={
-                  "plan2-methodseg__btn" +
-                  (PL.method === m.key ? " is-on" : "")
-                }
-                onClick={() =>
-                  dispatch({ type: "SET_PLAN_METHOD", value: m.key })
-                }
-              >
-                {m.short}
-              </button>
-            ))}
-          </div>
+      {used.length > 0 && (
+        <div className="plan2-optnote">
+          <p className="plan2-method">{methodText(R, PL)}</p>
         </div>
-        <p className="plan2-method">{methodText(R, PL)}</p>
-      </div>
+      )}
 
       {warns.length > 0 && (
         <div className="plan2-warns">
@@ -1537,6 +2206,16 @@ export default function PlanView() {
           start={PL.start}
           approved={approved}
           onClose={() => setMinorsOpen(false)}
+        />
+      )}
+
+      {resetOpen && (
+        <ResetConfirm
+          onCancel={() => setResetOpen(false)}
+          onConfirm={() => {
+            dispatch({ type: "PLAN_RESET" });
+            setResetOpen(false);
+          }}
         />
       )}
 

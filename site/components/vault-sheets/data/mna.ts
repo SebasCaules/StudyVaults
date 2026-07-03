@@ -1,4 +1,5 @@
 import type { Sheet } from "../types";
+import { FIG } from "./figures";
 
 // Generado por el pipeline studyvault-cheatsheets (extracción + auditoría sub-overseer).
 // Editable a mano: es data pura. Ver components/vault-sheets/types.ts.
@@ -9,13 +10,14 @@ export const mnaFormulas: Sheet = {
   "title": "Métodos Numéricos Avanzados",
   "subtitle": "Álgebra lineal numérica + Fourier — cheat sheet del final",
   "notation": "$\\mathbb{K}=\\mathbb{R}$ o $\\mathbb{C}$; $z=a+ib$, $\\bar z$ conjugado, $\\rho=|z|$, $\\theta=\\arg z$; $A\\in\\mathbb{K}^{n\\times m}$, $A^T$ traspuesta, $A^*=\\overline{A^T}$; $\\langle\\cdot,\\cdot\\rangle$ producto interno, $\\|\\cdot\\|$ norma; $\\lambda$ autovalor, $S_\\lambda$ autoespacio, $\\rho(A)$ radio espectral; $\\sigma_i$ valores singulares; $T$ período, $\\omega_0=2\\pi/T$.",
-  "updated": "2026-06-19",
+  "updated": "2026-07-03",
   "groups": [
     {
       "title": "Números complejos",
       "hint": "Forma binómica y polar",
       "unit": "1",
       "unitTitle": "Números complejos",
+      "unitDesc": "Forma binómica y polar, Euler, De Moivre, raíces y logaritmo.",
       "entries": [
         {
           "label": "Unidad imaginaria",
@@ -63,7 +65,8 @@ export const mnaFormulas: Sheet = {
           "label": "Radicación ($w^n=z$)",
           "kind": "formula",
           "tex": "w_k=\\sqrt[n]{\\rho_z}\\;e^{\\,i\\left(\\frac{\\theta_z+2k\\pi}{n}\\right)},\\quad k=0,\\dots,n-1",
-          "note": "Hay exactamente $n$ raíces distintas, equiespaciadas en el círculo de radio $\\sqrt[n]{\\rho_z}$"
+          "note": "Hay exactamente $n$ raíces distintas, equiespaciadas en el círculo de radio $\\sqrt[n]{\\rho_z}$",
+          "figure": FIG.unitRoots
         },
         {
           "label": "Logaritmo ($e^w=z$)",
@@ -83,6 +86,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Geometría en $\\mathbb{K}^n$",
       "unit": "2",
       "unitTitle": "Vectores y normas",
+      "unitDesc": "Producto interno, normas, ortogonalidad y desigualdades.",
       "entries": [
         {
           "label": "Producto interno",
@@ -128,6 +132,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Operaciones, tipos especiales, det",
       "unit": "3",
       "unitTitle": "Matrices y determinantes",
+      "unitDesc": "Operaciones, tipos de matriz, determinante y rango.",
       "entries": [
         {
           "label": "Producto de matrices",
@@ -193,6 +198,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Base, dimensión, rango",
       "unit": "4",
       "unitTitle": "Espacios vectoriales",
+      "unitDesc": "Subespacios, base, dimensión y coordenadas.",
       "entries": [
         {
           "label": "Base y dimensión",
@@ -229,6 +235,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Núcleo, imagen, matriz asociada",
       "unit": "5",
       "unitTitle": "Transformaciones lineales",
+      "unitDesc": "Núcleo e imagen, matriz asociada y cambio de base.",
       "entries": [
         {
           "label": "Núcleo e imagen",
@@ -276,6 +283,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Espectro, multiplicidades, $A=PDP^{-1}$",
       "unit": "6",
       "unitTitle": "Autovalores y diagonalización",
+      "unitDesc": "Espectro, autoespacios, semejanza y diagonalización.",
       "entries": [
         {
           "label": "Autovalor / autovector",
@@ -347,6 +355,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Doolittle, resolver $Ax=b$ barato",
       "unit": "7",
       "unitTitle": "Factorizaciones y mínimos cuadrados",
+      "unitDesc": "LU/PLU, QR, SVD, pseudoinversa y mínimos cuadrados.",
       "entries": [
         {
           "label": "Idea: invertir sin invertir",
@@ -521,6 +530,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Trigonométrica, laboratorio y exponencial",
       "unit": "8",
       "unitTitle": "Fourier",
+      "unitDesc": "Series y transformada de Fourier.",
       "entries": [
         {
           "label": "Serie trigonométrica",
@@ -649,6 +659,7 @@ export const mnaFormulas: Sheet = {
       "hint": "Euler implícito: sistema EDO, calor y convección–difusión",
       "unit": "9",
       "unitTitle": "Ecuaciones diferenciales",
+      "unitDesc": "Diferencias finitas para EDO/EDP.",
       "entries": [
         {
           "label": "EDO 2.º orden → sistema 1.º",
@@ -714,11 +725,14 @@ export const mnaConceptos: Sheet = {
   "title": "Métodos Numéricos Avanzados",
   "subtitle": "Álgebra lineal numérica: complejos, espacios, TL, diagonalización, LU/QR/SVD y Fourier",
   "notation": "$\\mathbb{K}=\\mathbb{R}$ o $\\mathbb{C}$; $\\langle\\cdot,\\cdot\\rangle$ producto interno; $A^T$ transpuesta, $A^*=\\overline{A^T}$ traspuesta conjugada (adjunta); $\\|\\cdot\\|_2$ norma euclídea; $[v]_B$ coordenadas en base $B$; $M_{B_2B_1}(T)$ matriz asociada; $\\sigma_i$ valores singulares; $\\rho(A)$ radio espectral; $\\sin$ = seno (la cátedra escribe $\\operatorname{sen}$); $\\omega_0=2\\pi/T$ frecuencia fundamental.",
-  "updated": "2026-06-19",
+  "updated": "2026-07-03",
   "groups": [
     {
       "title": "Números complejos",
       "hint": "Unidad I: cuerpo no ordenado, forma polar, De Moivre, raíces, log",
+      "unit": "1",
+      "unitTitle": "Números complejos",
+      "unitDesc": "Forma binómica y polar, Euler, De Moivre, raíces y logaritmo.",
       "entries": [
         {
           "label": "Número complejo",
@@ -767,6 +781,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Vectores, producto interno y normas",
       "hint": "Unidad II: $\\mathbb{K}^n$, PI, normas $p$, ángulo, ortogonalidad",
+      "unit": "2",
+      "unitTitle": "Vectores y normas",
+      "unitDesc": "Producto interno, normas, ortogonalidad y desigualdades.",
       "entries": [
         {
           "label": "Producto interno",
@@ -809,6 +826,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Matrices: operaciones y clasificación",
       "hint": "Producto, transpuesta, adjunta y matrices con nombre propio",
+      "unit": "3",
+      "unitTitle": "Matrices y determinantes",
+      "unitDesc": "Operaciones, tipos de matriz, determinante y rango.",
       "entries": [
         {
           "label": "Producto matricial",
@@ -857,6 +877,7 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Determinantes y sistemas",
       "hint": "Forma multilineal alternada, Laplace, Sarrus, adjunta",
+      "unit": "3",
       "entries": [
         {
           "label": "Determinante",
@@ -893,6 +914,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Espacios vectoriales y subespacios",
       "hint": "Axiomas, subespacio, CL, LI/LD, base, dimensión",
+      "unit": "4",
+      "unitTitle": "Espacios vectoriales",
+      "unitDesc": "Subespacios, base, dimensión y coordenadas.",
       "entries": [
         {
           "label": "Espacio vectorial",
@@ -929,6 +953,7 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Espacios euclídeos y Gram–Schmidt",
       "hint": "PI abstracto, BON, proyección, ortonormalización",
+      "unit": "4",
       "entries": [
         {
           "label": "PI en matrices y polinomios",
@@ -959,6 +984,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Transformaciones lineales",
       "hint": "Núcleo, imagen, teorema de dimensiones, matriz asociada",
+      "unit": "5",
+      "unitTitle": "Transformaciones lineales",
+      "unitDesc": "Núcleo e imagen, matriz asociada y cambio de base.",
       "entries": [
         {
           "label": "Inyectividad por núcleo",
@@ -1001,6 +1029,7 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Cambio de base y semejanza",
       "hint": "Matriz de pasaje vía la identidad; invariantes",
+      "unit": "5",
       "entries": [
         {
           "label": "Matriz de cambio de base $P$",
@@ -1025,6 +1054,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Diagonalización",
       "hint": "Autovalores, autovectores, multiplicidades, radio espectral, criterio",
+      "unit": "6",
+      "unitTitle": "Autovalores y diagonalización",
+      "unitDesc": "Espectro, autoespacios, semejanza y diagonalización.",
       "entries": [
         {
           "label": "Autovalor / autovector",
@@ -1073,6 +1105,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Factorización LU / PLU",
       "hint": "Doolittle, multiplicadores, permutaciones",
+      "unit": "7",
+      "unitTitle": "Factorizaciones y mínimos cuadrados",
+      "unitDesc": "LU/PLU, QR, SVD, pseudoinversa y mínimos cuadrados.",
       "entries": [
         {
           "label": "Idea: factorizar para no invertir",
@@ -1097,6 +1132,7 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Factorización QR",
       "hint": "Gram–Schmidt sobre columnas, $R=Q^TA$, inversas laterales",
+      "unit": "7",
       "entries": [
         {
           "label": "Construcción de $Q$ y $R$",
@@ -1127,6 +1163,7 @@ export const mnaConceptos: Sheet = {
     {
       "title": "SVD, pseudoinversa y normas matriciales",
       "hint": "Valores singulares, Moore–Penrose, low-rank, condición, $\\|A\\|$",
+      "unit": "7",
       "entries": [
         {
           "label": "Teorema SVD",
@@ -1187,6 +1224,9 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Series de Fourier",
       "hint": "Frecuencia fundamental, ortogonalidad, trig./exp., Parseval, Dirichlet",
+      "unit": "8",
+      "unitTitle": "Fourier",
+      "unitDesc": "Series y transformada de Fourier.",
       "entries": [
         {
           "label": "Período y frecuencia fundamental",
@@ -1247,6 +1287,7 @@ export const mnaConceptos: Sheet = {
     {
       "title": "Transformada de Fourier, EDPs y EDOs",
       "hint": "TF continua, pares clásicos, propiedades, diferencias finitas, EDO→sistema",
+      "unit": "8",
       "entries": [
         {
           "label": "Transformada continua",

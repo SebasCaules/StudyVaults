@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import "@/components/planner/combinador.css";
+
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePlanner } from "@/components/planner/state";
 import {
   PLAN,
@@ -14,17 +16,31 @@ import {
 } from "@/lib/planner/model";
 import { comModalidad, isAsync, slotsConflict, toMin } from "@/lib/planner/time";
 import { generateCombos } from "@/lib/planner/combos";
-import { isAvailable } from "@/lib/planner/metrics";
-import { charFiltersActive, hasPrograma, matchesChars } from "@/lib/planner/programa";
+import {
+  optimizePlan,
+  cuatriAt,
+  cuatriLabel,
+  cuatriName,
+} from "@/lib/planner/optimize";
+import { minorsOf } from "@/lib/planner/minors";
+import { hasPrograma } from "@/lib/planner/programa";
 import { buildComboHTML } from "@/lib/planner/exportPlan";
 import { openForPrint } from "@/lib/planner/download";
 import { Legend } from "@/components/planner/WeekGrid";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
+import { MinorBadge } from "@/components/planner/MinorBadge";
 import { ComingSoonBadge, ProgramaChips } from "@/components/planner/ProgramaChips";
-import { IconPlus, IconPrinter, IconSliders } from "@/components/planner/icons";
+import {
+  IconPlus,
+  IconDownload,
+  IconCalendar,
+  IconFileText,
+  IconLayers,
+} from "@/components/planner/icons";
+import { CommissionSelect } from "@studyvaults/ui";
 import type { LegendEntry } from "@/components/planner/WeekGrid";
 import type {
-  CharFilters,
+  Comision,
   Materia,
   MateriaM,
   PlacedMateria,
@@ -38,23 +54,11 @@ interface AsyncChip extends Slot {
 }
 
 const MODAL_KEYS = ["Presencial", "Virtual", "Blended"] as const;
-const REGIMEN_OPTS: {
-  value: CharFilters["regimen"];
-  label: string;
-  title: string;
-}[] = [
-  { value: "any", label: "Cualquiera", title: "No filtra por régimen" },
-  {
-    value: "promocionable",
-    label: "Promociona",
-    title: "Se aprueba sin final (según el programa)",
-  },
-  {
-    value: "sin-final",
-    label: "Sin final",
-    title: "El programa no menciona examen final",
-  },
-];
+/** Período que se estampa en el documento exportado. */
+const PERIODO = "2.º cuatrimestre 2026";
+/** Tope de sugerencias que muestra el recomendador slim (panel angosto). */
+const SUGGEST_LIMIT = 14;
+
 const norm = (s: string) =>
   s
     .toLowerCase()
@@ -62,6 +66,29 @@ const norm = (s: string) =>
     .replace(/[̀-ͯ]/g, "");
 const hhmm = (m: number) =>
   `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+
+/** Fecha legible para el pie del documento exportado. */
+function nowStr(): string {
+  try {
+    return new Date().toLocaleDateString("es-AR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return "";
+  }
+}
+
+/** Tooltip nativo con el horario completo de una comisión (día · franja). */
+function comTitle(c: Comision): string {
+  const slots = c.slots
+    .filter((s) => !isAsync(s))
+    .map((s) => `${s.dia.slice(0, 3)} ${s.desde}–${s.hasta}`)
+    .join(" · ");
+  const mod = comModalidad(c);
+  return [mod, slots].filter(Boolean).join(" — ") || `com ${c.comision}`;
+}
 
 /** Métricas de una cursada (combo): días con clase, franja, horas semanales.
  *  Se usan para ORDENAR las opciones (la más compacta primero) y para los
@@ -86,17 +113,38 @@ function comboMetrics(placed: PlacedMateria[]) {
     horas: Math.round((totalMin / 60) * 10) / 10,
     minStart: minStart === Infinity ? 0 : minStart,
     maxEnd: maxEnd === -Infinity ? 0 : maxEnd,
-    rango:
-      minStart === Infinity ? "—" : `${hhmm(minStart)}–${hhmm(maxEnd)}`,
+    rango: minStart === Infinity ? "—" : `${hhmm(minStart)}–${hhmm(maxEnd)}`,
   };
 }
 
+/** Info-tooltip inline (hover/focus): un botón "i" con una caja explicativa.
+ *  CSS-only (visible con :hover / :focus-within) → static-export safe. */
+function InfoTip({ text, label }: { text: string; label?: string }) {
+  return (
+    <span className="cmb9-tip">
+      <button
+        type="button"
+        className="cmb9-tip__btn"
+        aria-label={label ?? "Más información"}
+      >
+        i
+      </button>
+      <span className="cmb9-tip__box" role="tooltip">
+        {text}
+      </span>
+    </span>
+  );
+}
+
 /**
- * Armá tu cuatrimestre — combinador con workspace de dos paneles: a la izquierda
- * la configuración (materias + preferencias), a la derecha el resultado en vivo
- * (contador legible + calendario grande + paginador). Las opciones se ordenan de
- * la más compacta (menos días en el campus) a la menos, así la primera ya es una
- * buena cursada. En mobile el orden se reordena a materias → calendario → ajustes.
+ * Armá tu cuatrimestre — combinador con el rediseño del Módulo E: un header
+ * compacto (chips de materia + preferencias de cursada) con el cluster de
+ * acciones fijo a la derecha (Sugeridas · Descargar · Guardar preferencia), y
+ * el calendario semanal a todo el ancho como protagonista. El recomendador es
+ * un panel slim, colapsable, pegado al borde derecho del calendario: sugiere
+ * CUALQUIER materia (obligatoria o electiva) que todavía te entre en la semana,
+ * en filas de una sola línea. Las opciones se ordenan de la más compacta (menos
+ * días en el campus) a la menos, así la primera ya es una buena cursada.
  */
 export default function CombinadorView() {
   const { state, dispatch } = usePlanner();
@@ -105,9 +153,12 @@ export default function CombinadorView() {
   const [q, setQ] = useState("");
   const [idx, setIdx] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [charOpen, setCharOpen] = useState(false);
-  const [suggestMsg, setSuggestMsg] = useState<string | null>(null);
-  const charActive = charFiltersActive(state.charFilters);
+  const [recOpen, setRecOpen] = useState(true);
+  const [dlOpen, setDlOpen] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [saveIdx, setSaveIdx] = useState(""); // "" = Auto (que el plan la ubique)
+  const dlRef = useRef<HTMLDivElement>(null);
+  const saveRef = useRef<HTMLDivElement>(null);
 
   // ---------- materias combinables ----------
   const pool = useMemo(() => {
@@ -131,40 +182,6 @@ export default function CombinadorView() {
     return { obs: pool.obs.filter(match), els: pool.els.filter(match) };
   }, [pool, q]);
 
-  // ---------- "Sugerir materias": candidatas que matchean charFilters ----------
-  // Universo: obligatorias + electivas con oferta horaria, disponibles según
-  // correlativas/créditos (isAvailable) y no aprobadas. matchesChars filtra por
-  // régimen/asistencia/programa/hs semanales (state.charFilters).
-  const suggestable = useMemo(() => {
-    const all = [...PLAN.obligatorias, ...PLAN.electivas];
-    return all
-      .filter(
-        (m) =>
-          hasHorario(m.codigo) &&
-          isAvailable(m, state.approved) &&
-          matchesChars(m.codigo, state.charFilters),
-      )
-      .map((m) => byId.get(m.codigo)!);
-  }, [state.approved, state.charFilters]);
-
-  useEffect(() => {
-    setSuggestMsg(null);
-  }, [state.charFilters]);
-
-  const handleSuggest = () => {
-    const toAdd = suggestable.filter((m) => !combo.has(m.codigo));
-    toAdd.forEach((m) => dispatch({ type: "TOGGLE_COMBO", code: m.codigo }));
-    const n = suggestable.length;
-    setSuggestMsg(
-      n === 0
-        ? "Ninguna materia matchea estos filtros"
-        : toAdd.length === 0
-          ? `${n} materia${n === 1 ? "" : "s"} sugerida${n === 1 ? "" : "s"} · ya estaban en tu combo`
-          : `${n} materia${n === 1 ? "" : "s"} sugerida${n === 1 ? "" : "s"} · +${toAdd.length} nueva${toAdd.length === 1 ? "" : "s"}`,
-    );
-    setPickerOpen(false);
-  };
-
   // selección, ordenada por código (igual que generateCombos → colores alineados)
   const selected = useMemo(
     () =>
@@ -178,6 +195,11 @@ export default function CombinadorView() {
   const elc = selected
     .filter((m) => isElectiva(m.codigo))
     .reduce((s, m) => s + credOf(m.codigo), 0);
+  // ¿alguna materia elegida tiene más de una comisión? → hay selector de comisión
+  // en juego, así que mostramos la nota "Comisión: Auto" con su tooltip.
+  const hasComChoice = selected.some(
+    (m) => (m.horario?.comisiones?.length || 0) > 1,
+  );
 
   // ---------- generación automática ----------
   const result = useMemo(
@@ -220,6 +242,33 @@ export default function CombinadorView() {
     return () => window.removeEventListener("keydown", onKey);
   }, [total]);
 
+  // cerrar los popovers del header (Descargar / Guardar) al click afuera o Escape
+  useEffect(() => {
+    if (!dlOpen && !saveOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (dlOpen && dlRef.current && !dlRef.current.contains(e.target as Node))
+        setDlOpen(false);
+      if (
+        saveOpen &&
+        saveRef.current &&
+        !saveRef.current.contains(e.target as Node)
+      )
+        setSaveOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setDlOpen(false);
+        setSaveOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [dlOpen, saveOpen]);
+
   // ---------- grilla de la opción actual ----------
   const grid = useMemo(() => {
     const current = ranked[safeIdx];
@@ -244,7 +293,13 @@ export default function CombinadorView() {
           if (seenB.has(key)) return;
           seenB.add(key);
           // codigo permite que el bloque sea clickeable (abre el drawer de specs)
-          blocks.push({ ...s, abbr: x.m.abbr, nombre: x.m.nombre, color, codigo: x.m.codigo });
+          blocks.push({
+            ...s,
+            abbr: x.m.abbr,
+            nombre: x.m.nombre,
+            color,
+            codigo: x.m.codigo,
+          });
         }
       });
     });
@@ -266,8 +321,104 @@ export default function CombinadorView() {
   // La opción 1 es, por el orden, la más compacta (menos días en el campus).
   const isCompact = total > 1 && insights != null && safeIdx === 0;
 
+  // ---------- recomendador de CUALQUIER materia (obligatoria o electiva) ----------
+  // Sugiere materias con horario que todavía no elegiste, priorizando las que
+  // ENTRAN en tu semana actual sin pisarse con la opción activa. El "+" las suma
+  // directo a tu cuatrimestre (combo). Barato: para cada candidata chequea si
+  // alguna de sus comisiones no choca con los bloques de la opción en pantalla.
+  const suggestions = useMemo(() => {
+    const blocks = grid?.blocks ?? [];
+    const cand = [...pool.obs, ...pool.els].filter((m) => !combo.has(m.codigo));
+    const fits = (m: MateriaM): boolean => {
+      const coms = m.horario?.comisiones ?? [];
+      if (!coms.length || !blocks.length) return true;
+      return coms.some((c) =>
+        c.slots
+          .filter((s) => !isAsync(s) && DAYS6.includes(s.dia))
+          .every((s) => !blocks.some((b) => slotsConflict(s, b))),
+      );
+    };
+    return cand
+      .map((m) => ({ m, fit: fits(m) }))
+      .sort(
+        (a, b) =>
+          (a.fit === b.fit ? 0 : a.fit ? -1 : 1) ||
+          (b.m.creditos || 0) - (a.m.creditos || 0) ||
+          a.m.codigo.localeCompare(b.m.codigo),
+      )
+      .slice(0, SUGGEST_LIMIT);
+  }, [pool, combo, grid]);
+
+  // Plan base (para poblar el dropdown de "Guardar en el cuatrimestre X"): sabe
+  // cuántos cuatrimestres usa el plan hoy → ofrecemos esos + uno nuevo.
+  const PL = state.plan;
+  const cuatriOptions = useMemo(() => {
+    const base = optimizePlan(PL, state.approved, state.fixedCom);
+    let maxUsed = -1;
+    base.items.forEach((it, i) => {
+      if (it.length) maxUsed = i;
+    });
+    const upto = Math.min(Math.max(maxUsed + 1, 2), 11);
+    const opts: { value: string; label: string; title: string }[] = [];
+    for (let i = 0; i <= upto; i++) {
+      const c = cuatriAt(PL.start, i);
+      opts.push({ value: String(i), label: cuatriName(c), title: cuatriLabel(c) });
+    }
+    return opts;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    PL.pool,
+    PL.fixed,
+    PL.start,
+    PL.maxCred,
+    PL.maxMat,
+    PL.avoid,
+    PL.method,
+    PL.capCredByIdx,
+    PL.capMatByIdx,
+    PL.lockedIdx,
+    state.approved,
+    state.fixedCom,
+  ]);
+
   const noResults = filtered.obs.length === 0 && filtered.els.length === 0;
   const showPicker = pickerOpen || selected.length === 0;
+  const canExport = total > 0 && Boolean(ranked[safeIdx]);
+
+  // ---------- acciones del cluster derecho ----------
+  const downloadCombo = (
+    opts: { includeCalendar?: boolean; includeSpecs?: boolean },
+    filename: string,
+  ) => {
+    const placed = ranked[safeIdx];
+    if (!placed) return;
+    openForPrint(
+      buildComboHTML({
+        placed,
+        generado: nowStr(),
+        periodo: PERIODO,
+        autoPrint: true,
+        ...opts,
+      }),
+      filename,
+    );
+    setDlOpen(false);
+  };
+
+  // Guardar preferencia: transfiere la combinación elegida al Plan de cursada,
+  // fijándola en el cuatrimestre elegido (idx) o dejándola en "Auto" para que el
+  // optimizador la ubique. Las comisiones ya viajan por el `fixedCom` compartido.
+  const savePreference = () => {
+    const placed = ranked[safeIdx];
+    if (!placed) return;
+    const targetIdx = saveIdx === "" ? undefined : Number(saveIdx);
+    dispatch({
+      type: "PLAN_SAVE_PREFERENCE",
+      codes: placed.map((x) => x.m.codigo),
+      idx: targetIdx,
+    });
+    setSaveOpen(false);
+  };
 
   // ---------- sub-render: fila del buscador ----------
   const row = (m: MateriaM) => {
@@ -303,7 +454,7 @@ export default function CombinadorView() {
     );
   };
 
-  // ---------- sub-render: chip de materia elegida ----------
+  // ---------- sub-render: chip de materia elegida (con CommissionSelect) ----------
   const chip = (m: MateriaM, i: number) => {
     const coms = m.horario?.comisiones || [];
     const fx = fixedCom.get(m.codigo);
@@ -316,10 +467,18 @@ export default function CombinadorView() {
         <span className="cmb-chip__abbr">{m.abbr}</span>
         <span className="cmb-chip__cr">{m.creditos}cr</span>
         {coms.length > 1 && (
-          <select
-            className="cmb-chip__com"
+          <CommissionSelect
+            size="sm"
+            className="cmb9-chip__com"
+            placeholder="Auto"
+            title="Auto: el combinador elige la comisión que arma la semana más compacta. Fijá una para forzarla."
+            aria-label={`Comisión de ${m.nombre}`}
             value={fx || ""}
-            title="Fijar comisión"
+            options={coms.map((c) => ({
+              value: c.comision,
+              label: `com ${c.comision} · ${comModalidad(c)}`,
+              title: comTitle(c),
+            }))}
             onChange={(e) =>
               dispatch({
                 type: "SET_FIXED_COM",
@@ -327,14 +486,7 @@ export default function CombinadorView() {
                 comision: e.target.value || null,
               })
             }
-          >
-            <option value="">com. auto</option>
-            {coms.map((c) => (
-              <option value={c.comision} key={c.comision}>
-                com {c.comision} · {comModalidad(c)}
-              </option>
-            ))}
-          </select>
+          />
         )}
         <button
           type="button"
@@ -348,203 +500,256 @@ export default function CombinadorView() {
     );
   };
 
-  // ---------- sub-render: header compacto (selector de materias + preferencias) ----------
-  const topbar = (
-    <header className="cmbx-topbar">
-      <div className="cmbx-topbar__mats">
-        <span className="cmbx-eyebrow__lbl">Materias</span>
-        {selected.length > 0 ? (
-          <>
-            {selected.map(chip)}
+  // ---------- sub-render: header compacto ----------
+  const header = (
+    <header className="cmb9-header">
+      <div className="cmb9-header__left">
+        <div className="cmb9-mats">
+          <span className="cmb9-mats__lbl">Materias</span>
+          {selected.length > 0 ? (
+            <>
+              {selected.map(chip)}
+              <button
+                type="button"
+                className={"cmb2-add" + (showPicker ? " is-open" : "")}
+                onClick={() => setPickerOpen((o) => !o)}
+              >
+                {showPicker ? "Listo" : "＋ Agregar"}
+              </button>
+              <button
+                type="button"
+                className="cmb2-clear"
+                onClick={() => dispatch({ type: "RESET_COMBO" })}
+              >
+                Vaciar
+              </button>
+            </>
+          ) : (
             <button
               type="button"
-              className={"cmb2-add" + (showPicker ? " is-open" : "")}
+              className="cmb2-add"
               onClick={() => setPickerOpen((o) => !o)}
             >
-              {showPicker ? "Listo" : "＋ Agregar"}
+              ＋ Elegí las materias a cursar
             </button>
-            <button
-              type="button"
-              className="cmb2-clear"
-              onClick={() => dispatch({ type: "RESET_COMBO" })}
-            >
-              Vaciar
-            </button>
+          )}
+        </div>
+
+        {selected.length > 0 && (
+          <>
+            <span className="cmb9-div" aria-hidden="true" />
+            <div className="cmb9-prefs">
+              {/* Label + tooltip: qué hace "Auto" en los selectores de comisión */}
+              {hasComChoice && (
+                <span className="cmb9-cominfo">
+                  Comisión: <b>Auto</b>
+                  <InfoTip
+                    label="Qué hace Auto en las comisiones"
+                    text="Cada materia con más de una comisión tiene su selector. Dejá «Auto» y el combinador elige la comisión que arma la semana más compacta; o fijá una vos."
+                  />
+                </span>
+              )}
+              <div className="cmb-prefs__modal" title="Modalidad de cursada">
+                {MODAL_KEYS.map((k) => (
+                  <button
+                    type="button"
+                    key={k}
+                    className={"cmb-pill" + (comboParams.modal[k] ? " on" : "")}
+                    aria-pressed={comboParams.modal[k]}
+                    onClick={() =>
+                      dispatch({
+                        type: "SET_MODAL",
+                        key: k,
+                        value: !comboParams.modal[k],
+                      })
+                    }
+                  >
+                    {k}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                className={"cmb-switch" + (comboParams.allowOverlap ? " on" : "")}
+                role="switch"
+                aria-checked={comboParams.allowOverlap}
+                title="Permitir cursadas que se superponen"
+                onClick={() =>
+                  dispatch({
+                    type: "SET_ALLOW_OVERLAP",
+                    value: !comboParams.allowOverlap,
+                  })
+                }
+              >
+                <span className="cmb-switch__track">
+                  <span className="cmb-switch__knob" />
+                </span>
+                Superponer
+              </button>
+            </div>
           </>
-        ) : (
-          <button
-            type="button"
-            className="cmb2-add"
-            onClick={() => setPickerOpen((o) => !o)}
-          >
-            ＋ Elegí las materias a cursar
-          </button>
         )}
       </div>
 
-      <div className="cmbx-topbar__prefs">
+      <div className="cmb9-header__right">
         <button
           type="button"
-          className={"cmb-switch" + (comboParams.allowOverlap ? " on" : "")}
-          role="switch"
-          aria-checked={comboParams.allowOverlap}
-          title="Permitir cursadas que se superponen"
-          onClick={() =>
-            dispatch({
-              type: "SET_ALLOW_OVERLAP",
-              value: !comboParams.allowOverlap,
-            })
+          className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
+          aria-pressed={recOpen}
+          title={
+            recOpen
+              ? "Ocultar el recomendador de materias"
+              : "Mostrar el recomendador de materias"
           }
+          onClick={() => setRecOpen((o) => !o)}
         >
-          <span className="cmb-switch__track">
-            <span className="cmb-switch__knob" />
-          </span>
-          Superponer
+          <IconLayers size={13} />
+          Sugeridas <span className="cmb9-hbtn__count">· {suggestions.length}</span>
         </button>
-        <div className="cmb-prefs__modal" title="Modalidad de cursada">
-          {MODAL_KEYS.map((k) => (
-            <button
-              type="button"
-              key={k}
-              className={"cmb-pill" + (comboParams.modal[k] ? " on" : "")}
-              aria-pressed={comboParams.modal[k]}
-              onClick={() =>
-                dispatch({
-                  type: "SET_MODAL",
-                  key: k,
-                  value: !comboParams.modal[k],
-                })
-              }
-            >
-              {k}
-            </button>
-          ))}
+
+        <div className="cmb9-dl" ref={dlRef}>
+          <button
+            type="button"
+            className="cmb9-hbtn"
+            aria-haspopup="menu"
+            aria-expanded={dlOpen}
+            disabled={!canExport}
+            onClick={() => {
+              setSaveOpen(false);
+              setDlOpen((o) => !o);
+            }}
+          >
+            <IconDownload size={13} />
+            Descargar
+          </button>
+          {dlOpen && (
+            <div className="cmb9-dlmenu" role="menu" aria-label="Opciones de descarga">
+              <button
+                type="button"
+                role="menuitem"
+                className="cmb9-dlitem"
+                onClick={() =>
+                  downloadCombo({ includeSpecs: false }, "cursada-calendario.html")
+                }
+              >
+                <IconCalendar size={16} />
+                <span>
+                  Solo calendario
+                  <small>Grilla semanal, sin listado</small>
+                </span>
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="cmb9-dlitem"
+                onClick={() => downloadCombo({}, "cursada-completa.html")}
+              >
+                <IconLayers size={16} />
+                <span>
+                  Calendario + programa
+                  <small>Grilla y detalle de materias/comisiones</small>
+                </span>
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="cmb9-dlitem"
+                onClick={() =>
+                  downloadCombo({ includeCalendar: false }, "cursada-programa.html")
+                }
+              >
+                <IconFileText size={16} />
+                <span>
+                  Solo programa
+                  <small>Listado: créditos, comisión, horario</small>
+                </span>
+              </button>
+            </div>
+          )}
         </div>
-        <button
-          type="button"
-          className={"cmbx-charbtn" + (charOpen ? " is-open" : "")}
-          aria-expanded={charOpen}
-          onClick={() => setCharOpen((o) => !o)}
-          title="Filtrar candidatas por régimen, asistencia y programa"
-        >
-          <IconSliders size={13} />
-          Características
-          {charActive && <span className="cmbx-charbtn__dot" aria-hidden="true" />}
-        </button>
+
+        <div className="cmb9-save" ref={saveRef}>
+          <button
+            type="button"
+            className="cmb9-hbtn cmb9-hbtn--primary"
+            aria-haspopup="menu"
+            aria-expanded={saveOpen}
+            disabled={!canExport}
+            title="Guardá estas materias y comisiones en tu Plan de cursada"
+            onClick={() => {
+              setDlOpen(false);
+              setSaveOpen((o) => !o);
+            }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="13"
+              height="13"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <path d="M5 4h11l3 3v13H5V4Z" />
+              <path d="M8 4v6h8V4M8 14h8" />
+            </svg>
+            Guardar preferencia
+          </button>
+          {saveOpen && (
+            <div
+              className="cmb9-savemenu"
+              role="menu"
+              aria-label="Guardar esta cursada en tu plan"
+            >
+              <p className="cmb9-savemenu__lead">
+                Sumá esta cursada a tu <b>Plan de cursada</b>. Elegí en qué
+                cuatrimestre fijarla; el optimizador re-arma el resto alrededor.
+              </p>
+              <label className="cmb9-savemenu__field">
+                <span className="cmb9-savemenu__lbl">
+                  Fijar en el cuatrimestre
+                  <InfoTip
+                    label="Qué hace Auto al guardar"
+                    text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual."
+                  />
+                </span>
+                <CommissionSelect
+                  size="sm"
+                  className="cmb9-savemenu__sel"
+                  placeholder="Auto — que el plan la ubique"
+                  aria-label="Cuatrimestre donde fijar la cursada"
+                  value={saveIdx}
+                  options={cuatriOptions}
+                  onChange={(e) => setSaveIdx(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className="cmb9-savemenu__go"
+                onClick={savePreference}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  aria-hidden="true"
+                >
+                  <path d="M5 4h11l3 3v13H5V4Z" />
+                  <path d="M8 4v6h8V4M8 14h8" />
+                </svg>
+                Guardar en el plan
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
 
-  // ---------- sub-render: panel "filtrar por características" ----------
-  const charPanel = charOpen && (
-    <div className="cmbx-charpanel">
-      <div className="cmbx-charpanel__row">
-        <span className="cmbx-charpanel__lbl">Régimen</span>
-        <div className="cmb-prefs__modal" role="radiogroup" aria-label="Régimen de cursada">
-          {REGIMEN_OPTS.map((o) => (
-            <button
-              type="button"
-              key={o.value}
-              className={
-                "cmb-pill" + (state.charFilters.regimen === o.value ? " on" : "")
-              }
-              aria-pressed={state.charFilters.regimen === o.value}
-              title={o.title}
-              onClick={() =>
-                dispatch({ type: "SET_CHAR_FILTERS", patch: { regimen: o.value } })
-              }
-            >
-              {o.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <label className="cmbx-charpanel__check">
-        <input
-          type="checkbox"
-          checked={state.charFilters.sinAsistenciaObligatoria}
-          onChange={(e) =>
-            dispatch({
-              type: "SET_CHAR_FILTERS",
-              patch: { sinAsistenciaObligatoria: e.target.checked },
-            })
-          }
-        />
-        Sin asistencia obligatoria
-      </label>
-
-      <label className="cmbx-charpanel__check">
-        <input
-          type="checkbox"
-          checked={state.charFilters.soloConPrograma}
-          onChange={(e) =>
-            dispatch({
-              type: "SET_CHAR_FILTERS",
-              patch: { soloConPrograma: e.target.checked },
-            })
-          }
-        />
-        Solo con programa disponible
-      </label>
-
-      <label className="cmbx-charpanel__hs" title="Dejalo vacío para no limitar">
-        Máx. hs/sem
-        <input
-          type="number"
-          min={1}
-          max={40}
-          inputMode="numeric"
-          placeholder="—"
-          value={state.charFilters.maxHsSemanales ?? ""}
-          onChange={(e) => {
-            const raw = e.target.value.trim();
-            if (raw === "") {
-              dispatch({
-                type: "SET_CHAR_FILTERS",
-                patch: { maxHsSemanales: null },
-              });
-              return;
-            }
-            const n = Number(raw);
-            if (Number.isFinite(n)) {
-              dispatch({
-                type: "SET_CHAR_FILTERS",
-                patch: { maxHsSemanales: Math.max(1, Math.min(40, Math.round(n))) },
-              });
-            }
-          }}
-        />
-      </label>
-
-      {charActive && (
-        <button
-          type="button"
-          className="cmb2-clear"
-          onClick={() => dispatch({ type: "RESET_CHAR_FILTERS" })}
-        >
-          Limpiar
-        </button>
-      )}
-
-      <div className="cmbx-charpanel__suggest">
-        <button
-          type="button"
-          className="cmbx-suggest-btn"
-          disabled={suggestable.length === 0}
-          onClick={handleSuggest}
-          title="Agrega al combo las materias disponibles que matchean estos filtros"
-        >
-          <IconPlus size={13} />
-          Sugerir materias
-          <b>{suggestable.length}</b>
-        </button>
-        {suggestMsg && <span className="cmbx-suggest-msg">{suggestMsg}</span>}
-      </div>
-    </div>
-  );
-
-  // ---------- sub-render: buscador desplegable (debajo del header) ----------
+  // ---------- sub-render: buscador desplegable ----------
   const picker = showPicker && (
     <div className="cmbx-picker">
       <div className="cmb-search">
@@ -589,101 +794,148 @@ export default function CombinadorView() {
             {filtered.els.map(row)}
           </div>
         )}
-        {noResults && (
-          <p className="cmb-noresults">No hay materias con “{q}”.</p>
-        )}
+        {noResults && <p className="cmb-noresults">No hay materias con “{q}”.</p>}
       </div>
     </div>
   );
 
-  // ---------- sub-render: stage (área "stage") ----------
-  const stage = (
-    <section className="cmbx-stage">
-      {selected.length === 0 ? (
-        <div className="cmb2-empty">
-          <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" strokeWidth="1.3">
-            <rect x="3" y="4.5" width="18" height="16" rx="2.5" />
-            <path d="M3 9h18M8 2.5v4M16 2.5v4" />
-            <path d="M7 13h3M13.5 13h3.5M7 16.5h3" strokeWidth="1.5" />
-          </svg>
-          <p>Elegí materias y acá vas a ver tu semana armada, con todas las
-            cursadas que entran sin pisarse.</p>
-        </div>
-      ) : result && total > 0 && grid ? (
-        <>
-          <div className="cmbx-resultbar">
-            <div className="cmbx-resultbar__lead">
-              <div
-                className={
-                  "cmbx-rcount" + (comboParams.allowOverlap ? " warn" : " ok")
+  // ---------- sub-render: recomendador slim (cualquier materia) ----------
+  const recSide = recOpen && (
+    <aside
+      className="cmb9-recside"
+      aria-label="Materias sugeridas para tu cuatrimestre"
+    >
+      <div className="cmb9-rechead">
+        <span className="cmb9-rechead__title">Sugeridas</span>
+        <span className="cmb9-rechead__count">
+          {suggestions.length} para sumar
+        </span>
+      </div>
+      {suggestions.length === 0 ? (
+        <p className="cmb9-recempty">No quedan materias para sugerir ahora.</p>
+      ) : (
+        <ul className="cmb9-reclist">
+          {suggestions.map(({ m, fit }) => {
+            const minor = minorsOf(m.areas)[0];
+            return (
+              <li
+                className={"cmb9-recrow" + (fit ? "" : " is-clash")}
+                key={m.codigo}
+                title={
+                  fit
+                    ? m.nombre
+                    : `${m.nombre} — se superpone con tu semana actual; activá «Superponer» o fijá otra comisión`
                 }
               >
-                <b>
-                  {total}
-                  {result.truncated ? "+" : ""}
-                </b>
-                <span>
-                  {comboParams.allowOverlap
-                    ? total === 1
-                      ? "combinación posible"
-                      : "combinaciones posibles"
-                    : total === 1
-                      ? "cursada sin superponerse"
-                      : "cursadas sin superponerse"}
-                </span>
-              </div>
-              {isCompact && (
-                <span className="cmbx-tag">✦ la más compacta</span>
-              )}
+                {minor ? (
+                  <MinorBadge minor={minor} variant="dot" />
+                ) : (
+                  <span className="cmb9-recrow__nodot" aria-hidden="true" />
+                )}
+                <span className="cmb9-recrow__name">{m.nombre}</span>
+                <span className="cmb9-recrow__cr">{m.creditos} cr</span>
+                <button
+                  type="button"
+                  className="cmb9-recrow__add"
+                  aria-label={`Agregar ${m.nombre} a tu cuatrimestre`}
+                  onClick={() => dispatch({ type: "TOGGLE_COMBO", code: m.codigo })}
+                >
+                  <IconPlus size={11} />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </aside>
+  );
+
+  // ---------- sub-render: cuerpo (empty / resultado / sin solución) ----------
+  const body =
+    selected.length === 0 ? (
+      <div className="cmb2-empty">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" strokeWidth="1.3">
+          <rect x="3" y="4.5" width="18" height="16" rx="2.5" />
+          <path d="M3 9h18M8 2.5v4M16 2.5v4" />
+          <path d="M7 13h3M13.5 13h3.5M7 16.5h3" strokeWidth="1.5" />
+        </svg>
+        <p>
+          Elegí materias y acá vas a ver tu semana armada, con todas las cursadas
+          que entran sin pisarse.
+        </p>
+      </div>
+    ) : result && total > 0 && grid ? (
+      <>
+        <div className="cmbx-resultbar">
+          <div className="cmbx-resultbar__lead">
+            <div
+              className={"cmbx-rcount" + (comboParams.allowOverlap ? " warn" : " ok")}
+            >
+              <b>
+                {total}
+                {result.truncated ? "+" : ""}
+              </b>
+              <span>
+                {comboParams.allowOverlap
+                  ? total === 1
+                    ? "combinación posible"
+                    : "combinaciones posibles"
+                  : total === 1
+                    ? "cursada sin superponerse"
+                    : "cursadas sin superponerse"}
+              </span>
             </div>
-
-            {insights && (
-              <div className="cmbx-statstrip">
-                <span className="cmbx-statstrip__cred">
-                  <b>{cred}</b> créditos{elc > 0 ? ` · ${elc} elec.` : ""}
-                </span>
-                <span>
-                  <b>{insights.dias}</b>{" "}
-                  {insights.dias === 1 ? "día con clase" : "días con clase"}
-                </span>
-                <span>
-                  <b>{insights.libres}</b>{" "}
-                  {insights.libres === 1 ? "libre" : "libres"}
-                </span>
-                <span>
-                  <b>{insights.horas}</b> h/sem
-                </span>
-                <span className="cmbx-statstrip__range">{insights.rango}</span>
-              </div>
-            )}
-
-            {total > 1 && (
-              <div className="cmbx-pager" title="Recorré las opciones con ← →">
-                <button
-                  type="button"
-                  className="cmbx-pager__btn"
-                  aria-label="Opción anterior"
-                  onClick={() => setIdx((i) => (i - 1 + total) % total)}
-                >
-                  ‹
-                </button>
-                <span className="cmbx-pager__txt" aria-live="polite" aria-atomic="true">
-                  Opción <b>{safeIdx + 1}</b>
-                  <i>de {total}{result.truncated ? "+" : ""}</i>
-                </span>
-                <button
-                  type="button"
-                  className="cmbx-pager__btn"
-                  aria-label="Opción siguiente"
-                  onClick={() => setIdx((i) => (i + 1) % total)}
-                >
-                  ›
-                </button>
-              </div>
-            )}
+            {isCompact && <span className="cmbx-tag">la más compacta</span>}
           </div>
 
-          <div className="cmbcal-wrap" key={safeIdx}>
+          {insights && (
+            <div className="cmbx-statstrip">
+              <span className="cmbx-statstrip__cred">
+                <b>{cred}</b> créditos{elc > 0 ? ` · ${elc} elec.` : ""}
+              </span>
+              <span>
+                <b>{insights.dias}</b>{" "}
+                {insights.dias === 1 ? "día con clase" : "días con clase"}
+              </span>
+              <span>
+                <b>{insights.libres}</b>{" "}
+                {insights.libres === 1 ? "libre" : "libres"}
+              </span>
+              <span>
+                <b>{insights.horas}</b> h/sem
+              </span>
+              <span className="cmbx-statstrip__range">{insights.rango}</span>
+            </div>
+          )}
+
+          {total > 1 && (
+            <div className="cmbx-pager" title="Recorré las opciones con ← →">
+              <button
+                type="button"
+                className="cmbx-pager__btn"
+                aria-label="Opción anterior"
+                onClick={() => setIdx((i) => (i - 1 + total) % total)}
+              >
+                ‹
+              </button>
+              <span className="cmbx-pager__txt" aria-live="polite" aria-atomic="true">
+                Opción <b>{safeIdx + 1}</b>
+                <i>de {total}{result.truncated ? "+" : ""}</i>
+              </span>
+              <button
+                type="button"
+                className="cmbx-pager__btn"
+                aria-label="Opción siguiente"
+                onClick={() => setIdx((i) => (i + 1) % total)}
+              >
+                ›
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="cmb9-row">
+          <div className="cmb9-cal cmbcal-wrap" key={safeIdx}>
             <CursadaCalendar
               blocks={grid.blocks}
               days={DAYS6}
@@ -706,89 +958,59 @@ export default function CombinadorView() {
               </div>
             )}
             <Legend entries={grid.entries} />
+          </div>
 
-            <div className="cmbx-dlfoot">
-              <span className="cmbx-dlfoot__hint">
-                Incluye el calendario y, por cada materia, un resumen con puntos
-                clave y evaluación.
-              </span>
-              <button
-                type="button"
-                className="btn btn--go btn--sm"
-                onClick={() => {
-                  const placed = ranked[safeIdx];
-                  if (!placed) return;
-                  openForPrint(
-                    buildComboHTML({
-                      placed,
-                      generado: new Date().toLocaleDateString("es-AR", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      }),
-                      periodo: "2.º cuatrimestre 2026",
-                      autoPrint: true,
-                    }),
-                    "programa-de-cursada.html",
-                  );
-                }}
-              >
-                <IconPrinter size={14} /> Descargar programa
-              </button>
-            </div>
-          </div>
-        </>
-      ) : (
-        <div className="cmb-nosol">
-          <div className="cmb-nosol__icon" aria-hidden="true">
-            ⚠
-          </div>
-          <h4>No entra ninguna cursada sin que se pisen</h4>
-          <p>
-            Probá permitir que se superpongan, fijar otra comisión o sacar alguna
-            materia.
-          </p>
-          {!comboParams.allowOverlap && (
-            <button
-              type="button"
-              className="cmb-nosol__cta"
-              onClick={() => dispatch({ type: "SET_ALLOW_OVERLAP", value: true })}
-            >
-              Permitir que se superpongan
-            </button>
-          )}
-          {result && result.conflictPairs.length > 0 && (
-            <div className="cmb-conflicts">
-              <span className="cmb-conflicts__h">Se pisan entre sí</span>
-              {result.conflictPairs.map(([a, b], i) => (
-                <div className="cmb-conflict" key={i}>
-                  <b>{a.abbr}</b> {a.nombre}
-                  <span className="cmb-conflict__x">⨯</span>
-                  <b>{b.abbr}</b> {b.nombre}
-                </div>
-              ))}
-            </div>
-          )}
+          {recSide}
         </div>
-      )}
-    </section>
-  );
+      </>
+    ) : (
+      <div className="cmb-nosol">
+        <div className="cmb-nosol__icon" aria-hidden="true">
+          ⚠
+        </div>
+        <h4>No entra ninguna cursada sin que se pisen</h4>
+        <p>
+          Probá permitir que se superpongan, fijar otra comisión o sacar alguna
+          materia.
+        </p>
+        {!comboParams.allowOverlap && (
+          <button
+            type="button"
+            className="cmb-nosol__cta"
+            onClick={() => dispatch({ type: "SET_ALLOW_OVERLAP", value: true })}
+          >
+            Permitir que se superpongan
+          </button>
+        )}
+        {result && result.conflictPairs.length > 0 && (
+          <div className="cmb-conflicts">
+            <span className="cmb-conflicts__h">Se pisan entre sí</span>
+            {result.conflictPairs.map(([a, b], i) => (
+              <div className="cmb-conflict" key={i}>
+                <b>{a.abbr}</b> {a.nombre}
+                <span className="cmb-conflict__x">⨯</span>
+                <b>{b.abbr}</b> {b.nombre}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
 
   return (
     <section className="view-panel" id="panel-combo">
       <div className="panel-head">
         <h2>Armá tu cuatrimestre</h2>
         <p>
-          Elegí materias, ajustá cómo querés cursar y mirá —en vivo, al lado— todas
-          las cursadas que entran sin pisarse.
+          Elegí materias, ajustá cómo querés cursar y mirá —en vivo— todas las
+          cursadas que entran sin pisarse.
         </p>
       </div>
 
-      <div className="cmbx">
-        {topbar}
-        {charPanel}
+      <div className="cmb9">
+        {header}
         {picker}
-        {stage}
+        {body}
       </div>
     </section>
   );

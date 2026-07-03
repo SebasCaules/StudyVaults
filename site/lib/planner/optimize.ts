@@ -246,30 +246,34 @@ function placeMats(
     remaining.filter((m) => PL.fixed.get(m.codigo) === i).forEach(place);
     remaining = remaining.filter((m) => placedIdx[m.codigo] === undefined);
 
-    const cand = remaining
-      .filter((m) => {
-        const fx = PL.fixed.get(m.codigo);
-        if (fx !== undefined && fx !== null && fx !== i) return false;
-        if (m.parity !== null && m.parity !== cu.parity) return false;
-        if ((m.creditosReq || 0) > acc) return false;
-        return prereqDone(m, i);
-      })
-      .sort(order);
+    // cuatrimestre finalizado (lockeado): sólo lo ya pineado vía `fixed` vive
+    // acá; no se rellena con materias nuevas.
+    if (!PL.lockedIdx.has(i)) {
+      const cand = remaining
+        .filter((m) => {
+          const fx = PL.fixed.get(m.codigo);
+          if (fx !== undefined && fx !== null && fx !== i) return false;
+          if (m.parity !== null && m.parity !== cu.parity) return false;
+          if ((m.creditosReq || 0) > acc) return false;
+          return prereqDone(m, i);
+        })
+        .sort(order);
 
-    const hardMat = capMat(PL, i);
-    const hardCred = capCred(PL, i);
+      const hardMat = capMat(PL, i);
+      const hardCred = capCred(PL, i);
 
-    for (const m of cand) {
-      if (items[i].length >= hardMat) break;
-      const cred = items[i].reduce((s, x) => s + (x.m.creditos || 0), 0);
-      const add = m.creditos || 0;
-      if (items[i].length > 0 && cred + add > hardCred) continue;
-      const coms = comsOf(m);
-      // en modo avoid, no la ubico si no hay comisión sin superposición
-      if (PL.avoid && coms.length && !hasFreeCom(coms, items[i])) continue;
-      place(m);
+      for (const m of cand) {
+        if (items[i].length >= hardMat) break;
+        const cred = items[i].reduce((s, x) => s + (x.m.creditos || 0), 0);
+        const add = m.creditos || 0;
+        if (items[i].length > 0 && cred + add > hardCred) continue;
+        const coms = comsOf(m);
+        // en modo avoid, no la ubico si no hay comisión sin superposición
+        if (PL.avoid && coms.length && !hasFreeCom(coms, items[i])) continue;
+        place(m);
+      }
+      remaining = remaining.filter((m) => placedIdx[m.codigo] === undefined);
     }
-    remaining = remaining.filter((m) => placedIdx[m.codigo] === undefined);
     acc += items[i].reduce((s, x) => s + (x.m.creditos || 0), 0);
   }
 
@@ -314,6 +318,7 @@ function compact(
         if (fx !== undefined && fx !== null) continue;
         let done = false;
         for (let j = 0; j < i; j++) {
+          if (PL.lockedIdx.has(j)) continue; // no adelantar a un cuatri finalizado
           const cj = cuatriAt(PL.start, j);
           if (cj.parity !== ci.parity) continue;
           if ((it.m.creditosReq || 0) > accB[j]) continue;
@@ -451,6 +456,7 @@ function rebalance(
 
     findMove: for (const i of overOrder) {
       if (!items[i].length) continue;
+      if (PL.lockedIdx.has(i)) continue; // no tocar cuatris finalizados
       const ci = cuatriAt(PL.start, i);
       // dentro del cuatri sobrecargado, probamos primero mover la materia
       // más "grande" (créditos): un solo movimiento grande baja más la
@@ -467,7 +473,12 @@ function rebalance(
         // cuatris destino: misma paridad, distinto de i, de menos a más
         // cargado (least-loaded first).
         const dest = [...Array(U).keys()]
-          .filter((j) => j !== i && cuatriAt(PL.start, j).parity === ci.parity)
+          .filter(
+            (j) =>
+              j !== i &&
+              !PL.lockedIdx.has(j) && // no mover a un cuatri finalizado
+              cuatriAt(PL.start, j).parity === ci.parity,
+          )
           .sort((a, b) => loads[a] - loads[b]);
 
         for (const j of dest) {

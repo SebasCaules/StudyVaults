@@ -40,6 +40,8 @@ export function CountUp({
   const [val, setVal] = useState(to);
   const started = useRef(false);
 
+  // Pre-paint: arrancamos en 0 para que el conteo se vea desde el principio,
+  // sin flash del valor final (el SSR ya renderizó `to` para no-JS/SEO).
   useIsomorphicLayoutEffect(() => {
     if (!prefersReduced()) setVal(0);
   }, []);
@@ -51,24 +53,49 @@ export function CountUp({
       setVal(to);
       return;
     }
+
+    // Lanza el conteo una sola vez. Es idempotente (guard `started`), así que
+    // aunque el efecto corra dos veces (StrictMode) el número igual llega a `to`.
+    const run = () => {
+      if (started.current) return;
+      started.current = true;
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const p = Math.min(1, (now - t0) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        setVal(Math.round(to * eased));
+        if (p < 1) requestAnimationFrame(step);
+        else setVal(to);
+      };
+      requestAnimationFrame(step);
+    };
+
+    // Sin IntersectionObserver: contá ya (no dejar el número pegado en 0).
+    if (!("IntersectionObserver" in window)) {
+      run();
+      return;
+    }
+
+    // Si el elemento YA está en viewport al cargar, el callback inicial del IO
+    // puede no dispararse de forma fiable (dependía de un threshold alto) → lo
+    // chequeamos a mano y arrancamos de inmediato. Este era el origen del bug
+    // "se queda en 0": el stat visible al cargar nunca recibía el disparo.
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (rect.top < vh && rect.bottom > 0) {
+      run();
+      return;
+    }
+
+    // Está por debajo del fold: contá cuando entre (threshold 0 = cualquier píxel).
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting || started.current) continue;
-          started.current = true;
+        if (entries.some((e) => e.isIntersecting)) {
           io.disconnect();
-          const t0 = performance.now();
-          const step = (now: number) => {
-            const p = Math.min(1, (now - t0) / duration);
-            const eased = 1 - Math.pow(1 - p, 3);
-            setVal(Math.round(to * eased));
-            if (p < 1) requestAnimationFrame(step);
-            else setVal(to);
-          };
-          requestAnimationFrame(step);
+          run();
         }
       },
-      { threshold: 0.35 },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" },
     );
     io.observe(el);
     return () => io.disconnect();

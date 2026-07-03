@@ -18,6 +18,7 @@ const VIEW_KEYS: readonly ViewKey[] = [
   "combo",
   "plan",
   "grafo",
+  "finales",
   "ref",
 ];
 const VIEWS = new Set<string>(VIEW_KEYS);

@@ -10,22 +10,28 @@
 
 .sheet {
   margin-top: 8px;
-  /* paleta de categorías — saturada para papel (print + tema claro) */
-  --sheet-def: #2563eb; /* definición — azul */
-  --sheet-theorem: #7c3aed; /* teorema — púrpura */
-  --sheet-formula: #0f9d8f; /* fórmula — verde */
-  --sheet-method: #d97706; /* técnica — ámbar */
-  --sheet-caution: #dc2626; /* cuidado — coral/rojo */
-  --sheet-example: #6b7280; /* ejemplo — gris */
+  /* ── PALETA SEMÁNTICA "refinada" — valores del TEMA CLARO (default; también print).
+     SINCRONIZADA BYTE-A-BYTE con KIND_META (types.ts, `light`) y TEX_COLOR_DEFS
+     (exporters.ts). Los 6 también viven en DESIGN.md §12 (lo replica el overseer).
+     `--sheet-code-kind` es neutral y NO forma parte de los 6. Contraste AA
+     verificado (light/print sobre blanco ≥4.6:1). ── */
+  --sheet-def: #275C8C; /* definición — azul */
+  --sheet-theorem: #5A3897; /* teorema — violeta */
+  --sheet-formula: #16745C; /* fórmula — verde/teal */
+  --sheet-method: #8A591C; /* técnica — ámbar */
+  --sheet-caution: #B23A28; /* cuidado — coral/rojo */
+  --sheet-example: #695D51; /* ejemplo — topo cálido */
+  --sheet-code-kind: #5D5D65; /* código — neutral */
 }
-/* tema oscuro: variantes más luminosas para contraste en pantalla */
+/* tema oscuro: variantes más luminosas (los hex `dark` de KIND_META) */
 [data-theme="dark"] .sheet {
-  --sheet-def: #7fb4ff;
-  --sheet-theorem: #c4a6ff;
-  --sheet-formula: #5fd8c8;
-  --sheet-method: #f4b860;
-  --sheet-caution: #ff8a8a;
-  --sheet-example: #b9bfc9;
+  --sheet-def: #9AC7EA;
+  --sheet-theorem: #C4B0E8;
+  --sheet-formula: #85CFB0;
+  --sheet-method: #E1B878;
+  --sheet-caution: #EDA08D;
+  --sheet-example: #C4BAB0;
+  --sheet-code-kind: #B4B4BC;
 }
 
 .sheet__intro {
@@ -168,6 +174,7 @@
 .sheet-chip--kind[data-kind="method"] { --k: var(--sheet-method); }
 .sheet-chip--kind[data-kind="caution"] { --k: var(--sheet-caution); }
 .sheet-chip--kind[data-kind="example"] { --k: var(--sheet-example); }
+.sheet-chip--kind[data-kind="code"] { --k: var(--sheet-code-kind); }
 .sheet-chip--kind.is-active {
   border-color: color-mix(in srgb, var(--k) 50%, transparent);
   background: color-mix(in srgb, var(--k) 12%, var(--surface-3));
@@ -261,11 +268,10 @@
   margin: -8px 0 14px;
 }
 .sheet-doc[data-density="book"] .sheet-entry {
-  border-left-width: 3px;
-  padding: 3px 0 3px 16px;
+  padding: calc(var(--sf) * 16px) calc(var(--sf) * 20px);
 }
 .sheet-doc[data-density="book"] .sheet-entry + .sheet-entry {
-  margin-top: calc(var(--sf) * 22px);
+  margin-top: calc(var(--sf) * 16px);
 }
 .sheet-doc[data-density="book"] .sheet-entry__label { font-size: calc(var(--sf) * 15px); }
 .sheet-doc[data-density="book"] .sheet-entry__body {
@@ -300,75 +306,122 @@
   margin-top: 6px;
 }
 
-/* ---- banda de unidad (atraviesa todas las columnas) ---- */
+/* ---- encabezado de unidad (atraviesa todas las columnas) ----
+   Unidad → Sub-unidad → entradas: número acento + kicker + título + desc. */
 .sheet-unit {
   column-span: all;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 18px 0 12px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--vault-tint);
+  align-items: flex-start;
+  gap: 16px;
+  margin: 22px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hairline-strong);
   break-after: avoid;
   break-inside: avoid;
 }
 .sheet-doc__cols > .sheet-unit:first-child { margin-top: 0; }
-.sheet-unit__tag {
+.sheet-unit__num {
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: calc(var(--sf) * 11px);
-  letter-spacing: 0.04em;
-  color: #fff;
-  background: var(--vault-tint);
-  padding: 2px 9px;
-  border-radius: var(--r-pill);
+  font-size: calc(var(--sf) * 30px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--vault-tint);
+  flex: none;
+  padding-top: 2px;
+}
+.sheet-unit__titles { flex: 1; min-width: 0; }
+.sheet-unit__kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: calc(var(--sf) * 10px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 3px;
 }
 .sheet-unit__title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: calc(var(--sf) * 17px);
+  font-size: calc(var(--sf) * 20px);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
   color: var(--ink-strong);
+  margin: 0;
+}
+.sheet-unit__desc {
+  margin: 5px 0 0;
+  font-size: calc(var(--sf) * 12.5px);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-width: 74ch;
 }
 
-/* ---- grupo / sección ---- */
-.sheet-group { break-inside: auto; margin: 0 0 14px; }
-.sheet-group__title {
+/* ---- sub-unidad / sección — encabezado (código mono acento + nombre serif) ---- */
+.sheet-group { break-inside: auto; margin: 0 0 16px; }
+.sheet-group__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border-bottom: 1px solid var(--hairline-strong);
+  padding-bottom: 6px;
+  margin: 0 0 12px;
+  break-after: avoid;
+  break-inside: avoid;
+}
+.sheet-group__code {
   font-family: var(--font-mono);
   font-size: calc(var(--sf) * 11px);
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--vault-tint);
-  border-bottom: 1px solid var(--hairline-strong);
-  padding-bottom: 4px;
-  margin: 0 0 8px;
-  break-after: avoid;
+  flex: none;
+}
+.sheet-group__title {
+  font-family: var(--font-display);
+  font-size: calc(var(--sf) * 14.5px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink-strong);
+  margin: 0;
 }
 .sheet-group__hint {
   font-size: calc(var(--sf) * 11.5px);
   font-style: italic;
   color: var(--text-secondary);
-  margin: -4px 0 8px;
+  margin: -6px 0 10px;
 }
 .sheet-group__entries { display: block; }
 
-/* ---- entrada (color-coded) ---- */
+/* ---- entrada — recuadro con RELLENO tenue de toda la celda + BORDE parejo
+   en los 4 lados (mock módulo D). El tinte y el borde se derivan del color de
+   la categoría (--k) por color-mix, sin hardcodear hex. ---- */
 .sheet-entry {
   --k: var(--sheet-example);
   break-inside: avoid;
-  border-left: 2.5px solid var(--k);
-  padding: 1px 0 1px 9px;
+  background: color-mix(in srgb, var(--k) 7%, var(--surface-2));
+  border: 1.5px solid color-mix(in srgb, var(--k) 30%, var(--border));
+  border-radius: var(--r-card);
+  padding: calc(var(--sf) * 13px) calc(var(--sf) * 15px);
   margin: 0;
 }
-.sheet-entry + .sheet-entry { margin-top: calc(var(--sf) * 7px); }
+.sheet-entry + .sheet-entry { margin-top: calc(var(--sf) * 10px); }
 .sheet-entry[data-kind="def"] { --k: var(--sheet-def); }
 .sheet-entry[data-kind="theorem"] { --k: var(--sheet-theorem); }
 .sheet-entry[data-kind="formula"] { --k: var(--sheet-formula); }
 .sheet-entry[data-kind="method"] { --k: var(--sheet-method); }
 .sheet-entry[data-kind="caution"] { --k: var(--sheet-caution); }
 .sheet-entry[data-kind="example"] { --k: var(--sheet-example); }
+.sheet-entry[data-kind="code"] { --k: var(--sheet-code-kind); }
 
-.sheet-entry__head { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+.sheet-entry__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: calc(var(--sf) * 6px);
+}
 .sheet-entry__label {
   font-family: var(--font-mono);
   font-size: calc(var(--sf) * 12.5px);
@@ -380,25 +433,127 @@
 .sheet-entry__tag {
   font-family: var(--font-mono);
   font-size: calc(var(--sf) * 8.5px);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--k);
-  border: 1px solid color-mix(in srgb, var(--k) 45%, transparent);
+  background: color-mix(in srgb, var(--k) 15%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--k) 42%, transparent);
   border-radius: var(--r-pill);
-  padding: 0 6px;
-  line-height: 1.5;
+  padding: 1.5px 7px;
+  line-height: 1.4;
+  white-space: nowrap;
 }
-.sheet-entry__tex { margin: 2px 0 0; overflow: hidden; }
-/* wrapper medible: shrink-to-fit por zoom (ver FitMath) */
+/* En dark, surface-2 es un marrón cálido claro: tintar el pill hacia el color
+   (claro) lo aclararía y bajaría el contraste del texto (mismo tono). Se ancla
+   sobre --surface (marrón profundo) para que el texto brillante quede AA (≥5.2:1). */
+[data-theme="dark"] .sheet-entry__tag {
+  background: color-mix(in srgb, var(--k) 14%, var(--surface));
+}
+/* fórmula display — recuadro tenue y CENTRADA (deliverable #4) */
+.sheet-entry__tex {
+  margin: calc(var(--sf) * 9px) 0 0;
+  padding: calc(var(--sf) * 9px) calc(var(--sf) * 11px);
+  background: color-mix(in srgb, var(--k) 5%, var(--background));
+  border: 1px solid color-mix(in srgb, var(--k) 16%, transparent);
+  border-radius: var(--r-ctrl);
+  overflow: hidden;
+}
+/* wrapper interno sin padding: FitMath mide SU clientWidth (ancho real
+   disponible, sin el padding del recuadro) y centra el bloque medible. */
+.sheet-entry__tex-inner { display: block; text-align: center; }
 .sheet-math--fit { display: inline-block; vertical-align: top; }
-.sheet-entry__tex .katex-display { margin: 2px 0; text-align: left; }
+.sheet-entry__tex .katex-display { margin: 0; text-align: center; }
 .sheet-entry__body {
-  margin: 2px 0 0;
+  margin: calc(var(--sf) * 6px) 0 0;
   font-size: calc(var(--sf) * 12.5px);
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--text-primary);
 }
+
+/* ---- bloque de código (entradas kind:"code") — terminal neutral, sin
+   resaltado de sintaxis. Usa los tokens fijos --code-* del design system. ---- */
+.sheet-code-block {
+  margin: calc(var(--sf) * 9px) 0 0;
+  border: 1px solid var(--code-hairline);
+  border-radius: var(--r-ctrl);
+  overflow: hidden;
+  background: var(--code-bg);
+}
+.sheet-code-block__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 10px;
+  background: var(--code-bar);
+  border-bottom: 1px solid var(--code-hairline);
+}
+.sheet-code-block__file {
+  font-family: var(--font-mono);
+  font-size: calc(var(--sf) * 10px);
+  color: var(--code-fg);
+  letter-spacing: 0.02em;
+}
+.sheet-code-block__lang {
+  font-family: var(--font-mono);
+  font-size: calc(var(--sf) * 9px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--sheet-code-kind) 78%, var(--code-fg));
+}
+.sheet-code-block__pre {
+  margin: 0;
+  padding: calc(var(--sf) * 11px) calc(var(--sf) * 12px);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: calc(var(--sf) * 12px);
+  line-height: 1.6;
+  color: var(--code-fg);
+  tab-size: 2;
+  white-space: pre;
+}
+.sheet-code-block__pre code { font-family: inherit; color: inherit; }
+
+/* ---- figura / gráfico (SVG inline) — un dibujo vale más que un párrafo:
+   campana, boxplot, oferta/demanda, convergencia. El SVG usa currentColor
+   (hereda de --k, atenuado) + tokens de rol, así respeta tema e impresión. ---- */
+.sheet-figure {
+  margin: calc(var(--sf) * 9px) 0 0;
+  padding: calc(var(--sf) * 10px) calc(var(--sf) * 12px);
+  background: color-mix(in srgb, var(--k) 4%, var(--background));
+  border: 1px solid color-mix(in srgb, var(--k) 16%, transparent);
+  border-radius: var(--r-ctrl);
+  color: color-mix(in srgb, var(--k) 55%, var(--text-secondary));
+}
+.sheet-figure svg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+}
+.sheet-figure figcaption {
+  margin: calc(var(--sf) * 7px) 0 0;
+  font-family: var(--font-mono);
+  font-size: calc(var(--sf) * 10px);
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.sheet-figure figcaption b { color: var(--ink-strong); font-weight: 600; }
+/* helpers reutilizables para el marcado SVG de las figuras */
+.sheet-fig-axis { stroke: var(--hairline-strong); stroke-width: 1; fill: none; }
+.sheet-fig-grid { stroke: var(--hairline); stroke-width: 1; fill: none; }
+.sheet-fig-curve { stroke: var(--k); stroke-width: 2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.sheet-fig-area { fill: color-mix(in srgb, var(--k) 20%, transparent); stroke: none; }
+.sheet-fig-mark { stroke: var(--k); stroke-width: 1.5; fill: none; }
+.sheet-fig-dot { fill: var(--k); stroke: none; }
+.sheet-fig-label { fill: var(--text-secondary); font-family: var(--font-mono); font-size: 10px; }
+.sheet-fig-label--ink { fill: var(--ink-strong); }
+
 /* ---- leyenda de variables ("donde …") — una variable por renglón ---- */
 .sheet-entry__vars {
   margin: 3px 0 0;
@@ -478,14 +633,21 @@
   @page { size: A4 portrait; margin: 9mm; }
   :root, html, body { background: #ffffff !important; }
 
-  /* color saturado en blanco aunque la pantalla esté en dark */
+  /* paleta "refinada" clara sobre papel blanco (mismos hex que el bloque light /
+     TEX_COLOR_DEFS; sincronizada byte-a-byte). Además fuerzo las superficies a
+     claro: las entradas ahora tienen RELLENO (color-mix sobre --surface-2), así
+     que imprimir desde el tema oscuro no debe teñir las celdas de marrón. */
   .sheet, .sheet-doc {
-    --sheet-def: #1d4ed8;
-    --sheet-theorem: #6d28d9;
-    --sheet-formula: #0d7d72;
-    --sheet-method: #b45309;
-    --sheet-caution: #dc2626;
-    --sheet-example: #4b5563;
+    --sheet-def: #275C8C;
+    --sheet-theorem: #5A3897;
+    --sheet-formula: #16745C;
+    --sheet-method: #8A591C;
+    --sheet-caution: #B23A28;
+    --sheet-example: #695D51;
+    --sheet-code-kind: #5D5D65;
+    --surface-2: #ffffff;
+    --background: #ffffff;
+    --border: #d1d5db;
   }
 
   /* ocultar todo el chrome de la app */
@@ -531,14 +693,27 @@
   }
   .sheet-doc__cols { columns: var(--sheet-cols, 3); column-gap: 6mm; }
 
-  .sheet-unit { margin: 8px 0 5px; padding-bottom: 3px; border-bottom-color: #111827 !important; }
-  .sheet-unit__tag { color: #fff !important; background: #111827 !important; font-size: calc(var(--sf) * 7.4pt); }
+  .sheet-unit { margin: 8px 0 6px; padding-bottom: 4px; border-bottom-color: #111827 !important; gap: 10px; }
+  .sheet-unit__num { font-size: calc(var(--sf) * 16pt); color: #111827 !important; }
+  .sheet-unit__kicker { font-size: calc(var(--sf) * 6.4pt); color: #4b5563 !important; }
   .sheet-unit__title { font-size: calc(var(--sf) * 11pt); color: #111827 !important; }
+  .sheet-unit__desc { font-size: calc(var(--sf) * 7.4pt); color: #374151 !important; }
 
-  .sheet-group { margin-bottom: 7px; }
-  .sheet-group__title { font-size: calc(var(--sf) * 8.2pt); color: #111827 !important; border-bottom-color: #d1d5db !important; padding-bottom: 2px; margin-bottom: 4px; }
+  .sheet-group { margin-bottom: 8px; }
+  .sheet-group__head { border-bottom-color: #d1d5db !important; padding-bottom: 2px; margin-bottom: 5px; }
+  .sheet-group__code { font-size: calc(var(--sf) * 7.6pt); }
+  .sheet-group__title { font-size: calc(var(--sf) * 9.4pt); color: #111827 !important; }
   .sheet-group__hint { font-size: calc(var(--sf) * 7.4pt); }
-  .sheet-entry { padding-left: 6px; border-left-width: 2pt; }
+  /* recuadro con relleno + borde parejo, compacto para papel (el tinte imprime
+     porque .sheet-print-root fuerza print-color-adjust:exact) */
+  .sheet-entry {
+    padding: 4px 7px;
+    border-width: 0.75pt;
+    border-radius: 3pt;
+    margin: 0;
+  }
+  .sheet-entry + .sheet-entry { margin-top: 5px; }
+  .sheet-entry__head { margin-bottom: 3px; }
   .sheet-entry__label { font-size: calc(var(--sf) * 8.3pt); color: #111827 !important; }
   .sheet-entry__inline { font-size: calc(var(--sf) * 8.3pt); }
   .sheet-entry__body { font-size: calc(var(--sf) * 8pt); color: #1f2937 !important; line-height: 1.3; }
@@ -548,8 +723,18 @@
   .sheet-entry__cond { font-size: calc(var(--sf) * 7.4pt); color: #4b5563 !important; }
   .sheet-entry__note { font-size: calc(var(--sf) * 7.4pt); }
   .sheet-entry__tag { font-size: calc(var(--sf) * 6.4pt); }
+  .sheet-entry__tex { padding: 3px 5px; margin-top: 4px; }
   .sheet-entry__tex .katex { font-size: 1em !important; }
-  .sheet-entry__tex .katex-display { margin: 1px 0 !important; }
+  .sheet-entry__tex .katex-display { margin: 1px 0 !important; text-align: center; }
+  /* bloque de código en papel: fondo claro para no gastar tinta */
+  .sheet-code-block {
+    background: #f6f7f9 !important;
+    border-color: #d1d5db !important;
+  }
+  .sheet-code-block__bar { background: #eceef1 !important; border-bottom-color: #d1d5db !important; }
+  .sheet-code-block__file { color: #374151 !important; }
+  .sheet-code-block__lang { color: #4b5563 !important; }
+  .sheet-code-block__pre { color: #1f2937 !important; font-size: calc(var(--sf) * 7.6pt); padding: 5px 7px; }
   .sheet-code {
     background: #f3f4f6 !important;
     border-color: #d1d5db !important;
@@ -557,4 +742,18 @@
     font-size: 0.88em;
     padding: 0 3px;
   }
+  /* figura en papel: fondo blanco, trazos oscuros (el SVG hereda currentColor) */
+  .sheet-figure {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #374151 !important;
+    padding: 4px 6px;
+    break-inside: avoid;
+  }
+  .sheet-figure svg { max-width: 240px; }
+  .sheet-figure figcaption { font-size: calc(var(--sf) * 7pt); color: #4b5563 !important; margin-top: 4px; }
+  .sheet-fig-axis { stroke: #6b7280 !important; }
+  .sheet-fig-grid { stroke: #d1d5db !important; }
+  .sheet-fig-label { fill: #4b5563 !important; }
+  .sheet-fig-label--ink { fill: #111827 !important; }
 }

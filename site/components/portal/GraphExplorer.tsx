@@ -12,6 +12,10 @@ import type { GNode, GLink } from "./ForceGraphInner";
 const ForceGraphInner = dynamic(() => import("./ForceGraphInner"), {
   ssr: false,
 });
+// Variante 3D (react-force-graph-3d / three) para el hero — también solo cliente.
+const ForceGraph3DInner = dynamic(() => import("./ForceGraph3DInner"), {
+  ssr: false,
+});
 
 type RawNode = {
   v: string;
@@ -41,7 +45,16 @@ type Chip = {
 // (react-force-graph). Las tabs de arriba enfocan una materia (zoomToFit al
 // cluster); hover resalta el vecindario; click abre la nota; arrastrá para
 // panear/mover nodos; scroll para zoom.
-export default function GraphExplorer() {
+//
+// `variant`:
+//   · "full" — sección dedicada, con tabs por materia (uso en /interno u otros).
+//   · "hero" — tarjeta compacta para el costado del hero: sin tabs, más chica,
+//     conserva hover/click. Es el MISMO grafo real de notas, solo que acotado.
+export default function GraphExplorer({
+  variant = "full",
+}: {
+  variant?: "full" | "hero";
+}) {
   const router = useRouter();
   const [data, setData] = useState<{ nodes: GNode[]; links: GLink[] } | null>(
     null,
@@ -117,6 +130,42 @@ export default function GraphExplorer() {
   const choose = (id: string | null) =>
     setSelected((s) => (s === id ? null : id));
   const dotColor = (c: Chip) => (light ? c.cLight : c.cDark);
+
+  // --- variante HERO: tarjeta compacta al costado del hero de la home ---
+  if (variant === "hero") {
+    return (
+      <div className="hero-graph">
+        <div className="hero-graph__cap" aria-hidden="true">
+          <span>
+            <span className="hero-graph__live" />
+            grafo de notas · 3D
+          </span>
+          <span className="hero-graph__count">
+            {total > 0 ? `${total} nodos` : "cargando…"}
+          </span>
+        </div>
+        <div
+          className="hero-graph__canvas hero-graph__canvas--3d"
+          role="img"
+          aria-label="Grafo 3D interactivo de las notas del wiki: cada punto es una página; cada línea, un enlace entre notas. Constelaciones por materia."
+        >
+          {data && (
+            <ForceGraph3DInner
+              nodes={data.nodes}
+              links={data.links}
+              light={light}
+              selected={null}
+              motion={motion}
+              onOpen={(u) => router.push(u)}
+            />
+          )}
+        </div>
+        <p className="hero-graph__hint">
+          Cada punto es una nota · arrastrá para girar · click para abrirla
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="graph">

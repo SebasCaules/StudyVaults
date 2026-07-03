@@ -1,0 +1,1212 @@
+/* ============================================================================
+   PlanView — overhaul "Plan de cursada" (Módulo E)
+   ----------------------------------------------------------------------------
+   CSS nuevo y aislado del rediseño del plan de cursada. NO tocar planner.css:
+   este archivo se importa al tope de PlanView.tsx y define solo clases con
+   prefijo `pv-` (más algunos add-ons a `.rmap-mat` para los badges de minor).
+
+   Todo se scopea bajo `.planner` para (a) resolver las vars locales del planner
+   (--brass, --line, --ink, --panel, …, definidas en planner.css sobre `.planner`)
+   y (b) no filtrar estilos fuera del planner. Cero hex hardcodeado salvo los
+   colores de minor, que viajan inline por `--minor-color` (contrato MinorBadge).
+   ============================================================================ */
+
+/* ============================ BANNER ======================================= */
+.planner .pv-banner {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  padding: clamp(18px, 3vw, 30px);
+}
+.planner .pv-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 140% at 100% 0%,
+    color-mix(in srgb, var(--brass) 12%, transparent) 0%,
+    transparent 55%
+  );
+}
+.planner .pv-banner__top {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.planner .pv-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.planner .pv-stat__num {
+  font-family: var(--f-d);
+  font-weight: 500;
+  color: var(--ink);
+  font-size: clamp(3rem, 6vw + 1rem, 5rem);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+}
+.planner .pv-stat__txt {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.planner .pv-stat__txt .lead {
+  font-size: clamp(1.15rem, 1.4vw + 1rem, 1.7rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.planner .pv-stat__txt .sub {
+  color: var(--muted);
+  font-size: 1rem;
+}
+.planner .pv-grad {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  border-radius: var(--r);
+  padding: 11px 15px;
+}
+.planner .pv-grad > svg {
+  width: 22px;
+  height: 22px;
+  color: var(--brass);
+  flex: none;
+}
+.planner .pv-grad__lbl {
+  display: block;
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.planner .pv-grad__val {
+  display: block;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* fila media: chips + medidor de progreso */
+.planner .pv-banner__mid {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.planner .pv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.planner .pv-chip {
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  border-radius: var(--r);
+}
+.planner .pv-chip b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.planner .pv-meter {
+  min-width: 220px;
+  flex: 1 1 240px;
+  max-width: 360px;
+}
+.planner .pv-meter__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.planner .pv-meter__lbl {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.planner .pv-meter__pct {
+  font-family: var(--f-m);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brass);
+}
+.planner .pv-meter__bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--panel-3);
+  overflow: hidden;
+}
+.planner .pv-meter__bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brass) 68%, var(--line-2));
+  transition: width var(--dur-base) var(--ease-out);
+}
+.planner .pv-meter__foot {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.planner .pv-meter__foot b {
+  color: var(--ink);
+}
+.planner .pv-meter__sep {
+  opacity: 0.5;
+}
+
+.planner .pv-banner__divider {
+  position: relative;
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 20px 0;
+}
+
+/* controles integrados (empiezo / máx mat / máx cr / optimizar / horario) */
+.planner .pv-controls {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 24px;
+  align-items: flex-end;
+}
+.planner .pv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.planner .pv-field__lbl {
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.planner .pv-field__lbl .hint {
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.75;
+}
+/* el <select> de "empiezo a cursar" reusa el look de CommissionSelect
+   (@studyvaults/ui) pero en tamaño banner: padding-derecho holgado y la flecha
+   separada del borde para que NUNCA pise el texto (fix B13). */
+.planner .pv-field .commission-select {
+  min-width: 176px;
+  max-width: none;
+  font-size: 12px;
+  padding: 9px 38px 9px 13px;
+  background-position: right 14px center;
+  background-size: 12px;
+}
+/* NumField (máx cr / máx mat) llega con su propio .plan2-field; lo dejamos fluir
+   y solo alineamos el ancho */
+.planner .pv-field--num .plan2-field {
+  gap: 7px;
+}
+.planner .pv-field--seg {
+  flex: 1 1 300px;
+}
+
+/* segmentado del método de optimización */
+.planner .pv-seg {
+  display: inline-flex;
+  background: var(--panel-3);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.planner .pv-seg__opt {
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 7px 13px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.planner .pv-seg__opt:hover {
+  color: var(--ink);
+}
+.planner .pv-seg__opt[aria-pressed="true"] {
+  background: var(--brass);
+  color: var(--block-ink);
+  font-weight: 700;
+}
+.planner .pv-field--sw {
+  gap: 9px;
+}
+
+/* ============================ TAB STRIP ==================================== */
+/* sticky: el navbar del portal es position:fixed (alto = --nav-h) y .planner lo
+   despeja con padding-top:var(--nav-h); la tab-strip queda pegada justo debajo,
+   así los íconos (Calendario/Roadmap/Minors) y las acciones de la derecha
+   (Recomendador, Restablecer, Importar/Exportar) NO se mueven con el scroll. */
+.planner .pv-tabs {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 22px 0 var(--r);
+  padding-top: 3px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.planner .pv-tablist {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.planner .pv-tab {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--f-m);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  padding: 13px 12px 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.planner .pv-tab svg {
+  width: 15px;
+  height: 15px;
+}
+.planner .pv-tab:hover {
+  color: var(--ink);
+}
+.planner .pv-tab[aria-selected="true"] {
+  color: var(--ink);
+  font-weight: 700;
+  border-bottom-color: var(--brass);
+}
+.planner .pv-tab__new {
+  font-family: var(--f-m);
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--block-ink);
+  background: var(--brass);
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-weight: 700;
+}
+.planner .pv-tabs__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  flex-wrap: wrap;
+}
+
+/* toggle recomendador (switch) */
+.planner .pv-rec-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+  padding: 6px 4px;
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+}
+.planner .pv-switch {
+  position: relative;
+  width: 36px;
+  height: 21px;
+  flex: none;
+  background: var(--panel-3);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.planner .pv-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: left var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.planner .pv-rec-toggle[aria-checked="true"] {
+  color: var(--ink);
+}
+.planner .pv-rec-toggle[aria-checked="true"] .pv-switch {
+  background: var(--brass);
+  border-color: var(--brass);
+}
+.planner .pv-rec-toggle[aria-checked="true"] .pv-switch::after {
+  left: 17px;
+  background: var(--block-ink);
+}
+
+/* botones de ícono (reset / import-export) */
+.planner .pv-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+  font-family: var(--f-m);
+  font-size: 11px;
+}
+.planner .pv-iconbtn--label {
+  padding: 8px 13px 8px 10px;
+}
+.planner .pv-iconbtn:hover {
+  color: var(--ink);
+  border-color: var(--brass);
+  background: var(--panel-2);
+}
+
+/* tooltip de Importar/Exportar (explica documento + preferencias + imprimir) */
+.planner .pv-tip {
+  position: relative;
+  display: inline-flex;
+}
+.planner .pv-tip__bubble {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  z-index: 40;
+  width: 236px;
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow-2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.planner .pv-tip__bubble b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.planner .pv-tip__bubble::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 16px;
+  width: 9px;
+  height: 9px;
+  background: var(--panel);
+  border-left: 1px solid var(--line-2);
+  border-top: 1px solid var(--line-2);
+  transform: rotate(45deg);
+}
+.planner .pv-tip:hover .pv-tip__bubble,
+.planner .pv-tip:focus-within .pv-tip__bubble {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================ SEM GRID (Calendario) ======================== */
+/* auto-FIT (no auto-fill): al ocultar el recomendador el main pasa a 100% y la
+   grilla rellena TODO el ancho según la cantidad real de cuatrimestres, sin
+   dejar tracks fantasma a la derecha. `grid-auto-rows:1fr` + `height:100%` en la
+   card empareja las alturas por fila (mismo alto, prolijo). */
+.planner .pv-semgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  grid-auto-rows: 1fr;
+  gap: 16px;
+}
+.planner .pv-sem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  padding: 15px 15px 13px;
+  transition: border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+.planner .pv-sem.is-preview {
+  border-color: var(--brass);
+  box-shadow: var(--shadow-1), 0 0 0 2px color-mix(in srgb, var(--brass) 30%, transparent);
+}
+.planner .pv-sem.is-menu-open {
+  z-index: 20;
+}
+.planner .pv-sem.is-locked {
+  background: color-mix(in srgb, var(--panel) 82%, var(--bg));
+  border-color: var(--line-2);
+}
+.planner .pv-sem.is-locked .pv-sem__cal,
+.planner .pv-sem.is-locked .pv-sem__title {
+  opacity: 0.74;
+}
+/* destino activo del drag (soltar una electiva acá la fija en este cuatri) */
+.planner .pv-sem.is-drop-over {
+  border-color: var(--brass);
+  box-shadow: var(--shadow-1),
+    0 0 0 3px color-mix(in srgb, var(--brass) 24%, transparent);
+  background: color-mix(in srgb, var(--brass) 6%, var(--panel));
+}
+.planner .pv-sem__drophint {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--brass) 7%, transparent);
+}
+.planner .pv-sem__drophint span {
+  font-family: var(--f-m);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--brass);
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--brass) 45%, var(--line));
+  border-radius: 999px;
+  padding: 6px 12px;
+  box-shadow: var(--shadow-1);
+}
+.planner .pv-sem__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.planner .pv-sem__when {
+  display: flex;
+  flex-direction: column;
+}
+.planner .pv-sem__tag {
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.planner .pv-sem__title {
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.planner .pv-sem__tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+/* badge de finalizado en el header */
+.planner .pv-lockbadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  color: var(--muted);
+}
+.planner .pv-lockbadge svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* botón 3-puntos */
+.planner .pv-dotbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 26px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.planner .pv-dotbtn:hover,
+.planner .pv-dotbtn[aria-expanded="true"] {
+  color: var(--ink);
+  background: var(--panel-2);
+  border-color: var(--line);
+}
+.planner .pv-dotbtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* fila de electivas con dot de minor + tag recomendada (leyenda de la card) */
+.planner .pv-sem__els {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 10px;
+}
+.planner .pv-elrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 2px;
+  border-radius: 6px;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.planner .pv-elrow[draggable="true"] {
+  cursor: grab;
+}
+.planner .pv-elrow[draggable="true"]:hover {
+  background: var(--panel-2);
+}
+.planner .pv-elrow[draggable="true"]:active {
+  cursor: grabbing;
+}
+.planner .pv-elrow.is-dragging {
+  opacity: 0.45;
+}
+.planner .pv-elrow__grip {
+  display: inline-flex;
+  align-items: center;
+  color: var(--faint);
+  flex: none;
+  margin: 0 -2px 0 0;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.planner .pv-elrow[draggable="true"]:hover .pv-elrow__grip {
+  opacity: 1;
+}
+.planner .pv-elrow__grip svg {
+  width: 12px;
+  height: 12px;
+}
+.planner .pv-elrow__abbr {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.planner .pv-elrow__cr {
+  margin-left: auto;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  flex: none;
+}
+.planner .pv-rectag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--f-m);
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brass);
+  border: 1px solid color-mix(in srgb, var(--brass) 45%, transparent);
+  background: color-mix(in srgb, var(--brass) 12%, transparent);
+  padding: 2px 6px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.planner .pv-sem__cal {
+  flex: 1 1 auto;
+}
+.planner .pv-sem__empty {
+  color: var(--muted);
+  font-size: 12.5px;
+  padding: 8px 2px;
+}
+
+/* pie: barra de carga + métricas + chip de finalizado */
+.planner .pv-sem__foot {
+  margin-top: 11px;
+}
+.planner .pv-loadbar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--panel-3);
+  overflow: hidden;
+}
+.planner .pv-loadbar > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brass) 62%, var(--line-2));
+  transition: width var(--dur-base) var(--ease-out);
+}
+.planner .pv-sem.is-locked .pv-loadbar > i {
+  background: var(--muted);
+}
+.planner .pv-load-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+}
+.planner .pv-load-meta .cr {
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--ink);
+}
+.planner .pv-load-meta .aux {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+/* chip finalizado + desbloquear */
+.planner .pv-lockcap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.planner .pv-lockchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--f-m);
+  font-size: 10.5px;
+}
+.planner .pv-lockchip svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+.planner .pv-lockchip b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.planner .pv-unlock {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--brass);
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid color-mix(in srgb, var(--brass) 45%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.planner .pv-unlock:hover {
+  background: color-mix(in srgb, var(--brass) 12%, transparent);
+}
+.planner .pv-unlock svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* ============================ MENÚ 3-PUNTOS =============================== */
+.planner .pv-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 25;
+  min-width: 244px;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  padding: 8px;
+}
+.planner .pv-menu__sec {
+  padding: 4px 8px 8px;
+}
+.planner .pv-menu__lbl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.planner .pv-menu__caps {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+/* NumField dentro del menú: compactamos el .plan2-field */
+.planner .pv-menu__caps .plan2-field {
+  flex: 1 1 92px;
+  gap: 5px;
+}
+.planner .pv-menu__caps .plan2-field label {
+  font-size: 9.5px;
+}
+.planner .pv-menu__auto {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 11px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.planner .pv-menu__auto:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: var(--brass);
+}
+.planner .pv-menu__auto:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.planner .pv-menu__sep {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 4px 4px;
+}
+.planner .pv-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  font-family: var(--f-b);
+  font-size: 13.5px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.planner .pv-menu__item:hover {
+  background: var(--panel-2);
+}
+.planner .pv-menu__item svg {
+  width: 15px;
+  height: 15px;
+  color: var(--muted);
+  flex: none;
+}
+.planner .pv-menu__item .sub {
+  margin-left: auto;
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--muted);
+}
+.planner .pv-menu__dl {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 2px 0;
+}
+.planner .pv-menu__dl .pv-menu__lbl {
+  padding: 6px 8px 2px;
+  margin: 0;
+}
+
+/* popover de confirmación "finalizar cuatrimestre" */
+.planner .pv-confirm-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 26;
+  width: min(300px, 84vw);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  padding: 16px 17px;
+}
+.planner .pv-confirm-pop__t {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  margin: 0 0 7px;
+}
+.planner .pv-confirm-pop__b {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+.planner .pv-confirm-pop__acts {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ============================ ROADMAP add-ons ============================== */
+/* dot de minor + tag recomendada dentro de las filas de materia del roadmap
+   (`.rmap-mat` vive en planner.css; solo agregamos estos sub-elementos) */
+.planner .rmap-mat__minor {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+}
+.planner .rmap-mat__rec {
+  font-family: var(--f-m);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brass);
+  border: 1px solid color-mix(in srgb, var(--brass) 45%, transparent);
+  background: color-mix(in srgb, var(--brass) 12%, transparent);
+  padding: 1px 5px;
+  border-radius: 999px;
+  flex: none;
+}
+
+/* ============================ MINORS (tab) ================================= */
+.planner .pv-minors {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+.planner .pv-minor-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 18px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.planner .pv-minor-row:first-child {
+  border-top: none;
+}
+.planner .pv-minor-row.is-done {
+  background: color-mix(in srgb, var(--sage) 10%, transparent);
+}
+.planner .pv-minor-name {
+  flex: 0 0 190px;
+  min-width: 140px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+}
+.planner .pv-minor-name span {
+  display: block;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.planner .pv-minor-prog {
+  flex: 1 1 140px;
+  min-width: 120px;
+}
+.planner .pv-minor-track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--panel-3);
+  overflow: hidden;
+}
+.planner .pv-minor-track > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--minor-color);
+  transition: width var(--dur-base) var(--ease-out);
+}
+.planner .pv-minor-count {
+  flex: none;
+  min-width: 96px;
+  text-align: right;
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+}
+.planner .pv-minor-count.is-done {
+  color: var(--ink);
+  font-weight: 600;
+}
+.planner .pv-minor-count svg {
+  width: 12px;
+  height: 12px;
+  color: var(--sage);
+  vertical-align: -1px;
+  margin-right: 3px;
+}
+.planner .pv-minors__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 13px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.planner .pv-minors__note {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.planner .pv-minors__note b {
+  color: var(--ink);
+}
+
+/* ============================ RESET CONFIRM (modal) ======================== */
+/* reusa el shell portaleado de MinorsModal (.mnr-modal*) para el scrim/centrado;
+   solo estilamos el panel de confirmación */
+.planner .pv-reset {
+  position: relative;
+  z-index: 1;
+  width: min(440px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  padding: 24px 24px 20px;
+}
+.planner .pv-reset__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--brass) 16%, var(--panel));
+  color: var(--brass);
+  margin-bottom: 15px;
+}
+.planner .pv-reset__icon svg {
+  width: 21px;
+  height: 21px;
+}
+.planner .pv-reset h3 {
+  font-family: var(--f-d);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 9px;
+}
+.planner .pv-reset p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+.planner .pv-reset__acts {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* ============================ FILTROS DEL RECOMENDADOR ==================== */
+.planner .plan2-recfilt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 12px 0 6px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.planner .plan2-recfilt__grp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.planner .plan2-recfilt__lbl {
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 1px;
+}
+.planner .plan2-fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.planner .plan2-fchip:hover {
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+.planner .plan2-fchip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fchip-color, var(--brass));
+  flex: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--block-ink) 20%, transparent);
+}
+.planner .plan2-fchip.is-on {
+  color: var(--ink);
+  border-color: var(--brass);
+  background: color-mix(in srgb, var(--brass) 12%, var(--panel));
+  font-weight: 600;
+}
+.planner .plan2-fchip.is-on .plan2-fchip__dot {
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--brass) 42%, transparent);
+}
+.planner .plan2-recfilt__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--brass);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px 4px;
+  margin-left: auto;
+}
+.planner .plan2-recfilt__clear:hover {
+  text-decoration: underline;
+}
+.planner .plan2-recfilt__clear svg {
+  width: 11px;
+  height: 11px;
+}
+.planner .plan2-recfilt__empty {
+  font-size: 12.5px;
+  color: var(--muted);
+  padding: 14px 2px 4px;
+}
+.planner .plan2-recfilt__empty button {
+  font-family: var(--f-m);
+  font-size: 12px;
+  color: var(--brass);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.planner .plan2-recfilt__empty button:hover {
+  text-decoration: underline;
+}
+
+/* ============================ RESPONSIVE ================================== */
+@media (max-width: 640px) {
+  .planner .pv-semgrid {
+    grid-template-columns: 1fr;
+  }
+  .planner .pv-banner__mid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .planner .pv-meter {
+    max-width: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .planner .pv-seg__opt,
+  .planner .pv-switch,
+  .planner .pv-switch::after,
+  .planner .pv-meter__bar > i,
+  .planner .pv-loadbar > i,
+  .planner .pv-minor-track > i,
+  .planner .pv-dotbtn,
+  .planner .pv-iconbtn,
+  .planner .pv-menu__item,
+  .planner .pv-tip__bubble,
+  .planner .pv-elrow,
+  .planner .pv-elrow__grip,
+  .planner .plan2-fchip {
+    transition: none;
+  }
+}

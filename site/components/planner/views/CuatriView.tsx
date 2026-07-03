@@ -4,7 +4,10 @@ import { useMemo } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { PLAN, hasHorario } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
+import { EstadoControl, estadoOf, tieneFinal } from "@/components/planner/EstadoControl";
+import { MinorBadges } from "@/components/planner/MinorBadge";
 import type { Materia } from "@/lib/planner/types";
+import "../cards.css";
 
 export default function CuatriView() {
   const { state } = usePlanner();
@@ -40,9 +43,32 @@ export default function CuatriView() {
       <div className="panel-head">
         <h2>Plan por cuatrimestre</h2>
         <p>
-          Materias obligatorias del plan, ordenadas por año. Marcá las aprobadas
-          para ver tu avance y qué queda habilitado.
+          Materias obligatorias del plan, ordenadas por año. Cliqueá el control
+          de cada materia para ir marcando tu avance; cada card dice en palabras
+          si tenés la cursada o también el final.
         </p>
+      </div>
+      <div className="estado-legend" role="note" aria-label="Cómo leer el estado de cada materia">
+        <span className="el-item">
+          <span className="estado-ctl st-regular" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+          </span>
+          <b>✓ cursada</b> — falta el final
+        </span>
+        <span className="el-sep" aria-hidden="true" />
+        <span className="el-item">
+          <span className="estado-ctl st-final" aria-hidden="true">
+            <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 8.5 6 12 11.5 4.5" /><path d="M9.5 8.5 13 12 18.5 4.5" /></svg>
+          </span>
+          <b>✓✓ final</b> — aprobado
+        </span>
+        <span className="el-sep" aria-hidden="true" />
+        <span className="el-item">
+          <span className="estado-ctl st-promo" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+          </span>
+          <b>promociona</b> — sin final
+        </span>
       </div>
       <div className="cuatri-grid">
         {groups.length === 0 ? (
@@ -80,12 +106,26 @@ function QCard({ m }: { m: Materia }) {
   const avail = isAvailable(m, state.approved);
   const locked = !appr && !avail;
   const hor = hasHorario(m.codigo);
+  const estado = estadoOf(m.codigo, state.approved, state.finalDone);
+  const has2 = tieneFinal(m.codigo);
+
+  // Etiqueta de texto: hace explícito cursada vs final (no depende solo del ícono).
+  const status: { cls: string; label: string; title: string } =
+    estado === "final"
+      ? { cls: "tag--final", label: "✓✓ final", title: "Final aprobado" }
+      : estado === "regular"
+        ? has2
+          ? { cls: "tag--reg", label: "✓ cursada", title: "Cursada aprobada — falta el final" }
+          : { cls: "tag--promo", label: "promociona", title: "Aprobada por promoción (sin final)" }
+        : locked
+          ? { cls: "tag--lock", label: "requisitos", title: "Requisitos pendientes" }
+          : { cls: "tag--ok", label: "cursable", title: "Cursable — cumplís las correlativas" };
 
   return (
     <div
       className={"qcard" + (appr ? " appr" : "") + (locked ? " locked" : "")}
       onClick={(e) => {
-        if (!(e.target as HTMLElement).closest("label"))
+        if (!(e.target as HTMLElement).closest("button"))
           dispatch({ type: "OPEN_DRAWER", code: m.codigo });
       }}
     >
@@ -100,23 +140,9 @@ function QCard({ m }: { m: Materia }) {
       </div>
       <p className="qcard__n">{m.nombre}</p>
       <div className="qcard__f">
-        <label>
-          <input
-            type="checkbox"
-            className="chk-ap"
-            checked={appr}
-            onChange={(e) => {
-              e.stopPropagation();
-              dispatch({ type: "TOGGLE_APPROVED", code: m.codigo });
-            }}
-          />{" "}
-          aprobada
-        </label>
-        {locked ? (
-          <span className="tag tag--lock">requisitos</span>
-        ) : appr ? null : (
-          <span className="tag tag--ok">cursable</span>
-        )}
+        <EstadoControl code={m.codigo} />
+        <span className={"tag " + status.cls} title={status.title}>{status.label}</span>
+        <MinorBadges areas={m.areas} variant="logo" />
       </div>
     </div>
   );

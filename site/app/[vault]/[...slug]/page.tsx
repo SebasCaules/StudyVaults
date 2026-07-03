@@ -8,6 +8,7 @@ import { getVault } from "@/lib/content/vaults";
 import { humanize } from "@/lib/content/slug";
 import { Eyebrow, Tag, CodeCopy } from "@studyvaults/ui";
 import WikiLayout from "@/components/wiki/WikiLayout";
+import WikiSequenceNav from "@/components/wiki/WikiSequenceNav";
 import Prose from "@/components/wiki/Prose";
 
 export const dynamicParams = false;
@@ -102,6 +103,11 @@ export default async function NotePage({
         <Prose html={html} />
         <CodeCopy />
       </div>
+      <WikiSequenceNav
+        vault={vault}
+        sections={sections}
+        currentHref={note.href}
+      />
     </WikiLayout>
   );
 }

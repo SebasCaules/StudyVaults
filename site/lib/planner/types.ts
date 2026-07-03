@@ -136,7 +136,40 @@ export interface Plan {
 
 // ---- estado del planner (espejo del `state` de planner.js) ----
 
-export type ViewKey = "cuatri" | "elect" | "combo" | "plan" | "grafo" | "ref";
+export type ViewKey =
+  | "cuatri"
+  | "elect"
+  | "combo"
+  | "plan"
+  | "grafo"
+  | "finales"
+  | "ref";
+
+// ---- Plan de finales / Combinación de finales (feature nueva) ----
+
+/** Llamado a mesas de finales del año. */
+export type FinalPeriodo = "julio" | "diciembre" | "febrero";
+
+/** Fecha + hora de una mesa de final (autopoblado oficial u override manual). */
+export interface MesaFinal {
+  fecha: string; // "YYYY-MM-DD"
+  hora: string; // "HH:MM"
+}
+
+/** Estado del combinador de finales (persistible). El armado efímero de la
+ *  combinación sugerida / detección de conflictos vive local en la vista. */
+export interface FinalesState {
+  periodo: FinalPeriodo;
+  anio: number;
+  /** override/carga manual de fecha+hora de mesa por materia (clave: código). */
+  mesas: Map<string, MesaFinal>;
+  /** finales que el usuario sumó a la combinación del período (códigos). */
+  seleccion: Set<string>;
+  /** anticipación del recordatorio de inscripción para el .ics (hs): 48 | 72 | 96. */
+  reminderHs: number;
+  /** margen mínimo de repaso deseado entre finales (días). */
+  margenDias: number;
+}
 
 /** Estrategia de optimización del plan de cursada (elegible por el usuario).
  *  - "cuatris": minimizar la cantidad de cuatrimestres (recibirse antes).
@@ -182,12 +215,22 @@ export interface PlanState {
   /** override opcional de máx. materias por índice de cuatrimestre; si no hay
    *  entrada para un índice, se usa el global `maxMat`. */
   capMatByIdx: Map<number, number>;
+  /** cuatrimestres "finalizados" por el usuario: el optimizador no los toca
+   *  (no mete materias nuevas ahí ni mueve las existentes hacia/desde ese
+   *  índice). Las materias de un índice lockeado se pinean vía `fixed`. */
+  lockedIdx: Set<number>;
   result: PlanResult | null;
 }
 
 export interface PlannerState {
   view: ViewKey;
+  /** cursada aprobada (regular o final) — semántica histórica intacta: todo el
+   *  planner de cursada/correlativas la sigue leyendo como "materia aprobada". */
   approved: Set<string>;
+  /** subconjunto de `approved` cuyo FINAL también está aprobado (doble-check).
+   *  Invariante: `finalDone ⊆ approved`. La vista de finales lo usa para el 2º
+   *  nivel; las materias que promocionan/no rinden final nunca entran acá. */
+  finalDone: Set<string>;
   combo: Set<string>;
   fixedCom: Map<string, string>;
   areasOn: Set<string>;
@@ -203,6 +246,8 @@ export interface PlannerState {
   fichaCode: string | null; // electiva abierta en el lector full-screen (efímero, sin persistir)
   /** filtros por características del programa para el Combinador (efímero, sin persistir). */
   charFilters: CharFilters;
+  /** estado del combinador de finales (período, mesas, selección). */
+  finales: FinalesState;
   hydrated: boolean;
 }
 

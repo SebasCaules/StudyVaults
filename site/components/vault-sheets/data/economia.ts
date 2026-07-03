@@ -1,4 +1,5 @@
 import type { Sheet } from "../types";
+import { FIG } from "./figures";
 
 // Generado por el pipeline studyvault-cheatsheets (extracción + auditoría sub-overseer).
 // Editable a mano: es data pura. Ver components/vault-sheets/types.ts.
@@ -9,18 +10,21 @@ export const economiaFormulas: Sheet = {
   "title": "Economía para Ingenieros",
   "subtitle": "Micro (oferta/demanda, costos, mercados), macro (PBI, dinero, política) y empresa (contabilidad, cálculo financiero, proyectos)",
   "notation": "$Q$ cantidad, $P$ precio, $Y$ ingreso/PBI; $\\eta,\\varepsilon$ elasticidades; $CT=CF+CV$ costos, $CMg$/$CMe$ marginal/medio; $\\pi$ beneficio (micro) o inflación (macro); $i$ tasa nominal, $r$ tasa real, $t$ alícuota impositiva; $VP$/$VF$ valor presente/futuro.",
-  "updated": "2026-06-19",
+  "updated": "2026-07-03",
   "groups": [
     {
       "title": "Oferta, demanda y precios",
       "hint": "Equilibrio, deflactar e índices",
       "unit": "1",
+      "unitTitle": "Microeconomía: el mercado",
+      "unitDesc": "Oferta y demanda, elasticidades, excedentes y bienestar.",
       "entries": [
         {
           "label": "Equilibrio de mercado",
           "kind": "def",
           "tex": "Q_d(p) = Q_s(p)",
-          "body": "Precio que iguala cantidad demandada y ofrecida; el lado corto manda fuera del equilibrio."
+          "body": "Precio que iguala cantidad demandada y ofrecida; el lado corto manda fuera del equilibrio.",
+          "figure": FIG.supplyDemand
         },
         {
           "label": "Precio real (deflactar)",
@@ -144,6 +148,8 @@ export const economiaFormulas: Sheet = {
       "title": "Producción",
       "hint": "Factores, PMg/PMe, escala",
       "unit": "2",
+      "unitTitle": "Teoría de la firma",
+      "unitDesc": "Producción, costos, ingreso, beneficio y punto de equilibrio.",
       "entries": [
         {
           "label": "Función de producción",
@@ -245,7 +251,8 @@ export const economiaFormulas: Sheet = {
           "kind": "formula",
           "tex": "Q^* = \\dfrac{CF}{P - CV_u}\\qquad V^* = \\dfrac{CF}{(P-CV_u)/P}",
           "cond": "Ingresos $=$ costos totales. $P-CV_u$ = margen de contribución unitario; $V^*$ en pesos.",
-          "note": "Resultado a cualquier volumen: $\\pi=(P-CV_u)Q-CF$."
+          "note": "Resultado a cualquier volumen: $\\pi=(P-CV_u)Q-CF$.",
+          "figure": FIG.breakEven
         }
       ]
     },
@@ -253,6 +260,8 @@ export const economiaFormulas: Sheet = {
       "title": "Competencia perfecta",
       "hint": "Precio-aceptante, cierre, LP",
       "unit": "3",
+      "unitTitle": "Competencia perfecta e intervención",
+      "unitDesc": "Equilibrio competitivo, impuestos y subsidios.",
       "entries": [
         {
           "label": "Empresa precio-aceptante",
@@ -319,6 +328,8 @@ export const economiaFormulas: Sheet = {
       "title": "Monopolio",
       "hint": "IMg, markup, Lerner",
       "unit": "4",
+      "unitTitle": "Mercados imperfectos",
+      "unitDesc": "Monopolio, oligopolio y competencia monopolística.",
       "entries": [
         {
           "label": "IMg con demanda lineal",
@@ -402,6 +413,8 @@ export const economiaFormulas: Sheet = {
       "title": "PBI e inflación",
       "hint": "Tres métodos, deflactor",
       "unit": "5",
+      "unitTitle": "Macroeconomía",
+      "unitDesc": "PBI, inflación, empleo, política fiscal, dinero y sector externo.",
       "entries": [
         {
           "label": "PBI (método del gasto)",
@@ -614,6 +627,8 @@ export const economiaFormulas: Sheet = {
       "title": "Contabilidad y EERR",
       "hint": "Ecuación patrimonial, cascada",
       "unit": "6",
+      "unitTitle": "Contabilidad y costos",
+      "unitDesc": "Estados contables, flujo de fondos, costeo y ratios financieros.",
       "entries": [
         {
           "label": "Ecuación contable",
@@ -755,6 +770,8 @@ export const economiaFormulas: Sheet = {
       "title": "Valor tiempo del dinero",
       "hint": "Capitalizar y descontar",
       "unit": "7",
+      "unitTitle": "Matemática financiera",
+      "unitDesc": "Valor tiempo del dinero, rentas y préstamos.",
       "entries": [
         {
           "label": "Interés compuesto",
@@ -864,6 +881,8 @@ export const economiaFormulas: Sheet = {
       "title": "Evaluación de proyectos",
       "hint": "VAN, TIR, ranking",
       "unit": "8",
+      "unitTitle": "Evaluación de proyectos",
+      "unitDesc": "VAN, TIR y flujos de fondos con impuestos.",
       "entries": [
         {
           "label": "Valor Actual Neto",
@@ -956,12 +975,14 @@ export const economiaConceptos: Sheet = {
   "title": "Economía para Ingenieros",
   "subtitle": "Micro · Macro · Empresa — hoja de conceptos para el final (ITBA 61.23)",
   "notation": "$\\eta$ elasticidad, $\\varepsilon$ elast. oferta · IMg/CMg ingreso/costo marginal · $\\pi$ inflación · $r$ tasa real, $i$ nominal · $t$ alícuota IG · TREMA tasa de corte · $A=P+PN$ ecuación contable",
-  "updated": "2026-06-19",
+  "updated": "2026-07-03",
   "groups": [
     {
       "title": "Fundamentos y mercado",
       "hint": "Escasez, FPP, oferta-demanda, equilibrio",
       "unit": "1",
+      "unitTitle": "Microeconomía: el mercado",
+      "unitDesc": "Oferta y demanda, elasticidades, excedentes y bienestar.",
       "entries": [
         {
           "label": "Economía / Escasez",
@@ -1072,6 +1093,8 @@ export const economiaConceptos: Sheet = {
       "title": "Producción",
       "hint": "Función de producción, productividades, escala",
       "unit": "2",
+      "unitTitle": "Teoría de la firma",
+      "unitDesc": "Producción, productividades, estructura de costos y regla del óptimo.",
       "entries": [
         {
           "label": "Función de producción / CP vs LP",
@@ -1150,6 +1173,8 @@ export const economiaConceptos: Sheet = {
       "title": "Competencia perfecta",
       "hint": "Precio-aceptante, cierre, equilibrio LP",
       "unit": "3",
+      "unitTitle": "Competencia perfecta",
+      "unitDesc": "Empresa precio-aceptante, punto de cierre y equilibrio de largo plazo.",
       "entries": [
         {
           "label": "Los 4 supuestos",
@@ -1190,6 +1215,8 @@ export const economiaConceptos: Sheet = {
       "title": "Monopolio y poder de mercado",
       "hint": "IMg < P, Lerner, discriminación, regulación",
       "unit": "4",
+      "unitTitle": "Mercados imperfectos",
+      "unitDesc": "Monopolio, poder de mercado, oligopolio y competencia monopolística.",
       "entries": [
         {
           "label": "Causas del monopolio",
@@ -1265,6 +1292,8 @@ export const economiaConceptos: Sheet = {
       "title": "PBI y cuentas nacionales",
       "hint": "Medición del producto, real vs nominal, identidades",
       "unit": "5",
+      "unitTitle": "Macroeconomía",
+      "unitDesc": "PBI, inflación, empleo, política fiscal y dinero.",
       "entries": [
         {
           "label": "PBI",
@@ -1457,6 +1486,8 @@ export const economiaConceptos: Sheet = {
       "title": "Contabilidad",
       "hint": "Balance, devengado, resultados, amortización",
       "unit": "6",
+      "unitTitle": "Contabilidad y costos",
+      "unitDesc": "Estados contables, análisis financiero, ratios y costeo.",
       "entries": [
         {
           "label": "Ecuación contable / partida doble",
@@ -1538,6 +1569,8 @@ export const economiaConceptos: Sheet = {
       "title": "Cálculo financiero",
       "hint": "Valor tiempo, tasas equivalentes, anualidades, préstamos",
       "unit": "7",
+      "unitTitle": "Matemática financiera",
+      "unitDesc": "Valor tiempo del dinero, tasas equivalentes, rentas y préstamos.",
       "entries": [
         {
           "label": "Valor tiempo del dinero",
@@ -1589,6 +1622,8 @@ export const economiaConceptos: Sheet = {
       "title": "Evaluación de proyectos",
       "hint": "Flujo de caja, FEO, escudo fiscal, VAN/TIR",
       "unit": "8",
+      "unitTitle": "Evaluación de proyectos",
+      "unitDesc": "VAN, TIR y flujos de fondos con impuestos.",
       "entries": [
         {
           "label": "Principio rector: caja, no contabilidad",
