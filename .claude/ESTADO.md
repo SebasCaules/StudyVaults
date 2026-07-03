@@ -48,9 +48,9 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 - **Inputs del usuario** que bloquean partes: datos reales de syllabus de obligatorias,
   fechas de mesas de finales + correlativas de finales (en curso vía ingest), y las
   **7 ilustraciones raster** de materias (D6 — hoy placeholders SVG).
-- **Auditoría integral 2026-07-03**: 4 auditores (portal/UI · planner · hojas/toolkits/
-  pipelines · directivas) lanzados; sus hallazgos verificados deben integrarse a los dos
-  planes de `.plans/` cuando lleguen.
+- **Auditoría integral 2026-07-03**: 3 de 4 reportes integrados a los planes (v2) con los
+  hallazgos alto re-verificados por el overseer. Falta el consolidado de directivas
+  (alimentará P4 del plan de correcciones: claims stale de PROJECT.md/SKILL.md/READMEs).
 - **Directivas con claims stale conocidos** (corregir con evidencia): PROJECT.md §1/§3 dice
   "NO hay lib 3D ni DnD" (ya falso: `react-force-graph-3d` + `three` + DnD nativo), conteo
   de páginas y fecha de sync de DESIGN.md pueden haber cambiado post-overhaul; revisar
