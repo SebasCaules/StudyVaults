@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Navegación secuencial entre notas (Módulo A)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults
+     Copiado 1:1 de foundations.html — fuente de verdad de tokens.
+     6 hex base: brown #241208 · zinc #27272a · blue #92cff2 ·
+                 gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+  }
+
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+    --k-formula: #7cc0af;
+    --k-def: #9ab8d6;
+  }
+
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+    --k-formula: #227762;
+    --k-def: #295c8e;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  .subnav{ border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--text-2); border:1px solid var(--border-subtle);
+    padding:5px 12px; border-radius:4px;
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2);
+    max-width: 20ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:64ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.65rem, 1.6vw + 1rem, 2.35rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:74ch; margin: 0 0 var(--sp-4); font-size:1.02rem; }
+  .cutline{ border:none; border-top:1px solid var(--border-subtle); margin: var(--sp-4) 0; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+  }
+  .pad{ padding: 20px 22px; }
+
+  .chip{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.02em;
+    padding:4px 8px; border-radius:5px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+  }
+  .chip.strong{ color:var(--text); }
+  .chip.accent{ color:var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .after-note{ margin-top:10px; font-size:12.5px; color:var(--text-2); }
+
+  /* ---------- entry / callout (formula) ---------- */
+  .entry{
+    background: color-mix(in srgb, var(--k-color) 7%, var(--surface));
+    border:1.5px solid color-mix(in srgb, var(--k-color) 30%, var(--border-subtle));
+    border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .entry-head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .tag-pill{
+    font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    color:var(--k-color); background: color-mix(in srgb, var(--k-color) 16%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--k-color) 45%, transparent);
+    padding:3px 9px; border-radius:var(--radius-pill);
+  }
+  .entry-label{ font-weight:600; font-size:15.5px; }
+  .entry-body{ color:var(--text-2); font-size:14.5px; margin:0; }
+  .entry-math{ margin-top:10px; padding:12px 14px; background: color-mix(in srgb, var(--k-color) 5%, var(--canvas)); border:1px solid color-mix(in srgb, var(--k-color) 14%, transparent); border-radius:6px; font-size:15px; overflow-x:auto; }
+  .math{ font-family:var(--font-serif); font-size:16.5px; line-height:1.7; color:var(--text); white-space:nowrap; }
+  .math .var{ font-style:italic; }
+  .math .op{ margin:0 .32em; color:var(--text-2); }
+  .math sup{ font-size:.72em; }
+  .frac{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 .22em; font-size:.92em; }
+  .frac > .num{ padding:0 .4em; }
+  .frac > .den{ padding:.08em .4em 0; border-top:1px solid currentColor; }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  /* ============================================================
+     COMPONENTES NUEVOS — Módulo A: navegación secuencial
+     ============================================================ */
+
+  /* ---------- fig.01 — flujo antes/después ---------- */
+  .ba-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  .ba-col-label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .ba-col-label.before{ color:var(--base-gray); }
+  .ba-col-label.after{ color:var(--accent); }
+  .ba-col-label .line{ flex:1; height:1px; background:currentColor; opacity:.4; }
+  .flow-steps{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
+  .flow-arrow{ color:var(--text-2); font-family:var(--font-mono); font-size:12px; padding-left:6px; }
+
+  /* ---------- fig.02 — marco de navegador ---------- */
+  .browser-frame{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius: calc(var(--radius) + 4px); box-shadow:var(--shadow); overflow:hidden;
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:14px; padding:10px 16px;
+    background:var(--surface-hover); border-bottom:1px solid var(--border-subtle);
+  }
+  .browser-dots{ display:flex; gap:6px; flex:none; }
+  .browser-dots span{ width:9px; height:9px; border-radius:50%; background:var(--border); display:block; }
+  .browser-url{
+    flex:1; font-family:var(--font-mono); font-size:11px; color:var(--text-2);
+    background:var(--canvas); border:1px solid var(--border-subtle); border-radius:var(--radius-pill);
+    padding:5px 14px; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .browser-url b{ color:var(--text); font-weight:600; }
+
+  /* ---------- page shell: sidebar + main ---------- */
+  .page-shell{
+    position:relative; display:grid; grid-template-columns: 258px 1fr;
+    background:var(--canvas); min-height: 640px; overflow:hidden;
+  }
+  .sidebar-toggle{
+    display:none; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em;
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    border-radius:var(--radius-pill); padding:7px 14px; margin: 16px clamp(16px,4vw,40px) 0;
+    cursor:pointer; transition: all .2s var(--ease); align-self:flex-start;
+  }
+  .sidebar-toggle:hover{ border-color:var(--accent); background:var(--surface-hover); }
+  .sidebar-toggle svg{ width:14px; height:14px; }
+
+  .sidebar-backdrop{ display:none; position:absolute; inset:0; background:rgba(0,0,0,.5); z-index:4; }
+  .sidebar-backdrop.show{ display:block; }
+
+  .wiki-sidebar{
+    border-right:1px solid var(--border-subtle); background:var(--surface);
+    padding: 20px 14px 28px; overflow-y:auto; z-index:5;
+  }
+  .sidebar-head{ padding: 2px 10px 16px; }
+  .sidebar-mark{ display:block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.1em; color:var(--accent); margin-bottom:4px; }
+  .sidebar-title{ display:block; font-family:var(--font-serif); font-weight:600; font-size:14.5px; line-height:1.3; }
+
+  .tree-root, .tree-root ul{ list-style:none; margin:0; padding:0; }
+  .tree-root > li{ margin-bottom:2px; }
+
+  .tree-unit summary{
+    display:flex; align-items:center; gap:8px; cursor:pointer; list-style:none;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em; color:var(--text);
+    padding:8px 10px; border-radius:6px; transition: background .18s var(--ease);
+  }
+  .tree-unit summary::-webkit-details-marker{ display:none; }
+  .tree-unit summary:hover{ background:var(--surface-hover); }
+  .tree-unit summary .chev{ width:10px; height:10px; flex:none; color:var(--text-2); transition: transform .2s var(--ease); }
+  .tree-unit[open] > summary .chev{ transform: rotate(90deg); color:var(--accent); }
+  .tree-unit summary .unit-txt{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  .tree-unit ul{ padding-left:20px; margin: 2px 0 8px; border-left:1px solid var(--border-subtle); }
+  .tree-unit li{ margin:1px 0; }
+  .tree-unit a{
+    display:block; text-decoration:none; color:var(--text-2); font-size:13.5px;
+    padding:7px 12px; margin-left:-1px; border-left:2px solid transparent;
+    border-radius:0 6px 6px 0; transition: all .18s var(--ease); line-height:1.35;
+  }
+  .tree-unit a:hover{ color:var(--text); background:var(--surface-hover); }
+  .tree-unit a.current{
+    color:var(--text); font-weight:600; border-left-color:var(--accent);
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+  }
+  .tree-unit a.current::after{ content:"·"; color:var(--accent); margin-left:6px; }
+
+  /* ---------- main column ---------- */
+  .wiki-main{ padding: 32px clamp(18px,4vw,52px) 44px; min-width:0; }
+  .breadcrumb{
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+    display:flex; gap:7px; align-items:center; flex-wrap:wrap; margin: 0 0 22px;
+  }
+  .breadcrumb a{ color:var(--text-2); text-decoration:none; }
+  .breadcrumb a:hover{ color:var(--text); }
+  .breadcrumb .sep{ opacity:.5; }
+  .breadcrumb .current{ color:var(--text); }
+
+  .wiki-main h1{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.02em;
+    font-size: clamp(1.7rem, 1.6vw + 1.1rem, 2.5rem); line-height:1.12; margin:0 0 18px; max-width:22ch;
+  }
+  .wiki-main .lede{ color:var(--text-2); font-size:1.02rem; max-width:66ch; margin:0 0 1.3em; }
+  .wiki-main article p{ max-width:66ch; margin: 0 0 1.15em; font-size:1rem; line-height:1.75; }
+  .wiki-main article h2.section-h{
+    font-family:var(--font-serif); font-weight:600; font-size:1.28rem; letter-spacing:-.01em;
+    margin: 2em 0 .7em;
+  }
+  .wiki-main article ul.props{ margin:0 0 1.3em; padding-left:1.2em; max-width:60ch; color:var(--text); font-size:1rem; line-height:1.75; }
+  .wiki-main article ul.props li{ margin-bottom:.3em; }
+  .wiki-main article ul.props b{ font-family:var(--font-mono); font-weight:600; font-size:.92em; }
+
+  /* ---------- new-feature flag ---------- */
+  .new-flag{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em;
+    color:var(--accent); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    padding:5px 12px; border-radius:4px; margin: 8px 0 4px;
+  }
+
+  /* ---------- prev/next progress + cards ---------- */
+  .pn-progress{
+    display:flex; align-items:center; gap:12px; font-family:var(--font-mono);
+    font-size:11px; color:var(--text-2); letter-spacing:.02em; margin: 8px 0 16px;
+  }
+  .pn-progress .bar{
+    flex:1; height:3px; background:var(--border-subtle); border-radius:var(--radius-pill);
+    position:relative; overflow:hidden; max-width:220px;
+  }
+  .pn-progress .bar i{
+    position:absolute; inset:0; width: 42.8%; background:var(--accent); border-radius:var(--radius-pill); display:block;
+  }
+
+  .pn-nav{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .pn-card{
+    position:relative; display:flex; flex-direction:column; gap:6px;
+    padding:20px 22px; background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); text-decoration:none; color:inherit; box-shadow:var(--shadow);
+    transition: transform .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease);
+    overflow:hidden;
+  }
+  .pn-card::before{
+    content:""; position:absolute; top:0; bottom:0; width:3px; background:var(--accent);
+    transform: scaleY(0); transition: transform .3s var(--ease); transform-origin:center;
+  }
+  .pn-prev::before{ left:0; }
+  .pn-next::before{ right:0; }
+  .pn-card:hover, .pn-card:focus-visible{
+    transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 55%, var(--border-subtle));
+    background:var(--surface-hover);
+  }
+  .pn-card:hover::before, .pn-card:focus-visible::before{ transform: scaleY(1); }
+  .pn-card:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .pn-eyebrow{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-2); display:flex; align-items:center; gap:6px;
+  }
+  .pn-card:hover .pn-eyebrow, .pn-card:focus-visible .pn-eyebrow{ color:var(--accent); }
+  .pn-title{
+    font-family:var(--font-serif); font-weight:600; font-size:1.08rem; line-height:1.3; color:var(--text);
+  }
+  .pn-next{ text-align:right; align-items:flex-end; }
+  .pn-next .pn-eyebrow{ flex-direction:row-reverse; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px){
+    .ba-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 760px){
+    .page-shell{ grid-template-columns: 1fr; }
+    .sidebar-toggle{ display:inline-flex; }
+    .wiki-sidebar{
+      position:absolute; top:0; bottom:0; left:0; width:82%; max-width:300px;
+      transform: translateX(-100%); transition: transform .35s var(--ease);
+    }
+    .wiki-sidebar.open{ transform: translateX(0); }
+    .pn-nav{ grid-template-columns:1fr; }
+    .pn-next{ text-align:left; align-items:flex-start; }
+    .pn-next .pn-eyebrow{ flex-direction:row; }
+  }
+  @media (max-width: 480px){
+    .hero h1{ max-width:none; }
+    .browser-bar{ gap:8px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration: .001ms !important; animation-duration: .001ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·002</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#s1">01 · Qué cambia</a>
+        <a href="#s2">02 · Mock funcional</a>
+        <a href="#s3">03 · Notas de implementación</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN</div>
+      <h1>Navegación <em>secuencial</em> entre notas de la wiki</h1>
+      <p class="dek">Hoy cada nota depende del árbol lateral para moverse a la siguiente: hay que volver, ubicar la unidad, expandirla y recién ahí hacer click. Esta propuesta agrega una navegación anterior/siguiente al pie de cada nota, ordenada por el mismo árbol, para leer una unidad de punta a punta sin salir del flujo de lectura.</p>
+      <div class="hero-meta">
+        <span><b>Módulo A</b> — navegación prev/next</span>
+        <span>Vault de referencia: Probabilidad y Estadística</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b></span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. QUÉ CAMBIA -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s1">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Contexto
+      </div>
+      <h2 class="spec-title">De cinco pasos por el árbol a un click al pie de la nota</h2>
+      <p class="spec-dek">El sidebar sigue siendo el mapa completo de la materia — no se toca. Lo que falta es un atajo lineal para cuando ya estás leyendo y sólo querés seguir a la próxima nota de la unidad.</p>
+
+      <div class="ba-grid">
+        <div>
+          <div class="ba-col-label before">Antes<span class="line"></span></div>
+          <div class="card pad">
+            <div class="flow-steps">
+              <span class="chip strong">Nota actual</span>
+              <span class="flow-arrow">↓</span>
+              <span class="chip">Volver al índice</span>
+              <span class="flow-arrow">↓</span>
+              <span class="chip">Ubicar la unidad</span>
+              <span class="flow-arrow">↓</span>
+              <span class="chip">Expandir el árbol</span>
+              <span class="flow-arrow">↓</span>
+              <span class="chip">Click en la nota siguiente</span>
+            </div>
+            <p class="after-note">5 pasos — y hay que soltar la lectura para volver al panel lateral.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="ba-col-label after">Después<span class="line"></span></div>
+          <div class="card pad">
+            <div class="flow-steps">
+              <span class="chip strong">Nota actual</span>
+              <span class="flow-arrow">↓</span>
+              <span class="chip accent">Siguiente ›</span>
+              <span class="flow-arrow">↓</span>
+              <span class="chip strong">Nota siguiente</span>
+            </div>
+            <p class="after-note">2 pasos, sin salir del flujo — más un indicador de avance dentro de la unidad.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. MOCK FUNCIONAL -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s2">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Componente
+      </div>
+      <h2 class="spec-title">Así se ve una nota con navegación prev/next</h2>
+      <p class="spec-dek">Mock funcional de una nota real de Probabilidad y Estadística. Expandí/contraé el árbol, recorré las cards de abajo con Tab, y achicá la ventana del navegador para ver el sidebar pasar a modo drawer.</p>
+
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <span class="browser-dots"><span></span><span></span><span></span></span>
+          <span class="browser-url">studyvaults.dev / proba / <b>unidad-3-variables-aleatorias-discretas</b> / distribucion-de-poisson</span>
+        </div>
+
+        <div class="page-shell" id="pageShell">
+          <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="false" aria-controls="wikiSidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            Índice
+          </button>
+          <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+          <nav class="wiki-sidebar" id="wikiSidebar" aria-label="Índice de Probabilidad y Estadística">
+            <div class="sidebar-head">
+              <span class="sidebar-mark">PROBA</span>
+              <span class="sidebar-title">Probabilidad y Estadística</span>
+            </div>
+            <ul class="tree-root">
+              <li>
+                <details class="tree-unit">
+                  <summary><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2.5l4 3.5-4 3.5"/></svg><span class="unit-txt">Unidad 1 — Probabilidad</span></summary>
+                  <ul>
+                    <li><a href="#">Axiomas y espacio muestral</a></li>
+                    <li><a href="#">Probabilidad condicional</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details class="tree-unit">
+                  <summary><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2.5l4 3.5-4 3.5"/></svg><span class="unit-txt">Unidad 2 — Variables Aleatorias</span></summary>
+                  <ul>
+                    <li><a href="#">Variables aleatorias: introducción</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details class="tree-unit" open>
+                  <summary><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2.5l4 3.5-4 3.5"/></svg><span class="unit-txt">Unidad 3 — Variables Aleatorias Discretas</span></summary>
+                  <ul>
+                    <li><a href="#">Distribución Bernoulli</a></li>
+                    <li><a href="#">Distribución Binomial</a></li>
+                    <li><a href="#" class="current" aria-current="page">Distribución de Poisson</a></li>
+                    <li><a href="#">Distribución Geométrica</a></li>
+                    <li><a href="#">Distribución Hipergeométrica</a></li>
+                    <li><a href="#">Distribución Binomial Negativa</a></li>
+                    <li><a href="#">Comparación de distribuciones discretas</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details class="tree-unit">
+                  <summary><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2.5l4 3.5-4 3.5"/></svg><span class="unit-txt">Unidad 4 — Variables Continuas</span></summary>
+                  <ul>
+                    <li><a href="#">Distribución Uniforme</a></li>
+                    <li><a href="#">Distribución Normal</a></li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </nav>
+
+          <div class="wiki-main">
+            <nav class="breadcrumb" aria-label="Miga de pan">
+              <a href="#">Inicio</a><span class="sep">›</span>
+              <a href="#">Proba</a><span class="sep">›</span>
+              <span class="current">Distribución de Poisson</span>
+            </nav>
+
+            <article>
+              <h1>Distribución de Poisson</h1>
+              <p class="lede">Unidad 3 — Variables Aleatorias Discretas</p>
+
+              <p>La distribución de Poisson modela la cantidad de eventos que ocurren en un intervalo fijo de tiempo o espacio, cuando esos eventos suceden de forma independiente entre sí y a una tasa promedio constante <span class="mono">λ</span> (lambda). Aparece cada vez que contamos llegadas, fallas o cualquier fenómeno poco frecuente que se repite muchas veces sobre un intervalo grande: autos que pasan por un peaje en una hora, errores de tipeo por página, clientes que entran a un local.</p>
+
+              <h2 class="section-h">Función de probabilidad puntual</h2>
+              <p>La probabilidad de observar exactamente <span class="mono">k</span> eventos en el intervalo está dada por:</p>
+
+              <div class="entry" style="--k-color: var(--k-formula)">
+                <div class="entry-head"><span class="tag-pill">FÓRMULA</span><span class="entry-label">Función de probabilidad — Poisson(λ)</span></div>
+                <div class="entry-math">
+                  <span class="math"><span class="var">P</span>(<span class="var">X</span>=<span class="var">k</span>)<span class="op">=</span><span class="frac"><span class="num">λ<sup><span class="var">k</span></sup>&#8202;<span class="var">e</span><sup>−λ</sup></span><span class="den"><span class="var">k</span>!</span></span></span>
+                </div>
+              </div>
+
+              <p style="margin-top:18px">con <span class="mono">λ&gt;0</span> y <span class="mono">k=0,1,2,…</span>. El parámetro <span class="mono">λ</span> representa a la vez la media y la varianza de la distribución — una particularidad que la distingue de la binomial, donde esos dos valores dependen de <span class="mono">n</span> y <span class="mono">p</span> por separado.</p>
+
+              <ul class="props">
+                <li><b>E[X] = λ</b> — valor esperado</li>
+                <li><b>Var(X) = λ</b> — varianza (igual a la media)</li>
+                <li><b>Soporte:</b> enteros no negativos, sin cota superior</li>
+              </ul>
+
+              <h2 class="section-h">Relación con la distribución binomial</h2>
+              <p>Cuando <span class="mono">n</span> es grande y <span class="mono">p</span> es chico, de forma que el producto <span class="mono">n·p</span> se mantiene moderado, la Binomial(<span class="mono">n</span>, <span class="mono">p</span>) se aproxima muy bien por una Poisson con <span class="mono">λ = n·p</span>. Esta aproximación es la que usamos en la práctica cuando contar "éxitos sobre muchísimos intentos raros" — como fallas de fabricación en un lote enorme — resulta más simple de plantear como tasa que como conteo de ensayos independientes.</p>
+            </article>
+
+            <hr class="cutline" />
+
+            <span class="new-flag">NUEVO — antes había que volver al índice para esto</span>
+
+            <div class="pn-progress">
+              <span>En esta sección · 3 de 7</span>
+              <span class="bar"><i></i></span>
+            </div>
+
+            <div class="pn-nav">
+              <a class="pn-card pn-prev" href="#">
+                <span class="pn-eyebrow">‹ Anterior</span>
+                <span class="pn-title">Distribución Binomial</span>
+              </a>
+              <a class="pn-card pn-next" href="#">
+                <span class="pn-eyebrow">Siguiente ›</span>
+                <span class="pn-title">Distribución Geométrica</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. NOTAS DE IMPLEMENTACIÓN -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s3">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Detalle
+      </div>
+      <h2 class="spec-title">Cómo se comporta</h2>
+      <p class="spec-dek">Detalles de borde ya resueltos en este mock, para que no haya sorpresas al pasarlo a producción.</p>
+
+      <div class="card pad">
+        <ul class="props" style="max-width:none">
+          <li><b>Orden:</b> el prev/next se deriva del mismo árbol que ves en el sidebar — no hay una lista separada que mantener sincronizada.</li>
+          <li><b>Progreso:</b> "En esta sección · x de y" cuenta sólo las notas de la unidad actual, no la wiki entera.</li>
+          <li><b>Teclado:</b> las dos cards son <span class="mono">&lt;a&gt;</span> nativos — Tab + Enter alcanza, y el foco usa el mismo anillo coral que el resto del sistema.</li>
+          <li><b>Bordes de unidad:</b> si la nota es la primera o la última de la unidad, ese lado pasa a un estado vacío ("Fin de la unidad · volver al índice") en vez de romper la grilla de dos columnas.</li>
+          <li><b>Mobile (&lt;760px):</b> el árbol pasa a un drawer detrás del botón "Índice"; las cards prev/next se apilan en una sola columna.</li>
+          <li><b>Movimiento reducido:</b> si el sistema pide <span class="mono">prefers-reduced-motion</span>, se cortan las transiciones de hover/drawer.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Módulo A · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+
+    (function () {
+      var toggle = document.getElementById('sidebarToggle');
+      var sidebar = document.getElementById('wikiSidebar');
+      var backdrop = document.getElementById('sidebarBackdrop');
+      if (!toggle || !sidebar || !backdrop) return;
+
+      function openSidebar() {
+        sidebar.classList.add('open');
+        backdrop.classList.add('show');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        backdrop.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      toggle.addEventListener('click', function () {
+        var isOpen = sidebar.classList.contains('open');
+        if (isOpen) { closeSidebar(); } else { openSidebar(); }
+      });
+      backdrop.addEventListener('click', closeSidebar);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeSidebar();
+      });
+      sidebar.addEventListener('click', function (e) {
+        if (e.target.tagName === 'A') closeSidebar();
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StudyVaults — Índice de revisión de diseño</title>
+<style>
+  :root{
+    --brown:#241208; --zinc:#27272a; --blue:#92cff2; --gray:#a1a1aa; --coral:#f47c59; --white:#fff;
+    /* CLARO (default) */
+    --bg:#f5f4f4;
+    --surface:#ffffff;
+    --surface-2: color-mix(in srgb, #ffffff 92%, var(--brown));
+    --text: var(--brown);
+    --text-2: color-mix(in srgb, var(--brown) 52%, var(--white));
+    --border: color-mix(in srgb, var(--brown) 14%, transparent);
+    --hair: color-mix(in srgb, var(--brown) 9%, transparent);
+    --serif: Georgia, "Times New Roman", serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  [data-theme="dark"]{
+    --bg: color-mix(in srgb, var(--brown) 86%, var(--white));
+    --surface: var(--brown);
+    --surface-2: color-mix(in srgb, var(--brown) 80%, var(--white));
+    --text: var(--white); --text-2: var(--gray);
+    --border: color-mix(in srgb, var(--white) 12%, transparent);
+    --hair: color-mix(in srgb, var(--white) 8%, transparent);
+  }
+  .theme-btn{position:fixed; top:16px; right:16px; z-index:10; font-family:var(--mono); font-size:12px;
+    background:var(--surface); color:var(--text-2); border:1px solid var(--border); border-radius:9999px;
+    padding:6px 13px; cursor:pointer; transition:border-color .18s ease, color .18s ease}
+  .theme-btn:hover{border-color:color-mix(in srgb,var(--coral) 55%,var(--border)); color:var(--text)}
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--serif); line-height:1.5;
+    padding:48px 24px 80px;
+  }
+  .wrap{max-width:920px; margin:0 auto}
+  .kick{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--coral); margin:0 0 10px}
+  h1{font-size:clamp(1.8rem,3vw+1rem,2.6rem); margin:0 0 8px; font-weight:600; letter-spacing:-.01em}
+  .lede{color:var(--text-2); font-size:16px; max-width:64ch; margin:0 0 6px}
+  .meta{font-family:var(--mono); font-size:12px; color:var(--text-2); margin:14px 0 40px}
+  .meta b{color:var(--text); font-weight:600}
+  section{margin:0 0 34px}
+  .sec-head{display:flex; align-items:baseline; gap:12px; padding-bottom:10px; margin-bottom:14px; border-bottom:1px solid var(--hair)}
+  .sec-head h2{font-size:1.15rem; margin:0; font-weight:600}
+  .sec-head .tag{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2)}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media(max-width:680px){ .grid{grid-template-columns:1fr} body{padding:32px 16px 60px} }
+  a.card{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:14px 16px; transition:border-color .18s ease, transform .18s ease, background .18s ease;
+  }
+  a.card:hover{ border-color: color-mix(in srgb, var(--coral) 55%, var(--border)); background:var(--surface-2); transform:translateY(-1px) }
+  a.card:focus-visible{ outline:2px solid var(--coral); outline-offset:2px }
+  .card .t{display:flex; align-items:center; gap:9px; margin-bottom:5px}
+  .card .code{font-family:var(--mono); font-size:11px; color:var(--coral)}
+  .card .name{font-weight:600; font-size:15.5px}
+  .card .d{color:var(--text-2); font-size:13.5px; line-height:1.45}
+  .card .arrow{margin-left:auto; color:var(--text-2); font-family:var(--mono); font-size:13px}
+  .foot{margin-top:48px; padding-top:16px; border-top:1px solid var(--hair); color:var(--text-2); font-family:var(--mono); font-size:11.5px; line-height:1.7}
+  .note{background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 14px; color:var(--text-2); font-size:13px; margin:0 0 34px}
+  .note b{color:var(--text)}
+</style>
+</head>
+<body>
+<button class="theme-btn" id="tt" aria-label="Cambiar tema">☾ oscuro</button>
+<div class="wrap">
+  <p class="kick">StudyVaults · Revisión de diseño</p>
+  <h1>Overhaul de UI/UX — mockups para revisar</h1>
+  <p class="lede">Todos los rediseños del overhaul, como mockups navegables (self-contained, oscuro por defecto con toggle a claro). Ninguno toca el sitio real todavía: es la fase de diseño para aprobar.</p>
+  <p class="meta"><b>17 páginas</b> · <b>7 bloques</b> · datos reales o de ejemplo según el caso · <b>nada pusheado</b></p>
+
+  <div class="note"><b>Cómo leerlo:</b> cada tarjeta abre un mockup. Probá el toggle oscuro/claro arriba a la derecha de cada uno. Los que dicen “datos de ejemplo” usan mock hasta que definas los datos reales.</div>
+
+  <section>
+    <div class="sec-head"><h2>Fundamentos</h2><span class="tag">el lenguaje que usa todo lo demás</span></div>
+    <div class="grid">
+      <a class="card" href="./foundations.html">
+        <div class="t"><span class="code">SV·001</span><span class="name">Lenguaje de diseño</span><span class="arrow">→</span></div>
+        <div class="d">Paleta “Technical Split”, tokens, paleta de hojas (actual vs propuesta), badges de minor, chips (antes/después) y CommissionSelect.</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Módulo A</h2><span class="tag">Landing · Navegación · UI</span></div>
+    <div class="grid">
+      <a class="card" href="./module-a-landing.html">
+        <div class="t"><span class="name">Landing + Footer</span><span class="arrow">→</span></div>
+        <div class="d">Home recortada, grafo movido a la derecha y más chico, grilla de materias con banners propios, footer compacto.</div>
+      </a>
+      <a class="card" href="./module-a-toolkits.html">
+        <div class="t"><span class="name">Toolkits bespoke</span><span class="arrow">→</span></div>
+        <div class="d">Identidad propia por materia (MNA=matriz, Proba=Gauss, Economía=oferta/demanda) + runner compartido.</div>
+      </a>
+      <a class="card" href="./module-a-electivas-intro.html">
+        <div class="t"><span class="name">Intro de /electivas</span><span class="arrow">→</span></div>
+        <div class="d">Pseudo-landing animada que explica cada feature del planner, con los colores reales de los minors.</div>
+      </a>
+      <a class="card" href="./module-a-wiki-nav.html">
+        <div class="t"><span class="name">Navegación wiki</span><span class="arrow">→</span></div>
+        <div class="d">Prev/next secuencial entre notas + “X de N”, sobre una página wiki realista con árbol lateral.</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Módulo B</h2><span class="tag">Grafos y visuales</span></div>
+    <div class="grid">
+      <a class="card" href="./module-b-correlativas.html">
+        <div class="t"><span class="name">Mapa de correlativas</span><span class="arrow">→</span></div>
+        <div class="d">DAG con pan/zoom + Ajustar (arregla el overflow), highlight de la cadena, panel de detalle Requiere/Habilita.</div>
+      </a>
+      <a class="card" href="./3d-temporal-graph.html">
+        <div class="t"><span class="name">Grafo temporal 3D</span><span class="arrow">→</span></div>
+        <div class="d">Torre 3D de la malla: el eje vertical es el avance en la carrera. Slider de revelado por semestre. (Demo aparte.)</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Módulo C</h2><span class="tag">Componentes de curso · Electivas</span></div>
+    <div class="grid">
+      <a class="card" href="./module-c-modal.html">
+        <div class="t"><span class="name">Modal de curso</span><span class="arrow">→</span></div>
+        <div class="d">DetailDrawer arreglado: X sticky, acciones simétricas, colapso responsive ≤820px.</div>
+      </a>
+      <a class="card" href="./module-c-cards.html">
+        <div class="t"><span class="name">Cards + chips + badges</span><span class="arrow">→</span></div>
+        <div class="d">Chips 11→5 señales; badge de minor(s) en cada electiva (single y multi); obligatorias sin minor.</div>
+      </a>
+      <a class="card" href="./module-c-recommend.html">
+        <div class="t"><span class="name">Recomendador + comisiones</span><span class="arrow">→</span></div>
+        <div class="d">Recomendaciones en una línea [minor][nombre][cr][+] con fit en tooltip; CommissionSelect unificado.</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Módulo D</h2><span class="tag">PDF · Hojas de estudio</span></div>
+    <div class="grid">
+      <a class="card" href="./module-d-sheets.html">
+        <div class="t"><span class="name">Hojas de estudio</span><span class="arrow">→</span></div>
+        <div class="d">Paleta nueva + relleno de todo el cuadro con borde parejo; estructura Unidad/Sub-unidad + bloque de código.</div>
+      </a>
+      <a class="card" href="./module-d-syllabus.html">
+        <div class="t"><span class="name">Syllabus unificado</span><span class="arrow">→</span></div>
+        <div class="d">Programa del cuatrimestre imprimible: tabla de evaluaciones combinada + contenidos + bibliografía. Datos de ejemplo.</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Módulo E</h2><span class="tag">Planner · Combinador</span></div>
+    <div class="grid">
+      <a class="card" href="./module-e-planner.html">
+        <div class="t"><span class="name">Plan de cursada</span><span class="arrow">→</span></div>
+        <div class="d">Banner con selectores integrados, tabs Calendario→Roadmap→Minors, menú 3-dots por semestre, lock, drag&drop.</div>
+      </a>
+      <a class="card" href="./module-e-combinador.html">
+        <div class="t"><span class="name">Combinador de horarios</span><span class="arrow">→</span></div>
+        <div class="d">Calendario a todo el ancho, recomendador hideable, menú de descargas (3 opciones), guardar preferencia.</div>
+      </a>
+      <a class="card" href="./module-e-overlays.html">
+        <div class="t"><span class="name">Diálogos del planner</span><span class="arrow">→</span></div>
+        <div class="d">Reset, Import/Export, opciones de descarga, finalizar cuatrimestre, tooltips de Auto/Comisiones.</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Finales</h2><span class="tag">feature nueva · plan de finales</span></div>
+    <div class="grid">
+      <a class="card" href="./module-f-checks.html">
+        <div class="t"><span class="name">Doble check (aprobadas)</span><span class="arrow">→</span></div>
+        <div class="d">Marca por materia: ✓ cursada regular / ✓✓ final aprobado; promocionables sin final; contador de finales pendientes.</div>
+      </a>
+      <a class="card" href="./module-f-combinador.html">
+        <div class="t"><span class="name">Combinación de finales</span><span class="arrow">→</span></div>
+        <div class="d">Período Julio/Dic/Feb + calendario de mesas (fechas híbridas), conflictos y combinación sugerida; correlativas de finales. Datos de ejemplo.</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="foot">
+    StudyVaults — índice de revisión de diseño · no forma parte del build de producción.<br>
+    Pendiente de tus decisiones: paleta de hojas (uso la propuesta) · datos reales de syllabus, mesas de finales y correlativas de finales (mock por ahora) · 7 ilustraciones de materias (track de imágenes aparte).
+  </div>
+</div>
+<script>
+  var tt = document.getElementById('tt');
+  tt.addEventListener('click', function(){
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark){ document.documentElement.removeAttribute('data-theme'); tt.textContent = '☾ oscuro'; }
+    else { document.documentElement.setAttribute('data-theme','dark'); tt.textContent = '☀ claro'; }
+  });
+</script>
+</body>
+</html>

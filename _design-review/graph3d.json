@@ -1,0 +1,2961 @@
+{
+"meta": {
+"title": "Malla curricular · grafo temporal 3D",
+"nObligatorias": 44,
+"nElectivas": 95,
+"nLinks": 122,
+"spineColor": "#7f9bbf"
+},
+"layers": [
+{
+"sem": 1,
+"label": "Año 1 · C1"
+},
+{
+"sem": 2,
+"label": "Año 1 · C2"
+},
+{
+"sem": 3,
+"label": "Año 2 · C1"
+},
+{
+"sem": 4,
+"label": "Año 2 · C2"
+},
+{
+"sem": 5,
+"label": "Año 3 · C1"
+},
+{
+"sem": 6,
+"label": "Año 3 · C2"
+},
+{
+"sem": 7,
+"label": "Año 4 · C1"
+},
+{
+"sem": 8,
+"label": "Año 4 · C2"
+},
+{
+"sem": 9,
+"label": "Año 5 · C1"
+},
+{
+"sem": 10,
+"label": "Año 5 · C2"
+}
+],
+"minors": [
+{
+"name": "Ciencia de Datos",
+"short": "CD",
+"color": "#85a2c2"
+},
+{
+"name": "Imágenes y Realidad Virtual",
+"short": "IRV",
+"color": "#c592ab"
+},
+{
+"name": "Inteligencia Artificial",
+"short": "IA",
+"color": "#a9b27e"
+},
+{
+"name": "Arquitectura de Software",
+"short": "ARQ",
+"color": "#a497c0"
+}
+],
+"nodes": [
+{
+"i": 0,
+"id": "12.09",
+"label": "Quími",
+"name": "Química",
+"type": "obligatoria",
+"sem": 3,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 1,
+"id": "12.83",
+"label": "SOA",
+"name": "Seguridad Ocupacional y Ambiental",
+"type": "obligatoria",
+"sem": 9,
+"cred": 3,
+"creditosReq": 140,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 2,
+"id": "31.08",
+"label": "SR",
+"name": "Sistemas de Representación",
+"type": "obligatoria",
+"sem": 1,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 3,
+"id": "61.23",
+"label": "Eco",
+"name": "Economía para Ingenieros",
+"type": "obligatoria",
+"sem": 7,
+"cred": 3,
+"creditosReq": 120,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 4,
+"id": "61.32",
+"label": "Der",
+"name": "Derecho para Ingenieros",
+"type": "obligatoria",
+"sem": 7,
+"cred": 3,
+"creditosReq": 120,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 5,
+"id": "72.03",
+"label": "II",
+"name": "Introducción a la Informática",
+"type": "obligatoria",
+"sem": 1,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 6,
+"id": "72.07",
+"label": "PC",
+"name": "Protocolos de Comunicación",
+"type": "obligatoria",
+"sem": 6,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 7,
+"id": "72.08",
+"label": "AC",
+"name": "Arquitectura de Computadoras",
+"type": "obligatoria",
+"sem": 4,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 8,
+"id": "72.11",
+"label": "SO",
+"name": "Sistemas Operativos",
+"type": "obligatoria",
+"sem": 5,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 9,
+"id": "72.20",
+"label": "Redes",
+"name": "Redes de Información",
+"type": "obligatoria",
+"sem": 9,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 10,
+"id": "72.25",
+"label": "SimSist",
+"name": "Simulación de Sistemas",
+"type": "obligatoria",
+"sem": 8,
+"cred": 6,
+"creditosReq": 140,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 11,
+"id": "72.27",
+"label": "SIA",
+"name": "Sistemas de Inteligencia Artificial",
+"type": "obligatoria",
+"sem": 8,
+"cred": 6,
+"creditosReq": 140,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 12,
+"id": "72.31",
+"label": "PI",
+"name": "Programación Imperativa",
+"type": "obligatoria",
+"sem": 2,
+"cred": 9,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 13,
+"id": "72.32",
+"label": "DPDX",
+"name": "Diseño y Procesamiento de Documentos XML",
+"type": "obligatoria",
+"sem": 3,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 14,
+"id": "72.33",
+"label": "POO",
+"name": "Programación Orientada a Objetos",
+"type": "obligatoria",
+"sem": 3,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 15,
+"id": "72.34",
+"label": "EDA",
+"name": "Estructura de Datos y Algoritmos",
+"type": "obligatoria",
+"sem": 4,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 16,
+"id": "72.35",
+"label": "ISI",
+"name": "Ingenieria de Software I",
+"type": "obligatoria",
+"sem": 5,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 17,
+"id": "72.36",
+"label": "IHCH",
+"name": "Interacción Hombre-Computadora (HCI)",
+"type": "obligatoria",
+"sem": 5,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 18,
+"id": "72.37",
+"label": "BDI",
+"name": "Base de Datos I",
+"type": "obligatoria",
+"sem": 5,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 19,
+"id": "72.38",
+"label": "PAW",
+"name": "Proyecto de Aplicaciones Web",
+"type": "obligatoria",
+"sem": 6,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 20,
+"id": "72.39",
+"label": "ATLC",
+"name": "Autómatas, Teoría de Lenguajes y Compiladores",
+"type": "obligatoria",
+"sem": 6,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 21,
+"id": "72.40",
+"label": "ISW II",
+"name": "Ingenieria del Software II",
+"type": "obligatoria",
+"sem": 7,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 22,
+"id": "72.41",
+"label": "BDII",
+"name": "Base de Datos II",
+"type": "obligatoria",
+"sem": 7,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 23,
+"id": "72.42",
+"label": "POD",
+"name": "Programación de Objetos Distribuidos",
+"type": "obligatoria",
+"sem": 7,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 24,
+"id": "72.43",
+"label": "GPI",
+"name": "Gestión de Proyectos Informáticos",
+"type": "obligatoria",
+"sem": 8,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 25,
+"id": "72.44",
+"label": "Cripto",
+"name": "Criptografía y Seguridad",
+"type": "obligatoria",
+"sem": 8,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 26,
+"id": "72.45",
+"label": "PF",
+"name": "Proyecto Final",
+"type": "obligatoria",
+"sem": 9,
+"cred": 12,
+"creditosReq": 160,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 27,
+"id": "72.98",
+"label": "PL",
+"name": "Práctica Laboral",
+"type": "obligatoria",
+"sem": 10,
+"cred": 0,
+"creditosReq": 192,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 28,
+"id": "93.07",
+"label": "MN",
+"name": "Métodos Numéricos",
+"type": "obligatoria",
+"sem": 6,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 29,
+"id": "93.24",
+"label": "PE",
+"name": "Probabilidad y Estadística",
+"type": "obligatoria",
+"sem": 4,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 30,
+"id": "93.26",
+"label": "AMI",
+"name": "Análisis Matemático I",
+"type": "obligatoria",
+"sem": 1,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 31,
+"id": "93.28",
+"label": "AMII",
+"name": "Análisis Matemático II",
+"type": "obligatoria",
+"sem": 2,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 32,
+"id": "93.35",
+"label": "LC",
+"name": "Lógica Computacional",
+"type": "obligatoria",
+"sem": 3,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 33,
+"id": "93.41",
+"label": "FI",
+"name": "Física I",
+"type": "obligatoria",
+"sem": 2,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 34,
+"id": "93.42",
+"label": "FII",
+"name": "Física II",
+"type": "obligatoria",
+"sem": 3,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 35,
+"id": "93.43",
+"label": "FIII",
+"name": "Física III",
+"type": "obligatoria",
+"sem": 4,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 36,
+"id": "93.58",
+"label": "Álgeb",
+"name": "Álgebra",
+"type": "obligatoria",
+"sem": 1,
+"cred": 9,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 37,
+"id": "93.59",
+"label": "MD",
+"name": "Matemática Discreta",
+"type": "obligatoria",
+"sem": 2,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 38,
+"id": "93.75",
+"label": "MNA",
+"name": "Métodos Numéricos Avanzados",
+"type": "obligatoria",
+"sem": 7,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 39,
+"id": "94.21",
+"label": "FGI",
+"name": "Formación General I",
+"type": "obligatoria",
+"sem": 6,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 40,
+"id": "94.23",
+"label": "FG3",
+"name": "Formación General III",
+"type": "obligatoria",
+"sem": 10,
+"cred": 3,
+"creditosReq": 168,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 41,
+"id": "94.24",
+"label": "MA",
+"name": "Metodología del Aprendizaje",
+"type": "obligatoria",
+"sem": 1,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 42,
+"id": "94.51",
+"label": "II",
+"name": "Inglés I",
+"type": "obligatoria",
+"sem": 6,
+"cred": 0,
+"creditosReq": 0,
+"ciclo": "Ciclo Básico",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 43,
+"id": "94.52",
+"label": "Inglés II",
+"name": "Inglés II",
+"type": "obligatoria",
+"sem": 10,
+"cred": 0,
+"creditosReq": 0,
+"ciclo": "Ciclo Profesional",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 44,
+"id": "10.07",
+"label": "Creat",
+"name": "Creatividad",
+"type": "electiva",
+"sem": 5.5,
+"cred": 3,
+"creditosReq": 96,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 45,
+"id": "10.09",
+"label": "FpE",
+"name": "Formación para Emprendedores",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 46,
+"id": "11.36",
+"label": "IC",
+"name": "Innovación y Competitividad",
+"type": "electiva",
+"sem": 10.0,
+"cred": 3,
+"creditosReq": 192,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 47,
+"id": "16.04",
+"label": "Neuro",
+"name": "Neurociencias y Desarrollo Productivo",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 48,
+"id": "16.50",
+"label": "Bioinfo",
+"name": "Introducción a la Bioinformática",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 49,
+"id": "16.57",
+"label": "RobBio",
+"name": "Robótica Bioinspirada",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 50,
+"id": "16.82",
+"label": "NC",
+"name": "Neurociencia Computacional",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 51,
+"id": "22.48",
+"label": "PI",
+"name": "Procesamiento de Imágenes",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 52,
+"id": "23.15",
+"label": "RV",
+"name": "Realidad Virtual",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IRV",
+"IA"
+],
+"color": "#c592ab"
+},
+{
+"i": 53,
+"id": "25.04",
+"label": "Cuántica",
+"name": "Computación Cuántica",
+"type": "electiva",
+"sem": 7.75,
+"cred": 6,
+"creditosReq": 144,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 54,
+"id": "61.08",
+"label": "DerDig",
+"name": "Derecho Digital",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 55,
+"id": "61.11",
+"label": "DerLab",
+"name": "Derecho Laboral y Seguridad Social en la Empresa",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 56,
+"id": "61.13",
+"label": "PCont",
+"name": "Práctica Contractual",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 57,
+"id": "61.50",
+"label": "Finanzas",
+"name": "Finanzas de la Empresa",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 58,
+"id": "71.48",
+"label": "IRA",
+"name": "Introducción a la Realidad Aumentada",
+"type": "electiva",
+"sem": 3.39,
+"cred": 1,
+"creditosReq": 51,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 59,
+"id": "72.22",
+"label": "STF",
+"name": "Sistemas Tolerantes a Fallas",
+"type": "electiva",
+"sem": 1.0,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 60,
+"id": "72.23",
+"label": "DCC",
+"name": "Diseño y Construcción de Compiladores",
+"type": "electiva",
+"sem": 1.0,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 61,
+"id": "72.29",
+"label": "TLP",
+"name": "Tipos para Lenguajes de Programación",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 62,
+"id": "72.46",
+"label": "RBC",
+"name": "Robótica Basada en Comportamiento",
+"type": "electiva",
+"sem": 1.0,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 63,
+"id": "72.49",
+"label": "STF",
+"name": "Sistemas Tolerantes a Fallas",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 64,
+"id": "72.50",
+"label": "DevJueg",
+"name": "Introducción al Desarrollo de Videojuegos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 65,
+"id": "72.51",
+"label": "TW2RS",
+"name": "Tecnologías para Web 2.0 y Redes Sociales",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 66,
+"id": "72.52",
+"label": "ATI",
+"name": "Análisis y Tratamiento de Imágenes",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IRV",
+"IA"
+],
+"color": "#c592ab"
+},
+{
+"i": 67,
+"id": "72.53",
+"label": "Visión3D",
+"name": "Visión Computacional 3D",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IRV",
+"IA"
+],
+"color": "#c592ab"
+},
+{
+"i": 68,
+"id": "72.54",
+"label": "OLAP",
+"name": "OLAP y Explotación de Datos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"CD",
+"IA"
+],
+"color": "#85a2c2"
+},
+{
+"i": 69,
+"id": "72.55",
+"label": "OW",
+"name": "Ontologías en la Web",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 70,
+"id": "72.58",
+"label": "CG",
+"name": "Computación Gráfica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 71,
+"id": "72.59",
+"label": "SIAII",
+"name": "Sistemas de Inteligencia Artificial II",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 72,
+"id": "72.18",
+"label": "ProgFunc",
+"name": "Programación Funcional",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial",
+"Arquitectura de Software"
+],
+"areaShort": [
+"CD",
+"IA",
+"ARQ"
+],
+"color": "#85a2c2"
+},
+{
+"i": 73,
+"id": "72.61",
+"label": "TDV",
+"name": "Taller de Diseño de Videojuegos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 74,
+"id": "72.65",
+"label": "DV2IO",
+"name": "Desarrollo de Videojuegos 2D en Iphone OS",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 75,
+"id": "72.66",
+"label": "Embeb",
+"name": "Sistemas Embebidos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 76,
+"id": "72.67",
+"label": "RCC",
+"name": "Robótica Cinemática Computacional",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 77,
+"id": "72.68",
+"label": "ACI",
+"name": "Arte y Ciencia Interactivos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 78,
+"id": "72.69",
+"label": "SSBFI",
+"name": "Seguridad de Software basada en Flujo de Información",
+"type": "electiva",
+"sem": 1.0,
+"cred": 6,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 79,
+"id": "72.70",
+"label": "MIF",
+"name": "Modelos e Imágenes Fractales",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 80,
+"id": "72.71",
+"label": "ISI",
+"name": "Integración de Sistemas de Información",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Arquitectura de Software"
+],
+"areaShort": [
+"CD",
+"ARQ"
+],
+"color": "#85a2c2"
+},
+{
+"i": 81,
+"id": "72.72",
+"label": "AVMC",
+"name": "Análisis y Verificación de Modelos y Códigos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Arquitectura de Software"
+],
+"areaShort": [
+"CD",
+"ARQ"
+],
+"color": "#85a2c2"
+},
+{
+"i": 82,
+"id": "72.73",
+"label": "APRR",
+"name": "Aprendizaje por Refuerzo en Robótica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 83,
+"id": "72.74",
+"label": "VisInfo",
+"name": "Visualización de Información",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"CD",
+"IRV"
+],
+"color": "#85a2c2"
+},
+{
+"i": 84,
+"id": "72.75",
+"label": "ML",
+"name": "Aprendizaje Automático (Machine Learning)",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 85,
+"id": "72.77",
+"label": "Testing",
+"name": "Técnicas Automáticas para Testing de Software",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Arquitectura de Software"
+],
+"areaShort": [
+"CD",
+"ARQ"
+],
+"color": "#85a2c2"
+},
+{
+"i": 86,
+"id": "72.78",
+"label": "OE",
+"name": "OLAP Espacial",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"CD",
+"IA"
+],
+"color": "#85a2c2"
+},
+{
+"i": 87,
+"id": "72.79",
+"label": "SMA",
+"name": "Sistemas Multiagente I",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 88,
+"id": "72.80",
+"label": "BigData",
+"name": "Big Data",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Imágenes y Realidad Virtual",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"CD",
+"IRV",
+"IA"
+],
+"color": "#85a2c2"
+},
+{
+"i": 89,
+"id": "72.82",
+"label": "TN",
+"name": "Tópicos de NoSQL",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 90,
+"id": "72.84",
+"label": "BDESI",
+"name": "Bases de Datos Espaciales y Sist de Info Geográfica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"CD",
+"IRV"
+],
+"color": "#85a2c2"
+},
+{
+"i": 91,
+"id": "72.85",
+"label": "WebSem",
+"name": "Análisis de Datos en la Web Semántica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 92,
+"id": "72.86",
+"label": "TAV",
+"name": "Técnicas Avanzadas en Videojuegos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 93,
+"id": "72.87",
+"label": "DSon",
+"name": "Diseño Sonoro para Animación y Videojuegos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 94,
+"id": "72.88",
+"label": "INC",
+"name": "Introducción a la Neurociencia Computacional",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"CD",
+"IA"
+],
+"color": "#85a2c2"
+},
+{
+"i": 95,
+"id": "72.89",
+"label": "MDD",
+"name": "Moneda Digital Descentralizada",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 96,
+"id": "72.90",
+"label": "IoT",
+"name": "Internet de las Cosas",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"CD",
+"IA"
+],
+"color": "#85a2c2"
+},
+{
+"i": 97,
+"id": "72.92",
+"label": "Grafos",
+"name": "El Paradigma NoSQL - Bases de Datos de Grafos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 98,
+"id": "72.94",
+"label": "ISE",
+"name": "Introducción a los Sistemas Embebidos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 99,
+"id": "72.95",
+"label": "PICT",
+"name": "Proyecto de Innovación Científico-Tecnológico",
+"type": "electiva",
+"sem": 1.0,
+"cred": 12,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 100,
+"id": "72.96",
+"label": "AppMóvil",
+"name": "Proyecto de Aplicaciones Móviles",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual",
+"Arquitectura de Software"
+],
+"areaShort": [
+"IRV",
+"ARQ"
+],
+"color": "#c592ab"
+},
+{
+"i": 101,
+"id": "72.97",
+"label": "IPV",
+"name": "Introducción a la Programación de Videojuegos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 102,
+"id": "73.21",
+"label": "AppMP",
+"name": "Desarrollo de Aplicaciones Móviles Multiplataforma",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual",
+"Arquitectura de Software"
+],
+"areaShort": [
+"IRV",
+"ARQ"
+],
+"color": "#c592ab"
+},
+{
+"i": 103,
+"id": "73.22",
+"label": "DevOps",
+"name": "Fundamentos de DevOps",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 104,
+"id": "73.23",
+"label": "PODat",
+"name": "Programación Orientada a Datos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 105,
+"id": "73.30",
+"label": "DPS",
+"name": "Desarrollo Profesional de Software",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 106,
+"id": "73.40",
+"label": "ArqMS",
+"name": "Arquitectura de Microservicios",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 107,
+"id": "73.50",
+"label": "Infra",
+"name": "Infraestructura de Cómputo: Data Center, Cloud y Edge",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 108,
+"id": "73.60",
+"label": "IRE",
+"name": "Introducción a la Robótica Empresarial",
+"type": "electiva",
+"sem": 7.56,
+"cred": 1,
+"creditosReq": 140,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 109,
+"id": "73.61",
+"label": "Neuro",
+"name": "Neurorobótica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 110,
+"id": "73.62",
+"label": "IPP",
+"name": "Introducción a la Programación Paralela",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 111,
+"id": "73.63",
+"label": "REq",
+"name": "Redes Equivariantes",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 112,
+"id": "73.64",
+"label": "DL",
+"name": "Temas Avanzados en Deep Learning",
+"type": "electiva",
+"sem": 1.0,
+"cred": 2,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 113,
+"id": "73.65",
+"label": "PLN",
+"name": "Procesamiento del Lenguaje Natural",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 114,
+"id": "73.66",
+"label": "PIS",
+"name": "Procesamiento de Imágenes Satelitales",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 115,
+"id": "73.80",
+"label": "SO",
+"name": "Seguridad Ofensiva",
+"type": "electiva",
+"sem": 1.0,
+"cred": 1,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 116,
+"id": "73.81",
+"label": "Ciber",
+"name": "Cibersguridad Ofensiva y Defensiva",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 117,
+"id": "73.82",
+"label": "BDEM",
+"name": "Bases de Datos Espaciales y de Movilidad",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 118,
+"id": "73.84",
+"label": "CDA",
+"name": "Ciencia de Datos Aplicada",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"CD",
+"IA"
+],
+"color": "#85a2c2"
+},
+{
+"i": 119,
+"id": "73.89",
+"label": "Blockchain",
+"name": "Introducción a Blockchain y a Criptomonedas",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 120,
+"id": "73.98",
+"label": "DIV",
+"name": "Desarrollo Integral de Videojuegos",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 121,
+"id": "81.13",
+"label": "FutPos",
+"name": "Futuros Posibles",
+"type": "electiva",
+"sem": 7.56,
+"cred": 1,
+"creditosReq": 140,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 122,
+"id": "81.14",
+"label": "ProdM",
+"name": "Product Management",
+"type": "electiva",
+"sem": 6.62,
+"cred": 3,
+"creditosReq": 120,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 123,
+"id": "81.16",
+"label": "Negoc",
+"name": "Negociación",
+"type": "electiva",
+"sem": 7.56,
+"cred": 1,
+"creditosReq": 140,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 124,
+"id": "81.57",
+"label": "ASD",
+"name": "Arquitectura de Soluciones Digitales",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Arquitectura de Software"
+],
+"areaShort": [
+"ARQ"
+],
+"color": "#a497c0"
+},
+{
+"i": 125,
+"id": "81.74",
+"label": "RA",
+"name": "Introducción a la Realidad Aumentada",
+"type": "electiva",
+"sem": 3.39,
+"cred": 1,
+"creditosReq": 51,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual"
+],
+"areaShort": [
+"IRV"
+],
+"color": "#c592ab"
+},
+{
+"i": 126,
+"id": "82.08",
+"label": "Cloud",
+"name": "Cloud Computing",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos",
+"Inteligencia Artificial",
+"Arquitectura de Software"
+],
+"areaShort": [
+"CD",
+"IA",
+"ARQ"
+],
+"color": "#85a2c2"
+},
+{
+"i": 127,
+"id": "82.18",
+"label": "NLP",
+"name": "Procesamiento del Lenguaje Natural",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 128,
+"id": "82.21",
+"label": "FPDD",
+"name": "Factibilidad de Proyectos Data-Driven",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 129,
+"id": "94.26",
+"label": "CO",
+"name": "Comunicación Organizacional",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 130,
+"id": "94.42",
+"label": "ComEst",
+"name": "Comunicación Estratégica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 131,
+"id": "94.62",
+"label": "Ética",
+"name": "Ética en los Negocios",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 132,
+"id": "94.64",
+"label": "PExp",
+"name": "Prácticas Expositivas",
+"type": "electiva",
+"sem": 6.62,
+"cred": 3,
+"creditosReq": 120,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 133,
+"id": "94.65",
+"label": "PPS",
+"name": "Práctica Profesional Supervisada",
+"type": "electiva",
+"sem": 7.75,
+"cred": 0,
+"creditosReq": 144,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 134,
+"id": "94.92",
+"label": "EA",
+"name": "Escritura Académica",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+},
+{
+"i": 135,
+"id": "73.69",
+"label": "LLM",
+"name": "Large Language Models",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IA"
+],
+"color": "#a9b27e"
+},
+{
+"i": 136,
+"id": "73.70",
+"label": "ADNeuro",
+"name": "Análisis de Datos en Neurociencias",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Ciencia de Datos"
+],
+"areaShort": [
+"CD"
+],
+"color": "#85a2c2"
+},
+{
+"i": 137,
+"id": "74.60",
+"label": "Visión",
+"name": "Visión por Computadora",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [
+"Imágenes y Realidad Virtual",
+"Inteligencia Artificial"
+],
+"areaShort": [
+"IRV",
+"IA"
+],
+"color": "#c592ab"
+},
+{
+"i": 138,
+"id": "81.76",
+"label": "TecFin",
+"name": "Tecnología para las Finanzas",
+"type": "electiva",
+"sem": 1.0,
+"cred": 3,
+"creditosReq": 0,
+"ciclo": "",
+"areas": [],
+"areaShort": [],
+"color": "#7f9bbf"
+}
+],
+"links": [
+[
+5,
+12,
+"spine"
+],
+[
+6,
+9,
+"spine"
+],
+[
+6,
+23,
+"spine"
+],
+[
+6,
+25,
+"spine"
+],
+[
+7,
+8,
+"spine"
+],
+[
+8,
+6,
+"spine"
+],
+[
+8,
+19,
+"spine"
+],
+[
+8,
+22,
+"spine"
+],
+[
+12,
+7,
+"spine"
+],
+[
+12,
+13,
+"spine"
+],
+[
+12,
+14,
+"spine"
+],
+[
+13,
+17,
+"spine"
+],
+[
+14,
+15,
+"spine"
+],
+[
+14,
+16,
+"spine"
+],
+[
+14,
+17,
+"spine"
+],
+[
+15,
+8,
+"spine"
+],
+[
+15,
+10,
+"spine"
+],
+[
+15,
+11,
+"spine"
+],
+[
+15,
+18,
+"spine"
+],
+[
+15,
+20,
+"spine"
+],
+[
+16,
+19,
+"spine"
+],
+[
+16,
+21,
+"spine"
+],
+[
+17,
+19,
+"spine"
+],
+[
+18,
+19,
+"spine"
+],
+[
+18,
+22,
+"spine"
+],
+[
+18,
+23,
+"spine"
+],
+[
+28,
+10,
+"spine"
+],
+[
+28,
+38,
+"spine"
+],
+[
+29,
+11,
+"spine"
+],
+[
+30,
+31,
+"spine"
+],
+[
+30,
+33,
+"spine"
+],
+[
+31,
+28,
+"spine"
+],
+[
+31,
+29,
+"spine"
+],
+[
+31,
+34,
+"spine"
+],
+[
+31,
+35,
+"spine"
+],
+[
+32,
+18,
+"spine"
+],
+[
+33,
+35,
+"spine"
+],
+[
+36,
+12,
+"spine"
+],
+[
+36,
+31,
+"spine"
+],
+[
+36,
+32,
+"spine"
+],
+[
+36,
+37,
+"spine"
+],
+[
+37,
+15,
+"spine"
+],
+[
+42,
+43,
+"spine"
+],
+[
+3,
+57,
+"unlock"
+],
+[
+3,
+128,
+"unlock"
+],
+[
+4,
+54,
+"unlock"
+],
+[
+4,
+55,
+"unlock"
+],
+[
+4,
+56,
+"unlock"
+],
+[
+6,
+80,
+"unlock"
+],
+[
+6,
+124,
+"unlock"
+],
+[
+7,
+49,
+"unlock"
+],
+[
+7,
+98,
+"unlock"
+],
+[
+8,
+110,
+"unlock"
+],
+[
+9,
+107,
+"unlock"
+],
+[
+11,
+62,
+"unlock"
+],
+[
+11,
+71,
+"unlock"
+],
+[
+11,
+87,
+"unlock"
+],
+[
+11,
+111,
+"unlock"
+],
+[
+11,
+112,
+"unlock"
+],
+[
+11,
+118,
+"unlock"
+],
+[
+12,
+83,
+"unlock"
+],
+[
+13,
+69,
+"unlock"
+],
+[
+13,
+91,
+"unlock"
+],
+[
+13,
+126,
+"unlock"
+],
+[
+14,
+110,
+"unlock"
+],
+[
+15,
+50,
+"unlock"
+],
+[
+15,
+52,
+"unlock"
+],
+[
+15,
+61,
+"unlock"
+],
+[
+15,
+64,
+"unlock"
+],
+[
+15,
+66,
+"unlock"
+],
+[
+15,
+67,
+"unlock"
+],
+[
+15,
+70,
+"unlock"
+],
+[
+15,
+72,
+"unlock"
+],
+[
+15,
+73,
+"unlock"
+],
+[
+15,
+74,
+"unlock"
+],
+[
+15,
+84,
+"unlock"
+],
+[
+15,
+93,
+"unlock"
+],
+[
+15,
+94,
+"unlock"
+],
+[
+15,
+101,
+"unlock"
+],
+[
+15,
+104,
+"unlock"
+],
+[
+16,
+80,
+"unlock"
+],
+[
+16,
+103,
+"unlock"
+],
+[
+16,
+124,
+"unlock"
+],
+[
+18,
+48,
+"unlock"
+],
+[
+18,
+69,
+"unlock"
+],
+[
+18,
+80,
+"unlock"
+],
+[
+18,
+90,
+"unlock"
+],
+[
+18,
+91,
+"unlock"
+],
+[
+18,
+117,
+"unlock"
+],
+[
+18,
+124,
+"unlock"
+],
+[
+19,
+100,
+"unlock"
+],
+[
+19,
+102,
+"unlock"
+],
+[
+19,
+105,
+"unlock"
+],
+[
+21,
+106,
+"unlock"
+],
+[
+22,
+68,
+"unlock"
+],
+[
+22,
+88,
+"unlock"
+],
+[
+22,
+89,
+"unlock"
+],
+[
+22,
+97,
+"unlock"
+],
+[
+22,
+106,
+"unlock"
+],
+[
+22,
+107,
+"unlock"
+],
+[
+23,
+63,
+"unlock"
+],
+[
+23,
+65,
+"unlock"
+],
+[
+25,
+95,
+"unlock"
+],
+[
+25,
+115,
+"unlock"
+],
+[
+25,
+116,
+"unlock"
+],
+[
+25,
+119,
+"unlock"
+],
+[
+101,
+92,
+"unlock"
+],
+[
+101,
+120,
+"unlock"
+],
+[
+28,
+96,
+"unlock"
+],
+[
+28,
+113,
+"unlock"
+],
+[
+28,
+127,
+"unlock"
+],
+[
+29,
+50,
+"unlock"
+],
+[
+29,
+68,
+"unlock"
+],
+[
+29,
+84,
+"unlock"
+],
+[
+29,
+94,
+"unlock"
+],
+[
+31,
+50,
+"unlock"
+],
+[
+35,
+96,
+"unlock"
+],
+[
+36,
+52,
+"unlock"
+],
+[
+38,
+51,
+"unlock"
+],
+[
+38,
+66,
+"unlock"
+],
+[
+38,
+84,
+"unlock"
+],
+[
+38,
+94,
+"unlock"
+]
+]
+}

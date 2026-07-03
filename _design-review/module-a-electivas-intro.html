@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Electivas · Intro animada (mockup)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults
+     (idénticos a foundations.html — única fuente de verdad)
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-5: 40px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    --k-theorem: #b6a4d6; --k-formula: #7cc0af; --k-method: #d8b279;
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-theorem: #5e3b9b; --k-formula: #227762; --k-method: #8c6121;
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- noise/grain (very subtle, dark only) ---------- */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    opacity:.035; mix-blend-mode:overlay;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+  }
+  html[data-theme="light"] .grain{ opacity:.02; }
+
+  /* ---------- header (idéntico al portal real) ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; text-decoration:none; color:var(--text); }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .nav-links{ display:flex; align-items:center; gap: 26px; }
+  .nav-links a{
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--text-2); text-decoration:none; padding:4px 0; position:relative;
+    transition: color .2s var(--ease);
+  }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; right:100%; bottom:-2px; height:1px; background:var(--accent);
+    transition: right .25s var(--ease);
+  }
+  .nav-links a:hover{ color:var(--text); }
+  .nav-links a:hover::after{ right:0; }
+  .nav-links a[aria-current="page"]{ color:var(--accent); }
+  .nav-links a[aria-current="page"]::after{ right:0; }
+
+  .topbar-actions{ display:flex; align-items:center; gap:10px; }
+  .search-trigger{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text-2); font-family:var(--font-mono); font-size:11.5px;
+    padding:7px 12px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .2s var(--ease);
+  }
+  .search-trigger:hover{ background:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); color:var(--text); }
+  kbd{
+    font-family:var(--font-mono); font-size:10px; color:var(--text-2);
+    background:var(--surface-hover); border:1px solid var(--border-subtle);
+    border-radius:4px; padding:2px 5px; line-height:1;
+  }
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  @media (max-width:860px){ .nav-links, .search-trigger .lbl, .search-trigger kbd{ display:none; } }
+
+  /* ---------- shared scaffolding ---------- */
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.5rem, 1.5vw + 1rem, 2.1rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:56ch; margin: 0 0 var(--sp-3); font-size:1.02rem; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:.02em;
+    padding:12px 20px; border-radius:var(--radius-pill);
+    border:1px solid transparent; cursor:pointer; text-decoration:none;
+    transition: all .2s var(--ease); white-space:nowrap;
+  }
+  .btn-primary{ background:var(--accent); color:var(--accent-contrast); border-color:var(--accent); font-weight:700; }
+  .btn-primary:hover{ background: color-mix(in srgb, var(--accent) 82%, black); border-color: color-mix(in srgb, var(--accent) 82%, black); transform: translateY(-1px); }
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:10.5px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:3px 9px; border-radius:var(--radius-pill);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+    flex:none;
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; overflow:hidden; }
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(620px 340px at 18% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; z-index:1; max-width:800px; }
+  .hero-stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--text-2); border:1px solid var(--border-subtle);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero-eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--text-2); margin-bottom: var(--sp-2);
+  }
+  .hero-title{
+    font-size: clamp(2.1rem, 3.2vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.1;
+    margin: 0 0 var(--sp-2); max-width:17ch;
+  }
+  .hero-title em{ font-style:italic; color:var(--accent); }
+  .hero-dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:56ch; margin:0 0 var(--sp-4);
+  }
+  .hero-ctas{ display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-bottom: var(--sp-5); }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 8px 22px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+    padding-top: var(--sp-3); border-top:1px solid var(--border-subtle);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ============================================================
+     FEATURES
+     ============================================================ */
+  section.feature{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  .feature-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6);
+    grid-template-areas: "text visual"; align-items:center;
+  }
+  .feature-grid.reverse{ grid-template-areas: "visual text"; }
+  .feature-text{ grid-area: text; }
+  .feature-visual{ grid-area: visual; }
+  .feature-modes-hint{
+    margin-top: var(--sp-2); font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+    display:flex; flex-wrap:wrap; gap:8px 14px;
+  }
+  .feature-modes-hint span{ display:inline-flex; align-items:center; gap:6px; }
+  .feature-modes-hint .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); flex:none; }
+
+  .visual-card{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: 24px clamp(18px,3vw,28px); position:relative; overflow:hidden;
+    min-height:320px; display:flex; flex-direction:column; justify-content:center;
+  }
+  .v-tag{
+    position:absolute; top:16px; right:18px;
+    font-family:var(--font-mono); font-size:9px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-2); opacity:.55;
+  }
+
+  /* ---------- reveal utility ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.is-visible{ opacity:1; transform:none; }
+  .reveal-visual{ opacity:0; transform:translateY(20px) scale(.98); transition: opacity .75s var(--ease), transform .75s var(--ease); }
+  .reveal-visual.is-visible{ opacity:1; transform:none; }
+
+  /* ============================================================
+     FEATURE 1 — plan por cuatrimestre (optimizer)
+     ============================================================ */
+  .mode-pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+  .mode-pill{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.02em;
+    padding:6px 12px; border-radius:var(--radius-pill); border:1px solid var(--border-subtle);
+    color:var(--text-2); background:var(--surface-hover); cursor:pointer;
+    transition: all .3s var(--ease);
+  }
+  .mode-pill.active{ color:var(--accent-contrast); background:var(--accent); border-color:var(--accent); font-weight:700; }
+  .mode-pill:hover:not(.active){ border-color:var(--accent); color:var(--text); }
+
+  .plan-columns{ display:flex; align-items:flex-end; gap:clamp(8px,2vw,16px); height:118px; margin-top:6px; }
+  .plan-col{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; min-width:0; }
+  .bar-wrap{ width:100%; flex:1; display:flex; align-items:flex-end; justify-content:center; }
+  .plan-bar{
+    width:68%; max-width:32px;
+    height: calc(var(--n, 0) * 19px);
+    background: repeating-linear-gradient(to top, var(--accent) 0 13px, color-mix(in srgb, var(--accent) 45%, transparent) 13px 17px);
+    border-radius: 4px 4px 2px 2px;
+    transition: height .65s var(--ease);
+  }
+  .days-row{ display:flex; gap:3px; margin-top:9px; }
+  .day-dot{ width:6px; height:6px; border-radius:50%; background:var(--border-subtle); transition: background .5s var(--ease); }
+  .day-dot.on{ background: color-mix(in srgb, var(--link) 80%, var(--accent) 20%); }
+  .col-label{ margin-top:7px; font-family:var(--font-mono); font-size:10px; color:var(--text-2); }
+
+  /* ============================================================
+     FEATURE 2 — combinador de horarios
+     ============================================================ */
+  .week-grid{
+    display:grid; grid-template-columns: 24px repeat(5,1fr); grid-template-rows: 20px repeat(4,26px);
+    gap:3px; margin-top:8px;
+  }
+  .week-head-cell{ font-family:var(--font-mono); font-size:10px; color:var(--text-2); text-align:center; align-self:center; }
+  .week-time{ font-family:var(--font-mono); font-size:8.5px; color:var(--text-2); align-self:start; grid-column:1; }
+  .week-block{
+    border-radius:5px; padding:4px 6px; font-family:var(--font-mono); font-size:9px; font-weight:700;
+    color:var(--text); letter-spacing:.01em; overflow:hidden; white-space:nowrap; border-left:3px solid;
+    opacity:0; transform:translateY(-14px) scale(.94); transition: opacity .55s var(--ease), transform .55s var(--ease);
+  }
+  .is-visible .week-block{ opacity:1; transform:translateY(0) scale(1); }
+  .week-block:nth-of-type(1){ transition-delay:.05s; }
+  .week-block:nth-of-type(2){ transition-delay:.16s; }
+  .week-block:nth-of-type(3){ transition-delay:.27s; }
+  .week-block:nth-of-type(4){ transition-delay:.38s; }
+  .week-block.tone-accent{ background:color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color:var(--accent); }
+  .week-block.tone-link{ background:color-mix(in srgb, var(--link) 20%, var(--surface)); border-color:var(--link); }
+  .week-block.tone-method{ background:color-mix(in srgb, var(--k-method) 24%, var(--surface)); border-color:var(--k-method); }
+  .week-block.tone-theorem{ background:color-mix(in srgb, var(--k-theorem) 24%, var(--surface)); border-color:var(--k-theorem); }
+  .week-free{
+    display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl;
+    font-family:var(--font-mono); font-size:8.5px; color:var(--text-2);
+    border:1px dashed var(--border-subtle); border-radius:5px; letter-spacing:.04em;
+    opacity:0; transition: opacity .6s var(--ease) .5s;
+  }
+  .is-visible .week-free{ opacity:.75; }
+
+  /* ============================================================
+     FEATURE 3 — recomendador
+     ============================================================ */
+  .rec-stage{ position:relative; padding-top:4px; }
+  .rec-card{
+    position:relative; background:var(--surface-hover); border:1px solid var(--border-subtle);
+    border-radius:8px; padding:14px 16px; max-width:280px;
+    opacity:0; transform: scale(.93) translateY(8px);
+  }
+  .is-visible .rec-card{ animation: recCardIn .55s var(--ease) forwards, recGlow 1.1s var(--ease) .55s; }
+  @keyframes recCardIn{ to{ opacity:1; transform:scale(1) translateY(0); } }
+  @keyframes recGlow{
+    0%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+    35%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+    100%{ box-shadow:0 0 0 16px color-mix(in srgb, var(--accent) 0%, transparent); }
+  }
+  .rec-ribbon{
+    position:absolute; top:-11px; right:12px;
+    font-family:var(--font-mono); font-size:9px; letter-spacing:.06em; color:var(--accent);
+    background:var(--surface); border:1px solid var(--accent); border-radius:4px;
+    padding:3px 8px;
+    opacity:0;
+  }
+  .is-visible .rec-ribbon{ animation: recRibbonIn .4s var(--ease) .4s forwards; }
+  @keyframes recRibbonIn{ from{ opacity:0; transform: scale(.7); } to{ opacity:1; transform: scale(1); } }
+  .rec-top{ display:flex; align-items:center; gap:9px; margin-bottom:6px; }
+  .rec-name{ font-weight:600; font-size:14px; }
+  .rec-code{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+  .rec-arrow{ width:100%; max-width:280px; height:70px; margin:2px 0 -6px; }
+  .rec-arrow path{ fill:none; stroke:var(--text-2); stroke-width:1.6; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:1; }
+  .is-visible .rec-arrow path{ animation: drawLine .6s var(--ease) .95s forwards; }
+  @keyframes drawLine{ to{ stroke-dashoffset:0; } }
+  .rec-timeline{ display:flex; gap:8px; }
+  .rec-slot{
+    flex:1; text-align:center; padding:9px 4px; border-radius:6px; border:1px solid var(--border-subtle);
+    font-family:var(--font-mono); font-size:10px; color:var(--text-2); background:var(--canvas);
+    transition:none;
+  }
+  .is-visible .rec-slot.target{ animation: landSlot .5s var(--ease) 1.45s forwards; }
+  @keyframes landSlot{
+    0%{ border-color:var(--border-subtle); background:var(--canvas); transform:scale(1); color:var(--text-2); }
+    55%{ transform:scale(1.08); }
+    100%{ border-color:var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--canvas)); transform:scale(1); color:var(--text); }
+  }
+  .rec-hint{
+    display:inline-flex; margin-top:10px; font-family:var(--font-mono); font-size:10.5px; color:var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding:5px 11px; border-radius:var(--radius-pill);
+    opacity:0; transform:translateY(6px);
+  }
+  .is-visible .rec-hint{ animation: badgeIn .45s var(--ease) 1.65s forwards; }
+  @keyframes badgeIn{ to{ opacity:1; transform:translateY(0); } }
+
+  /* ============================================================
+     FEATURE 4 — correlativas
+     ============================================================ */
+  .graph-svg{ width:100%; height:auto; margin-top:4px; }
+  .graph-svg .edge{ fill:none; stroke:var(--border); stroke-width:1.6; stroke-dasharray:1; stroke-dashoffset:1; }
+  .is-visible .graph-svg .edge{ animation: drawLine .6s var(--ease) forwards; }
+  .is-visible .graph-svg .edge:nth-of-type(1){ animation-delay:.5s; }
+  .is-visible .graph-svg .edge:nth-of-type(2){ animation-delay:.56s; }
+  .is-visible .graph-svg .edge:nth-of-type(3){ animation-delay:.86s; }
+  .is-visible .graph-svg .edge:nth-of-type(4){ animation-delay:.92s; }
+  .is-visible .graph-svg .edge:nth-of-type(5){ animation-delay:1.08s; }
+  .graph-svg .node{ transform-box:fill-box; transform-origin:center; opacity:0; transform:scale(.85); }
+  .is-visible .graph-svg .node{ animation: nodeIn .45s var(--ease) forwards; animation-delay: var(--nd, 0s); }
+  @keyframes nodeIn{ to{ opacity:1; transform:scale(1); } }
+  .graph-svg .node circle{ fill:var(--surface); stroke-width:2; }
+  .graph-svg .node.go circle{ stroke:var(--status-go); }
+  .graph-svg .node.wait circle{ stroke:var(--status-wait); }
+  .graph-svg .node text{ font-family:var(--font-mono); font-size:10px; fill:var(--text); text-anchor:middle; }
+  .graph-legend{ display:flex; gap:18px; margin-top:12px; }
+  .legend-item{ display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; border:2px solid; background:var(--surface); flex:none; }
+  .legend-dot.go{ border-color:var(--status-go); }
+  .legend-dot.wait{ border-color:var(--status-wait); }
+
+  /* ============================================================
+     FEATURE 5 — minors
+     ============================================================ */
+  .minors-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(10px,2vw,20px); margin-top:8px; text-align:center; }
+  .ring-block{ display:flex; flex-direction:column; align-items:center; gap:9px; }
+  .ring{ position:relative; width:100%; max-width:104px; }
+  .ring svg{ transform:rotate(-90deg); width:100%; height:auto; }
+  .ring-track{ fill:none; stroke:var(--border-subtle); stroke-width:8; }
+  .ring-progress{
+    fill:none; stroke:var(--ring-color); stroke-width:8; stroke-linecap:round;
+    stroke-dasharray:100; stroke-dashoffset:100;
+    transition: stroke-dashoffset 1.15s var(--ease);
+  }
+  .is-visible .ring-progress{ stroke-dashoffset: calc(100 - var(--pct)); }
+  .ring-block:nth-child(1) .ring-progress{ transition-delay:.05s; }
+  .ring-block:nth-child(2) .ring-progress{ transition-delay:.2s; }
+  .ring-block:nth-child(3) .ring-progress{ transition-delay:.35s; }
+  .ring-block:nth-child(4) .ring-progress{ transition-delay:.5s; }
+  .ring-label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .ring-pct{ font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--text); }
+
+  /* ============================================================
+     FEATURE 6 — finalizá y compartí
+     ============================================================ */
+  .lock-scene{ display:flex; flex-direction:column; gap:20px; margin-top:6px; }
+  .sem-card{ position:relative; padding:16px 18px; border-radius:8px; background:var(--surface-hover); }
+  .sem-border{ position:absolute; inset:0; border-radius:8px; pointer-events:none; }
+  .sem-border.dashed{ border:1.5px dashed var(--border); opacity:1; }
+  .sem-border.solid{ border:1.5px solid var(--accent); opacity:0; }
+  .is-visible .sem-border.dashed{ animation: fadeOut .4s var(--ease) 1.05s forwards; }
+  .is-visible .sem-border.solid{ animation: fadeIn .4s var(--ease) 1.05s forwards; }
+  @keyframes fadeOut{ to{ opacity:0; } }
+  @keyframes fadeIn{ to{ opacity:1; } }
+  .sem-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:11px; }
+  .sem-name{ font-weight:600; font-size:14.5px; }
+  .lock-icon{ color:var(--text-2); width:22px; height:22px; display:inline-flex; }
+  .is-visible .lock-icon{ animation: lockPulse .4s var(--ease) 1.05s, lockColor 0s linear 1.05s forwards; }
+  @keyframes lockPulse{ 0%{ transform:scale(1); } 50%{ transform:scale(1.16); } 100%{ transform:scale(1); } }
+  @keyframes lockColor{ to{ color:var(--accent); } }
+  .lock-shackle{ transform-origin:12px 11px; transform:translateY(-3px) rotate(-16deg); }
+  .is-visible .lock-shackle{ animation: shackleClose .5s var(--ease) .7s forwards; }
+  @keyframes shackleClose{ to{ transform:translateY(0) rotate(0); } }
+  .sem-chips{ display:flex; gap:6px; margin-bottom:11px; flex-wrap:wrap; }
+  .chip-mini{
+    font-family:var(--font-mono); font-size:9.5px; padding:3px 7px; border-radius:5px;
+    background:var(--surface); border:1px solid var(--border-subtle); color:var(--text-2);
+  }
+  .sem-status{ position:relative; height:15px; }
+  .status-before, .status-after{ position:absolute; left:0; top:0; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.03em; }
+  .status-before{ color:var(--text-2); opacity:1; }
+  .status-after{ color:var(--accent); opacity:0; }
+  .is-visible .status-before{ animation: fadeOut .3s var(--ease) 1.1s forwards; }
+  .is-visible .status-after{ animation: fadeIn .3s var(--ease) 1.1s forwards; }
+
+  .io-row{ display:flex; gap:26px; flex-wrap:wrap; }
+  .io-item{ display:flex; align-items:center; gap:8px; opacity:0; transform:translateY(8px); }
+  .io-item svg{ width:17px; height:17px; color:var(--text-2); flex:none; }
+  .io-item span{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+  .is-visible .io-item.export{ animation: ioIn .45s var(--ease) 1.4s forwards; }
+  .is-visible .io-item.import{ animation: ioIn .45s var(--ease) 1.62s forwards; }
+  @keyframes ioIn{ to{ opacity:1; transform:translateY(0); } }
+
+  /* ============================================================
+     OUTRO
+     ============================================================ */
+  .outro{ padding: var(--sp-6) 0 var(--sp-8); text-align:center; }
+  .outro-divider{ display:flex; align-items:center; gap:18px; margin-bottom: var(--sp-4); }
+  .outro-line{ flex:1; height:1px; background: var(--border-subtle); }
+  .outro-label{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent);
+  }
+  .outro-chevron{ display:inline-block; animation: chevBounce 1.8s ease-in-out infinite; }
+  @keyframes chevBounce{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
+  .app-ghost{
+    max-width:760px; margin-inline:auto; padding: 22px 26px; border-radius:var(--radius);
+    border:1.5px dashed var(--border-subtle); background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+  .ghost-row{ display:flex; gap:10px; margin-bottom:10px; }
+  .ghost-row:last-child{ margin-bottom:0; }
+  .ghost-bar{ height:12px; border-radius:4px; background:var(--surface-hover); flex:1; }
+  .ghost-cap{ margin-top:16px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); letter-spacing:.03em; }
+
+  /* ---------- footer ---------- */
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-4) 0 var(--sp-6);
+    color:var(--text-2); font-size:12.5px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 860px){
+    .feature-grid, .feature-grid.reverse{ grid-template-columns:1fr; grid-template-areas: "text" "visual"; gap: var(--sp-3); }
+    .hero-title{ max-width:none; }
+    .minors-grid{ grid-template-columns:repeat(4,1fr); gap:12px; }
+  }
+  @media (max-width: 480px){
+    .plan-columns{ height:96px; }
+    .minors-grid{ grid-template-columns:repeat(2,1fr); row-gap:20px; }
+    .hero-ctas{ gap:12px; }
+    .io-row{ gap:16px; }
+  }
+
+  /* ============================================================
+     REDUCED MOTION — se desactivan transforms y auto-play
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .reveal, .reveal-visual, .week-block, .rec-card, .rec-ribbon, .rec-hint,
+    .graph-svg .node, .lock-icon, .lock-shackle, .io-item, .outro-chevron{
+      transform: none !important;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">SV·001</span>
+        <span class="brand-name">StudyVaults</span>
+      </a>
+      <nav class="nav-links" aria-label="Secciones principales">
+        <a href="#">Materias</a>
+        <a href="#">Grafo</a>
+        <a href="#" aria-current="page">Electivas</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="search-trigger" type="button" aria-label="Buscar">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="lbl">Buscar</span>
+          <kbd>⌘K</kbd>
+        </button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+          <span id="themeLabel">oscuro</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============================================================ -->
+    <!-- HERO -->
+    <!-- ============================================================ -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div class="hero-stamp">MOCKUP · PARA REVISIÓN</div>
+        <div class="hero-eyebrow">Planificador de electivas</div>
+        <h1 class="hero-title">Armá tu carrera, <em>cuatrimestre por cuatrimestre</em></h1>
+        <p class="hero-dek">Un plan completo, un horario armado y las correlativas resueltas — antes de que te anotes a nada.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#app-anchor">Empezá a planificar ↓</a>
+        </div>
+        <div class="hero-meta">
+          <span><b>6</b> herramientas en una sola vista</span>
+          <span>Se adapta a tus preferencias</span>
+          <span>Pensado para ITBA</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. PLAN POR CUATRIMESTRE -->
+    <!-- ============================================================ -->
+    <section class="feature" id="f1" aria-labelledby="f1-title">
+      <div class="wrap feature-grid">
+        <div class="feature-text reveal">
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3.5" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="16.5" y="3" width="4" height="17" rx="1"/></svg>
+            01 — Plan por cuatrimestre
+          </div>
+          <h2 class="spec-title" id="f1-title">Un optimizador ordena toda tu carrera</h2>
+          <p class="spec-dek">Elegís qué priorizar y el planificador acomoda las materias que te faltan, cuatrimestre por cuatrimestre. Cambiás de estrategia cuando quieras, sin perder el trabajo hecho.</p>
+          <div class="feature-modes-hint">
+            <span><span class="dot"></span>Recibirte antes</span>
+            <span><span class="dot"></span>Menos días de campus</span>
+            <span><span class="dot"></span>Carga pareja</span>
+          </div>
+        </div>
+        <div class="feature-visual">
+          <div class="visual-card reveal-visual" id="v-plan">
+            <span class="v-tag">vista previa · autoplay</span>
+            <div class="mode-pills" role="tablist" aria-label="Modo de optimización">
+              <button class="mode-pill active" data-mode="0" type="button" role="tab" aria-selected="true">Recibirte antes</button>
+              <button class="mode-pill" data-mode="1" type="button" role="tab" aria-selected="false">Menos días de campus</button>
+              <button class="mode-pill" data-mode="2" type="button" role="tab" aria-selected="false">Carga pareja</button>
+            </div>
+            <div class="plan-columns" id="planColumns">
+              <!-- 5 columnas generadas por JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. COMBINADOR DE HORARIOS -->
+    <!-- ============================================================ -->
+    <section class="feature" id="f2" aria-labelledby="f2-title">
+      <div class="wrap feature-grid reverse">
+        <div class="feature-text reveal">
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M9 4v17M15 4v17"/></svg>
+            02 — Combinador de horarios
+          </div>
+          <h2 class="spec-title" id="f2-title">Armá un cuatrimestre y mirá cómo queda la semana</h2>
+          <p class="spec-dek">Elegís las materias y las comisiones, y el calendario semanal se arma solo — con los cruces de horario resueltos antes de que existan.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="visual-card reveal-visual">
+            <span class="v-tag">vista previa · autoplay</span>
+            <div class="week-grid" aria-hidden="true">
+              <div class="week-head-cell"></div>
+              <div class="week-head-cell mono">L</div>
+              <div class="week-head-cell mono">M</div>
+              <div class="week-head-cell mono">X</div>
+              <div class="week-head-cell mono">J</div>
+              <div class="week-head-cell mono">V</div>
+              <div class="week-time mono" style="grid-row:2;">8</div>
+              <div class="week-time mono" style="grid-row:3;">11</div>
+              <div class="week-time mono" style="grid-row:4;">14</div>
+              <div class="week-time mono" style="grid-row:5;">17</div>
+              <div class="week-block tone-accent" style="grid-column:2; grid-row:2 / span 2;">AED3</div>
+              <div class="week-block tone-link" style="grid-column:3; grid-row:3 / span 2;">PROB</div>
+              <div class="week-block tone-method" style="grid-column:4; grid-row:2 / span 2;">REDES</div>
+              <div class="week-block tone-theorem" style="grid-column:5; grid-row:3 / span 3;">SO</div>
+              <div class="week-free mono" style="grid-column:6; grid-row:2 / span 4;">libre</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. RECOMENDADOR DE ELECTIVAS -->
+    <!-- ============================================================ -->
+    <section class="feature" id="f3" aria-labelledby="f3-title">
+      <div class="wrap feature-grid">
+        <div class="feature-text reveal">
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/></svg>
+            03 — Recomendador de electivas
+          </div>
+          <h2 class="spec-title" id="f3-title">Te sugiere qué cursar y te muestra dónde entra</h2>
+          <p class="spec-dek">Cruza correlativas, carga horaria y minors para proponerte la próxima electiva — y te dice exactamente en qué cuatrimestre encaja, sin alargarte la carrera.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="visual-card reveal-visual">
+            <span class="v-tag">vista previa · autoplay</span>
+            <div class="rec-stage" aria-hidden="true">
+              <div class="rec-card">
+                <span class="rec-ribbon">RECOMENDADA</span>
+                <div class="rec-top">
+                  <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+                  <span class="rec-name">Aprendizaje Profundo</span>
+                </div>
+                <span class="rec-code mono">75.xx · 6 créditos</span>
+              </div>
+              <svg class="rec-arrow" viewBox="0 0 260 70" preserveAspectRatio="none">
+                <path pathLength="1" d="M60 4 C 20 30, 80 40, 150 58" />
+              </svg>
+              <div class="rec-timeline">
+                <div class="rec-slot mono">C1</div>
+                <div class="rec-slot mono">C2</div>
+                <div class="rec-slot mono target">C3</div>
+                <div class="rec-slot mono">C4</div>
+                <div class="rec-slot mono">C5</div>
+              </div>
+              <span class="rec-hint">+1 cuatri · sin alargar la carrera</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. CORRELATIVAS -->
+    <!-- ============================================================ -->
+    <section class="feature" id="f4" aria-labelledby="f4-title">
+      <div class="wrap feature-grid reverse">
+        <div class="feature-text reveal">
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7 7l3.3 9M17 7l-3.3 9M7.2 6h9.6" stroke-width="1.3"/></svg>
+            04 — Correlativas
+          </div>
+          <h2 class="spec-title" id="f4-title">El árbol de correlativas, resuelto de un vistazo</h2>
+          <p class="spec-dek">Cada materia muestra de qué depende y qué desbloquea. Los nodos disponibles se distinguen al toque de los que todavía tenés que esperar.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="visual-card reveal-visual">
+            <span class="v-tag">vista previa · autoplay</span>
+            <svg class="graph-svg" viewBox="0 0 400 210" aria-hidden="true">
+              <path class="edge" pathLength="1" d="M74 174 L172 118"/>
+              <path class="edge" pathLength="1" d="M74 46 L172 32"/>
+              <path class="edge" pathLength="1" d="M188 116 L292 168"/>
+              <path class="edge" pathLength="1" d="M188 112 L290 78"/>
+              <path class="edge" pathLength="1" d="M188 36 L288 74"/>
+
+              <g class="node go" style="--nd:0s"><circle cx="62" cy="174" r="18"/><text x="62" y="178">AM1</text></g>
+              <g class="node go" style="--nd:.1s"><circle cx="62" cy="46" r="18"/><text x="62" y="50">AL1</text></g>
+              <g class="node wait" style="--nd:.28s"><circle cx="180" cy="116" r="18"/><text x="180" y="120">AM2</text></g>
+              <g class="node wait" style="--nd:.36s"><circle cx="180" cy="32" r="18"/><text x="180" y="36">IO</text></g>
+              <g class="node wait" style="--nd:.56s"><circle cx="300" cy="172" r="18"/><text x="300" y="176">PROB</text></g>
+              <g class="node wait" style="--nd:.64s"><circle cx="300" cy="72" r="18"/><text x="300" y="76">ONL</text></g>
+            </svg>
+            <div class="graph-legend">
+              <span class="legend-item"><span class="legend-dot go"></span>disponible</span>
+              <span class="legend-item"><span class="legend-dot wait"></span>requiere correlativa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 5. MINORS -->
+    <!-- ============================================================ -->
+    <section class="feature" id="f5" aria-labelledby="f5-title">
+      <div class="wrap feature-grid">
+        <div class="feature-text reveal">
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 8 8" stroke-width="2.6" stroke-linecap="round"/></svg>
+            05 — Minors
+          </div>
+          <h2 class="spec-title" id="f5-title">Tu progreso en cada área, siempre a la vista</h2>
+          <p class="spec-dek">Ciencia de Datos, Imágenes y Realidad Virtual, Inteligencia Artificial, Arquitectura de Software — cuatro anillos que se van llenando a medida que avanzás.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="visual-card reveal-visual">
+            <span class="v-tag">vista previa · autoplay</span>
+            <div class="minors-grid" id="minorsGrid">
+              <!-- 4 anillos generados por JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 6. FINALIZÁ Y COMPARTÍ -->
+    <!-- ============================================================ -->
+    <section class="feature" id="f6" aria-labelledby="f6-title">
+      <div class="wrap feature-grid reverse">
+        <div class="feature-text reveal">
+          <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            06 — Finalizá y compartí
+          </div>
+          <h2 class="spec-title" id="f6-title">Lockeá el cuatrimestre y llevate tu plan</h2>
+          <p class="spec-dek">Cuando un cuatrimestre queda como lo querés, lo lockeás para que el optimizador no lo vuelva a tocar. Exportá tus preferencias o importalas en otra sesión.</p>
+        </div>
+        <div class="feature-visual">
+          <div class="visual-card reveal-visual">
+            <span class="v-tag">vista previa · autoplay</span>
+            <div class="lock-scene" aria-hidden="true">
+              <div class="sem-card">
+                <div class="sem-border dashed"></div>
+                <div class="sem-border solid"></div>
+                <div class="sem-top">
+                  <span class="sem-name">Cuatrimestre 6</span>
+                  <span class="lock-icon">
+                    <svg viewBox="0 0 24 24" width="22" height="22">
+                      <rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                      <path class="lock-shackle" d="M8 11V7a4 4 0 0 1 8 0v4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                  </span>
+                </div>
+                <div class="sem-chips">
+                  <span class="chip-mini">AED3</span><span class="chip-mini">REDES</span><span class="chip-mini">SO</span>
+                </div>
+                <div class="sem-status">
+                  <span class="status-before mono">sin lockear</span>
+                  <span class="status-after mono">lockeado ✓</span>
+                </div>
+              </div>
+              <div class="io-row">
+                <div class="io-item export">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                  <span>exportar preferencias</span>
+                </div>
+                <div class="io-item import">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v11M8 11l4 4 4-4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                  <span>importar preferencias</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OUTRO -->
+    <!-- ============================================================ -->
+    <section class="outro" id="app-anchor">
+      <div class="wrap">
+        <div class="outro-divider">
+          <span class="outro-line"></span>
+          <span class="outro-label"><span class="outro-chevron">↓</span> tu planificador</span>
+          <span class="outro-line"></span>
+        </div>
+        <div class="app-ghost" aria-hidden="true">
+          <div class="ghost-row">
+            <div class="ghost-bar" style="max-width:120px;"></div>
+            <div class="ghost-bar" style="max-width:120px;"></div>
+            <div class="ghost-bar" style="max-width:120px;"></div>
+            <div class="ghost-bar" style="max-width:120px;"></div>
+          </div>
+          <div class="ghost-row">
+            <div class="ghost-bar" style="height:64px;"></div>
+            <div class="ghost-bar" style="height:64px;"></div>
+            <div class="ghost-bar" style="height:64px;"></div>
+            <div class="ghost-bar" style="height:64px;"></div>
+            <div class="ghost-bar" style="height:64px;"></div>
+          </div>
+          <p class="ghost-cap">la app real continúa acá — este mockup termina en la línea de arriba</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — mockup de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · intro /electivas · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ---------- theme toggle ---------- */
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+
+      /* ---------- reveal on scroll ---------- */
+      var revealEls = document.querySelectorAll('.reveal, .reveal-visual');
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+              if (entry.target.id === 'v-plan') startPlanDemo();
+              if (entry.target.classList.contains('reveal-visual') && entry.target.closest && entry.target.closest('#f5')) startMinorsCountUp();
+            }
+          });
+        }, { threshold: 0.3, rootMargin: '0px 0px -8% 0px' });
+        revealEls.forEach(function (el) { io.observe(el); });
+      } else {
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      }
+
+      /* ============================================================
+         FEATURE 1 — plan por cuatrimestre: columnas + auto-cycle
+         ============================================================ */
+      var planColumnsEl = document.getElementById('planColumns');
+      var COLS = 5;
+      var MODES = [
+        { counts: [3, 3, 2, 2, 0], days: [4, 4, 3, 3, 0] },
+        { counts: [2, 2, 2, 2, 2], days: [2, 2, 2, 2, 2] },
+        { counts: [2, 2, 2, 2, 2], days: [3, 3, 3, 3, 3] }
+      ];
+      var planCols = [];
+      var planInterval = null;
+      var currentMode = 0;
+
+      function buildPlanColumns() {
+        if (!planColumnsEl) return;
+        for (var i = 0; i < COLS; i++) {
+          var col = document.createElement('div');
+          col.className = 'plan-col';
+          var barWrap = document.createElement('div');
+          barWrap.className = 'bar-wrap';
+          var bar = document.createElement('div');
+          bar.className = 'plan-bar';
+          bar.style.setProperty('--n', 0);
+          barWrap.appendChild(bar);
+          var daysRow = document.createElement('div');
+          daysRow.className = 'days-row';
+          var dots = [];
+          for (var d = 0; d < 5; d++) {
+            var dot = document.createElement('span');
+            dot.className = 'day-dot';
+            daysRow.appendChild(dot);
+            dots.push(dot);
+          }
+          var lbl = document.createElement('div');
+          lbl.className = 'col-label mono';
+          lbl.textContent = 'C' + (i + 1);
+
+          col.appendChild(barWrap);
+          col.appendChild(daysRow);
+          col.appendChild(lbl);
+          planColumnsEl.appendChild(col);
+          planCols.push({ bar: bar, dots: dots });
+        }
+      }
+
+      function applyMode(modeIndex) {
+        var mode = MODES[modeIndex];
+        planCols.forEach(function (col, i) {
+          col.bar.style.setProperty('--n', mode.counts[i]);
+          col.dots.forEach(function (dot, di) {
+            dot.classList.toggle('on', di < mode.days[i]);
+          });
+        });
+        var pills = document.querySelectorAll('.mode-pill');
+        pills.forEach(function (p) {
+          var isActive = Number(p.getAttribute('data-mode')) === modeIndex;
+          p.classList.toggle('active', isActive);
+          p.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        currentMode = modeIndex;
+      }
+
+      function scheduleAutoCycle() {
+        if (reduced) return;
+        if (planInterval) clearInterval(planInterval);
+        planInterval = setInterval(function () {
+          applyMode((currentMode + 1) % MODES.length);
+        }, 3400);
+      }
+
+      var planStarted = false;
+      function startPlanDemo() {
+        if (planStarted) return;
+        planStarted = true;
+        buildPlanColumns();
+        // settle into place shortly after reveal
+        window.setTimeout(function () {
+          applyMode(0);
+          scheduleAutoCycle();
+        }, reduced ? 0 : 220);
+      }
+
+      var pillButtons = document.querySelectorAll('.mode-pill');
+      pillButtons.forEach(function (p) {
+        p.addEventListener('click', function () {
+          applyMode(Number(p.getAttribute('data-mode')));
+          scheduleAutoCycle();
+        });
+      });
+
+      /* ============================================================
+         FEATURE 5 — minors: anillos + count-up
+         ============================================================ */
+      var minorsGridEl = document.getElementById('minorsGrid');
+      var MINORS = [
+        { code: 'CD', color: 'var(--minor-cd)', pct: 75 },
+        { code: 'IRV', color: 'var(--minor-irv)', pct: 40 },
+        { code: 'IA', color: 'var(--minor-ia)', pct: 90 },
+        { code: 'ARQ', color: 'var(--minor-arq)', pct: 25 }
+      ];
+
+      function buildMinorsRings() {
+        if (!minorsGridEl) return;
+        MINORS.forEach(function (m) {
+          var block = document.createElement('div');
+          block.className = 'ring-block';
+
+          var ring = document.createElement('div');
+          ring.className = 'ring';
+          ring.style.setProperty('--ring-color', m.color);
+
+          var svgNS = 'http://www.w3.org/2000/svg';
+          var svg = document.createElementNS(svgNS, 'svg');
+          svg.setAttribute('viewBox', '0 0 100 100');
+          var track = document.createElementNS(svgNS, 'circle');
+          track.setAttribute('class', 'ring-track');
+          track.setAttribute('cx', '50'); track.setAttribute('cy', '50'); track.setAttribute('r', '42');
+          var prog = document.createElementNS(svgNS, 'circle');
+          prog.setAttribute('class', 'ring-progress');
+          prog.setAttribute('cx', '50'); prog.setAttribute('cy', '50'); prog.setAttribute('r', '42');
+          prog.setAttribute('pathLength', '100');
+          prog.style.setProperty('--pct', m.pct);
+          svg.appendChild(track); svg.appendChild(prog);
+
+          var lbl = document.createElement('div');
+          lbl.className = 'ring-label';
+          var pctSpan = document.createElement('span');
+          pctSpan.className = 'ring-pct mono';
+          pctSpan.setAttribute('data-target', m.pct);
+          pctSpan.textContent = '0%';
+          lbl.appendChild(pctSpan);
+
+          ring.appendChild(svg);
+          ring.appendChild(lbl);
+
+          var badge = document.createElement('span');
+          badge.className = 'minor-badge';
+          badge.style.setProperty('--m-color', m.color);
+          badge.textContent = m.code;
+
+          block.appendChild(ring);
+          block.appendChild(badge);
+          minorsGridEl.appendChild(block);
+        });
+      }
+      buildMinorsRings();
+
+      var minorsStarted = false;
+      function startMinorsCountUp() {
+        if (minorsStarted) return;
+        minorsStarted = true;
+        var spans = minorsGridEl.querySelectorAll('.ring-pct');
+        if (reduced) {
+          spans.forEach(function (s) { s.textContent = s.getAttribute('data-target') + '%'; });
+          return;
+        }
+        var duration = 1150;
+        var start = null;
+        function tick(ts) {
+          if (start === null) start = ts;
+          var elapsed = ts - start;
+          var t = Math.min(1, elapsed / duration);
+          var eased = 1 - Math.pow(1 - t, 3);
+          spans.forEach(function (s) {
+            var target = Number(s.getAttribute('data-target'));
+            s.textContent = Math.round(target * eased) + '%';
+          });
+          if (t < 1) window.requestAnimationFrame(tick);
+        }
+        window.requestAnimationFrame(tick);
+      }
+    })();
+  </script>
+
+</body>
+</html>

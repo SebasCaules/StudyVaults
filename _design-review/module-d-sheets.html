@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Módulo D · Hoja de estudio (rediseño)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults
+     Mismos hex y roles que foundations.html (fuente de verdad).
+     6 hex base: brown #241208 · zinc #27272a · blue #92cff2 ·
+                 gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+    --topbar-h: 53px;
+
+    /* base six — nunca se tematiza */
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    /* control por defecto de la hoja */
+    --cols: 2;
+  }
+
+  /* ---------- DARK (marca por defecto) ---------- */
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+    --paper-shadow: 0 1px 2px rgba(0,0,0,.5), 0 24px 60px -22px rgba(0,0,0,.7);
+    --code-bg: #1b0d05;
+
+    /* paleta semántica propuesta — hojas de estudio */
+    --k-def: #9ab8d6; --k-theorem: #b6a4d6; --k-formula: #7cc0af;
+    --k-method: #d8b279; --k-caution: #d68f85; --k-example: #b1a8a0;
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+    --paper-shadow: 0 1px 2px rgba(36,18,8,.08), 0 22px 50px -24px rgba(36,18,8,.30);
+    --code-bg: #f6f3f0;
+
+    --k-def: #295c8e; --k-theorem: #5e3b9b; --k-formula: #227762;
+    --k-method: #8c6121; --k-caution: #ab3c2b; --k-example: #6d6155;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: calc(var(--topbar-h) + 70px); }
+  body{
+    margin:0;
+    background:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%),
+      var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  svg{ display:block; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  /* ============================================================ TOPBAR ============================================================ */
+  .topbar{
+    position:sticky; top:0; z-index:60;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1240px; margin-inline:auto; padding: 14px clamp(16px,4vw,40px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-weight:600; font-size:18px; letter-spacing:-.01em; }
+  .brand-sep{ color:var(--border); }
+  .brand-mod{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); letter-spacing:.04em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ============================================================ LAYOUT ============================================================ */
+  .wrap{ max-width:1240px; margin-inline:auto; padding-inline: clamp(16px, 4vw, 40px); }
+
+  /* ---------- encabezado de la hoja ---------- */
+  .sheet-header{ padding: var(--sp-8) 0 var(--sp-4); }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-3);
+    border:1px solid color-mix(in srgb, var(--accent) 32%, var(--border-subtle));
+    padding:6px 13px; border-radius:var(--radius-pill);
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none; }
+  .sheet-header h1{
+    font-size: clamp(2.1rem, 3.2vw + 1rem, 3.3rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.06;
+    margin: 0 0 var(--sp-2); max-width: 20ch;
+  }
+  .sheet-header h1 em{ font-style:italic; color:var(--accent); }
+  .sheet-header .dek{ font-size: clamp(1rem,.4vw + .95rem,1.14rem); color:var(--text-2); max-width:66ch; margin:0 0 var(--sp-3); }
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap: 8px 14px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+    padding-top: var(--sp-2); border-top:1px solid var(--border-subtle);
+  }
+  .meta-row .m{ display:inline-flex; align-items:center; gap:7px; }
+  .meta-row b{ color:var(--text); font-weight:600; }
+  .meta-row .m + .m::before{ content:""; }
+
+  /* ============================================================ TOOLBAR ============================================================ */
+  .toolbar-outer{
+    position:sticky; top: var(--topbar-h); z-index:50;
+    padding: 10px 0;
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .toolbar{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:12px 14px;
+    display:flex; align-items:center; flex-wrap:wrap; gap:12px 18px;
+  }
+  .tb-group{ display:flex; align-items:center; gap:9px; }
+  .tb-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); }
+  .tb-sep{ width:1px; align-self:stretch; background:var(--border-subtle); }
+
+  /* segmented control (densidad / columnas) */
+  .seg{ display:inline-flex; background:var(--canvas); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); padding:2px; gap:2px; }
+  .seg button{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.02em;
+    color:var(--text-2); background:transparent; border:none; cursor:pointer;
+    padding:5px 12px; border-radius:var(--radius-pill); transition: all .18s var(--ease);
+  }
+  .seg button:hover{ color:var(--text); }
+  .seg button[aria-pressed="true"]{ background:var(--surface); color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,.18); }
+  html[data-theme="light"] .seg button[aria-pressed="true"]{ background:#fff; }
+
+  /* select (unidad) */
+  select.tb-select{
+    appearance:none; -webkit-appearance:none;
+    font-family:var(--font-mono); font-size:11.5px;
+    background:var(--canvas) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 11px center;
+    background-size:11px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:7px 30px 7px 12px; cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.tb-select:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.tb-select:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+
+  /* botón imprimir */
+  .print-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em;
+    background:var(--accent); color:var(--accent-contrast); border:1px solid transparent;
+    padding:7px 14px; border-radius:var(--radius-pill); cursor:pointer;
+    transition: all .2s var(--ease);
+  }
+  .print-btn:hover{ filter:brightness(1.06); }
+  .print-btn svg{ width:14px; height:14px; }
+  .tb-spacer{ flex:1 1 auto; }
+
+  /* ---------- leyenda / filtro por tipo ---------- */
+  .legend{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+    margin: 12px 0 4px;
+  }
+  .legend .lg-lead{ font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); margin-right:2px; }
+  .kchip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.03em;
+    color:var(--text); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:5px 11px 5px 9px; border-radius:var(--radius-pill); cursor:pointer;
+    transition: all .18s var(--ease);
+  }
+  .kchip:hover{ border-color: color-mix(in srgb, var(--kc) 60%, var(--border)); }
+  .kchip .swatch{ width:11px; height:11px; border-radius:3px; background:var(--kc); flex:none; box-shadow: inset 0 0 0 1px color-mix(in srgb, #000 12%, transparent); }
+  .kchip[aria-pressed="false"]{ opacity:.42; text-decoration:line-through; text-decoration-color: var(--text-2); }
+  .kchip[aria-pressed="false"] .swatch{ background: color-mix(in srgb, var(--kc) 35%, var(--border-subtle)); box-shadow:none; }
+
+  /* ============================================================ PAPEL / HOJA ============================================================ */
+  .paper{
+    background:var(--surface);
+    border:1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    box-shadow: var(--paper-shadow);
+    padding: clamp(22px, 3.4vw, 40px);
+    margin: 8px 0 var(--sp-8);
+    position:relative; overflow:hidden;
+  }
+  /* filo superior sobrio (hairline sólido de acento) */
+  .paper::before{ content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); opacity:.9; }
+
+  .unit{ padding-top: var(--sp-3); margin-top: var(--sp-3); }
+  .unit:first-of-type{ padding-top: 6px; margin-top:0; }
+  .unit + .unit{ border-top:1px solid var(--border-subtle); }
+
+  .unit-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom: var(--sp-3); }
+  .unit-num{
+    font-family:var(--font-mono); font-weight:700; font-size: clamp(1.7rem, 2.4vw, 2.4rem);
+    line-height:.9; color:var(--accent); letter-spacing:-.02em; flex:none;
+    padding-top:2px;
+  }
+  .unit-titles{ flex:1; min-width:0; }
+  .unit-kicker{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2); margin-bottom:3px; }
+  .unit-title{ font-size: clamp(1.25rem, 1.6vw, 1.6rem); font-weight:500; letter-spacing:-.015em; line-height:1.15; margin:0; }
+  .unit-desc{ color:var(--text-2); font-size:14px; margin:6px 0 0; max-width:74ch; }
+
+  /* región multi-columna: sub-unidades + entradas fluyen */
+  .unit-cols{ column-count: var(--cols); column-gap: 26px; }
+
+  /* display:contents → las entradas fluyen y balancean en las columnas,
+     sin que la sub-unidad quede atrapada como bloque atómico en una sola columna */
+  .subunit{ display: contents; }
+  .subunit-head{
+    break-after: avoid; break-inside: avoid;
+    display:flex; align-items:baseline; gap:8px;
+    padding-bottom:7px; margin-bottom:12px;
+    border-bottom:1px solid var(--border);
+  }
+  /* la primera sub-unidad de cada unidad no necesita empujar hacia abajo */
+  .subunit-head.pushed{ margin-top:4px; }
+  .subunit-code{ font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--accent); letter-spacing:.02em; }
+  .subunit-name{ font-size:14.5px; font-weight:600; letter-spacing:-.005em; }
+
+  /* ---------- entrada (mismo componente que foundations §3) ----------
+     resaltado tenue de TODO el cuadro + borde PAREJO en los 4 lados */
+  .entry{
+    break-inside: avoid;
+    background: color-mix(in srgb, var(--k-color) 7%, var(--surface));
+    border:1.5px solid color-mix(in srgb, var(--k-color) 30%, var(--border-subtle));
+    border-radius:var(--radius); padding:15px 17px;
+    margin: 0 0 12px;
+  }
+  .entry-head{ display:flex; align-items:center; gap:10px; margin-bottom:7px; flex-wrap:wrap; }
+  .tag-pill{
+    font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.06em;
+    color:var(--k-color); background: color-mix(in srgb, var(--k-color) 16%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--k-color) 45%, transparent);
+    padding:3px 8px; border-radius:var(--radius-pill); white-space:nowrap;
+  }
+  .entry-label{ font-weight:600; font-size:14.5px; letter-spacing:-.005em; line-height:1.25; }
+  .entry-body{ color:var(--text-2); font-size:13.5px; margin:0; line-height:1.55; }
+  .entry-body + .entry-body{ margin-top:6px; }
+  .entry-body b{ color:var(--text); font-weight:600; }
+  .entry-math{
+    margin-top:9px; padding:11px 13px;
+    background: color-mix(in srgb, var(--k-color) 5%, var(--canvas));
+    border:1px solid color-mix(in srgb, var(--k-color) 14%, transparent);
+    border-radius:6px; overflow-x:auto;
+  }
+  .entry-math + .entry-math{ margin-top:7px; }
+  .math-cap{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-2); display:block; margin-bottom:6px; }
+
+  /* ---------- entrada de CÓDIGO (bloque fenced, neutral) ---------- */
+  .entry.code{
+    background: color-mix(in srgb, var(--base-gray) 6%, var(--surface));
+    border:1.5px solid var(--border);
+  }
+  .entry.code .tag-pill{ color:var(--text-2); background: color-mix(in srgb, var(--base-gray) 14%, var(--surface)); border-color:var(--border); }
+  .code-block{
+    margin-top:9px; border:1px solid var(--border-subtle); border-radius:6px; overflow:hidden;
+    background: var(--code-bg);
+  }
+  .code-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:6px 11px; border-bottom:1px solid var(--border-subtle);
+    background: color-mix(in srgb, var(--base-gray) 8%, var(--code-bg));
+  }
+  .code-bar .fname{ font-family:var(--font-mono); font-size:10px; color:var(--text-2); letter-spacing:.02em; }
+  .code-bar .lang{ font-family:var(--font-mono); font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+  pre.code{
+    margin:0; padding:12px 13px; overflow-x:auto;
+    font-family:var(--font-mono); font-size:12px; line-height:1.65; color:var(--text);
+    tab-size:2;
+  }
+  pre.code .kw{ color:var(--k-theorem); }
+  pre.code .fn{ color:var(--link); }
+  pre.code .cm{ color:var(--text-2); font-style:italic; }
+  pre.code .st{ color:var(--k-formula); }
+  html[data-theme="dark"] pre.code .kw{ color:#c8b8e6; }
+
+  /* ============================================================ MATH ESTÁTICO (idéntico enfoque a foundations) ============================================================ */
+  .math{ font-family:var(--font-serif); font-size:15.5px; line-height:1.8; color:var(--text); white-space:nowrap; }
+  .math .var{ font-style:italic; }
+  .math .op{ margin:0 .30em; color:var(--text-2); }
+  .math sup{ font-size:.72em; } .math sub{ font-size:.72em; }
+  .frac{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 .22em; font-size:.94em; }
+  .frac > .num{ padding:0 .4em; }
+  .frac > .den{ padding:.08em .4em 0; border-top:1px solid currentColor; }
+  .sum{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1; margin:0 .16em; }
+  .sum > .lim-top{ font-size:.58em; }
+  .sum > .sigma{ font-size:1.55em; line-height:.95; }
+  .sum > .lim-bot{ font-size:.58em; }
+  /* coeficiente binomial (n sobre k), sin regla, con paréntesis grandes */
+  .binom{ display:inline-flex; align-items:center; vertical-align:middle; margin:0 .1em; }
+  .binom .stk{ display:inline-flex; flex-direction:column; align-items:center; line-height:1.02; font-size:.9em; padding:0 .1em; }
+  .binom::before, .binom::after{ font-size:1.85em; line-height:.62; color:var(--text-2); }
+  .binom::before{ content:"("; margin-right:.02em; } .binom::after{ content:")"; margin-left:.02em; }
+  /* integral con límites */
+  .intg{ display:inline-flex; align-items:center; vertical-align:middle; margin:0 .12em; }
+  .intg > .isign{ font-size:1.5em; line-height:.8; }
+  .intg > .ilim{ display:inline-flex; flex-direction:column; justify-content:center; font-size:.6em; margin-left:.05em; }
+
+  /* ============================================================ FOOTER ============================================================ */
+  .print-hint{
+    display:flex; align-items:flex-start; gap:11px;
+    background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius);
+    padding:13px 15px; margin-bottom: var(--sp-6);
+    color:var(--text-2); font-size:13px; box-shadow:var(--shadow);
+  }
+  .print-hint svg{ width:16px; height:16px; color:var(--accent); flex:none; margin-top:2px; }
+  .print-hint b{ color:var(--text); font-weight:600; }
+  .print-hint code{ font-size:12px; background:var(--canvas); border:1px solid var(--border-subtle); border-radius:4px; padding:1px 6px; }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-4) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  /* estado filtrado */
+  .entry.is-hidden, .subunit.is-hidden, .unit.is-hidden{ display:none; }
+
+  /* ============================================================ RESPONSIVE ============================================================ */
+  @media (max-width: 720px){
+    .unit-cols{ column-count: 1 !important; }
+    .toolbar{ align-items:stretch; }
+    .tb-spacer{ display:none; }
+    .tb-sep{ display:none; }
+  }
+  @media (max-width: 520px){
+    .unit-head{ gap:11px; }
+    .meta-row{ font-size:11px; }
+  }
+
+  /* ============================================================ PRINT ============================================================ */
+  @media print{
+    :root{
+      --canvas:#ffffff; --surface:#ffffff; --surface-hover:#f0ede9;
+      --border-subtle:#d9d6d3; --border:#a9a5a1; --text:#1c1206; --text-2:#5f574e;
+      --accent:#c85a38; --link:#1e688f; --code-bg:#f6f3f0;
+      --k-def:#295c8e; --k-theorem:#5e3b9b; --k-formula:#227762;
+      --k-method:#8c6121; --k-caution:#ab3c2b; --k-example:#6d6155;
+      --shadow:none; --paper-shadow:none;
+    }
+    body{ background:#fff; }
+    .topbar, .toolbar-outer, .legend, .print-hint, footer.site-footer{ display:none !important; }
+    .sheet-header{ padding-top: 0; }
+    .paper{ border:none; box-shadow:none; padding:0; margin:0; }
+    .paper::before{ display:none; }
+    .unit-cols{ column-count: 2; }
+    .entry, .subunit, .unit{ break-inside: avoid; }
+    .entry{ box-shadow:none; }
+    @page{ margin: 14mm; }
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- ============================ TOPBAR ============================ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·D</span>
+        <span class="brand-name">StudyVaults</span>
+        <span class="brand-sep">/</span>
+        <span class="brand-mod">módulo d · hojas de estudio</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ============================ ENCABEZADO DE LA HOJA ============================ -->
+    <section class="sheet-header">
+      <div class="eyebrow"><span class="dot"></span>Borrador de rediseño · para aprobación</div>
+      <h1>Probabilidad y Estadística <em>— resumen de teoría</em></h1>
+      <p class="dek">Hoja de estudio con el esquema <b>v2</b>: cada tema se organiza jerárquicamente en <b>Unidad → Sub-unidad → entradas</b>. La paleta semántica nueva reemplaza los colores saturados por un tinte suave de toda la tarjeta con borde parejo en los cuatro lados.</p>
+      <div class="meta-row">
+        <span class="m mono">Materia <b>22.14</b></span>
+        <span class="m mono">Cátedra <b>Grynberg</b></span>
+        <span class="m mono">3 unidades · 4 sub-unidades</span>
+        <span class="m mono">Actualizado <b>02 jul 2026</b></span>
+        <span class="m mono">Esquema <b>v2</b></span>
+      </div>
+    </section>
+
+    <!-- ============================ TOOLBAR (controles estáticos, funcionales) ============================ -->
+    <div class="toolbar-outer">
+      <div class="toolbar" role="toolbar" aria-label="Controles de la hoja">
+        <div class="tb-group">
+          <span class="tb-label">Densidad</span>
+          <div class="seg" id="segDensity" role="group" aria-label="Densidad">
+            <button type="button" data-density="comfortable" aria-pressed="true">Cómoda</button>
+            <button type="button" data-density="compact" aria-pressed="false">Compacta</button>
+          </div>
+        </div>
+
+        <div class="tb-sep"></div>
+
+        <div class="tb-group">
+          <span class="tb-label">Columnas</span>
+          <div class="seg" id="segCols" role="group" aria-label="Cantidad de columnas">
+            <button type="button" data-cols="1" aria-pressed="false">1</button>
+            <button type="button" data-cols="2" aria-pressed="true">2</button>
+            <button type="button" data-cols="3" aria-pressed="false">3</button>
+          </div>
+        </div>
+
+        <div class="tb-sep"></div>
+
+        <div class="tb-group">
+          <span class="tb-label">Unidad</span>
+          <select class="tb-select" id="unitFilter" aria-label="Filtrar por unidad">
+            <option value="all">Todas</option>
+            <option value="u2">Unidad 2 — Probabilidad</option>
+            <option value="u3">Unidad 3 — V. A. Discretas</option>
+            <option value="u4">Unidad 4 — V. A. Continuas</option>
+          </select>
+        </div>
+
+        <div class="tb-spacer"></div>
+
+        <button class="print-btn" id="printBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg>
+          Imprimir
+        </button>
+      </div>
+
+      <!-- leyenda = filtro por tipo -->
+      <div class="legend" id="legend" aria-label="Filtrar por tipo de entrada">
+        <span class="lg-lead">Tipos</span>
+        <button class="kchip" style="--kc:var(--k-def)"     data-kind="def"     aria-pressed="true"><span class="swatch"></span>definición</button>
+        <button class="kchip" style="--kc:var(--k-theorem)" data-kind="theorem" aria-pressed="true"><span class="swatch"></span>teorema</button>
+        <button class="kchip" style="--kc:var(--k-formula)" data-kind="formula" aria-pressed="true"><span class="swatch"></span>fórmula</button>
+        <button class="kchip" style="--kc:var(--k-method)"  data-kind="method"  aria-pressed="true"><span class="swatch"></span>técnica</button>
+        <button class="kchip" style="--kc:var(--k-caution)" data-kind="caution" aria-pressed="true"><span class="swatch"></span>cuidado</button>
+        <button class="kchip" style="--kc:var(--k-example)" data-kind="example" aria-pressed="true"><span class="swatch"></span>ejemplo</button>
+        <button class="kchip" style="--kc:var(--base-gray)" data-kind="code"    aria-pressed="true"><span class="swatch"></span>código</button>
+      </div>
+    </div>
+
+    <!-- ============================ PAPEL ============================ -->
+    <article class="paper" id="paper">
+
+      <!-- ===================== UNIDAD 2 ===================== -->
+      <section class="unit" data-unit="u2">
+        <div class="unit-head">
+          <span class="unit-num">02</span>
+          <div class="unit-titles">
+            <div class="unit-kicker">Unidad</div>
+            <h2 class="unit-title">Introducción a la Probabilidad</h2>
+            <p class="unit-desc">Espacio muestral y eventos, axiomas de Kolmogórov, probabilidad condicional e independencia.</p>
+          </div>
+        </div>
+
+        <div class="unit-cols">
+
+          <!-- Sub-unidad 2.1 -->
+          <div class="subunit">
+            <div class="subunit-head"><span class="subunit-code">2.1</span><span class="subunit-name">Axiomas y probabilidad condicional</span></div>
+
+            <article class="entry" data-kind="def" style="--k-color: var(--k-def)">
+              <div class="entry-head"><span class="tag-pill">DEF</span><span class="entry-label">Espacio muestral y evento</span></div>
+              <p class="entry-body">El <b>espacio muestral</b> Ω es el conjunto de todos los resultados posibles de un experimento aleatorio. Un <b>evento</b> es cualquier subconjunto <span class="mono">A ⊆ Ω</span>.</p>
+              <div class="entry-math"><span class="math">Ω<span class="op">=</span>{ <span class="var">ω</span><sub>1</sub>, <span class="var">ω</span><sub>2</sub>, …, <span class="var">ω</span><sub><span class="var">n</span></sub> }<span class="op">,</span><span class="var">A</span><span class="op">⊆</span>Ω</span></div>
+            </article>
+
+            <article class="entry" data-kind="theorem" style="--k-color: var(--k-theorem)">
+              <div class="entry-head"><span class="tag-pill">TEOREMA</span><span class="entry-label">Probabilidad total</span></div>
+              <p class="entry-body">Si <span class="mono">{A₁,…,Aₙ}</span> es una <b>partición</b> de Ω (disjuntos y cubren todo), la probabilidad de cualquier evento <span class="mono">B</span> se descompone sobre esa partición:</p>
+              <div class="entry-math"><span class="math">P(<span class="var">B</span>)<span class="op">=</span><span class="sum"><span class="lim-top"><span class="var">n</span></span><span class="sigma">Σ</span><span class="lim-bot"><span class="var">i</span>=1</span></span>P(<span class="var">B</span><span class="op">|</span><span class="var">A</span><sub><span class="var">i</span></sub>)&#8202;P(<span class="var">A</span><sub><span class="var">i</span></sub>)</span></div>
+            </article>
+
+            <article class="entry" data-kind="formula" style="--k-color: var(--k-formula)">
+              <div class="entry-head"><span class="tag-pill">FÓRMULA</span><span class="entry-label">Teorema de Bayes</span></div>
+              <p class="entry-body">Invierte el condicionamiento: pasa de <span class="mono">P(B|A)</span> a <span class="mono">P(A|B)</span>. En el denominador suele usarse la probabilidad total.</p>
+              <div class="entry-math"><span class="math">P(<span class="var">A</span><span class="op">|</span><span class="var">B</span>)<span class="op">=</span><span class="frac"><span class="num">P(<span class="var">B</span><span class="op">|</span><span class="var">A</span>)&#8202;P(<span class="var">A</span>)</span><span class="den">P(<span class="var">B</span>)</span></span></span></div>
+            </article>
+          </div>
+
+          <!-- Sub-unidad 2.2 -->
+          <div class="subunit">
+            <div class="subunit-head"><span class="subunit-code">2.2</span><span class="subunit-name">Independencia</span></div>
+
+            <article class="entry" data-kind="def" style="--k-color: var(--k-def)">
+              <div class="entry-head"><span class="tag-pill">DEF</span><span class="entry-label">Eventos independientes</span></div>
+              <p class="entry-body">Dos eventos son <b>independientes</b> si la ocurrencia de uno no cambia la probabilidad del otro; equivale a que la probabilidad conjunta factorice:</p>
+              <div class="entry-math"><span class="math">P(<span class="var">A</span>∩<span class="var">B</span>)<span class="op">=</span>P(<span class="var">A</span>)&#8202;P(<span class="var">B</span>)</span></div>
+            </article>
+
+            <article class="entry" data-kind="example" style="--k-color: var(--k-example)">
+              <div class="entry-head"><span class="tag-pill">EJEMPLO</span><span class="entry-label">Dos dados justos</span></div>
+              <p class="entry-body">Los resultados de dos dados son independientes. Probabilidad de que <b>ambos</b> salgan 6:</p>
+              <div class="entry-math"><span class="math">P<span class="op">=</span><span class="frac"><span class="num">1</span><span class="den">6</span></span><span class="op">·</span><span class="frac"><span class="num">1</span><span class="den">6</span></span><span class="op">=</span><span class="frac"><span class="num">1</span><span class="den">36</span></span></span></div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================== UNIDAD 3 ===================== -->
+      <section class="unit" data-unit="u3">
+        <div class="unit-head">
+          <span class="unit-num">03</span>
+          <div class="unit-titles">
+            <div class="unit-kicker">Unidad</div>
+            <h2 class="unit-title">Variables Aleatorias Discretas</h2>
+            <p class="unit-desc">Función de masa (pmf) y acumulada (cdf), esperanza y varianza, y la distribución binomial.</p>
+          </div>
+        </div>
+
+        <div class="unit-cols">
+
+          <!-- Sub-unidad 3.1 -->
+          <div class="subunit">
+            <div class="subunit-head"><span class="subunit-code">3.1</span><span class="subunit-name">Esperanza, varianza y binomial</span></div>
+
+            <article class="entry" data-kind="formula" style="--k-color: var(--k-formula)">
+              <div class="entry-head"><span class="tag-pill">FÓRMULA</span><span class="entry-label">Esperanza y varianza</span></div>
+              <p class="entry-body">La <b>esperanza</b> es el promedio ponderado por la pmf; la <b>varianza</b> mide la dispersión respecto de ese promedio.</p>
+              <div class="entry-math"><span class="math-cap">Esperanza</span><span class="math">E[<span class="var">X</span>]<span class="op">=</span><span class="sum"><span class="lim-top"></span><span class="sigma">Σ</span><span class="lim-bot"><span class="var">x</span></span></span><span class="var">x</span>&#8202;<span class="var">p</span>(<span class="var">x</span>)</span></div>
+              <div class="entry-math"><span class="math-cap">Varianza</span><span class="math">Var(<span class="var">X</span>)<span class="op">=</span>E[<span class="var">X</span><sup>2</sup>]<span class="op">−</span>(E[<span class="var">X</span>])<sup>2</sup></span></div>
+            </article>
+
+            <article class="entry" data-kind="formula" style="--k-color: var(--k-formula)">
+              <div class="entry-head"><span class="tag-pill">FÓRMULA</span><span class="entry-label">Distribución binomial</span></div>
+              <p class="entry-body">Cuenta <span class="mono">k</span> éxitos en <span class="mono">n</span> ensayos independientes con probabilidad <span class="mono">p</span> cada uno: <span class="mono">X ~ Bin(n, p)</span>.</p>
+              <div class="entry-math"><span class="math">P(<span class="var">X</span>=<span class="var">k</span>)<span class="op">=</span><span class="binom"><span class="stk"><span><span class="var">n</span></span><span><span class="var">k</span></span></span></span><span class="var">p</span><sup><span class="var">k</span></sup>(1−<span class="var">p</span>)<sup><span class="var">n</span>−<span class="var">k</span></sup></span></div>
+            </article>
+
+            <article class="entry" data-kind="method" style="--k-color: var(--k-method)">
+              <div class="entry-head"><span class="tag-pill">TÉCNICA</span><span class="entry-label">Cómo calcular E[X] y Var(X)</span></div>
+              <p class="entry-body">Para una variable discreta dada por su tabla de pmf:</p>
+              <p class="entry-body"><b>1.</b> Armá la tabla con cada valor <span class="mono">x</span> y su <span class="mono">p(x)</span>.<br/><b>2.</b> Sumá <span class="mono">x·p(x)</span> → obtenés <span class="mono">E[X]</span>.<br/><b>3.</b> Sumá <span class="mono">x²·p(x)</span> → obtenés <span class="mono">E[X²]</span>.<br/><b>4.</b> Restá: <span class="mono">Var = E[X²] − E[X]²</span>.</p>
+            </article>
+
+            <article class="entry code" data-kind="code">
+              <div class="entry-head"><span class="tag-pill">CÓDIGO</span><span class="entry-label">Simular una binomial</span></div>
+              <p class="entry-body">Método de Monte Carlo: contás cuántos de <span class="mono">n</span> ensayos independientes dan éxito.</p>
+              <div class="code-block">
+                <div class="code-bar"><span class="fname">simular_binomial.pseudo</span><span class="lang">pseudocódigo</span></div>
+<pre class="code"><span class="kw">función</span> <span class="fn">binomial</span>(n, p):
+    éxitos ← 0
+    <span class="kw">para</span> i <span class="kw">en</span> 1..n:
+        u ← aleatorio(0, 1)      <span class="cm"># u ~ Uniforme(0,1)</span>
+        <span class="kw">si</span> u &lt; p:
+            éxitos ← éxitos + 1
+    <span class="kw">devolver</span> éxitos           <span class="cm"># X ~ Bin(n, p)</span></pre>
+              </div>
+            </article>
+
+            <article class="entry" data-kind="caution" style="--k-color: var(--k-caution)">
+              <div class="entry-head"><span class="tag-pill">CUIDADO</span><span class="entry-label">No confundir pmf con cdf</span></div>
+              <p class="entry-body">La <b>pmf</b> da la masa en un punto; la <b>cdf</b> acumula hasta ese punto. Son objetos distintos:</p>
+              <div class="entry-math"><span class="math"><span class="var">p</span>(<span class="var">x</span>)<span class="op">=</span>P(<span class="var">X</span>=<span class="var">x</span>)<span class="op">,</span><span class="var">F</span>(<span class="var">x</span>)<span class="op">=</span>P(<span class="var">X</span>≤<span class="var">x</span>)</span></div>
+              <p class="entry-body">La cdf es no decreciente y escalonada; nunca supera 1.</p>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================== UNIDAD 4 ===================== -->
+      <section class="unit" data-unit="u4">
+        <div class="unit-head">
+          <span class="unit-num">04</span>
+          <div class="unit-titles">
+            <div class="unit-kicker">Unidad</div>
+            <h2 class="unit-title">Variables Aleatorias Continuas</h2>
+            <p class="unit-desc">Función de densidad, la distribución Normal y el Teorema Central del Límite.</p>
+          </div>
+        </div>
+
+        <div class="unit-cols">
+
+          <!-- Sub-unidad 4.1 -->
+          <div class="subunit">
+            <div class="subunit-head"><span class="subunit-code">4.1</span><span class="subunit-name">Densidad, Normal y TCL</span></div>
+
+            <article class="entry" data-kind="def" style="--k-color: var(--k-def)">
+              <div class="entry-head"><span class="tag-pill">DEF</span><span class="entry-label">Función de densidad</span></div>
+              <p class="entry-body">Para una variable continua, la probabilidad de un intervalo es el <b>área bajo</b> la densidad <span class="mono">f(x) ≥ 0</span>, cuya integral total vale 1.</p>
+              <div class="entry-math"><span class="math">P(<span class="var">a</span>≤<span class="var">X</span>≤<span class="var">b</span>)<span class="op">=</span><span class="intg"><span class="isign">∫</span><span class="ilim"><sup><span class="var">b</span></sup><sub><span class="var">a</span></sub></span></span><span class="var">f</span>(<span class="var">x</span>)&#8202;d<span class="var">x</span></span></div>
+            </article>
+
+            <article class="entry" data-kind="formula" style="--k-color: var(--k-formula)">
+              <div class="entry-head"><span class="tag-pill">FÓRMULA</span><span class="entry-label">Distribución Normal</span></div>
+              <p class="entry-body">Densidad de <span class="mono">X ~ N(μ, σ²)</span>, la clásica campana centrada en la media <span class="mono">μ</span> con dispersión <span class="mono">σ</span>.</p>
+              <div class="entry-math"><span class="math"><span class="var">f</span>(<span class="var">x</span>)<span class="op">=</span><span class="frac"><span class="num">1</span><span class="den"><span class="var">σ</span>√(2<span class="var">π</span>)</span></span><span class="op">·</span>exp&#8202;(−<span class="frac"><span class="num">(<span class="var">x</span>−<span class="var">μ</span>)<sup>2</sup></span><span class="den">2<span class="var">σ</span><sup>2</sup></span></span>)</span></div>
+            </article>
+
+            <article class="entry" data-kind="theorem" style="--k-color: var(--k-theorem)">
+              <div class="entry-head"><span class="tag-pill">TEOREMA</span><span class="entry-label">Teorema Central del Límite</span></div>
+              <p class="entry-body">El promedio de <span class="mono">n</span> variables iid, estandarizado, tiende a una Normal estándar cuando <span class="mono">n → ∞</span>, sin importar la distribución de origen.</p>
+              <div class="entry-math"><span class="math"><span class="frac"><span class="num">X̄<sub><span class="var">n</span></sub>−<span class="var">μ</span></span><span class="den"><span class="var">σ</span>/√<span class="var">n</span></span></span><span class="op">⟶</span><span class="var">N</span>(0,&#8202;1)</span></div>
+            </article>
+
+            <article class="entry" data-kind="example" style="--k-color: var(--k-example)">
+              <div class="entry-head"><span class="tag-pill">EJEMPLO</span><span class="entry-label">Uniforme en [a, b]</span></div>
+              <p class="entry-body">Densidad constante en el intervalo. Su esperanza es el punto medio y la varianza depende del ancho:</p>
+              <div class="entry-math"><span class="math">E[<span class="var">X</span>]<span class="op">=</span><span class="frac"><span class="num"><span class="var">a</span>+<span class="var">b</span></span><span class="den">2</span></span><span class="op">,</span>Var(<span class="var">X</span>)<span class="op">=</span><span class="frac"><span class="num">(<span class="var">b</span>−<span class="var">a</span>)<sup>2</sup></span><span class="den">12</span></span></span></div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
+    </article>
+
+    <!-- ============================ HINT DE IMPRESIÓN ============================ -->
+    <div class="print-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg>
+      <div><b>Optimizada para imprimir.</b> Usá <code>Ctrl / Cmd + P</code>, tamaño A4 y márgenes por defecto: al imprimir se oculta toda la interfaz, la hoja pasa a paleta clara y las entradas evitan cortarse entre páginas. Los filtros y la densidad activos se respetan en el PDF.</div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — Módulo D · maqueta de revisión de la hoja de estudio. No forma parte del build de producción.</div>
+      <div class="mono">Technical Split · esquema v2 · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+
+      /* ---------- tema (oscuro por defecto) ---------- */
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      function setTheme(t){
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) btn.addEventListener('click', function(){
+        setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      });
+
+      var paper = document.getElementById('paper');
+
+      /* ---------- densidad ---------- */
+      var segDensity = document.getElementById('segDensity');
+      if (segDensity) segDensity.addEventListener('click', function(e){
+        var b = e.target.closest('button'); if (!b) return;
+        segDensity.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+        paper.setAttribute('data-density', b.dataset.density);
+      });
+
+      /* ---------- columnas ---------- */
+      var segCols = document.getElementById('segCols');
+      if (segCols) segCols.addEventListener('click', function(e){
+        var b = e.target.closest('button'); if (!b) return;
+        segCols.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+        root.style.setProperty('--cols', b.dataset.cols);
+      });
+
+      /* ---------- filtro por unidad ---------- */
+      var unitFilter = document.getElementById('unitFilter');
+      if (unitFilter) unitFilter.addEventListener('change', function(){
+        var v = unitFilter.value;
+        paper.querySelectorAll('.unit').forEach(function(u){
+          u.classList.toggle('is-hidden', v !== 'all' && u.dataset.unit !== v);
+        });
+      });
+
+      /* ---------- filtro por tipo (leyenda) ---------- */
+      var legend = document.getElementById('legend');
+      function applyKindFilters(){
+        var off = {};
+        legend.querySelectorAll('.kchip').forEach(function(c){
+          if (c.getAttribute('aria-pressed') === 'false') off[c.dataset.kind] = true;
+        });
+        paper.querySelectorAll('.entry').forEach(function(en){
+          en.classList.toggle('is-hidden', !!off[en.dataset.kind]);
+        });
+        /* si una sub-unidad queda sin entradas visibles, ocultarla */
+        paper.querySelectorAll('.subunit').forEach(function(su){
+          var visible = su.querySelectorAll('.entry:not(.is-hidden)').length;
+          su.classList.toggle('is-hidden', visible === 0);
+        });
+      }
+      if (legend) legend.addEventListener('click', function(e){
+        var c = e.target.closest('.kchip'); if (!c) return;
+        c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+        applyKindFilters();
+      });
+
+      /* ---------- densidad compacta: valores por CSS var ---------- */
+      var style = document.createElement('style');
+      style.textContent = '.paper[data-density="compact"] .entry{padding:11px 13px;margin-bottom:9px}'
+        + '.paper[data-density="compact"] .entry-body{font-size:12.5px;line-height:1.5}'
+        + '.paper[data-density="compact"] .entry-label{font-size:13.5px}'
+        + '.paper[data-density="compact"] .math{font-size:14px}'
+        + '.paper[data-density="compact"] .unit-cols{column-gap:20px}'
+        + '.paper[data-density="compact"] .subunit{margin-bottom:9px}';
+      document.head.appendChild(style);
+
+      /* ---------- imprimir ---------- */
+      var printBtn = document.getElementById('printBtn');
+      if (printBtn && typeof window !== 'undefined' && window.print) {
+        printBtn.addEventListener('click', function(){ window.print(); });
+      }
+    })();
+  </script>
+
+</body>
+</html>

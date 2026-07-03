@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Plan de cursada (rediseño)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults
+     (idénticos a foundations.html — misma fuente de verdad)
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    /* base six — fijos, nunca tematizados */
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    /* minor badges — fijos en ambos temas, el texto brown siempre encima */
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  /* ---------- DARK (default de marca) ---------- */
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+    --shadow-lift: 0 2px 6px rgba(0,0,0,.45), 0 18px 40px -12px rgba(0,0,0,.7);
+
+    --k-formula: #7cc0af; --k-method: #d8b279; --k-caution: #d68f85;
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+    --shadow-lift: 0 2px 6px rgba(36,18,8,.10), 0 18px 40px -12px rgba(36,18,8,.28);
+
+    --k-formula: #227762; --k-method: #8c6121; --k-caution: #ab3c2b;
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  svg{ display:block; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible, [role="switch"]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1200px; margin-inline:auto; padding-inline: clamp(16px, 4vw, 40px); }
+
+  /* ============================================================
+     TOPBAR
+     ============================================================ */
+  .topbar{
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1200px; margin-inline:auto; padding: 12px clamp(16px,4vw,40px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+  .brand-sep{ color:var(--text-2); }
+  .brand-context{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); letter-spacing:.03em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ============================================================
+     HERO — banner "cuatrimestres por delante"
+     ============================================================ */
+  .hero{ padding: var(--sp-4) 0 var(--sp-3); }
+  .hero-banner{
+    position:relative; overflow:hidden;
+    background:var(--surface);
+    border:1px solid var(--border-subtle);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding: clamp(20px,3vw,32px);
+  }
+  /* atmósfera: resplandor coral tenue arriba a la derecha (decorativo, sin figuras) */
+  .hero-banner::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 55%);
+  }
+  .hero-stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:4px 11px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3); position:relative;
+  }
+  .hero-top{
+    position:relative;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  }
+  .hero-stat{ display:flex; align-items:baseline; gap:18px; }
+  .hero-num{
+    font-family:var(--font-serif); font-weight:500; color:var(--text);
+    font-size: clamp(3.4rem, 7vw + 1rem, 6rem); line-height:.86; letter-spacing:-.03em;
+  }
+  .hero-stat-txt .lead{
+    font-size: clamp(1.25rem, 1.6vw + 1rem, 1.9rem); font-weight:500; letter-spacing:-.01em; line-height:1.1;
+  }
+  .hero-stat-txt .sub{ color:var(--text-2); font-size:1.02rem; }
+  .hero-grad{
+    display:inline-flex; align-items:center; gap:12px;
+    border:1px solid var(--border-subtle); background:var(--canvas);
+    border-radius:var(--radius); padding:12px 16px;
+  }
+  .hero-grad svg{ width:22px; height:22px; color:var(--accent); flex:none; }
+  .hero-grad .g-lbl{ font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); }
+  .hero-grad .g-val{ font-weight:600; font-size:1.05rem; letter-spacing:-.01em; }
+
+  .hero-divider{ border:none; border-top:1px solid var(--border-subtle); margin: var(--sp-3) 0; position:relative; }
+
+  .hero-controls{
+    position:relative;
+    display:flex; flex-wrap:wrap; gap: 20px 26px; align-items:flex-end;
+  }
+  .field{ display:flex; flex-direction:column; gap:7px; min-width:0; }
+  .field-lbl{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; color:var(--text-2);
+  }
+  .field-lbl .hint{ text-transform:none; letter-spacing:0; color:var(--text-2); opacity:.75; }
+
+  /* CommissionSelect — mismo componente, padding derecho corregido */
+  select.csel-live{
+    appearance:none; -webkit-appearance:none;
+    font-family:var(--font-mono); font-size:12px;
+    background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 13px center;
+    background-size:11px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    /* right-padding holgado para que la flecha nunca pise el texto */
+    padding:9px 36px 9px 13px; min-width:172px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  html[data-theme="light"] select.csel-live{
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23797067" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  }
+  select.csel-live:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.csel-live:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+
+  /* segmentado: método de optimización (3 opciones) */
+  .seg{
+    display:inline-flex; background:var(--canvas); border:1px solid var(--border);
+    border-radius:var(--radius-pill); padding:3px; gap:2px;
+  }
+  .seg-opt{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.01em;
+    color:var(--text-2); background:transparent; border:none; cursor:pointer;
+    padding:7px 13px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .18s var(--ease);
+  }
+  .seg-opt:hover{ color:var(--text); }
+  .seg-opt[aria-pressed="true"]{
+    background:var(--accent); color:var(--accent-contrast); font-weight:700;
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  }
+
+  /* ============================================================
+     TAB STRIP (sticky — los íconos quedan fijos al scrollear)
+     ============================================================ */
+  .tabstrip{
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--canvas) 90%, transparent);
+    backdrop-filter: blur(10px);
+    border-top:1px solid var(--border-subtle);
+    border-bottom:1px solid var(--border-subtle);
+    margin-top: var(--sp-3);
+  }
+  .tabstrip-inner{
+    max-width:1200px; margin-inline:auto; padding: 0 clamp(16px,4vw,40px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .tablist{ display:flex; gap:4px; }
+  .tab{
+    position:relative; background:none; border:none; cursor:pointer;
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:.02em;
+    color:var(--text-2); padding:15px 14px 13px; display:inline-flex; align-items:center; gap:8px;
+    border-bottom:2px solid transparent; margin-bottom:-1px;
+    transition: color .18s var(--ease);
+  }
+  .tab svg{ width:15px; height:15px; }
+  .tab:hover{ color:var(--text); }
+  .tab[aria-selected="true"]{ color:var(--text); font-weight:700; border-bottom-color:var(--accent); }
+  .tab .tab-new{
+    font-family:var(--font-mono); font-size:8.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--accent-contrast); background:var(--accent); border-radius:var(--radius-pill);
+    padding:2px 6px; font-weight:700;
+  }
+
+  .strip-actions{ display:flex; align-items:center; gap:8px; padding:8px 0; }
+  .iconbtn{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    background:var(--surface); border:1px solid var(--border-subtle); color:var(--text-2);
+    border-radius:var(--radius-pill); padding:8px; cursor:pointer;
+    transition: all .18s var(--ease); font-family:var(--font-mono); font-size:11px;
+  }
+  .iconbtn.has-label{ padding:8px 13px 8px 10px; }
+  .iconbtn svg{ width:15px; height:15px; }
+  .iconbtn:hover{ color:var(--text); border-color:var(--accent); background:var(--surface-hover); }
+
+  /* toggle recomendador */
+  .rec-toggle{ display:inline-flex; align-items:center; gap:9px; cursor:pointer; user-select:none; }
+  .rec-toggle .rlbl{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+  .switch{
+    --w:38px; --h:22px;
+    position:relative; width:var(--w); height:var(--h); flex:none;
+    background:var(--surface-hover); border:1px solid var(--border);
+    border-radius:var(--radius-pill); transition: all .2s var(--ease);
+  }
+  .switch::after{
+    content:""; position:absolute; top:2px; left:2px; width:16px; height:16px;
+    border-radius:50%; background:var(--text-2); transition: all .2s var(--ease);
+  }
+  .rec-toggle[aria-checked="true"] .switch{ background:var(--accent); border-color:var(--accent); }
+  .rec-toggle[aria-checked="true"] .switch::after{ left:18px; background:var(--accent-contrast); }
+  .rec-toggle[aria-checked="true"] .rlbl{ color:var(--text); }
+
+  /* tooltip (Importar/Exportar) */
+  .tip{ position:relative; }
+  .tip-bubble{
+    position:absolute; top:calc(100% + 9px); right:0; z-index:50;
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    box-shadow:var(--shadow); border-radius:6px; padding:8px 11px;
+    font-family:var(--font-mono); font-size:10.5px; line-height:1.4; width:210px; text-align:left;
+    opacity:0; transform: translateY(-4px); pointer-events:none;
+    transition: opacity .16s var(--ease), transform .16s var(--ease);
+  }
+  .tip-bubble::before{
+    content:""; position:absolute; top:-5px; right:14px; width:9px; height:9px;
+    background:var(--surface); border-left:1px solid var(--border); border-top:1px solid var(--border);
+    transform: rotate(45deg);
+  }
+  .tip:hover .tip-bubble, .tip:focus-within .tip-bubble{ opacity:1; transform: translateY(0); }
+
+  /* ============================================================
+     PANELES / VISTAS
+     ============================================================ */
+  .panel{ padding: var(--sp-4) 0 var(--sp-8); }
+  .panel[hidden]{ display:none; }
+
+  .view-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom: var(--sp-3); }
+  .view-title{ font-family:var(--font-serif); font-weight:500; font-size:1.35rem; letter-spacing:-.01em; margin:0; }
+  .view-sub{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  /* leyenda */
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 20px; margin-bottom: var(--sp-3); }
+  .legend-item{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-2); }
+  .legend-item svg{ width:14px; height:14px; }
+
+  /* ---------- grid de cuatrimestres ---------- */
+  .sem-grid{
+    display:grid; grid-template-columns: repeat(3, minmax(0,1fr));
+    grid-auto-rows: 1fr; gap: 18px;
+  }
+  .sem{
+    position:relative;
+    display:flex; flex-direction:column; height:100%;
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:16px 16px 14px;
+  }
+  .sem-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+  .sem-title{ font-family:var(--font-serif); font-weight:600; font-size:1.02rem; letter-spacing:-.005em; }
+  .sem-title .yr{ color:var(--text-2); font-weight:500; }
+  .sem-tools{ display:flex; align-items:center; gap:6px; position:relative; }
+
+  .dotbtn{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:26px; border-radius:6px;
+    background:transparent; border:1px solid transparent; color:var(--text-2); cursor:pointer;
+    transition: all .16s var(--ease);
+  }
+  .dotbtn:hover, .dotbtn[aria-expanded="true"]{ color:var(--text); background:var(--surface-hover); border-color:var(--border-subtle); }
+  .dotbtn svg{ width:16px; height:16px; }
+
+  /* lista de cursos */
+  .clist{ display:flex; flex-direction:column; flex:1 1 auto; }
+  .crow{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 2px; border-top:1px solid var(--border-subtle);
+  }
+  .crow:first-child{ border-top:none; }
+  .ccode{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); width:42px; flex:none; }
+  .cname{ font-size:14px; font-weight:500; flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mdot{
+    width:10px; height:10px; border-radius:50%; background:var(--m-color); flex:none;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 22%, transparent);
+  }
+  .credits-chip{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    background:var(--surface-hover); border:1px solid var(--border-subtle);
+    padding:3px 7px; border-radius:5px; flex:none;
+  }
+  .rec-tag{
+    display:none; font-family:var(--font-mono); font-size:9px; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--accent); border:1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    padding:2px 6px; border-radius:var(--radius-pill); flex:none;
+  }
+  body.rec-on .rec-tag{ display:inline-flex; }
+
+  /* barra de carga */
+  .sem-foot{ margin-top:12px; }
+  .loadbar{ height:6px; border-radius:var(--radius-pill); background:var(--surface-hover); overflow:hidden; }
+  .loadbar > span{ display:block; height:100%; border-radius:var(--radius-pill); background: color-mix(in srgb, var(--accent) 62%, var(--border)); }
+  .load-meta{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:7px; }
+  .load-meta .cr{ font-family:var(--font-mono); font-size:11px; color:var(--text); }
+  .load-meta .aux{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+
+  /* ---------- estado: FINALIZADO (locked) ---------- */
+  .sem.locked{ background: color-mix(in srgb, var(--surface) 78%, var(--canvas)); border-color:var(--border); }
+  .sem.locked .clist, .sem.locked .sem-title{ opacity:.72; }
+  .sem.locked .loadbar > span{ background: var(--text-2); }
+  .lock-cap{
+    display:inline-flex; align-items:center; gap:7px; margin-top:11px;
+    font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+  }
+  .lock-cap svg{ width:13px; height:13px; flex:none; }
+  .lock-badge{
+    display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
+    color:var(--text-2);
+  }
+  .lock-badge svg{ width:15px; height:15px; }
+
+  /* ---------- menú ⋯ abierto ---------- */
+  .sem.menu-open{ z-index:20; }
+  .sem-menu{
+    position:absolute; top:calc(100% + 6px); right:0; z-index:25;
+    min-width:230px; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow-lift); padding:6px;
+    display:none;
+  }
+  .sem-menu.open{ display:block; }
+  .menu-item{
+    display:flex; align-items:center; gap:11px; width:100%;
+    background:none; border:none; cursor:pointer; text-align:left;
+    color:var(--text); font-family:var(--font-serif); font-size:13.5px;
+    padding:9px 10px; border-radius:6px; transition: background .14s var(--ease);
+  }
+  .menu-item:hover{ background:var(--surface-hover); }
+  .menu-item svg{ width:15px; height:15px; color:var(--text-2); flex:none; }
+  .menu-item .mi-sub{ margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--text-2); }
+  .menu-sep{ border:none; border-top:1px solid var(--border-subtle); margin:5px 4px; }
+
+  /* ---------- DnD: fila fantasma (origen) ---------- */
+  .ghost-row{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px; margin-top:2px;
+    border:1px dashed var(--border); border-radius:6px;
+    background: color-mix(in srgb, var(--canvas) 55%, transparent);
+    opacity:.65;
+  }
+  .ghost-row .ccode{ width:42px; }
+  .ghost-row .g-move{ margin-left:auto; font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); text-transform:uppercase; letter-spacing:.05em; }
+
+  /* ---------- DnD: destino drop-over ---------- */
+  .sem.drop-over{
+    border-color: var(--accent);
+    box-shadow: var(--shadow), 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  }
+  .dropzone{
+    position:relative; margin-top:14px;
+    border:2px dashed color-mix(in srgb, var(--accent) 60%, var(--border));
+    border-radius:8px; background: color-mix(in srgb, var(--accent) 8%, transparent);
+    min-height:104px; padding:42px 10px 14px;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; gap:3px;
+  }
+  .dropzone .dz-lbl{ font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; color:var(--accent); font-weight:700; }
+  .dropzone .dz-sub{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); line-height:1.35; }
+
+  /* tarjeta agarrada (grabbing) — flotando sobre el dropzone, SIN rotación */
+  .drag-card{
+    position:absolute; top:-14px; left:12px; right:12px; z-index:15;
+    display:flex; align-items:center; gap:9px;
+    background:var(--surface); border:1px solid var(--accent);
+    border-radius:7px; padding:9px 11px;
+    box-shadow: var(--shadow-lift);
+    cursor:grabbing;
+  }
+  .grip{ display:inline-flex; color:var(--text-2); flex:none; cursor:grabbing; }
+  .grip svg{ width:13px; height:15px; }
+  .drag-card .dc-cap{
+    position:absolute; top:-9px; right:8px;
+    font-family:var(--font-mono); font-size:8.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent-contrast); background:var(--accent); border-radius:var(--radius-pill); padding:1px 7px; font-weight:700;
+  }
+
+  /* pill "te recibís" (recto, no sticker) */
+  .grad-pill{
+    display:inline-flex; align-items:center; gap:6px; margin-top:11px;
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:700;
+    color:var(--accent-contrast); background:var(--accent); border-radius:var(--radius-pill); padding:4px 10px;
+  }
+  .grad-pill svg{ width:12px; height:12px; }
+
+  /* ============================================================
+     ROADMAP (tab) — timeline sobrio
+     ============================================================ */
+  .roadmap{ overflow-x:auto; }
+  .rm-track{ display:flex; gap:0; min-width:640px; padding: 8px 0 4px; }
+  .rm-node{ flex:1 1 0; min-width:120px; position:relative; padding: 0 8px; }
+  .rm-node::before{ content:""; position:absolute; top:11px; left:0; right:0; height:2px; background:var(--border-subtle); }
+  .rm-node:first-child::before{ left:50%; }
+  .rm-node:last-child::before{ right:50%; }
+  .rm-dot{
+    position:relative; z-index:1; width:22px; height:22px; margin:0 auto 12px; border-radius:50%;
+    background:var(--surface); border:2px solid var(--border); display:flex; align-items:center; justify-content:center;
+  }
+  .rm-node.done .rm-dot{ border-color:var(--text-2); background:var(--text-2); }
+  .rm-node.now .rm-dot{ border-color:var(--accent); background: color-mix(in srgb, var(--accent) 22%, var(--surface)); }
+  .rm-node.grad .rm-dot{ border-color:var(--accent); background:var(--accent); }
+  .rm-body{ text-align:center; }
+  .rm-t{ font-family:var(--font-serif); font-weight:600; font-size:13.5px; }
+  .rm-c{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+  .rm-tag{ display:inline-block; margin-top:6px; font-family:var(--font-mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-2); }
+  .rm-node.now .rm-tag{ color:var(--accent); }
+
+  /* ============================================================
+     MINORS (tab)
+     ============================================================ */
+  .minor-card{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .minor-row{ display:flex; align-items:center; gap:16px; padding:16px 18px; border-bottom:1px solid var(--border-subtle); }
+  .minor-row:last-child{ border-bottom:none; }
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:11px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:4px 10px; border-radius:var(--radius-pill); flex:none; min-width:40px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+  }
+  .minor-name{ font-weight:600; font-size:14.5px; flex: 0 0 200px; min-width:150px; }
+  .minor-name span{ display:block; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); font-weight:400; }
+  .minor-prog{ flex:1 1 auto; min-width:120px; }
+  .minor-prog .track{ height:7px; border-radius:var(--radius-pill); background:var(--surface-hover); overflow:hidden; }
+  .minor-prog .track > span{ display:block; height:100%; border-radius:var(--radius-pill); background:var(--m-color); }
+  .minor-count{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); flex:none; min-width:76px; text-align:right; }
+
+  /* ============================================================
+     MODAL (Restablecer)
+     ============================================================ */
+  .modal-backdrop{
+    position:fixed; inset:0; z-index:100; display:none;
+    align-items:center; justify-content:center; padding:20px;
+    background: color-mix(in srgb, var(--base-brown) 55%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .modal-backdrop.open{ display:flex; }
+  .modal{
+    width:100%; max-width:440px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-lift);
+    padding:24px;
+  }
+  .modal h3{ margin:0 0 8px; font-family:var(--font-serif); font-weight:600; font-size:1.2rem; }
+  .modal p{ margin:0 0 20px; color:var(--text-2); font-size:14px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; }
+  .btn{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.02em;
+    padding:9px 15px; border-radius:6px; cursor:pointer; transition: all .16s var(--ease);
+  }
+  .btn-ghost{ background:transparent; border:1px solid var(--border); color:var(--text); }
+  .btn-ghost:hover{ background:var(--surface-hover); }
+  .btn-danger{ background:var(--accent); border:1px solid var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .btn-danger:hover{ filter:brightness(1.05); }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-4) 0 var(--sp-6);
+    color:var(--text-2); font-size:12.5px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 1000px){
+    .sem-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
+  @media (max-width: 760px){
+    .hero-stat{ gap:14px; }
+    .hero-top{ align-items:flex-start; }
+    .hero-controls .field{ flex: 1 1 100%; }
+    .hero-controls select.csel-live{ min-width:0; }
+    .tabstrip-inner{ align-items:stretch; }
+    .tablist{ overflow-x:auto; scrollbar-width:none; }
+    .tablist::-webkit-scrollbar{ display:none; }
+    .strip-actions{ flex-wrap:wrap; }
+  }
+  @media (max-width: 620px){
+    .sem-grid{ grid-template-columns: 1fr; }
+    .brand-context{ display:none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+
+<body class="rec-on">
+
+  <!-- ============================ TOPBAR ============================ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·PLAN</span>
+        <span class="brand-name">StudyVaults</span>
+        <span class="brand-sep">/</span>
+        <span class="brand-context">Plan de cursada · rediseño</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================ HERO ============================ -->
+    <section class="hero wrap">
+      <div class="hero-banner">
+        <div class="hero-stamp">Borrador · para aprobación</div>
+
+        <div class="hero-top">
+          <div class="hero-stat">
+            <div class="hero-num">5</div>
+            <div class="hero-stat-txt">
+              <div class="lead">cuatrimestres</div>
+              <div class="sub">por delante</div>
+            </div>
+          </div>
+          <div class="hero-grad">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 8l10-4 10 4-10 4L2 8Z"/><path d="M6 10v5c0 1.2 2.7 2.5 6 2.5s6-1.3 6-2.5v-5"/><path d="M22 8v5.5"/></svg>
+            <div>
+              <div class="g-lbl">te recibís en</div>
+              <div class="g-val">2º cuatri · 2028</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="hero-divider" />
+
+        <div class="hero-controls">
+          <div class="field">
+            <label class="field-lbl" for="f-start">Empiezo a cursar</label>
+            <select class="csel-live" id="f-start" aria-label="Cuatrimestre de inicio">
+              <option>2º cuatri · 2025</option>
+              <option selected>1º cuatri · 2026</option>
+              <option>2º cuatri · 2026</option>
+              <option>1º cuatri · 2027</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-lbl" for="f-mat">Máx. materias</label>
+            <select class="csel-live" id="f-mat" aria-label="Máximo de materias por cuatrimestre">
+              <option>3 materias</option>
+              <option selected>4 materias</option>
+              <option>5 materias</option>
+              <option>6 materias</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-lbl" for="f-cr">Máx. créditos</label>
+            <select class="csel-live" id="f-cr" aria-label="Máximo de créditos por cuatrimestre">
+              <option>18 créditos</option>
+              <option>21 créditos</option>
+              <option selected>24 créditos</option>
+              <option>27 créditos</option>
+              <option>30 créditos</option>
+            </select>
+          </div>
+
+          <div class="field" style="flex:1 1 320px;">
+            <span class="field-lbl">Optimizar para <span class="hint">— cómo arma el plan</span></span>
+            <div class="seg" role="group" aria-label="Método de optimización">
+              <button type="button" class="seg-opt" aria-pressed="true">Recibirte antes</button>
+              <button type="button" class="seg-opt" aria-pressed="false">Menos días de campus</button>
+              <button type="button" class="seg-opt" aria-pressed="false">Carga pareja</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ TAB STRIP ============================ -->
+    <div class="tabstrip">
+      <div class="tabstrip-inner">
+        <div class="tablist" role="tablist" aria-label="Vistas del plan">
+          <button class="tab" role="tab" id="tab-cal" aria-selected="true" aria-controls="panel-cal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>
+            Calendario
+          </button>
+          <button class="tab" role="tab" id="tab-road" aria-selected="false" aria-controls="panel-road" tabindex="-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 18h16M4 12h16M4 6h16"/><circle cx="8" cy="6" r="1.6" fill="currentColor" stroke="none"/><circle cx="14" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="18" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>
+            Roadmap
+          </button>
+          <button class="tab" role="tab" id="tab-min" aria-selected="false" aria-controls="panel-min" tabindex="-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>
+            Minors <span class="tab-new">Nuevo</span>
+          </button>
+        </div>
+
+        <div class="strip-actions">
+          <div class="rec-toggle" id="recToggle" role="switch" aria-checked="true" tabindex="0" aria-label="Recomendador de electivas">
+            <span class="rlbl">Recomendador</span>
+            <span class="switch" aria-hidden="true"></span>
+          </div>
+
+          <button class="iconbtn" id="btnReset" type="button" aria-label="Restablecer plan" title="Restablecer plan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M5.5 3v3.5H9"/></svg>
+          </button>
+
+          <div class="tip">
+            <button class="iconbtn has-label" id="btnIO" type="button" aria-label="Importar o exportar preferencias" aria-describedby="io-tip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v10M8 7l4-4 4 4"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
+              Importar / Exportar
+            </button>
+            <span class="tip-bubble" id="io-tip" role="tooltip">Guardá el plan como archivo o cargá uno guardado para no perder tus preferencias.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ PANEL: CALENDARIO ============================ -->
+    <section class="panel wrap" id="panel-cal" role="tabpanel" aria-labelledby="tab-cal">
+      <div class="view-head">
+        <h2 class="view-title">Calendario tentativo</h2>
+        <span class="view-sub">6 cuatrimestres · método “Recibirte antes”</span>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="mdot" style="--m-color:var(--minor-ia)"></span> electiva de minor (color = minor)</span>
+        <span class="legend-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          finalizado · el optimizador no lo toca
+        </span>
+        <span class="legend-item">arrastrá un curso a otro cuatri para fijarlo (deja de ser Auto)</span>
+      </div>
+
+      <div class="sem-grid">
+
+        <!-- 1) FINALIZADO / LOCKED -->
+        <article class="sem locked">
+          <div class="sem-head">
+            <div class="sem-title">1º cuatri <span class="yr">· 2026</span></div>
+            <div class="sem-tools">
+              <span class="lock-badge" title="Cuatrimestre finalizado">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="clist">
+            <div class="crow"><span class="ccode">72.33</span><span class="cname">POO</span><span class="credits-chip">6 cr</span></div>
+            <div class="crow"><span class="ccode">93.24</span><span class="cname">Probabilidad y Estadística</span><span class="credits-chip">6 cr</span></div>
+            <div class="crow"><span class="ccode">72.34</span><span class="cname">EDA</span><span class="credits-chip">6 cr</span></div>
+          </div>
+          <div class="sem-foot">
+            <div class="loadbar"><span style="width:75%"></span></div>
+            <div class="load-meta"><span class="cr">18 cr · 3 materias</span></div>
+            <div class="lock-cap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              finalizado · el optimizador no lo toca
+            </div>
+          </div>
+        </article>
+
+        <!-- 2) MENÚ ⋯ ABIERTO -->
+        <article class="sem menu-open">
+          <div class="sem-head">
+            <div class="sem-title">2º cuatri <span class="yr">· 2026</span></div>
+            <div class="sem-tools">
+              <button class="dotbtn" id="dot-2" type="button" aria-haspopup="true" aria-expanded="true" aria-label="Opciones del cuatrimestre">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>
+              </button>
+              <div class="sem-menu open" role="menu" aria-label="Opciones del cuatrimestre 2º 2026">
+                <button class="menu-item" role="menuitem" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3v18M18 3v18M3 8h18M3 16h18"/></svg>
+                  Máx. créditos <span class="mi-sub">24</span>
+                </button>
+                <button class="menu-item" role="menuitem" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>
+                  Máx. materias <span class="mi-sub">4</span>
+                </button>
+                <button class="menu-item" role="menuitem" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 1 1 8 8"/><path d="M4 12v4M4 12h4"/></svg>
+                  Auto (limpiar)
+                </button>
+                <hr class="menu-sep" />
+                <button class="menu-item" role="menuitem" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 20h16"/></svg>
+                  Descargar solo este calendario
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="clist">
+            <div class="crow"><span class="ccode">72.37</span><span class="cname">Base de Datos I</span><span class="credits-chip">6 cr</span></div>
+            <div class="crow"><span class="ccode">72.11</span><span class="cname">Sistemas Operativos</span><span class="credits-chip">6 cr</span></div>
+            <div class="crow"><span class="ccode">72.80</span><span class="cname">Big Data</span><span class="rec-tag">recomendada</span><span class="mdot" style="--m-color:var(--minor-cd)" title="Minor: Ciencia de Datos"></span><span class="credits-chip">3 cr</span></div>
+          </div>
+          <div class="sem-foot">
+            <div class="loadbar"><span style="width:62%"></span></div>
+            <div class="load-meta"><span class="cr">15 cr · 3 materias</span><span class="aux">tope 24 cr</span></div>
+          </div>
+        </article>
+
+        <!-- 3) NORMAL -->
+        <article class="sem">
+          <div class="sem-head">
+            <div class="sem-title">1º cuatri <span class="yr">· 2027</span></div>
+            <div class="sem-tools">
+              <button class="dotbtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Opciones del cuatrimestre">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>
+              </button>
+              <div class="sem-menu" role="menu" aria-label="Opciones del cuatrimestre 1º 2027">
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3v18M18 3v18M3 8h18M3 16h18"/></svg>Máx. créditos <span class="mi-sub">24</span></button>
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Máx. materias <span class="mi-sub">4</span></button>
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 1 1 8 8"/><path d="M4 12v4M4 12h4"/></svg>Auto (limpiar)</button>
+                <hr class="menu-sep" />
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 20h16"/></svg>Descargar solo este calendario</button>
+              </div>
+            </div>
+          </div>
+          <div class="clist">
+            <div class="crow"><span class="ccode">72.42</span><span class="cname">Ingeniería de Software II</span><span class="credits-chip">6 cr</span></div>
+            <div class="crow"><span class="ccode">72.72</span><span class="cname">Redes de Información</span><span class="credits-chip">6 cr</span></div>
+          </div>
+          <div class="sem-foot">
+            <div class="loadbar"><span style="width:50%"></span></div>
+            <div class="load-meta"><span class="cr">12 cr · 2 materias</span><span class="aux">tope 24 cr</span></div>
+          </div>
+        </article>
+
+        <!-- 4) ORIGEN DEL DRAG (fila fantasma) -->
+        <article class="sem">
+          <div class="sem-head">
+            <div class="sem-title">2º cuatri <span class="yr">· 2027</span></div>
+            <div class="sem-tools">
+              <button class="dotbtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Opciones del cuatrimestre">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>
+              </button>
+              <div class="sem-menu" role="menu" aria-label="Opciones del cuatrimestre 2º 2027">
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3v18M18 3v18M3 8h18M3 16h18"/></svg>Máx. créditos <span class="mi-sub">24</span></button>
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Máx. materias <span class="mi-sub">4</span></button>
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 1 1 8 8"/><path d="M4 12v4M4 12h4"/></svg>Auto (limpiar)</button>
+                <hr class="menu-sep" />
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 20h16"/></svg>Descargar solo este calendario</button>
+              </div>
+            </div>
+          </div>
+          <div class="clist">
+            <div class="crow"><span class="ccode">82.08</span><span class="cname">Cloud Computing</span><span class="mdot" style="--m-color:var(--minor-arq)" title="Minor: Arquitectura de Software"></span><span class="credits-chip">6 cr</span></div>
+            <!-- hueco fantasma: la materia salió de acá (dashed = ghost, permitido) -->
+            <div class="ghost-row">
+              <span class="ccode">72.75</span><span class="cname">Machine Learning</span><span class="g-move">moviéndose…</span>
+            </div>
+          </div>
+          <div class="sem-foot">
+            <div class="loadbar"><span style="width:25%"></span></div>
+            <div class="load-meta"><span class="cr">6 cr · 1 materia</span><span class="aux">era 9 cr · 2</span></div>
+          </div>
+        </article>
+
+        <!-- 5) DESTINO DROP-OVER -->
+        <article class="sem drop-over">
+          <div class="sem-head">
+            <div class="sem-title">1º cuatri <span class="yr">· 2028</span></div>
+            <div class="sem-tools">
+              <button class="dotbtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Opciones del cuatrimestre">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="clist">
+            <div class="crow"><span class="ccode">72.32</span><span class="cname">Base de Datos II</span><span class="credits-chip">6 cr</span></div>
+
+            <!-- zona de drop + tarjeta agarrada flotando encima -->
+            <div class="dropzone">
+              <div class="drag-card" aria-label="Arrastrando Machine Learning">
+                <span class="dc-cap">arrastrando</span>
+                <span class="grip" aria-hidden="true"><svg viewBox="0 0 10 16" fill="currentColor"><circle cx="2.5" cy="3" r="1.3"/><circle cx="7.5" cy="3" r="1.3"/><circle cx="2.5" cy="8" r="1.3"/><circle cx="7.5" cy="8" r="1.3"/><circle cx="2.5" cy="13" r="1.3"/><circle cx="7.5" cy="13" r="1.3"/></svg></span>
+                <span class="ccode">72.75</span>
+                <span class="cname">Machine Learning</span>
+                <span class="mdot" style="--m-color:var(--minor-ia)" title="Minor: Inteligencia Artificial"></span>
+                <span class="credits-chip">3 cr</span>
+              </div>
+              <div class="dz-lbl">soltar acá</div>
+              <div class="dz-sub">fija 72.75 en 1º cuatri 2028<br>(deja de ser Auto)</div>
+            </div>
+          </div>
+          <div class="sem-foot">
+            <div class="loadbar"><span style="width:37%"></span></div>
+            <div class="load-meta"><span class="cr">6 cr · 1 materia</span><span class="aux">→ 9 cr · 2 al soltar</span></div>
+          </div>
+        </article>
+
+        <!-- 6) NORMAL + te recibís -->
+        <article class="sem">
+          <div class="sem-head">
+            <div class="sem-title">2º cuatri <span class="yr">· 2028</span></div>
+            <div class="sem-tools">
+              <button class="dotbtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Opciones del cuatrimestre">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>
+              </button>
+              <div class="sem-menu" role="menu" aria-label="Opciones del cuatrimestre 2º 2028">
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3v18M18 3v18M3 8h18M3 16h18"/></svg>Máx. créditos <span class="mi-sub">24</span></button>
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Máx. materias <span class="mi-sub">4</span></button>
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 1 1 8 8"/><path d="M4 12v4M4 12h4"/></svg>Auto (limpiar)</button>
+                <hr class="menu-sep" />
+                <button class="menu-item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 20h16"/></svg>Descargar solo este calendario</button>
+              </div>
+            </div>
+          </div>
+          <div class="clist">
+            <div class="crow"><span class="ccode">72.39</span><span class="cname">Teoría de Lenguajes</span><span class="credits-chip">6 cr</span></div>
+            <div class="crow"><span class="ccode">PF</span><span class="cname">Proyecto Final de Carrera</span><span class="credits-chip">12 cr</span></div>
+          </div>
+          <div class="sem-foot">
+            <div class="loadbar"><span style="width:75%"></span></div>
+            <div class="load-meta"><span class="cr">18 cr · 2 materias</span></div>
+            <span class="grad-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+              te recibís acá
+            </span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============================ PANEL: ROADMAP ============================ -->
+    <section class="panel wrap" id="panel-road" role="tabpanel" aria-labelledby="tab-road" hidden>
+      <div class="view-head">
+        <h2 class="view-title">Roadmap</h2>
+        <span class="view-sub">tu recorrido, cuatri por cuatri</span>
+      </div>
+      <div class="roadmap">
+        <div class="rm-track">
+          <div class="rm-node done">
+            <div class="rm-dot"></div>
+            <div class="rm-body"><div class="rm-t">1º · 2026</div><div class="rm-c">18 cr · 3 mat.</div><div class="rm-tag">finalizado</div></div>
+          </div>
+          <div class="rm-node now">
+            <div class="rm-dot"></div>
+            <div class="rm-body"><div class="rm-t">2º · 2026</div><div class="rm-c">15 cr · 3 mat.</div><div class="rm-tag">cursando</div></div>
+          </div>
+          <div class="rm-node">
+            <div class="rm-dot"></div>
+            <div class="rm-body"><div class="rm-t">1º · 2027</div><div class="rm-c">12 cr · 2 mat.</div><div class="rm-tag">planificado</div></div>
+          </div>
+          <div class="rm-node">
+            <div class="rm-dot"></div>
+            <div class="rm-body"><div class="rm-t">2º · 2027</div><div class="rm-c">9 cr · 2 mat.</div><div class="rm-tag">planificado</div></div>
+          </div>
+          <div class="rm-node">
+            <div class="rm-dot"></div>
+            <div class="rm-body"><div class="rm-t">1º · 2028</div><div class="rm-c">9 cr · 2 mat.</div><div class="rm-tag">planificado</div></div>
+          </div>
+          <div class="rm-node grad">
+            <div class="rm-dot"></div>
+            <div class="rm-body"><div class="rm-t">2º · 2028</div><div class="rm-c">18 cr · 2 mat.</div><div class="rm-tag">te recibís</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ PANEL: MINORS ============================ -->
+    <section class="panel wrap" id="panel-min" role="tabpanel" aria-labelledby="tab-min" hidden>
+      <div class="view-head">
+        <h2 class="view-title">Minors</h2>
+        <span class="view-sub">avance de créditos por minor</span>
+      </div>
+      <div class="minor-card">
+        <div class="minor-row" style="--m-color:var(--minor-cd)">
+          <span class="minor-badge">CD</span>
+          <div class="minor-name">Ciencia de Datos<span>#85A2C2</span></div>
+          <div class="minor-prog"><div class="track"><span style="width:38%"></span></div></div>
+          <div class="minor-count">2 / 6 mat.</div>
+        </div>
+        <div class="minor-row" style="--m-color:var(--minor-irv)">
+          <span class="minor-badge">IRV</span>
+          <div class="minor-name">Imágenes y Realidad Virtual<span>#C592AB</span></div>
+          <div class="minor-prog"><div class="track"><span style="width:0%"></span></div></div>
+          <div class="minor-count">0 / 6 mat.</div>
+        </div>
+        <div class="minor-row" style="--m-color:var(--minor-ia)">
+          <span class="minor-badge">IA</span>
+          <div class="minor-name">Inteligencia Artificial<span>#A9B27E</span></div>
+          <div class="minor-prog"><div class="track"><span style="width:40%"></span></div></div>
+          <div class="minor-count">2 / 5 mat.</div>
+        </div>
+        <div class="minor-row" style="--m-color:var(--minor-arq)">
+          <span class="minor-badge">ARQ</span>
+          <div class="minor-name">Arquitectura de Software<span>#A497C0</span></div>
+          <div class="minor-prog"><div class="track"><span style="width:20%"></span></div></div>
+          <div class="minor-count">1 / 5 mat.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Plan de cursada · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <!-- ============================ MODAL: Restablecer ============================ -->
+  <div class="modal-backdrop" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="reset-title" aria-describedby="reset-desc">
+    <div class="modal">
+      <h3 id="reset-title">¿Restablecer el plan?</h3>
+      <p id="reset-desc">Se borran todas tus preferencias manuales (materias fijadas, topes por cuatri y método de optimización) y el plan vuelve a Auto. Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="resetCancel" type="button">Cancelar</button>
+        <button class="btn btn-danger" id="resetConfirm" type="button">Sí, restablecer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+
+      /* ---- theme toggle ---- */
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      function setTheme(t){
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) btn.addEventListener('click', function(){
+        setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      });
+
+      /* ---- tabs ---- */
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+      function selectTab(tab){
+        tabs.forEach(function(t){
+          var on = t === tab;
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+          var panel = document.getElementById(t.getAttribute('aria-controls'));
+          if (panel) panel.hidden = !on;
+        });
+      }
+      tabs.forEach(function(t, i){
+        t.addEventListener('click', function(){ selectTab(t); });
+        t.addEventListener('keydown', function(e){
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+            e.preventDefault();
+            var dir = e.key === 'ArrowRight' ? 1 : -1;
+            var next = tabs[(i + dir + tabs.length) % tabs.length];
+            next.focus(); selectTab(next);
+          }
+        });
+      });
+
+      /* ---- 3-dot menus ---- */
+      var dotBtns = Array.prototype.slice.call(document.querySelectorAll('.dotbtn'));
+      function closeAllMenus(except){
+        document.querySelectorAll('.sem-menu.open').forEach(function(m){
+          if (m === except) return;
+          m.classList.remove('open');
+          var card = m.closest('.sem'); if (card) card.classList.remove('menu-open');
+          var b = card ? card.querySelector('.dotbtn') : null; if (b) b.setAttribute('aria-expanded','false');
+        });
+      }
+      dotBtns.forEach(function(b){
+        b.addEventListener('click', function(e){
+          e.stopPropagation();
+          var tools = b.parentNode;
+          var menu = tools.querySelector('.sem-menu');
+          var card = b.closest('.sem');
+          if (!menu) return;
+          var willOpen = !menu.classList.contains('open');
+          closeAllMenus(willOpen ? menu : null);
+          menu.classList.toggle('open', willOpen);
+          card.classList.toggle('menu-open', willOpen);
+          b.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+      });
+      document.addEventListener('click', function(){ closeAllMenus(null); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeAllMenus(null); });
+
+      /* ---- recomendador toggle ---- */
+      var rec = document.getElementById('recToggle');
+      function toggleRec(){
+        var on = rec.getAttribute('aria-checked') === 'true';
+        rec.setAttribute('aria-checked', on ? 'false' : 'true');
+        document.body.classList.toggle('rec-on', !on);
+      }
+      if (rec){
+        rec.addEventListener('click', toggleRec);
+        rec.addEventListener('keydown', function(e){
+          if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggleRec(); }
+        });
+      }
+
+      /* ---- optimizer segmented ---- */
+      var segOpts = Array.prototype.slice.call(document.querySelectorAll('.seg-opt'));
+      segOpts.forEach(function(o){
+        o.addEventListener('click', function(){
+          segOpts.forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+          o.setAttribute('aria-pressed','true');
+        });
+      });
+
+      /* ---- reset modal ---- */
+      var modal = document.getElementById('resetModal');
+      var openBtn = document.getElementById('btnReset');
+      var cancelBtn = document.getElementById('resetCancel');
+      var confirmBtn = document.getElementById('resetConfirm');
+      function openModal(){ modal.classList.add('open'); cancelBtn.focus(); }
+      function closeModal(){ modal.classList.remove('open'); if (openBtn) openBtn.focus(); }
+      if (openBtn) openBtn.addEventListener('click', openModal);
+      if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+      if (confirmBtn) confirmBtn.addEventListener('click', closeModal);
+      if (modal) modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+    })();
+  </script>
+</body>
+</html>

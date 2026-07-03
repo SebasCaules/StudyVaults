@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Toolkits bespoke por materia</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults (idénticos a foundations.html)
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+  }
+
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    --k-def: #9ab8d6; --k-theorem: #b6a4d6; --k-formula: #7cc0af;
+    --k-method: #d8b279; --k-caution: #d68f85; --k-example: #b1a8a0;
+  }
+
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-def: #295c8e; --k-theorem: #5e3b9b; --k-formula: #227762;
+    --k-method: #8c6121; --k-caution: #ab3c2b; --k-example: #6d6155;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+  button{ font:inherit; }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  .subnav{ border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--accent); border:1px solid var(--border);
+    padding:6px 14px; border-radius:4px;
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2);
+    max-width: 20ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:66ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.65rem, 1.6vw + 1rem, 2.35rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:74ch; margin: 0 0 var(--sp-4); font-size:1.02rem; }
+  .cutline{ border:none; border-top:1px solid var(--border); margin: var(--sp-4) 0; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+  }
+
+  /* ---------- §0 contexto: antes / ahora ---------- */
+  .ba-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  .ba-col-label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .ba-col-label.before{ color:var(--base-gray); }
+  .ba-col-label.after{ color:var(--accent); }
+  .ba-col-label .line{ flex:1; height:1px; background:currentColor; opacity:.4; }
+  .before-strip{ display:flex; gap:10px; flex-wrap:wrap; }
+  .before-card{
+    width:100px; height:76px; border-radius:6px; border:1px solid var(--border);
+    background:var(--surface-hover); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; color:var(--text-2); font-family:var(--font-mono); font-size:10px; text-align:center; opacity:.85;
+  }
+  .before-card svg{ width:20px; height:20px; opacity:.6; }
+  .after-note{ margin-top:10px; font-size:12.5px; color:var(--text-2); }
+  .after-panel{ padding:18px 20px; }
+
+  /* ---------- tabs ---------- */
+  .tabs-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom: var(--sp-4); }
+  .tabs-label{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); letter-spacing:.04em; }
+  .tabs{ display:inline-flex; gap:4px; padding:4px; background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); box-shadow:var(--shadow); }
+  .tab-btn{
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:.02em; font-weight:600;
+    padding:9px 16px; border-radius:var(--radius-pill); border:none; background:transparent;
+    color:var(--text-2); cursor:pointer; transition: all .25s var(--ease);
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .tab-btn:hover{ color:var(--text); }
+  .tab-btn[aria-selected="true"]{ background:var(--accent); color:var(--accent-contrast); }
+  .tab-btn .tab-code{ font-size:9.5px; opacity:.75; font-weight:400; }
+
+  /* ---------- launcher hero ---------- */
+  .tk-panel[hidden]{ display:none; }
+  .tk-hero{
+    position:relative; overflow:hidden;
+    border-radius:var(--radius); border:1px solid var(--border-subtle); box-shadow:var(--shadow);
+    padding: var(--sp-4) var(--sp-4);
+    margin-bottom: var(--sp-4);
+    display:grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--sp-3);
+    align-items:center;
+    background-color:var(--surface);
+  }
+  .tk-hero--mna{
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 26px, color-mix(in srgb, var(--link) 12%, transparent) 26px, color-mix(in srgb, var(--link) 12%, transparent) 27px),
+      repeating-linear-gradient(90deg, transparent, transparent 26px, color-mix(in srgb, var(--link) 12%, transparent) 26px, color-mix(in srgb, var(--link) 12%, transparent) 27px);
+  }
+  .tk-hero--proba{
+    background-image: radial-gradient(ellipse 65% 80% at 80% 35%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
+  }
+  .tk-hero--econ{
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 22px, color-mix(in srgb, var(--k-method) 10%, transparent) 22px, color-mix(in srgb, var(--k-method) 10%, transparent) 23px),
+      repeating-linear-gradient(90deg, transparent, transparent 22px, color-mix(in srgb, var(--link) 10%, transparent) 22px, color-mix(in srgb, var(--link) 10%, transparent) 23px);
+  }
+  .tk-hero-eyebrow{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    margin-bottom:10px; display:flex; align-items:center; gap:8px; color:var(--tk-accent, var(--accent));
+  }
+  .tk-hero-eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:currentColor; flex:none; }
+  .tk-hero h3{ font-family:var(--font-serif); font-size:clamp(1.5rem,1.5vw+1rem,2.05rem); font-weight:500; margin:0 0 8px; letter-spacing:-.01em; }
+  .tk-hero p{ color:var(--text-2); max-width:46ch; margin:0 0 14px; font-size:.98rem; }
+  .tk-hero-meta{ display:flex; gap:16px; font-family:var(--font-mono); font-size:11px; color:var(--text-2); flex-wrap:wrap; }
+  .tk-hero-meta b{ color:var(--text); }
+  .tk-hero .motif{ width:100%; height:auto; }
+
+  /* ---------- tool groups & cards ---------- */
+  .tk-group{ margin-bottom: var(--sp-3); }
+  /* etiqueta de categoria DENTRO de cada card — grid unico fluido */
+  .tk-cat{ display:flex; align-items:center; gap:6px; margin-bottom:11px; line-height:1.3;
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--k-color); }
+  .tk-cat-dot{ width:6px; height:6px; border-radius:50%; background:currentColor; flex:none; box-shadow:0 0 0 2px color-mix(in srgb, var(--k-color) 22%, transparent); }
+
+  .tk-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(206px,1fr)); gap:12px; }
+  .tk-grid--flat{ grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:16px; }
+
+  .tk-card{
+    --k-color: var(--k-def);
+    display:block; width:100%; text-align:left; color:var(--text);
+    background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius);
+    padding:14px 15px; box-shadow:var(--shadow); cursor:pointer;
+    transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .tk-card:hover{ transform:translateY(-2px); border-color: color-mix(in srgb, var(--k-color) 55%, var(--border-subtle)); background:var(--surface-hover); }
+  .tk-card--lg{ padding:20px 22px; }
+  .tk-icon{
+    width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    background: color-mix(in srgb, var(--k-color) 18%, transparent); color:var(--k-color); margin-bottom:11px;
+  }
+  .tk-card--lg .tk-icon{ width:44px; height:44px; border-radius:10px; }
+  .tk-icon svg{ width:18px; height:18px; }
+  .tk-card--lg .tk-icon svg{ width:22px; height:22px; }
+  .tk-label{ font-weight:600; font-size:14px; margin-bottom:3px; line-height:1.3; }
+  .tk-card--lg .tk-label{ font-size:15.5px; }
+  .tk-desc{ font-size:12.5px; color:var(--text-2); line-height:1.45; margin:0; }
+
+  /* ---------- runner compartido ---------- */
+  .runner-mock{ border:1px solid var(--border-subtle); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); background:var(--surface); transition: box-shadow .3s var(--ease), border-color .3s var(--ease); }
+  .runner-mock.flash{ border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent), var(--shadow); }
+  .runner-top{ padding:14px 18px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:var(--surface-hover); }
+  .runner-back{ font-family:var(--font-mono); font-size:12px; color:var(--link); display:inline-flex; align-items:center; gap:6px; }
+  .runner-title{ font-weight:600; font-size:15px; }
+  .runner-jump{ display:flex; gap:6px; padding:10px 18px; overflow-x:auto; border-bottom:1px solid var(--border-subtle); scrollbar-width:none; }
+  .runner-jump::-webkit-scrollbar{ display:none; }
+  .runner-pill{
+    font-family:var(--font-mono); font-size:10.5px; padding:5px 11px; border-radius:var(--radius-pill);
+    border:1px solid var(--border-subtle); color:var(--text-2); white-space:nowrap; background:var(--surface);
+    cursor:pointer; transition: all .2s var(--ease);
+  }
+  .runner-pill:hover{ color:var(--text); border-color:var(--accent); }
+  .runner-pill.active{ background:var(--accent); color:var(--accent-contrast); border-color:var(--accent); font-weight:600; }
+  .runner-body{ padding: var(--sp-4); }
+  .runner-placeholder{
+    border:1.5px dashed var(--border); border-radius:8px; padding: var(--sp-6) var(--sp-3);
+    text-align:center; color:var(--text-2); font-family:var(--font-mono); font-size:12px;
+  }
+  .runner-placeholder svg{ width:26px; height:26px; margin:0 auto 10px; opacity:.55; }
+  .runner-hint{ margin-top:14px; font-size:13px; color:var(--text-2); }
+  .runner-shell-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); background:var(--canvas); padding:3px 9px; border-radius:var(--radius-pill); border:1px solid var(--border-subtle); }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 860px){
+    .ba-grid{ grid-template-columns:1fr; }
+    .tk-hero{ grid-template-columns:1fr; }
+    .tk-hero .motif-wrap{ order:-1; max-width:260px; margin:0 auto; }
+  }
+  @media (max-width: 520px){
+    .hero h1{ max-width:none; }
+    .tk-grid{ grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); }
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- sprite de íconos (oculto) -->
+  <svg style="display:none" aria-hidden="true">
+    <defs>
+      <symbol id="i-matrix" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3 L4 3 L4 21 L6 21"/><path d="M18 3 L20 3 L20 21 L18 21"/><path d="M8 7h8M8 12h8M8 17h8"/>
+      </symbol>
+      <symbol id="i-lu" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 4L20 20"/>
+        <circle cx="8" cy="16" r="1" fill="currentColor" stroke="none"/><circle cx="8" cy="12" r="1" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1" fill="currentColor" stroke="none"/>
+        <circle cx="16" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-eigen" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20L20 4"/><path d="M14 4h6v6"/>
+        <circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-doc" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h7M9 8h3"/>
+      </symbol>
+      <symbol id="i-exam" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 3h11l3 3v15H5z"/><path d="M16 3v3h3"/><path d="M9 13l2 2 4-4"/>
+      </symbol>
+      <symbol id="i-dice" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="4" width="16" height="16" rx="3"/>
+        <circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-bayes" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M10.5 6.5L7.2 16.3M13.5 6.5L16.8 16.3"/>
+      </symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 18h18"/><path d="M3 18C6 18 7 6 12 6s6 12 9 12"/>
+      </symbol>
+      <symbol id="i-table" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16M4 14h16M9 4v16M14 4v16"/>
+      </symbol>
+      <symbol id="i-approx" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 18c3 0 4-10 9-10s6 10 9 10" opacity=".5"/><path d="M6 18v-5M10 18v-8M14 18v-8M18 18v-5"/>
+      </symbol>
+      <symbol id="i-hist" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 20h18"/><path d="M5 20v-6M9 20v-11M13 20v-8M17 20v-4"/>
+      </symbol>
+      <symbol id="i-interval" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 5v14M18 5v14"/><path d="M6 12h12"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-scale" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v18M7 21h10"/><path d="M4 7h7M13 7h7"/><path d="M4 7l-2 5h4l-2-5zM20 7l-2 5h4l-2-5z"/>
+      </symbol>
+      <symbol id="i-overlap" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 18c3 0 4-9 8-9s5 9 8 9" opacity=".45"/><path d="M6 18c3 0 4-9 8-9s5 9 4 9"/>
+      </symbol>
+      <symbol id="i-markov" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="7" r="2.4"/><circle cx="18" cy="7" r="2.4"/><circle cx="12" cy="18" r="2.4"/>
+        <path d="M8.2 7h7.6M16.5 9.2l-3 6.8M7.5 9.2l3 6.8"/>
+      </symbol>
+      <symbol id="i-decision" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l5 5-5 5-5-5z"/><path d="M12 13v8M8 21h8"/>
+      </symbol>
+      <symbol id="i-percent-eq" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 19L19 5"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/><path d="M4 12h4M16 12h4" opacity=".5"/>
+      </symbol>
+      <symbol id="i-timeline" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 18h18"/><path d="M6 18v-3M12 18v-3M18 18v-3"/><path d="M12 4l2.5 2.5L12 9l-2.5-2.5z"/>
+      </symbol>
+      <symbol id="i-annuity" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 20h18"/><path d="M6 20v-5M10.5 20v-5M15 20v-5M19 20v-5"/>
+      </symbol>
+      <symbol id="i-perp" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 20h13"/><path d="M6 20v-4M10 20v-4M14 20v-4"/><path d="M18.4 14.6c-1.4 0-1.4 3 0 3s1.4-3 2.8-3 1.4 3 0 3"/>
+      </symbol>
+      <symbol id="i-loan" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 20h18"/><path d="M6 20V9M10 20v-7M14 20v-4M18 20v-2"/>
+      </symbol>
+      <symbol id="i-discount" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/><path d="M8 8l8 8"/>
+        <circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-cashflow" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12h18" opacity=".5"/><path d="M6 12v5M10 12v-4M14 12v6M18 12v-3"/>
+      </symbol>
+      <symbol id="i-npv" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12h18" opacity=".4"/><path d="M4 6c4 0 5 12 9 12s5-9 7-9"/><circle cx="12.2" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4.5"/>
+      </symbol>
+      <symbol id="i-equalbars" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20h16" opacity=".5"/><path d="M6 20v-9M11 20v-9M16 20v-9"/>
+      </symbol>
+      <symbol id="i-ratio" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="6" r="2"/><path d="M5 12h14"/><circle cx="12" cy="18" r="2"/>
+      </symbol>
+      <symbol id="i-breakeven" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 20h18M3 20V4" opacity=".45"/><path d="M4 18l16-13"/><path d="M4 6l16 13" opacity=".7"/><circle cx="12" cy="11.5" r="1.6" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-worktable" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 8h16M4 16h16"/><path d="M4 8v8M20 8v8" opacity=".4"/>
+      </symbol>
+      <symbol id="i-ledger" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 3h14v18H5z"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M16.5 15.5l1 1 2-2.2" opacity=".8"/>
+      </symbol>
+      <symbol id="i-supdem" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20V4M4 20h18" opacity=".45"/><path d="M5 18L19 6"/><path d="M5 6l14 12" opacity=".85"/>
+      </symbol>
+      <symbol id="i-elastic" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20V4M4 20h18" opacity=".45"/><path d="M5 8c6 0 9 5 15 10"/><path d="M5 16c8-8 10-10 15-11" opacity=".55"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·004</span>
+        <span class="brand-name">StudyVaults — Toolkits</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#s0">00 · Contexto</a>
+        <a href="#s1">01 · Launchers bespoke</a>
+        <a href="#s2">02 · Runner compartido</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN</div>
+      <h1>Identidad <em>bespoke</em> por materia para los toolkits de StudyVaults</h1>
+      <p class="dek">Módulo A del rediseño: hoy las 6 materias comparten un único launcher genérico en <span class="mono">/[vault]/herramientas</span> — mismo grid de cards, cero identidad. La propuesta: cada materia arma su propio launcher con motivo visual e iconografía propios, pero todas las herramientas siguen abriendo dentro del mismo runner compartido. Este documento muestra 3 launchers representativos.</p>
+      <div class="hero-meta">
+        <span><b>Módulo A</b> — toolkits</span>
+        <span>3 identidades de muestra sobre 6 materias reales</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 0. CONTEXTO — ANTES / AHORA -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s0">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 00 — Contexto
+      </div>
+      <h2 class="spec-title">Hoy: un mismo grid genérico repetido 6 veces</h2>
+      <p class="spec-dek">Ninguna de las 6 materias se distingue de otra al entrar a su toolkit — ni color, ni ícono, ni motivo visual. El usuario no sabe en qué materia está hasta que lee los títulos de las cards.</p>
+
+      <div class="ba-grid">
+        <div>
+          <div class="ba-col-label before">Hoy — 6 materias, 1 identidad<span class="line"></span></div>
+          <div class="before-strip">
+            <div class="before-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>MNA</div>
+            <div class="before-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>Proba</div>
+            <div class="before-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>Economía</div>
+            <div class="before-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>+3 más</div>
+          </div>
+          <p class="after-note">Mismo ícono de grid, mismo gris, mismo layout — la materia es indistinguible del envoltorio.</p>
+        </div>
+        <div>
+          <div class="ba-col-label after">Ahora — bespoke por materia<span class="line"></span></div>
+          <div class="card after-panel">
+            <p style="margin:0 0 10px;font-size:14.5px">Cada launcher define su propio motivo (matrices, campana de Gauss, curvas de mercado), su propia iconografía y su propio tratamiento de color — reutilizando siempre los mismos 6 tokens de marca.</p>
+            <p class="after-note" style="margin-top:0">Elegí una materia en la sección 01 para ver su launcher completo ↓</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. LAUNCHERS BESPOKE -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s1">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Componente
+      </div>
+      <h2 class="spec-title">Tres launchers, tres identidades</h2>
+      <p class="spec-dek">Mismo sistema de tokens (color, tipografía, radios, sombras) — tres motivos y lenguajes de ícono completamente distintos. Los datos (nombres y descripciones de herramientas) son los reales de cada toolkit.</p>
+
+      <div class="tabs-row">
+        <span class="tabs-label">Elegí una materia:</span>
+        <div class="tabs" role="tablist" aria-label="Materias">
+          <button class="tab-btn" role="tab" id="tab-mna" aria-selected="true" aria-controls="panel-mna" data-target="panel-mna" type="button">MNA <span class="tab-code">SYS.01</span></button>
+          <button class="tab-btn" role="tab" id="tab-proba" aria-selected="false" tabindex="-1" aria-controls="panel-proba" data-target="panel-proba" type="button">Proba <span class="tab-code">SYS.02</span></button>
+          <button class="tab-btn" role="tab" id="tab-economia" aria-selected="false" tabindex="-1" aria-controls="panel-economia" data-target="panel-economia" type="button">Economía <span class="tab-code">SYS.03</span></button>
+        </div>
+      </div>
+
+      <!-- ============ PANEL MNA ============ -->
+      <div class="tk-panel" id="panel-mna" role="tabpanel" aria-labelledby="tab-mna" style="--tk-accent: var(--link)">
+        <div class="tk-hero tk-hero--mna">
+          <div>
+            <div class="tk-hero-eyebrow"><span class="dot"></span>SYS.01 · ÁLGEBRA LINEAL NUMÉRICA</div>
+            <h3>Métodos Numéricos Avanzados</h3>
+            <p>Kit compacto de álgebra lineal: factorizaciones, autovalores y operaciones matriciales sobre matrices editables n×n.</p>
+            <div class="tk-hero-meta"><span><b>4</b> herramientas</span><span>sin agrupar — kit único</span><span class="mono">/mna/herramientas</span></div>
+          </div>
+          <div class="motif-wrap">
+            <svg class="motif" viewBox="0 0 320 200" fill="none" aria-hidden="true">
+              <path d="M62 22 L50 22 L50 158 L62 158" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M210 22 L222 22 L222 158 L210 158" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="76" y="30" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" stroke-width="1.2"/>
+              <rect x="76" y="60" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)"/>
+              <rect x="106" y="60" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" stroke-width="1.2"/>
+              <rect x="76" y="90" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)"/>
+              <rect x="106" y="90" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)"/>
+              <rect x="136" y="90" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" stroke-width="1.2"/>
+              <rect x="76" y="120" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)"/>
+              <rect x="106" y="120" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)"/>
+              <rect x="136" y="120" width="30" height="30" fill="color-mix(in srgb, var(--link) 16%, transparent)"/>
+              <rect x="166" y="120" width="30" height="30" fill="color-mix(in srgb, var(--accent) 30%, transparent)" stroke="var(--accent)" stroke-width="1.2"/>
+              <g stroke="var(--border-subtle)" stroke-width="1">
+                <line x1="76" y1="30" x2="76" y2="150"/><line x1="106" y1="30" x2="106" y2="150"/><line x1="136" y1="30" x2="136" y2="150"/><line x1="166" y1="30" x2="166" y2="150"/><line x1="196" y1="30" x2="196" y2="150"/>
+                <line x1="76" y1="30" x2="196" y2="30"/><line x1="76" y1="60" x2="196" y2="60"/><line x1="76" y1="90" x2="196" y2="90"/><line x1="76" y1="120" x2="196" y2="120"/><line x1="76" y1="150" x2="196" y2="150"/>
+              </g>
+              <text x="50" y="16" fill="var(--text-2)" font-size="11" style="font-family:var(--font-mono)">A</text>
+              <text x="76" y="175" fill="var(--text-2)" font-size="12" style="font-family:var(--font-mono)">A = L · U</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="tk-group">
+          <div class="tk-grid tk-grid--flat">
+            <button class="tk-card tk-card--lg" type="button" data-vault="mna" data-tool="Calculadora" style="--k-color: var(--link)">
+              <span class="tk-icon"><svg><use href="#i-matrix"/></svg></span>
+              <div class="tk-label">Calculadora</div>
+              <p class="tk-desc">Determinante, inversa, rango, traspuesta y producto A·B.</p>
+            </button>
+            <button class="tk-card tk-card--lg" type="button" data-vault="mna" data-tool="LU y QR" style="--k-color: var(--link)">
+              <span class="tk-icon"><svg><use href="#i-lu"/></svg></span>
+              <div class="tk-label">LU y QR</div>
+              <p class="tk-desc">Factorización PA=LU (Doolittle, pivoteo parcial) y A=QR (Gram–Schmidt).</p>
+            </button>
+            <button class="tk-card tk-card--lg" type="button" data-vault="mna" data-tool="Autovalores y SVD" style="--k-color: var(--link)">
+              <span class="tk-icon"><svg><use href="#i-eigen"/></svg></span>
+              <div class="tk-label">Autovalores y SVD</div>
+              <p class="tk-desc">Autovalores/autovectores y descomposición SVD con condicionamiento.</p>
+            </button>
+            <button class="tk-card tk-card--lg" type="button" data-vault="mna" data-tool="Formulario" style="--k-color: var(--k-example)">
+              <span class="tk-icon"><svg><use href="#i-doc"/></svg></span>
+              <div class="tk-label">Formulario</div>
+              <p class="tk-desc">Normas, condicionamiento y factorizaciones — referencia estática.</p>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PANEL PROBA ============ -->
+      <div class="tk-panel" id="panel-proba" role="tabpanel" aria-labelledby="tab-proba" hidden style="--tk-accent: var(--accent)">
+        <div class="tk-hero tk-hero--proba">
+          <div>
+            <div class="tk-hero-eyebrow"><span class="dot"></span>SYS.02 · DISTRIBUCIONES &amp; INFERENCIA</div>
+            <h3>Probabilidad y Estadística</h3>
+            <p>De la combinatoria a la inferencia: distribuciones con gráfico en vivo, estimación, pruebas de hipótesis y banco de finales.</p>
+            <div class="tk-hero-meta"><span><b>13</b> herramientas</span><span><b>8</b> categorías</span><span class="mono">/proba/herramientas</span></div>
+          </div>
+          <div class="motif-wrap">
+            <svg class="motif" viewBox="0 0 320 200" fill="none" aria-hidden="true">
+              <line x1="20" y1="168" x2="300" y2="168" stroke="var(--border)" stroke-width="1.5"/>
+              <g fill="color-mix(in srgb, var(--link) 32%, transparent)">
+                <rect x="34" y="162" width="18" height="6"/><rect x="58" y="154" width="18" height="14"/><rect x="82" y="142" width="18" height="26"/>
+                <rect x="106" y="126" width="18" height="42"/><rect x="130" y="110" width="18" height="58"/><rect x="154" y="96" width="18" height="72"/>
+                <rect x="178" y="110" width="18" height="58"/><rect x="202" y="126" width="18" height="42"/><rect x="226" y="142" width="18" height="26"/>
+                <rect x="250" y="154" width="18" height="14"/><rect x="274" y="162" width="18" height="6"/>
+              </g>
+              <path d="M22 164 C70 164 90 54 163 54 C236 54 256 164 302 164" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+              <g fill="var(--link)" opacity=".85">
+                <circle cx="102" cy="100" r="2.4"/><circle cx="126" cy="90" r="2.4"/><circle cx="150" cy="66" r="2.4"/><circle cx="176" cy="70" r="2.4"/><circle cx="198" cy="104" r="2.4"/>
+              </g>
+              <g stroke="var(--border)" stroke-width="1">
+                <line x1="91" y1="168" x2="91" y2="172"/><line x1="235" y1="168" x2="235" y2="172"/>
+              </g>
+              <text x="82" y="184" fill="var(--text-2)" font-size="10" style="font-family:var(--font-mono)">−3σ</text>
+              <text x="222" y="184" fill="var(--text-2)" font-size="10" style="font-family:var(--font-mono)">+3σ</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="tk-grid">
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Banco de finales" style="--k-color: var(--k-caution)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Práctica de examen</span>
+              <span class="tk-icon"><svg><use href="#i-exam"/></svg></span>
+              <div class="tk-label">Banco de finales</div>
+              <p class="tk-desc">Parciales y finales resueltos, navegables, con TPs y V/F.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Combinatoria" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Probabilidad y conteo</span>
+              <span class="tk-icon"><svg><use href="#i-dice"/></svg></span>
+              <div class="tk-label">Combinatoria</div>
+              <p class="tk-desc">Permutaciones, variaciones y combinaciones paso a paso.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Bayes" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Probabilidad y conteo</span>
+              <span class="tk-icon"><svg><use href="#i-bayes"/></svg></span>
+              <div class="tk-label">Bayes</div>
+              <p class="tk-desc">Probabilidad total y teorema de Bayes con árbol de casos.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Distribuciones" style="--k-color: var(--accent)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Distribuciones</span>
+              <span class="tk-icon"><svg><use href="#i-bell"/></svg></span>
+              <div class="tk-label">Distribuciones</div>
+              <p class="tk-desc">Binomial, Poisson, normal, t, gamma… con gráfico en vivo.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Tabla normal" style="--k-color: var(--accent)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Distribuciones</span>
+              <span class="tk-icon"><svg><use href="#i-table"/></svg></span>
+              <div class="tk-label">Tabla normal</div>
+              <p class="tk-desc">Z ↔ probabilidad con estandarización interactiva.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Aprox. normal" style="--k-color: var(--accent)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Distribuciones</span>
+              <span class="tk-icon"><svg><use href="#i-approx"/></svg></span>
+              <div class="tk-label">Aprox. normal</div>
+              <p class="tk-desc">Aproximación normal de la binomial con corrección de continuidad.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Descriptiva" style="--k-color: var(--k-example)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Datos y muestras</span>
+              <span class="tk-icon"><svg><use href="#i-hist"/></svg></span>
+              <div class="tk-label">Descriptiva</div>
+              <p class="tk-desc">Media, desvío, cuartiles e histograma de un dataset.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Intervalos de confianza" style="--k-color: var(--k-theorem)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Inferencia</span>
+              <span class="tk-icon"><svg><use href="#i-interval"/></svg></span>
+              <div class="tk-label">Intervalos de confianza</div>
+              <p class="tk-desc">Media (Z/t) y proporción, más tamaño muestral.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Test de hipótesis" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Pruebas de hipótesis</span>
+              <span class="tk-icon"><svg><use href="#i-scale"/></svg></span>
+              <div class="tk-label">Test de hipótesis</div>
+              <p class="tk-desc">Z/T y proporción, con valor p paso a paso.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Potencia y error II" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Pruebas de hipótesis</span>
+              <span class="tk-icon"><svg><use href="#i-overlap"/></svg></span>
+              <div class="tk-label">Potencia y error II</div>
+              <p class="tk-desc">β, potencia del test y diseño muestral.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Cadenas de Markov" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Procesos y decisión</span>
+              <span class="tk-icon"><svg><use href="#i-markov"/></svg></span>
+              <div class="tk-label">Cadenas de Markov</div>
+              <p class="tk-desc">Matriz de transición, Pⁿ y distribución estacionaria.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Teoría de la decisión" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Procesos y decisión</span>
+              <span class="tk-icon"><svg><use href="#i-decision"/></svg></span>
+              <div class="tk-label">Teoría de la decisión</div>
+              <p class="tk-desc">Matriz de pagos y valor esperado por criterio.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="proba" data-tool="Formulario" style="--k-color: var(--k-example)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Referencia</span>
+              <span class="tk-icon"><svg><use href="#i-doc"/></svg></span>
+              <div class="tk-label">Formulario</div>
+              <p class="tk-desc">Distribuciones, teoremas, inferencia y pruebas.</p>
+            </button>
+        </div>
+      </div>
+
+      <!-- ============ PANEL ECONOMÍA ============ -->
+      <div class="tk-panel" id="panel-economia" role="tabpanel" aria-labelledby="tab-economia" hidden style="--tk-accent: var(--k-method)">
+        <div class="tk-hero tk-hero--econ">
+          <div>
+            <div class="tk-hero-eyebrow"><span class="dot"></span>SYS.03 · MERCADOS, TASAS &amp; DECISIÓN</div>
+            <h3>Economía para Ingenieros</h3>
+            <p>Cálculo financiero, evaluación de proyectos e información contable — armado alrededor del Parcial 2 (U6/U7/U8), con un simulacro completo.</p>
+            <div class="tk-hero-meta"><span><b>18</b> herramientas</span><span><b>6</b> categorías</span><span class="mono">/economia/herramientas</span></div>
+          </div>
+          <div class="motif-wrap">
+            <svg class="motif" viewBox="0 0 320 200" fill="none" aria-hidden="true">
+              <path d="M50 170 L50 20 M50 170 L300 170" stroke="var(--border)" stroke-width="1.5"/>
+              <path d="M50 14 L45 24 L55 24 Z" fill="var(--border)"/>
+              <path d="M306 170 L296 165 L296 175 Z" fill="var(--border)"/>
+              <text x="36" y="24" fill="var(--text-2)" font-size="12" style="font-family:var(--font-mono)">P</text>
+              <text x="294" y="184" fill="var(--text-2)" font-size="12" style="font-family:var(--font-mono)">Q</text>
+              <path d="M70 40 L280 150" stroke="var(--link)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M70 150 L280 40" stroke="var(--k-method)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="175" y1="95" x2="175" y2="170" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>
+              <line x1="175" y1="95" x2="50" y2="95" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>
+              <circle cx="175" cy="95" r="4.5" fill="var(--accent)"/>
+              <text x="182" y="91" fill="var(--accent)" font-size="12" style="font-family:var(--font-mono)">E</text>
+              <text x="30" y="99" fill="var(--text-2)" font-size="10" style="font-family:var(--font-mono)">P*</text>
+              <text x="169" y="184" fill="var(--text-2)" font-size="10" style="font-family:var(--font-mono)">Q*</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="tk-grid">
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Simulador Parcial 2" style="--k-color: var(--k-caution)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Práctica de parcial</span>
+              <span class="tk-icon"><svg><use href="#i-exam"/></svg></span>
+              <div class="tk-label">Simulador Parcial 2</div>
+              <p class="tk-desc">Parcial completo simulado — U6, U7 y U8, corrección al final.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Tasas equivalentes" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Cálculo financiero · U7</span>
+              <span class="tk-icon"><svg><use href="#i-percent-eq"/></svg></span>
+              <div class="tk-label">Tasas equivalentes</div>
+              <p class="tk-desc">Conversión entre tasas nominales, efectivas y períodos.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Valor tiempo del dinero" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Cálculo financiero · U7</span>
+              <span class="tk-icon"><svg><use href="#i-timeline"/></svg></span>
+              <div class="tk-label">Valor tiempo del dinero</div>
+              <p class="tk-desc">VP, VF y equivalencias en la línea de tiempo.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Anualidades" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Cálculo financiero · U7</span>
+              <span class="tk-icon"><svg><use href="#i-annuity"/></svg></span>
+              <div class="tk-label">Anualidades</div>
+              <p class="tk-desc">Serie de pagos periódicos iguales — VP y VF.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Perpetuidades" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Cálculo financiero · U7</span>
+              <span class="tk-icon"><svg><use href="#i-perp"/></svg></span>
+              <div class="tk-label">Perpetuidades</div>
+              <p class="tk-desc">Flujos periódicos a perpetuidad, con y sin crecimiento.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Préstamos" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Cálculo financiero · U7</span>
+              <span class="tk-icon"><svg><use href="#i-loan"/></svg></span>
+              <div class="tk-label">Préstamos</div>
+              <p class="tk-desc">Sistema francés, alemán y directo, cuota a cuota.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Descuento comercial y CFT" style="--k-color: var(--k-method)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Cálculo financiero · U7</span>
+              <span class="tk-icon"><svg><use href="#i-discount"/></svg></span>
+              <div class="tk-label">Descuento comercial y CFT</div>
+              <p class="tk-desc">Descuento de documentos y costo financiero total.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Constructor de flujo de fondos" style="--k-color: var(--k-formula)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Evaluación de proyectos · U8</span>
+              <span class="tk-icon"><svg><use href="#i-cashflow"/></svg></span>
+              <div class="tk-label">Constructor de flujo de fondos</div>
+              <p class="tk-desc">Armá el flujo de un proyecto, período a período.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="VAN / TIR / criterios" style="--k-color: var(--k-formula)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Evaluación de proyectos · U8</span>
+              <span class="tk-icon"><svg><use href="#i-npv"/></svg></span>
+              <div class="tk-label">VAN / TIR / criterios</div>
+              <p class="tk-desc">Valor actual neto, tasa interna y criterios de decisión.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Escudo fiscal y amortización" style="--k-color: var(--k-formula)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Evaluación de proyectos · U8</span>
+              <span class="tk-icon"><svg><use href="#i-shield"/></svg></span>
+              <div class="tk-label">Escudo fiscal y amortización</div>
+              <p class="tk-desc">Impacto fiscal de la amortización en el flujo.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Valor anual equivalente" style="--k-color: var(--k-formula)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Evaluación de proyectos · U8</span>
+              <span class="tk-icon"><svg><use href="#i-equalbars"/></svg></span>
+              <div class="tk-label">Valor anual equivalente</div>
+              <p class="tk-desc">Convertí cualquier flujo en una anualidad equivalente.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Ratios financieros y DuPont" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Información contable · U6</span>
+              <span class="tk-icon"><svg><use href="#i-ratio"/></svg></span>
+              <div class="tk-label">Ratios financieros y DuPont</div>
+              <p class="tk-desc">Liquidez, endeudamiento y rentabilidad, descompuestos.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Punto de equilibrio" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Información contable · U6</span>
+              <span class="tk-icon"><svg><use href="#i-breakeven"/></svg></span>
+              <div class="tk-label">Punto de equilibrio</div>
+              <p class="tk-desc">Cantidad y monto donde el resultado operativo es cero.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Capital de trabajo / NOF" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Información contable · U6</span>
+              <span class="tk-icon"><svg><use href="#i-worktable"/></svg></span>
+              <div class="tk-label">Capital de trabajo / NOF</div>
+              <p class="tk-desc">Necesidades operativas de fondos del ciclo de negocio.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Estado de resultados" style="--k-color: var(--k-def)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Información contable · U6</span>
+              <span class="tk-icon"><svg><use href="#i-ledger"/></svg></span>
+              <div class="tk-label">Estado de resultados</div>
+              <p class="tk-desc">Armado de estado de resultados y márgenes.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Formulario Parcial 2" style="--k-color: var(--k-example)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Referencia</span>
+              <span class="tk-icon"><svg><use href="#i-doc"/></svg></span>
+              <div class="tk-label">Formulario Parcial 2</div>
+              <p class="tk-desc">U6, U7 y U8 — referencia estática de fórmulas.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Oferta y demanda" style="--k-color: var(--accent)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Parcial 1 · Microeconomía</span>
+              <span class="tk-icon"><svg><use href="#i-supdem"/></svg></span>
+              <div class="tk-label">Oferta y demanda</div>
+              <p class="tk-desc">Curvas, equilibrio y excedentes en un gráfico interactivo.</p>
+            </button>
+          <button class="tk-card" type="button" data-vault="economia" data-tool="Elasticidades" style="--k-color: var(--accent)">
+              <span class="tk-cat"><span class="tk-cat-dot"></span>Parcial 1 · Microeconomía</span>
+              <span class="tk-icon"><svg><use href="#i-elastic"/></svg></span>
+              <div class="tk-label">Elasticidades</div>
+              <p class="tk-desc">Elasticidad precio, cruzada e ingreso de la demanda.</p>
+            </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. RUNNER COMPARTIDO -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s2">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Patrón
+      </div>
+      <h2 class="spec-title">El launcher es bespoke. El runner es uno solo.</h2>
+      <p class="spec-dek">Al hacer click en cualquier card, el usuario sale del launcher temático y entra a un shell neutro compartido por las 6 materias: mismo breadcrumb de vuelta, mismo jump-nav horizontal para saltar entre herramientas, mismo layout de contenido. Probá — hacé click en cualquier card de arriba y mirá cómo se actualiza este sketch.</p>
+
+      <div class="runner-mock" id="runnerMock">
+        <div class="runner-top">
+          <span class="runner-back" id="runnerBack">‹ Volver a MNA · Herramientas</span>
+          <span class="runner-title" id="runnerTitle">Calculadora</span>
+          <span class="runner-shell-label">shell compartido</span>
+        </div>
+        <div class="runner-jump" id="runnerJump" aria-label="Saltar a otra herramienta"></div>
+        <div class="runner-body">
+          <div class="runner-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+            ‹ contenido de la herramienta — sin cambios de identidad visual del vault ›
+          </div>
+        </div>
+      </div>
+      <p class="runner-hint">El launcher cambia de materia a materia (motivo, íconos, color de acento); el runner que envuelve cada herramienta individual no cambia nunca — así el usuario reconoce la materia por el launcher, pero nunca se pierde dentro de una herramienta.</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Módulo A — Toolkits · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+
+    (function () {
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+      var panels = {
+        'panel-mna': document.getElementById('panel-mna'),
+        'panel-proba': document.getElementById('panel-proba'),
+        'panel-economia': document.getElementById('panel-economia')
+      };
+      function activate(tab, moveFocus) {
+        tabs.forEach(function (t) {
+          var selected = t === tab;
+          t.setAttribute('aria-selected', selected ? 'true' : 'false');
+          t.tabIndex = selected ? 0 : -1;
+          var panel = panels[t.getAttribute('data-target')];
+          if (panel) panel.hidden = !selected;
+        });
+        if (moveFocus) tab.focus();
+      }
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () { activate(tab, false); });
+        tab.addEventListener('keydown', function (e) {
+          var idx = i;
+          if (e.key === 'ArrowRight') { idx = (i + 1) % tabs.length; activate(tabs[idx], true); e.preventDefault(); }
+          else if (e.key === 'ArrowLeft') { idx = (i - 1 + tabs.length) % tabs.length; activate(tabs[idx], true); e.preventDefault(); }
+          else if (e.key === 'Home') { activate(tabs[0], true); e.preventDefault(); }
+          else if (e.key === 'End') { activate(tabs[tabs.length - 1], true); e.preventDefault(); }
+        });
+      });
+    })();
+
+    (function () {
+      var TOOLKITS = {
+        mna: { full: 'MNA', tools: ['Calculadora', 'LU y QR', 'Autovalores y SVD', 'Formulario'] },
+        proba: { full: 'Proba', tools: ['Banco de finales', 'Combinatoria', 'Bayes', 'Distribuciones', 'Tabla normal', 'Aprox. normal', 'Descriptiva', 'Intervalos de confianza', 'Test de hipótesis', 'Potencia y error II', 'Cadenas de Markov', 'Teoría de la decisión', 'Formulario'] },
+        economia: { full: 'Economía', tools: ['Simulador Parcial 2', 'Tasas equivalentes', 'Valor tiempo del dinero', 'Anualidades', 'Perpetuidades', 'Préstamos', 'Descuento comercial y CFT', 'Constructor de flujo de fondos', 'VAN / TIR / criterios', 'Escudo fiscal y amortización', 'Valor anual equivalente', 'Ratios financieros y DuPont', 'Punto de equilibrio', 'Capital de trabajo / NOF', 'Estado de resultados', 'Formulario Parcial 2', 'Oferta y demanda', 'Elasticidades'] }
+      };
+      var mock = document.getElementById('runnerMock');
+      var back = document.getElementById('runnerBack');
+      var title = document.getElementById('runnerTitle');
+      var jump = document.getElementById('runnerJump');
+
+      function openRunner(vaultKey, toolName) {
+        var kit = TOOLKITS[vaultKey];
+        if (!kit) return;
+        back.textContent = '‹ Volver a ' + kit.full + ' · Herramientas';
+        title.textContent = toolName;
+        jump.innerHTML = '';
+        kit.tools.forEach(function (t) {
+          var pill = document.createElement('button');
+          pill.type = 'button';
+          pill.className = 'runner-pill' + (t === toolName ? ' active' : '');
+          pill.textContent = t;
+          pill.addEventListener('click', function () { openRunner(vaultKey, t); });
+          jump.appendChild(pill);
+        });
+        mock.classList.remove('flash');
+        void mock.offsetWidth;
+        mock.classList.add('flash');
+        mock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(function () { mock.classList.remove('flash'); }, 900);
+      }
+
+      document.querySelectorAll('.tk-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          openRunner(card.getAttribute('data-vault'), card.getAttribute('data-tool'));
+        });
+      });
+
+      openRunner('mna', 'Calculadora');
+    })();
+  </script>
+
+</body>
+</html>

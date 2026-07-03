@@ -8,6 +8,9 @@
 .AppleDouble
 Icon?
 
+# === IDEs (config local — no se versiona) ===
+.idea/
+
 # === Build / dependencias / artefactos (no se publican) ===
 node_modules/
 .venv/

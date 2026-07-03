@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Modal de detalle de curso (rediseño)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults (idénticos a foundations.html)
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+    --status-go: #7cc0af;
+    --scrim: rgba(8,4,2,.62);
+  }
+
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+    --status-go: #227762;
+    --scrim: rgba(36,18,8,.42);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header (idéntico a foundations) ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-6) 0 var(--sp-4); }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(1.9rem, 2.6vw + 1rem, 2.9rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.1;
+    margin: 0 0 var(--sp-2);
+    max-width: 22ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.1rem);
+    color:var(--text-2); max-width:66ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-6) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.5rem, 1.3vw + 1rem, 2rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:72ch; margin: 0 0 var(--sp-4); font-size:1rem; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+  }
+  .pad{ padding: 20px 22px; }
+
+  .chip{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.02em;
+    padding:5px 10px; border-radius:6px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+    display:inline-block;
+  }
+
+  /* ---------- minor badge (idéntico a foundations §4) ---------- */
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:11px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:4px 10px; border-radius:var(--radius-pill);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+    flex:none;
+  }
+  .minor-dot{
+    width:14px; height:14px; border-radius:50%; background:var(--m-color);
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px color-mix(in srgb, var(--minor-text) 20%, transparent);
+    flex:none;
+  }
+
+  /* ---------- CommissionSelect (idéntico a foundations §6) ---------- */
+  select.csel-live{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:11.5px;
+    background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 10px center;
+    background-size:11px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:8px 30px 8px 12px; max-width:230px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.csel-live:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.csel-live:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+
+  /* ============================================================
+     FIXES SUMMARY — 3 tarjetas
+     ============================================================ */
+  .fix-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+  .fix-card{ padding:18px 20px; }
+  .fix-tag{
+    font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    color:var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    padding:3px 9px; border-radius:var(--radius-pill);
+    display:inline-block; margin-bottom:10px;
+  }
+  .fix-title{ font-weight:600; font-size:14.5px; margin-bottom:6px; }
+  .fix-desc{ color:var(--text-2); font-size:13px; line-height:1.55; }
+  .fix-desc b{ color:var(--text); }
+
+  /* ============================================================
+     STAGE — página dimeada de fondo + modal centrado
+     ============================================================ */
+  .stage-label{
+    font-family:var(--font-mono); font-size:11px; color:var(--text-2);
+    margin-bottom:6px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .stage-label b{ color:var(--text); }
+  .quiet-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); opacity:.8; margin:0 0 14px; }
+
+  .stage{
+    position:relative; border-radius:12px; overflow:hidden;
+    border:1px solid var(--border-subtle); background:var(--canvas);
+    min-height:660px;
+  }
+  .stage.narrow{ max-width:390px; margin-inline:auto; min-height:760px; }
+
+  .stage-bg{
+    position:absolute; inset:0; padding:28px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+    opacity:.55; pointer-events:none;
+  }
+  .stage.narrow .stage-bg{ grid-template-columns:1fr; padding:20px; }
+  .ghost-card{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:8px; padding:14px; height:88px; }
+  .ghost-line{ height:8px; border-radius:3px; background:var(--border-subtle); margin-bottom:8px; }
+  .ghost-line.w40{ width:42%; } .ghost-line.w70{ width:72%; } .ghost-line.w55{ width:55%; }
+
+  .stage-scrim{ position:absolute; inset:0; background:var(--scrim); backdrop-filter: blur(1.5px); transition: opacity .25s var(--ease); }
+  .stage-modalwrap{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    padding: clamp(16px, 4vh, 40px); transition: opacity .2s var(--ease);
+  }
+  .stage.narrow .stage-modalwrap{ padding: clamp(14px, 3vh, 22px); }
+  .stage-modalwrap.hidden{ opacity:0; pointer-events:none; }
+
+  .reopen-btn{
+    all:unset; position:absolute; inset:0; margin:auto;
+    width:200px; height:44px; display:none; align-items:center; justify-content:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em;
+    cursor:pointer; color:var(--text); box-shadow:var(--shadow); z-index:2;
+  }
+  .reopen-btn:hover{ border-color:var(--accent); background:var(--surface-hover); }
+  .reopen-btn svg{ width:14px; height:14px; color:var(--text-2); }
+
+  /* ---------- modal panel ---------- */
+  .modal-panel{
+    container-type: inline-size; container-name: modal;
+    position:relative; z-index:1;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow);
+    width:min(900px, 100%);
+    max-height: 100%;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .stage.narrow .modal-panel{ max-height: 100%; }
+
+  .modal-scroll{ overflow-y:auto; flex:1; min-height:0; }
+
+  .modal-closebar{
+    position:sticky; top:0; z-index:6;
+    display:flex; justify-content:flex-end;
+    padding:12px 12px 10px; background:var(--surface);
+    border-bottom:1px solid transparent;
+    transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .modal-closebar.scrolled{
+    border-bottom-color:var(--border-subtle);
+    box-shadow:0 6px 12px -8px rgba(0,0,0,.45);
+  }
+  .modal-close{
+    all:unset; box-sizing:border-box;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:32px; height:32px; border-radius:8px; border:1px solid var(--border);
+    color:var(--text-2); cursor:pointer; transition: all .18s var(--ease);
+  }
+  .modal-close:hover{ background:var(--surface-hover); color:var(--text); border-color:var(--accent); }
+  .modal-close svg{ width:16px; height:16px; }
+
+  .modal-body{ padding: 2px 28px 28px; }
+  .stage.narrow .modal-body{ padding: 2px 18px 22px; }
+
+  /* identity */
+  .course-code-mono{ font-family:var(--font-mono); font-size:13px; color:var(--accent); letter-spacing:.03em; display:block; margin-bottom:8px; }
+  .course-name-serif{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.01em; line-height:1.22;
+    font-size: clamp(1.35rem, 1.6vw + 1rem, 1.8rem);
+    margin:0 0 12px;
+  }
+  .course-meta-row{ display:flex; flex-wrap:wrap; gap:6px 10px; font-family:var(--font-mono); font-size:11.5px; color:var(--text-2); align-items:center; }
+  .course-meta-row .dotsep{ opacity:.5; }
+
+  /* balanced action row */
+  .action-row{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin:22px 0 0; }
+  .btn{
+    all:unset; box-sizing:border-box;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em; text-align:center; line-height:1.2;
+    padding:12px 10px; border-radius:8px; border:1px solid var(--border);
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  .btn svg{ width:14px; height:14px; flex:none; }
+  .btn-primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .btn-primary:hover{ background: color-mix(in srgb, var(--accent) 85%, black 8%); }
+  .btn-secondary{ background:var(--surface); color:var(--text); }
+  .btn-secondary:hover{ background:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
+
+  @container modal (max-width: 480px){
+    .action-row{ grid-template-columns:1fr; }
+  }
+
+  /* content blocks */
+  .blk{ margin-top:28px; }
+  .blk-label{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-2); margin-bottom:12px;
+  }
+
+  .minor-line{ display:flex; align-items:center; gap:10px; }
+  .minor-line-name{ font-size:14.5px; font-weight:600; }
+
+  .correl-row{ display:flex; flex-wrap:wrap; gap:8px; }
+
+  .comm-row{
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:12px 14px; border:1px solid var(--border-subtle); border-radius:8px;
+    background:var(--surface-hover); margin-bottom:10px;
+  }
+  .comm-row:last-child{ margin-bottom:0; }
+  .comm-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+  .week-mini{ display:flex; gap:4px; align-items:center; flex:none; }
+  .week-mini .day{
+    width:20px; height:20px; border-radius:4px; border:1px solid var(--border-subtle);
+    font-family:var(--font-mono); font-size:9px; display:flex; align-items:center; justify-content:center;
+    color:var(--text-2); background:var(--surface);
+  }
+  .week-mini .day.active{ background:var(--accent); color:var(--accent-contrast); border-color:var(--accent); font-weight:700; }
+  .comm-time{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); white-space:nowrap; }
+
+  @container modal (max-width: 560px){
+    .comm-row{ flex-direction:column; align-items:flex-start; }
+  }
+
+  /* aside */
+  .modal-grid{ display:grid; grid-template-columns: 1.3fr 1fr; gap:36px; padding-top:14px; }
+  .modal-aside{ border-left:1px solid var(--border-subtle); padding-left:32px; }
+  @container modal (max-width: 820px){
+    .modal-grid{ grid-template-columns:1fr; gap:8px; }
+    .modal-aside{ border-left:none; padding-left:0; border-top:1px solid var(--border-subtle); padding-top:24px; margin-top:8px; }
+  }
+
+  .desc-text{ color:var(--text-2); font-size:14.5px; line-height:1.7; margin:0; }
+
+  .programa-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .programa-item{ display:flex; gap:10px; font-size:13.5px; color:var(--text-2); line-height:1.5; }
+  .programa-num{ font-family:var(--font-mono); font-size:10.5px; color:var(--accent); flex:none; width:20px; padding-top:2px; }
+  .programa-item b{ color:var(--text); font-weight:600; }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 860px){
+    .fix-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·001C</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN — MÓDULO C</div>
+      <h1>Modal de detalle de curso — <em>rediseño</em></h1>
+      <p class="dek">El "DetailDrawer" actual está roto: la X de cierre se pierde al scrollear, la fila de acciones es asimétrica y el grid de 2 columnas no baja limpio a mobile. Esta pieza corrige los tres bugs sobre un curso real del planner y reutiliza los componentes ya aprobados en <span class="mono">foundations.html</span> (badge de minor, CommissionSelect).</p>
+      <div class="hero-meta">
+        <span>Curso de referencia: <b>Aprendizaje Automático (Machine Learning)</b> — 72.75</span>
+        <span>2 estados: desktop y ≤820px</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b></span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FIXES SUMMARY -->
+    <!-- ============================================================ -->
+    <section class="spec" id="fixes">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Qué se corrigió
+      </div>
+      <h2 class="spec-title">3 bugs visuales, 3 fixes puntuales</h2>
+      <p class="spec-dek">Nada de esto cambia el contenido del modal — solo cómo se comporta al scrollear, cómo se agrupan las acciones y cómo reacciona el layout cuando el panel se angosta.</p>
+
+      <div class="fix-grid">
+        <div class="card fix-card">
+          <span class="fix-tag">FIX A</span>
+          <div class="fix-title">Cierre siempre visible</div>
+          <p class="fix-desc">Antes: la X era <b>position:absolute</b> dentro del contenedor con scroll — en contenido largo, se iba de cámara. Ahora: vive en una barra <b>sticky</b> pegada al borde superior del panel, siempre alcanzable.</p>
+        </div>
+        <div class="card fix-card">
+          <span class="fix-tag">FIX B</span>
+          <div class="fix-title">Acciones balanceadas</div>
+          <p class="fix-desc">Antes: un botón se estiraba a lo ancho y "Descargar programa" quedaba como un cuadradito aparte. Ahora: <b>3 acciones en grid parejo</b>, mismo alto y mismo peso visual.</p>
+        </div>
+        <div class="card fix-card">
+          <span class="fix-tag">FIX C</span>
+          <div class="fix-title">Stack limpio en angosto</div>
+          <p class="fix-desc">Antes: el grid de 2 columnas se apretaba sin criterio bajo los 820px. Ahora: a ≤820px de ancho del propio panel, pasa a <b>una columna</b> y el borde separador rota de lateral a superior.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- DESKTOP DEMO -->
+    <!-- ============================================================ -->
+    <section class="spec" id="demo-desktop">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Demo interactiva
+      </div>
+      <h2 class="spec-title">Modal — ancho completo (desktop)</h2>
+      <div class="stage-label"><b>Vista:</b> panel &gt; 820px de ancho — grid a 2 columnas</div>
+      <p class="quiet-note">antes: la X se perdía al scrollear · ahora: fija — scrolleá el panel para comprobarlo</p>
+
+      <div class="stage" id="stageDesktop">
+        <div class="stage-bg" aria-hidden="true">
+          <div class="ghost-card"><div class="ghost-line w55"></div><div class="ghost-line w40"></div></div>
+          <div class="ghost-card"><div class="ghost-line w70"></div><div class="ghost-line w40"></div></div>
+          <div class="ghost-card"><div class="ghost-line w55"></div><div class="ghost-line w70"></div></div>
+          <div class="ghost-card"><div class="ghost-line w40"></div><div class="ghost-line w55"></div></div>
+          <div class="ghost-card"><div class="ghost-line w70"></div><div class="ghost-line w40"></div></div>
+          <div class="ghost-card"><div class="ghost-line w55"></div><div class="ghost-line w70"></div></div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+        <button class="reopen-btn" type="button" data-reopen="stageDesktop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9 12h6M12 9v6"/></svg>
+          Reabrir modal
+        </button>
+
+        <div class="stage-modalwrap" data-wrap="stageDesktop">
+          <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitleDesktop">
+            <div class="modal-scroll">
+              <div class="modal-closebar">
+                <button class="modal-close" type="button" data-close="stageDesktop" aria-label="Cerrar modal">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <span class="course-code-mono">72.75</span>
+                <h3 class="course-name-serif" id="modalTitleDesktop">Aprendizaje Automático (Machine Learning)</h3>
+                <div class="course-meta-row">
+                  <span>Electiva</span><span class="dotsep">·</span>
+                  <span>3 créditos</span><span class="dotsep">·</span>
+                  <span>requiere 96 cr</span>
+                </div>
+
+                <div class="action-row">
+                  <button class="btn btn-primary" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                    Marcar aprobada
+                  </button>
+                  <button class="btn btn-secondary" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+                    Agregar al combinador
+                  </button>
+                  <button class="btn btn-secondary" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v11M8 10l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                    Descargar programa
+                  </button>
+                </div>
+
+                <div class="modal-grid">
+                  <div class="modal-main">
+
+                    <div class="blk">
+                      <div class="blk-label">Áreas · Minor</div>
+                      <div class="minor-line">
+                        <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+                        <span class="minor-line-name">Inteligencia Artificial</span>
+                      </div>
+                    </div>
+
+                    <div class="blk">
+                      <div class="blk-label">Correlativas</div>
+                      <div class="correl-row">
+                        <span class="chip">EDA</span>
+                        <span class="chip">Proba</span>
+                      </div>
+                    </div>
+
+                    <div class="blk">
+                      <div class="blk-label">Horario</div>
+
+                      <div class="comm-row">
+                        <div class="comm-left">
+                          <select class="csel-live" aria-label="Elegir variante de comisión 1">
+                            <option>Com. 1 · Bianchi</option>
+                            <option>Com. 1 · Virtual (Ferrari)</option>
+                          </select>
+                          <div class="week-mini" aria-hidden="true">
+                            <span class="day active">Lu</span><span class="day">Ma</span><span class="day">Mi</span><span class="day">Ju</span><span class="day">Vi</span>
+                          </div>
+                        </div>
+                        <span class="comm-time">Lu 18–21</span>
+                      </div>
+
+                      <div class="comm-row">
+                        <div class="comm-left">
+                          <select class="csel-live" aria-label="Elegir variante de comisión 2">
+                            <option>Com. 2 · Presencial</option>
+                            <option>Com. 2 · Virtual</option>
+                          </select>
+                          <div class="week-mini" aria-hidden="true">
+                            <span class="day">Lu</span><span class="day">Ma</span><span class="day">Mi</span><span class="day active">Ju</span><span class="day">Vi</span>
+                          </div>
+                        </div>
+                        <span class="comm-time">Ju 08–11</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <aside class="modal-aside">
+                    <div class="blk" style="margin-top:0">
+                      <div class="blk-label">Descripción</div>
+                      <p class="desc-text">Estudia algoritmos que aprenden patrones a partir de datos en vez de reglas programadas a mano. Recorre aprendizaje supervisado y no supervisado, con eje en la evaluación rigurosa de modelos: no alcanza con que "funcione", hay que poder demostrar que generaliza.</p>
+                    </div>
+
+                    <div class="blk">
+                      <div class="blk-label">Programa</div>
+                      <ol class="programa-list">
+                        <li class="programa-item"><span class="programa-num">01</span><span><b>Fundamentos</b> — supervisado vs. no supervisado, dilema sesgo-varianza.</span></li>
+                        <li class="programa-item"><span class="programa-num">02</span><span><b>Modelos lineales</b> — regresión, clasificación y regularización (Ridge/Lasso).</span></li>
+                        <li class="programa-item"><span class="programa-num">03</span><span><b>Árboles y ensambles</b> — bagging, boosting, random forests.</span></li>
+                        <li class="programa-item"><span class="programa-num">04</span><span><b>Redes neuronales</b> — perceptrón multicapa y backpropagation.</span></li>
+                        <li class="programa-item"><span class="programa-num">05</span><span><b>Evaluación de modelos</b> — validación cruzada, métricas y overfitting.</span></li>
+                      </ol>
+                    </div>
+                  </aside>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- NARROW DEMO ≤820px -->
+    <!-- ============================================================ -->
+    <section class="spec" id="demo-narrow">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Estado responsive
+      </div>
+      <h2 class="spec-title">Modal — panel ≤820px (stack)</h2>
+      <div class="stage-label"><b>Vista:</b> mismo componente, contenedor angosto (~390px) — el grid pasa a 1 columna vía container query real, no un mock aparte</div>
+      <p class="quiet-note">acciones también se apilan parejas · el separador del aside rota de lateral a superior</p>
+
+      <div class="stage narrow" id="stageNarrow">
+        <div class="stage-bg" aria-hidden="true">
+          <div class="ghost-card"><div class="ghost-line w55"></div><div class="ghost-line w40"></div></div>
+          <div class="ghost-card"><div class="ghost-line w70"></div><div class="ghost-line w40"></div></div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+        <button class="reopen-btn" type="button" data-reopen="stageNarrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9 12h6M12 9v6"/></svg>
+          Reabrir modal
+        </button>
+
+        <div class="stage-modalwrap" data-wrap="stageNarrow">
+          <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitleNarrow">
+            <div class="modal-scroll">
+              <div class="modal-closebar">
+                <button class="modal-close" type="button" data-close="stageNarrow" aria-label="Cerrar modal">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <span class="course-code-mono">72.75</span>
+                <h3 class="course-name-serif" id="modalTitleNarrow">Aprendizaje Automático (Machine Learning)</h3>
+                <div class="course-meta-row">
+                  <span>Electiva</span><span class="dotsep">·</span>
+                  <span>3 créditos</span><span class="dotsep">·</span>
+                  <span>requiere 96 cr</span>
+                </div>
+
+                <div class="action-row">
+                  <button class="btn btn-primary" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                    Marcar aprobada
+                  </button>
+                  <button class="btn btn-secondary" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+                    Agregar al combinador
+                  </button>
+                  <button class="btn btn-secondary" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v11M8 10l4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                    Descargar programa
+                  </button>
+                </div>
+
+                <div class="modal-grid">
+                  <div class="modal-main">
+
+                    <div class="blk">
+                      <div class="blk-label">Áreas · Minor</div>
+                      <div class="minor-line">
+                        <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+                        <span class="minor-line-name">Inteligencia Artificial</span>
+                      </div>
+                    </div>
+
+                    <div class="blk">
+                      <div class="blk-label">Correlativas</div>
+                      <div class="correl-row">
+                        <span class="chip">EDA</span>
+                        <span class="chip">Proba</span>
+                      </div>
+                    </div>
+
+                    <div class="blk">
+                      <div class="blk-label">Horario</div>
+
+                      <div class="comm-row">
+                        <div class="comm-left">
+                          <select class="csel-live" aria-label="Elegir variante de comisión 1">
+                            <option>Com. 1 · Bianchi</option>
+                            <option>Com. 1 · Virtual (Ferrari)</option>
+                          </select>
+                          <div class="week-mini" aria-hidden="true">
+                            <span class="day active">Lu</span><span class="day">Ma</span><span class="day">Mi</span><span class="day">Ju</span><span class="day">Vi</span>
+                          </div>
+                        </div>
+                        <span class="comm-time">Lu 18–21</span>
+                      </div>
+
+                      <div class="comm-row">
+                        <div class="comm-left">
+                          <select class="csel-live" aria-label="Elegir variante de comisión 2">
+                            <option>Com. 2 · Presencial</option>
+                            <option>Com. 2 · Virtual</option>
+                          </select>
+                          <div class="week-mini" aria-hidden="true">
+                            <span class="day">Lu</span><span class="day">Ma</span><span class="day">Mi</span><span class="day active">Ju</span><span class="day">Vi</span>
+                          </div>
+                        </div>
+                        <span class="comm-time">Ju 08–11</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <aside class="modal-aside">
+                    <div class="blk" style="margin-top:0">
+                      <div class="blk-label">Descripción</div>
+                      <p class="desc-text">Estudia algoritmos que aprenden patrones a partir de datos en vez de reglas programadas a mano. Recorre aprendizaje supervisado y no supervisado, con eje en la evaluación rigurosa de modelos: no alcanza con que "funcione", hay que poder demostrar que generaliza.</p>
+                    </div>
+
+                    <div class="blk">
+                      <div class="blk-label">Programa</div>
+                      <ol class="programa-list">
+                        <li class="programa-item"><span class="programa-num">01</span><span><b>Fundamentos</b> — supervisado vs. no supervisado, dilema sesgo-varianza.</span></li>
+                        <li class="programa-item"><span class="programa-num">02</span><span><b>Modelos lineales</b> — regresión, clasificación y regularización (Ridge/Lasso).</span></li>
+                        <li class="programa-item"><span class="programa-num">03</span><span><b>Árboles y ensambles</b> — bagging, boosting, random forests.</span></li>
+                        <li class="programa-item"><span class="programa-num">04</span><span><b>Redes neuronales</b> — perceptrón multicapa y backpropagation.</span></li>
+                        <li class="programa-item"><span class="programa-num">05</span><span><b>Evaluación de modelos</b> — validación cruzada, métricas y overfitting.</span></li>
+                      </ol>
+                    </div>
+                  </aside>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Módulo C · modal de detalle de curso</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+
+    (function () {
+      // sticky closebar: leve sombra/borde cuando el contenido pasa debajo
+      var scrolls = document.querySelectorAll('.modal-scroll');
+      scrolls.forEach(function (sc) {
+        var bar = sc.querySelector('.modal-closebar');
+        if (!bar) return;
+        sc.addEventListener('scroll', function () {
+          bar.classList.toggle('scrolled', sc.scrollTop > 4);
+        });
+      });
+
+      // cerrar / reabrir modal dentro de cada stage (demo funcional)
+      document.querySelectorAll('[data-close]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.getAttribute('data-close');
+          var stage = document.getElementById(id);
+          if (!stage) return;
+          stage.querySelector('[data-wrap="' + id + '"]').classList.add('hidden');
+          var reopen = stage.querySelector('[data-reopen="' + id + '"]');
+          if (reopen) reopen.style.display = 'inline-flex';
+        });
+      });
+      document.querySelectorAll('[data-reopen]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.getAttribute('data-reopen');
+          var stage = document.getElementById(id);
+          if (!stage) return;
+          stage.querySelector('[data-wrap="' + id + '"]').classList.remove('hidden');
+          b.style.display = 'none';
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

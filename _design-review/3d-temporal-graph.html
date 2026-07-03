@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malla curricular — grafo temporal 3D</title>
+<style>
+  :root{
+    --ink-0:#f6ecdf;
+    --ink-1:#e7d8c5;
+    --ink-2:#c9b7a3;
+    --ink-3:#a5927e;
+    --panel-bg:rgba(20,11,6,.72);
+    --panel-border:rgba(255,255,255,.09);
+    --accent:#d9a066;
+    --accent-ink:#1a0f08;
+    --spine:#7f9bbf;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --mono:"JetBrains Mono","SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; height:100%; width:100%; overflow:hidden;
+    background:linear-gradient(160deg,#1a0f08 0%,#241208 100%);
+    font-family:var(--mono);
+    -webkit-font-smoothing:antialiased;
+  }
+  #graph{ position:fixed; inset:0; z-index:0; }
+  #graph canvas{ display:block; }
+
+  #vignette{
+    position:fixed; inset:0; z-index:6; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 42%, transparent 38%, rgba(10,5,2,.5) 100%);
+  }
+
+  #hud{ position:fixed; inset:0; z-index:10; pointer-events:none; }
+  #hud a, #hud button, #hud input{ pointer-events:auto; }
+
+  #caption{
+    position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    text-align:center; pointer-events:none; max-width:90vw;
+  }
+  #caption h1{
+    font-family:var(--serif); font-weight:600; font-size:1.32rem; letter-spacing:.015em;
+    color:var(--ink-0); margin:0; text-shadow:0 2px 18px rgba(0,0,0,.6);
+  }
+  #caption p{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.03em; color:var(--ink-2);
+    margin:.4em 0 0; opacity:.9;
+  }
+
+  #legend{
+    position:absolute; top:24px; left:24px; width:216px; pointer-events:auto;
+    background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:14px;
+    padding:16px 16px 14px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 18px 44px rgba(0,0,0,.5);
+  }
+  #legend h2{
+    font-family:var(--serif); font-weight:600; font-size:.92rem; letter-spacing:.02em;
+    color:var(--ink-0); margin:0 0 11px;
+  }
+  #legend-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+  #legend-list li{ display:flex; align-items:center; gap:9px; font-size:.7rem; color:var(--ink-1); }
+  #legend-list .name{ color:var(--ink-2); }
+  .swatch{
+    width:10px; height:10px; border-radius:50%; flex:0 0 auto;
+    box-shadow:0 0 9px 1px var(--sw-c,#fff);
+    background:var(--sw-c,#fff);
+  }
+  .swatch.spine{ border-radius:3px; }
+  #legend-meta{
+    margin-top:12px; padding-top:10px; border-top:1px solid var(--panel-border);
+    font-size:.62rem; color:var(--ink-3); line-height:1.55; letter-spacing:.01em;
+  }
+
+  #tooltip{
+    position:fixed; top:0; left:0; z-index:20; pointer-events:none;
+    background:rgba(17,9,4,.94); border:1px solid rgba(255,255,255,.13); border-radius:11px;
+    padding:11px 13px; max-width:250px; opacity:0; transition:opacity .13s ease;
+    box-shadow:0 16px 40px rgba(0,0,0,.55);
+  }
+  #tooltip.visible{ opacity:1; }
+  .tt-title{ font-family:var(--serif); font-size:.9rem; color:var(--ink-0); line-height:1.28; margin-bottom:5px; }
+  .tt-row{ font-family:var(--mono); font-size:.66rem; color:var(--ink-2); margin-bottom:3px; letter-spacing:.01em; }
+  .tt-kind{ font-weight:700; letter-spacing:.03em; }
+  .tt-kind.obligatoria{ color:var(--spine); }
+  .tt-kind.electiva{ color:var(--accent); }
+  .tt-chips{ display:flex; gap:5px; margin-top:7px; flex-wrap:wrap; }
+  .chip{
+    font-family:var(--mono); font-size:.58rem; letter-spacing:.03em; padding:2px 8px;
+    border-radius:20px; border:1px solid rgba(255,255,255,.18); color:#fff;
+    background:rgba(255,255,255,.12);
+    background:color-mix(in srgb, var(--c,#999) 40%, transparent);
+  }
+  .chip.chip-muted{ color:var(--ink-3); background:rgba(255,255,255,.06); }
+
+  #hint{
+    position:absolute; bottom:92px; left:50%; transform:translateX(-50%);
+    font-size:.62rem; letter-spacing:.03em; color:rgba(216,201,184,.5); pointer-events:none;
+    white-space:nowrap;
+  }
+
+  #timeline{
+    position:absolute; left:50%; bottom:24px; transform:translateX(-50%);
+    width:min(760px,88vw); display:flex; align-items:center; gap:14px;
+    background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:999px;
+    padding:9px 20px 9px 9px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 18px 44px rgba(0,0,0,.5); pointer-events:auto;
+  }
+  #playBtn{
+    width:36px; height:36px; border-radius:50%; flex:0 0 auto; cursor:pointer;
+    border:1px solid rgba(255,255,255,.2);
+    background:linear-gradient(155deg,#e9b783,var(--accent));
+    color:var(--accent-ink); font-size:.78rem; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(217,160,102,.35);
+  }
+  #playBtn:active{ transform:scale(.94); }
+  #track-wrap{ position:relative; flex:1 1 auto; height:20px; display:flex; align-items:center; }
+  #track-ticks{ position:absolute; left:0; right:0; top:50%; height:10px; transform:translateY(-50%); pointer-events:none; }
+  #track-ticks i{
+    position:absolute; top:0; width:1px; height:100%; background:rgba(255,255,255,.16);
+  }
+  #semSlider{
+    -webkit-appearance:none; appearance:none; width:100%; height:3px; border-radius:3px;
+    background:rgba(255,255,255,.18); outline:none; position:relative; z-index:1;
+    accent-color:var(--accent); cursor:pointer;
+  }
+  #semSlider::-webkit-slider-thumb{
+    -webkit-appearance:none; width:14px; height:14px; border-radius:50%;
+    background:var(--accent); border:2px solid #1a0f08; box-shadow:0 0 10px rgba(217,160,102,.6);
+    cursor:pointer;
+  }
+  #semSlider::-moz-range-thumb{
+    width:14px; height:14px; border-radius:50%; background:var(--accent);
+    border:2px solid #1a0f08; box-shadow:0 0 10px rgba(217,160,102,.6); cursor:pointer;
+  }
+  #timeline-readout{
+    font-size:.7rem; color:var(--ink-1); min-width:104px; text-align:right; flex:0 0 auto;
+    letter-spacing:.02em;
+  }
+  #timeline-readout b{ color:var(--ink-0); font-weight:600; }
+
+  #layer-labels{ position:fixed; inset:0; z-index:5; pointer-events:none; }
+  .layer-label{
+    position:absolute; transform:translate(-100%,-50%); white-space:nowrap;
+    font-size:.62rem; letter-spacing:.06em; text-transform:uppercase; color:rgba(224,196,163,.6);
+    padding-right:14px;
+  }
+  .layer-label i{
+    position:absolute; right:0; top:50%; width:8px; height:1px; background:rgba(224,196,163,.4);
+    transform:translateY(-50%);
+  }
+
+  #boot-error{
+    position:fixed; inset:0; z-index:999; display:none; align-items:center; justify-content:center;
+    background:#1a0f08; color:#e8c9a0; font-family:var(--mono); text-align:center; padding:2rem;
+  }
+  #boot-error.show{ display:flex; }
+  #boot-error div{ max-width:520px; line-height:1.6; font-size:.82rem; }
+  #boot-error b{ display:block; font-family:var(--serif); font-size:1.1rem; margin-bottom:.6em; color:#f6ecdf; }
+</style>
+</head>
+<body>
+
+  <div id="graph"></div>
+  <div id="vignette"></div>
+  <div id="layer-labels"></div>
+
+  <div id="hud">
+    <div id="caption">
+      <h1>Malla curricular</h1>
+      <p>grafo temporal 3D · el eje vertical es el avance en la carrera</p>
+    </div>
+
+    <aside id="legend">
+      <h2>Leyenda</h2>
+      <ul id="legend-list"></ul>
+      <div id="legend-meta"></div>
+    </aside>
+
+    <div id="tooltip"></div>
+    <div id="hint">arrastrá para rotar · scroll para zoom · click para enfocar un nodo</div>
+
+    <footer id="timeline">
+      <button id="playBtn" type="button" aria-label="Reproducir revelado temporal">▶</button>
+      <div id="track-wrap">
+        <div id="track-ticks"></div>
+        <input id="semSlider" type="range" min="1" max="10" step="0.05" value="1" />
+      </div>
+      <div id="timeline-readout"><b id="timeline-layer">Año 1 · C1</b></div>
+    </footer>
+  </div>
+
+  <div id="boot-error">
+    <div>
+      <b>No se pudo cargar el grafo 3D</b>
+      No se encontraron las librerías locales. Este archivo necesita, en la misma carpeta,
+      <code>three.min.js</code> y <code>3d-force-graph.min.js</code> (se cargan de forma
+      offline, sin conexión a internet).
+    </div>
+  </div>
+
+  <!-- FULLY OFFLINE: local UMD libs, ZERO external requests.
+       three r160 UMD lacks THREE.Timer (core Timer landed ~r165), but
+       3d-force-graph@1.80 needs it. So we let 3d-force-graph use its OWN
+       bundled three (has Timer) for the engine, and stash r160 under a
+       private name for our custom objects — never leaving it on window,
+       so the engine doesn't pick up the wrong instance. -->
+  <script src="./three.min.js"></script>
+  <script>window.__THREE160 = window.THREE; delete window.THREE;</script>
+  <script src="./3d-force-graph.min.js"></script>
+
+  <script>
+    // Classic (non-module) init. `THREE` here is r160 (stashed as __THREE160), used ONLY for
+    // our custom objects (glow spheres, custom link lines, layer rings, fog, label projection).
+    // The engine uses its OWN bundled three (with THREE.Timer). Basic Sprite/Line/Mesh built by
+    // r160 render fine inside the engine's r16x scene (structurally compatible).
+    const THREE = window.__THREE160;
+
+    /* ============================== DATA ============================== */
+    const DATA = {"meta":{"title":"Malla curricular \u00b7 grafo temporal 3D","nObligatorias":44,"nElectivas":95,"nLinks":122,"spineColor":"#7f9bbf"},"layers":[{"sem":1,"label":"A\u00f1o 1 \u00b7 C1"},{"sem":2,"label":"A\u00f1o 1 \u00b7 C2"},{"sem":3,"label":"A\u00f1o 2 \u00b7 C1"},{"sem":4,"label":"A\u00f1o 2 \u00b7 C2"},{"sem":5,"label":"A\u00f1o 3 \u00b7 C1"},{"sem":6,"label":"A\u00f1o 3 \u00b7 C2"},{"sem":7,"label":"A\u00f1o 4 \u00b7 C1"},{"sem":8,"label":"A\u00f1o 4 \u00b7 C2"},{"sem":9,"label":"A\u00f1o 5 \u00b7 C1"},{"sem":10,"label":"A\u00f1o 5 \u00b7 C2"}],"minors":[{"name":"Ciencia de Datos","short":"CD","color":"#85a2c2"},{"name":"Im\u00e1genes y Realidad Virtual","short":"IRV","color":"#c592ab"},{"name":"Inteligencia Artificial","short":"IA","color":"#a9b27e"},{"name":"Arquitectura de Software","short":"ARQ","color":"#a497c0"}],"nodes":[{"i":0,"id":"12.09","label":"Qu\u00edmi","name":"Qu\u00edmica","type":"obligatoria","sem":3,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":1,"id":"12.83","label":"SOA","name":"Seguridad Ocupacional y Ambiental","type":"obligatoria","sem":9,"cred":3,"creditosReq":140,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":2,"id":"31.08","label":"SR","name":"Sistemas de Representaci\u00f3n","type":"obligatoria","sem":1,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":3,"id":"61.23","label":"Eco","name":"Econom\u00eda para Ingenieros","type":"obligatoria","sem":7,"cred":3,"creditosReq":120,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":4,"id":"61.32","label":"Der","name":"Derecho para Ingenieros","type":"obligatoria","sem":7,"cred":3,"creditosReq":120,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":5,"id":"72.03","label":"II","name":"Introducci\u00f3n a la Inform\u00e1tica","type":"obligatoria","sem":1,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":6,"id":"72.07","label":"PC","name":"Protocolos de Comunicaci\u00f3n","type":"obligatoria","sem":6,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":7,"id":"72.08","label":"AC","name":"Arquitectura de Computadoras","type":"obligatoria","sem":4,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":8,"id":"72.11","label":"SO","name":"Sistemas Operativos","type":"obligatoria","sem":5,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":9,"id":"72.20","label":"Redes","name":"Redes de Informaci\u00f3n","type":"obligatoria","sem":9,"cred":6,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":10,"id":"72.25","label":"SimSist","name":"Simulaci\u00f3n de Sistemas","type":"obligatoria","sem":8,"cred":6,"creditosReq":140,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":11,"id":"72.27","label":"SIA","name":"Sistemas de Inteligencia Artificial","type":"obligatoria","sem":8,"cred":6,"creditosReq":140,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":12,"id":"72.31","label":"PI","name":"Programaci\u00f3n Imperativa","type":"obligatoria","sem":2,"cred":9,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":13,"id":"72.32","label":"DPDX","name":"Dise\u00f1o y Procesamiento de Documentos XML","type":"obligatoria","sem":3,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":14,"id":"72.33","label":"POO","name":"Programaci\u00f3n Orientada a Objetos","type":"obligatoria","sem":3,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":15,"id":"72.34","label":"EDA","name":"Estructura de Datos y Algoritmos","type":"obligatoria","sem":4,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":16,"id":"72.35","label":"ISI","name":"Ingenieria de Software I","type":"obligatoria","sem":5,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":17,"id":"72.36","label":"IHCH","name":"Interacci\u00f3n Hombre-Computadora (HCI)","type":"obligatoria","sem":5,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":18,"id":"72.37","label":"BDI","name":"Base de Datos I","type":"obligatoria","sem":5,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":19,"id":"72.38","label":"PAW","name":"Proyecto de Aplicaciones Web","type":"obligatoria","sem":6,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":20,"id":"72.39","label":"ATLC","name":"Aut\u00f3matas, Teor\u00eda de Lenguajes y Compiladores","type":"obligatoria","sem":6,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":21,"id":"72.40","label":"ISW II","name":"Ingenieria del Software II","type":"obligatoria","sem":7,"cred":3,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":22,"id":"72.41","label":"BDII","name":"Base de Datos II","type":"obligatoria","sem":7,"cred":6,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":23,"id":"72.42","label":"POD","name":"Programaci\u00f3n de Objetos Distribuidos","type":"obligatoria","sem":7,"cred":3,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":24,"id":"72.43","label":"GPI","name":"Gesti\u00f3n de Proyectos Inform\u00e1ticos","type":"obligatoria","sem":8,"cred":3,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":25,"id":"72.44","label":"Cripto","name":"Criptograf\u00eda y Seguridad","type":"obligatoria","sem":8,"cred":6,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":26,"id":"72.45","label":"PF","name":"Proyecto Final","type":"obligatoria","sem":9,"cred":12,"creditosReq":160,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":27,"id":"72.98","label":"PL","name":"Pr\u00e1ctica Laboral","type":"obligatoria","sem":10,"cred":0,"creditosReq":192,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":28,"id":"93.07","label":"MN","name":"M\u00e9todos Num\u00e9ricos","type":"obligatoria","sem":6,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":29,"id":"93.24","label":"PE","name":"Probabilidad y Estad\u00edstica","type":"obligatoria","sem":4,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":30,"id":"93.26","label":"AMI","name":"An\u00e1lisis Matem\u00e1tico I","type":"obligatoria","sem":1,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":31,"id":"93.28","label":"AMII","name":"An\u00e1lisis Matem\u00e1tico II","type":"obligatoria","sem":2,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":32,"id":"93.35","label":"LC","name":"L\u00f3gica Computacional","type":"obligatoria","sem":3,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":33,"id":"93.41","label":"FI","name":"F\u00edsica I","type":"obligatoria","sem":2,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":34,"id":"93.42","label":"FII","name":"F\u00edsica II","type":"obligatoria","sem":3,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":35,"id":"93.43","label":"FIII","name":"F\u00edsica III","type":"obligatoria","sem":4,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":36,"id":"93.58","label":"\u00c1lgeb","name":"\u00c1lgebra","type":"obligatoria","sem":1,"cred":9,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":37,"id":"93.59","label":"MD","name":"Matem\u00e1tica Discreta","type":"obligatoria","sem":2,"cred":6,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":38,"id":"93.75","label":"MNA","name":"M\u00e9todos Num\u00e9ricos Avanzados","type":"obligatoria","sem":7,"cred":6,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":39,"id":"94.21","label":"FGI","name":"Formaci\u00f3n General I","type":"obligatoria","sem":6,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":40,"id":"94.23","label":"FG3","name":"Formaci\u00f3n General III","type":"obligatoria","sem":10,"cred":3,"creditosReq":168,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":41,"id":"94.24","label":"MA","name":"Metodolog\u00eda del Aprendizaje","type":"obligatoria","sem":1,"cred":3,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":42,"id":"94.51","label":"II","name":"Ingl\u00e9s I","type":"obligatoria","sem":6,"cred":0,"creditosReq":0,"ciclo":"Ciclo B\u00e1sico","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":43,"id":"94.52","label":"Ingl\u00e9s II","name":"Ingl\u00e9s II","type":"obligatoria","sem":10,"cred":0,"creditosReq":0,"ciclo":"Ciclo Profesional","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":44,"id":"10.07","label":"Creat","name":"Creatividad","type":"electiva","sem":5.5,"cred":3,"creditosReq":96,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":45,"id":"10.09","label":"FpE","name":"Formaci\u00f3n para Emprendedores","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":46,"id":"11.36","label":"IC","name":"Innovaci\u00f3n y Competitividad","type":"electiva","sem":10.0,"cred":3,"creditosReq":192,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":47,"id":"16.04","label":"Neuro","name":"Neurociencias y Desarrollo Productivo","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":48,"id":"16.50","label":"Bioinfo","name":"Introducci\u00f3n a la Bioinform\u00e1tica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":49,"id":"16.57","label":"RobBio","name":"Rob\u00f3tica Bioinspirada","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":50,"id":"16.82","label":"NC","name":"Neurociencia Computacional","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":51,"id":"22.48","label":"PI","name":"Procesamiento de Im\u00e1genes","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":52,"id":"23.15","label":"RV","name":"Realidad Virtual","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual","Inteligencia Artificial"],"areaShort":["IRV","IA"],"color":"#c592ab"},{"i":53,"id":"25.04","label":"Cu\u00e1ntica","name":"Computaci\u00f3n Cu\u00e1ntica","type":"electiva","sem":7.75,"cred":6,"creditosReq":144,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":54,"id":"61.08","label":"DerDig","name":"Derecho Digital","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":55,"id":"61.11","label":"DerLab","name":"Derecho Laboral y Seguridad Social en la Empresa","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":56,"id":"61.13","label":"PCont","name":"Pr\u00e1ctica Contractual","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":57,"id":"61.50","label":"Finanzas","name":"Finanzas de la Empresa","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":58,"id":"71.48","label":"IRA","name":"Introducci\u00f3n a la Realidad Aumentada","type":"electiva","sem":3.39,"cred":1,"creditosReq":51,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":59,"id":"72.22","label":"STF","name":"Sistemas Tolerantes a Fallas","type":"electiva","sem":1.0,"cred":6,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":60,"id":"72.23","label":"DCC","name":"Dise\u00f1o y Construcci\u00f3n de Compiladores","type":"electiva","sem":1.0,"cred":6,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":61,"id":"72.29","label":"TLP","name":"Tipos para Lenguajes de Programaci\u00f3n","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":62,"id":"72.46","label":"RBC","name":"Rob\u00f3tica Basada en Comportamiento","type":"electiva","sem":1.0,"cred":6,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":63,"id":"72.49","label":"STF","name":"Sistemas Tolerantes a Fallas","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":64,"id":"72.50","label":"DevJueg","name":"Introducci\u00f3n al Desarrollo de Videojuegos","type":"electiva","sem":1.0,"cred":6,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":65,"id":"72.51","label":"TW2RS","name":"Tecnolog\u00edas para Web 2.0 y Redes Sociales","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":66,"id":"72.52","label":"ATI","name":"An\u00e1lisis y Tratamiento de Im\u00e1genes","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual","Inteligencia Artificial"],"areaShort":["IRV","IA"],"color":"#c592ab"},{"i":67,"id":"72.53","label":"Visi\u00f3n3D","name":"Visi\u00f3n Computacional 3D","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual","Inteligencia Artificial"],"areaShort":["IRV","IA"],"color":"#c592ab"},{"i":68,"id":"72.54","label":"OLAP","name":"OLAP y Explotaci\u00f3n de Datos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial"],"areaShort":["CD","IA"],"color":"#85a2c2"},{"i":69,"id":"72.55","label":"OW","name":"Ontolog\u00edas en la Web","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":70,"id":"72.58","label":"CG","name":"Computaci\u00f3n Gr\u00e1fica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":71,"id":"72.59","label":"SIAII","name":"Sistemas de Inteligencia Artificial II","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":72,"id":"72.18","label":"ProgFunc","name":"Programaci\u00f3n Funcional","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial","Arquitectura de Software"],"areaShort":["CD","IA","ARQ"],"color":"#85a2c2"},{"i":73,"id":"72.61","label":"TDV","name":"Taller de Dise\u00f1o de Videojuegos","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":74,"id":"72.65","label":"DV2IO","name":"Desarrollo de Videojuegos 2D en Iphone OS","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":75,"id":"72.66","label":"Embeb","name":"Sistemas Embebidos","type":"electiva","sem":1.0,"cred":6,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":76,"id":"72.67","label":"RCC","name":"Rob\u00f3tica Cinem\u00e1tica Computacional","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":77,"id":"72.68","label":"ACI","name":"Arte y Ciencia Interactivos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":78,"id":"72.69","label":"SSBFI","name":"Seguridad de Software basada en Flujo de Informaci\u00f3n","type":"electiva","sem":1.0,"cred":6,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":79,"id":"72.70","label":"MIF","name":"Modelos e Im\u00e1genes Fractales","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":80,"id":"72.71","label":"ISI","name":"Integraci\u00f3n de Sistemas de Informaci\u00f3n","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Arquitectura de Software"],"areaShort":["CD","ARQ"],"color":"#85a2c2"},{"i":81,"id":"72.72","label":"AVMC","name":"An\u00e1lisis y Verificaci\u00f3n de Modelos y C\u00f3digos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Arquitectura de Software"],"areaShort":["CD","ARQ"],"color":"#85a2c2"},{"i":82,"id":"72.73","label":"APRR","name":"Aprendizaje por Refuerzo en Rob\u00f3tica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":83,"id":"72.74","label":"VisInfo","name":"Visualizaci\u00f3n de Informaci\u00f3n","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Im\u00e1genes y Realidad Virtual"],"areaShort":["CD","IRV"],"color":"#85a2c2"},{"i":84,"id":"72.75","label":"ML","name":"Aprendizaje Autom\u00e1tico (Machine Learning)","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":85,"id":"72.77","label":"Testing","name":"T\u00e9cnicas Autom\u00e1ticas para Testing de Software","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Arquitectura de Software"],"areaShort":["CD","ARQ"],"color":"#85a2c2"},{"i":86,"id":"72.78","label":"OE","name":"OLAP Espacial","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial"],"areaShort":["CD","IA"],"color":"#85a2c2"},{"i":87,"id":"72.79","label":"SMA","name":"Sistemas Multiagente I","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":88,"id":"72.80","label":"BigData","name":"Big Data","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Im\u00e1genes y Realidad Virtual","Inteligencia Artificial"],"areaShort":["CD","IRV","IA"],"color":"#85a2c2"},{"i":89,"id":"72.82","label":"TN","name":"T\u00f3picos de NoSQL","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":90,"id":"72.84","label":"BDESI","name":"Bases de Datos Espaciales y Sist de Info Geogr\u00e1fica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Im\u00e1genes y Realidad Virtual"],"areaShort":["CD","IRV"],"color":"#85a2c2"},{"i":91,"id":"72.85","label":"WebSem","name":"An\u00e1lisis de Datos en la Web Sem\u00e1ntica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":92,"id":"72.86","label":"TAV","name":"T\u00e9cnicas Avanzadas en Videojuegos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":93,"id":"72.87","label":"DSon","name":"Dise\u00f1o Sonoro para Animaci\u00f3n y Videojuegos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":94,"id":"72.88","label":"INC","name":"Introducci\u00f3n a la Neurociencia Computacional","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial"],"areaShort":["CD","IA"],"color":"#85a2c2"},{"i":95,"id":"72.89","label":"MDD","name":"Moneda Digital Descentralizada","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":96,"id":"72.90","label":"IoT","name":"Internet de las Cosas","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial"],"areaShort":["CD","IA"],"color":"#85a2c2"},{"i":97,"id":"72.92","label":"Grafos","name":"El Paradigma NoSQL - Bases de Datos de Grafos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":98,"id":"72.94","label":"ISE","name":"Introducci\u00f3n a los Sistemas Embebidos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":99,"id":"72.95","label":"PICT","name":"Proyecto de Innovaci\u00f3n Cient\u00edfico-Tecnol\u00f3gico","type":"electiva","sem":1.0,"cred":12,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":100,"id":"72.96","label":"AppM\u00f3vil","name":"Proyecto de Aplicaciones M\u00f3viles","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual","Arquitectura de Software"],"areaShort":["IRV","ARQ"],"color":"#c592ab"},{"i":101,"id":"72.97","label":"IPV","name":"Introducci\u00f3n a la Programaci\u00f3n de Videojuegos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":102,"id":"73.21","label":"AppMP","name":"Desarrollo de Aplicaciones M\u00f3viles Multiplataforma","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual","Arquitectura de Software"],"areaShort":["IRV","ARQ"],"color":"#c592ab"},{"i":103,"id":"73.22","label":"DevOps","name":"Fundamentos de DevOps","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":104,"id":"73.23","label":"PODat","name":"Programaci\u00f3n Orientada a Datos","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":105,"id":"73.30","label":"DPS","name":"Desarrollo Profesional de Software","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":106,"id":"73.40","label":"ArqMS","name":"Arquitectura de Microservicios","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":107,"id":"73.50","label":"Infra","name":"Infraestructura de C\u00f3mputo: Data Center, Cloud y Edge","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":108,"id":"73.60","label":"IRE","name":"Introducci\u00f3n a la Rob\u00f3tica Empresarial","type":"electiva","sem":7.56,"cred":1,"creditosReq":140,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":109,"id":"73.61","label":"Neuro","name":"Neurorob\u00f3tica","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":110,"id":"73.62","label":"IPP","name":"Introducci\u00f3n a la Programaci\u00f3n Paralela","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":111,"id":"73.63","label":"REq","name":"Redes Equivariantes","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":112,"id":"73.64","label":"DL","name":"Temas Avanzados en Deep Learning","type":"electiva","sem":1.0,"cred":2,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":113,"id":"73.65","label":"PLN","name":"Procesamiento del Lenguaje Natural","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":114,"id":"73.66","label":"PIS","name":"Procesamiento de Im\u00e1genes Satelitales","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":115,"id":"73.80","label":"SO","name":"Seguridad Ofensiva","type":"electiva","sem":1.0,"cred":1,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":116,"id":"73.81","label":"Ciber","name":"Cibersguridad Ofensiva y Defensiva","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":117,"id":"73.82","label":"BDEM","name":"Bases de Datos Espaciales y de Movilidad","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":118,"id":"73.84","label":"CDA","name":"Ciencia de Datos Aplicada","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial"],"areaShort":["CD","IA"],"color":"#85a2c2"},{"i":119,"id":"73.89","label":"Blockchain","name":"Introducci\u00f3n a Blockchain y a Criptomonedas","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":120,"id":"73.98","label":"DIV","name":"Desarrollo Integral de Videojuegos","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":121,"id":"81.13","label":"FutPos","name":"Futuros Posibles","type":"electiva","sem":7.56,"cred":1,"creditosReq":140,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":122,"id":"81.14","label":"ProdM","name":"Product Management","type":"electiva","sem":6.62,"cred":3,"creditosReq":120,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":123,"id":"81.16","label":"Negoc","name":"Negociaci\u00f3n","type":"electiva","sem":7.56,"cred":1,"creditosReq":140,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":124,"id":"81.57","label":"ASD","name":"Arquitectura de Soluciones Digitales","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Arquitectura de Software"],"areaShort":["ARQ"],"color":"#a497c0"},{"i":125,"id":"81.74","label":"RA","name":"Introducci\u00f3n a la Realidad Aumentada","type":"electiva","sem":3.39,"cred":1,"creditosReq":51,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual"],"areaShort":["IRV"],"color":"#c592ab"},{"i":126,"id":"82.08","label":"Cloud","name":"Cloud Computing","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos","Inteligencia Artificial","Arquitectura de Software"],"areaShort":["CD","IA","ARQ"],"color":"#85a2c2"},{"i":127,"id":"82.18","label":"NLP","name":"Procesamiento del Lenguaje Natural","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":128,"id":"82.21","label":"FPDD","name":"Factibilidad de Proyectos Data-Driven","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":129,"id":"94.26","label":"CO","name":"Comunicaci\u00f3n Organizacional","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":130,"id":"94.42","label":"ComEst","name":"Comunicaci\u00f3n Estrat\u00e9gica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":131,"id":"94.62","label":"\u00c9tica","name":"\u00c9tica en los Negocios","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":132,"id":"94.64","label":"PExp","name":"Pr\u00e1cticas Expositivas","type":"electiva","sem":6.62,"cred":3,"creditosReq":120,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":133,"id":"94.65","label":"PPS","name":"Pr\u00e1ctica Profesional Supervisada","type":"electiva","sem":7.75,"cred":0,"creditosReq":144,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":134,"id":"94.92","label":"EA","name":"Escritura Acad\u00e9mica","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"},{"i":135,"id":"73.69","label":"LLM","name":"Large Language Models","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Inteligencia Artificial"],"areaShort":["IA"],"color":"#a9b27e"},{"i":136,"id":"73.70","label":"ADNeuro","name":"An\u00e1lisis de Datos en Neurociencias","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Ciencia de Datos"],"areaShort":["CD"],"color":"#85a2c2"},{"i":137,"id":"74.60","label":"Visi\u00f3n","name":"Visi\u00f3n por Computadora","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":["Im\u00e1genes y Realidad Virtual","Inteligencia Artificial"],"areaShort":["IRV","IA"],"color":"#c592ab"},{"i":138,"id":"81.76","label":"TecFin","name":"Tecnolog\u00eda para las Finanzas","type":"electiva","sem":1.0,"cred":3,"creditosReq":0,"ciclo":"","areas":[],"areaShort":[],"color":"#7f9bbf"}],"links":[[5,12,"spine"],[6,9,"spine"],[6,23,"spine"],[6,25,"spine"],[7,8,"spine"],[8,6,"spine"],[8,19,"spine"],[8,22,"spine"],[12,7,"spine"],[12,13,"spine"],[12,14,"spine"],[13,17,"spine"],[14,15,"spine"],[14,16,"spine"],[14,17,"spine"],[15,8,"spine"],[15,10,"spine"],[15,11,"spine"],[15,18,"spine"],[15,20,"spine"],[16,19,"spine"],[16,21,"spine"],[17,19,"spine"],[18,19,"spine"],[18,22,"spine"],[18,23,"spine"],[28,10,"spine"],[28,38,"spine"],[29,11,"spine"],[30,31,"spine"],[30,33,"spine"],[31,28,"spine"],[31,29,"spine"],[31,34,"spine"],[31,35,"spine"],[32,18,"spine"],[33,35,"spine"],[36,12,"spine"],[36,31,"spine"],[36,32,"spine"],[36,37,"spine"],[37,15,"spine"],[42,43,"spine"],[3,57,"unlock"],[3,128,"unlock"],[4,54,"unlock"],[4,55,"unlock"],[4,56,"unlock"],[6,80,"unlock"],[6,124,"unlock"],[7,49,"unlock"],[7,98,"unlock"],[8,110,"unlock"],[9,107,"unlock"],[11,62,"unlock"],[11,71,"unlock"],[11,87,"unlock"],[11,111,"unlock"],[11,112,"unlock"],[11,118,"unlock"],[12,83,"unlock"],[13,69,"unlock"],[13,91,"unlock"],[13,126,"unlock"],[14,110,"unlock"],[15,50,"unlock"],[15,52,"unlock"],[15,61,"unlock"],[15,64,"unlock"],[15,66,"unlock"],[15,67,"unlock"],[15,70,"unlock"],[15,72,"unlock"],[15,73,"unlock"],[15,74,"unlock"],[15,84,"unlock"],[15,93,"unlock"],[15,94,"unlock"],[15,101,"unlock"],[15,104,"unlock"],[16,80,"unlock"],[16,103,"unlock"],[16,124,"unlock"],[18,48,"unlock"],[18,69,"unlock"],[18,80,"unlock"],[18,90,"unlock"],[18,91,"unlock"],[18,117,"unlock"],[18,124,"unlock"],[19,100,"unlock"],[19,102,"unlock"],[19,105,"unlock"],[21,106,"unlock"],[22,68,"unlock"],[22,88,"unlock"],[22,89,"unlock"],[22,97,"unlock"],[22,106,"unlock"],[22,107,"unlock"],[23,63,"unlock"],[23,65,"unlock"],[25,95,"unlock"],[25,115,"unlock"],[25,116,"unlock"],[25,119,"unlock"],[101,92,"unlock"],[101,120,"unlock"],[28,96,"unlock"],[28,113,"unlock"],[28,127,"unlock"],[29,50,"unlock"],[29,68,"unlock"],[29,84,"unlock"],[29,94,"unlock"],[31,50,"unlock"],[35,96,"unlock"],[36,52,"unlock"],[38,51,"unlock"],[38,66,"unlock"],[38,84,"unlock"],[38,94,"unlock"]]};
+
+    /* ============================== CONFIG ============================== */
+    const LAYER_GAP = 34;                 // px-equivalent world units per semester
+    const RING_RADIUS = 150;              // layer guide ring radius
+    const EASE = 0.12;                    // per-frame opacity/scale easing factor
+    const HOVER_DIM = 0.1;                // opacity factor for non-neighbors while hovering
+
+    /* ============================== PREP ============================== */
+    DATA.nodes.forEach(n => {
+      n.fy = n.sem * LAYER_GAP;           // pin the temporal axis — x/z stay free for the sim
+      n.__neighbors = new Set();
+      n.__links = [];
+      n.__curOpacity = 0;
+      n.__curScale = 0.0001;
+      n.__targetOpacity = 0;
+      n.__targetScale = 0.0001;
+    });
+
+    const minorByShort = new Map(DATA.minors.map(m => [m.short, m]));
+
+    const links = DATA.links.map(([from, to, kind]) => {
+      const source = DATA.nodes[from];
+      const target = DATA.nodes[to];
+      const l = { source, target, kind, __curOpacity: 0, __targetOpacity: 0 };
+      source.__neighbors.add(target);
+      target.__neighbors.add(source);
+      source.__links.push(l);
+      target.__links.push(l);
+      return l;
+    });
+
+    /* ============================== HELPERS ============================== */
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function nearestLayer(sem){
+      let best = DATA.layers[0];
+      for (const layer of DATA.layers) {
+        if (layer.sem <= sem + 1e-6) best = layer;
+      }
+      return best;
+    }
+
+    let _glowTex = null;
+    function glowTexture(){
+      if (_glowTex) return _glowTex;
+      const size = 128;
+      const cnv = document.createElement('canvas');
+      cnv.width = cnv.height = size;
+      const ctx = cnv.getContext('2d');
+      const g = ctx.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
+      g.addColorStop(0,   'rgba(255,255,255,1)');
+      g.addColorStop(0.22,'rgba(255,255,255,.6)');
+      g.addColorStop(1,   'rgba(255,255,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,size,size);
+      _glowTex = new THREE.CanvasTexture(cnv);
+      return _glowTex;
+    }
+
+    /* ============================== NODE OBJECT ============================== */
+    function buildNodeObject(node){
+      const group = new THREE.Group();
+      const isSpine = node.type === 'obligatoria';
+      const baseR = isSpine ? 3.3 : 1.95;
+      const r = baseR + Math.sqrt(node.cred || 1) * 0.32;
+
+      const geo = new THREE.SphereGeometry(r, 16, 16);
+      const mat = new THREE.MeshBasicMaterial({ color: node.color, transparent: true, opacity: 0.96 });
+      const mesh = new THREE.Mesh(geo, mat);
+      group.add(mesh);
+
+      const glowMat = new THREE.SpriteMaterial({
+        map: glowTexture(), color: node.color, transparent: true,
+        opacity: isSpine ? 0.5 : 0.26, depthWrite: false, blending: THREE.AdditiveBlending
+      });
+      const glow = new THREE.Sprite(glowMat);
+      const gs = r * (isSpine ? 7.2 : 5.2);
+      glow.scale.set(gs, gs, 1);
+      group.add(glow);
+
+      group.scale.set(0.0001, 0.0001, 0.0001);
+
+      node.__mat = mat;
+      node.__glowMat = glowMat;
+      node.__group = group;
+      node.__baseOpacity = mat.opacity;
+      node.__baseGlowOpacity = glowMat.opacity;
+
+      return group;
+    }
+
+    /* ============================== LINK OBJECT ============================== */
+    function buildLinkObject(link){
+      const isSpine = link.kind === 'spine';
+      const material = new THREE.LineBasicMaterial({
+        color: isSpine ? 0xbcd0ea : 0xc79a68,
+        transparent: true,
+        opacity: 0
+      });
+      const geometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,1)
+      ]);
+      const line = new THREE.Line(geometry, material);
+      link.__mat = material;
+      link.__baseOpacity = isSpine ? 0.82 : 0.22;
+      link.__line = line;
+      return line;
+    }
+
+    function updateLinkPosition(line, { start, end }){
+      const pos = line.geometry.attributes.position.array;
+      pos[0] = start.x; pos[1] = start.y; pos[2] = start.z;
+      pos[3] = end.x;   pos[4] = end.y;   pos[5] = end.z;
+      line.geometry.attributes.position.needsUpdate = true;
+      line.geometry.computeBoundingSphere();
+      return true; // tells 3d-force-graph we handled positioning ourselves
+    }
+
+    /* ============================== LAYER GUIDES ============================== */
+    function buildLayerGuides(scene){
+      const group = new THREE.Group();
+      DATA.layers.forEach(layer => {
+        const y = layer.sem * LAYER_GAP;
+        const pts = [];
+        const segs = 96;
+        for (let i = 0; i <= segs; i++){
+          const a = (i/segs) * Math.PI * 2;
+          pts.push(new THREE.Vector3(Math.cos(a)*RING_RADIUS, y, Math.sin(a)*RING_RADIUS));
+        }
+        const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        const mat = new THREE.LineBasicMaterial({ color: 0xd9a066, transparent: true, opacity: 0.13 });
+        group.add(new THREE.LineLoop(geo, mat));
+        layer.__y = y;
+        layer.__anchor = new THREE.Vector3(-RING_RADIUS - 6, y, 0);
+      });
+
+      // central time axis
+      const axisPts = [
+        new THREE.Vector3(0, DATA.layers[0].sem*LAYER_GAP - 10, 0),
+        new THREE.Vector3(0, DATA.layers[DATA.layers.length-1].sem*LAYER_GAP + 10, 0)
+      ];
+      const axisGeo = new THREE.BufferGeometry().setFromPoints(axisPts);
+      const axisMat = new THREE.LineBasicMaterial({ color: 0xd9a066, transparent: true, opacity: 0.16 });
+      group.add(new THREE.Line(axisGeo, axisMat));
+
+      scene.add(group);
+    }
+
+    /* ============================== TOOLTIP ============================== */
+    const tooltipEl = document.getElementById('tooltip');
+    let mouseX = 0, mouseY = 0;
+
+    function tooltipHtml(node){
+      const layer = nearestLayer(node.sem);
+      const kindLabel = node.type === 'obligatoria' ? 'Obligatoria' : 'Electiva';
+      let chips = '';
+      if (node.areaShort && node.areaShort.length){
+        chips = node.areaShort.map(short => {
+          const m = minorByShort.get(short);
+          const c = m ? m.color : '#999';
+          return `<span class="chip" style="--c:${c}">${escapeHtml(short)}</span>`;
+        }).join('');
+      } else if (node.type === 'electiva') {
+        chips = '<span class="chip chip-muted">sin área definida</span>';
+      }
+      return `
+        <div class="tt-title">${escapeHtml(node.name)}</div>
+        <div class="tt-row"><span class="tt-kind ${node.type}">${kindLabel}</span> · ${escapeHtml(layer.label)}</div>
+        <div class="tt-row">${node.cred} créditos${node.creditosReq ? ` · requiere ${node.creditosReq} cr. acumulados` : ''}</div>
+        ${chips ? `<div class="tt-chips">${chips}</div>` : ''}
+      `;
+    }
+
+    function positionTooltip(){
+      const pad = 18;
+      let x = mouseX + pad, y = mouseY + pad;
+      const rect = tooltipEl.getBoundingClientRect();
+      if (x + rect.width > window.innerWidth - 8)  x = mouseX - rect.width - pad;
+      if (y + rect.height > window.innerHeight - 8) y = mouseY - rect.height - pad;
+      tooltipEl.style.transform = `translate(${Math.max(4,x)}px, ${Math.max(4,y)}px)`;
+    }
+
+    /* ============================== LEGEND ============================== */
+    function buildLegend(){
+      const list = document.getElementById('legend-list');
+      const meta = document.getElementById('legend-meta');
+      const spineLi = document.createElement('li');
+      spineLi.innerHTML = `<span class="swatch spine" style="--sw-c:${DATA.meta.spineColor}"></span>
+        <span class="name">Obligatorias</span>`;
+      list.appendChild(spineLi);
+      DATA.minors.forEach(m => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="swatch" style="--sw-c:${m.color}"></span>
+          <span class="name">${escapeHtml(m.short)} · ${escapeHtml(m.name)}</span>`;
+        list.appendChild(li);
+      });
+      meta.innerHTML = `${DATA.meta.nObligatorias} obligatorias · ${DATA.meta.nElectivas} electivas<br>${DATA.meta.nLinks} correlativas`;
+    }
+
+    /* ============================== LAYER LABELS (DOM overlay) ============================== */
+    let layerLabelEls = [];
+    function buildLayerLabelDom(){
+      const root = document.getElementById('layer-labels');
+      layerLabelEls = DATA.layers.map(layer => {
+        const el = document.createElement('div');
+        el.className = 'layer-label';
+        el.innerHTML = `${escapeHtml(layer.label)}<i></i>`;
+        root.appendChild(el);
+        return { layer, el };
+      });
+    }
+
+    function updateLayerLabels(camera, width, height, sliderVal){
+      const v = new THREE.Vector3();
+      layerLabelEls.forEach(({ layer, el }) => {
+        v.copy(layer.__anchor).project(camera);
+        if (v.z > 1 || v.z < -1){ el.style.display = 'none'; return; }
+        const x = (v.x * 0.5 + 0.5) * width;
+        const y = (-v.y * 0.5 + 0.5) * height;
+        if (x < -200 || x > width + 40 || y < -60 || y > height + 60){
+          el.style.display = 'none';
+          return;
+        }
+        el.style.display = 'block';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.opacity = layer.sem <= sliderVal + 1e-6 ? 0.85 : 0.28;
+      });
+    }
+
+    /* ============================== TIMELINE TICKS ============================== */
+    function buildTicks(){
+      const root = document.getElementById('track-ticks');
+      const min = 1, max = 10;
+      DATA.layers.forEach(layer => {
+        const pct = ((layer.sem - min) / (max - min)) * 100;
+        const tick = document.createElement('i');
+        tick.style.left = pct + '%';
+        root.appendChild(tick);
+      });
+    }
+
+    /* ============================== BOOT ============================== */
+    function boot(){
+      if (typeof window.ForceGraph3D !== 'function'){
+        return setTimeout(boot, 60);
+      }
+
+      const container = document.getElementById('graph');
+
+      const graph = ForceGraph3D({ controlType: 'orbit' })(container)
+        .backgroundColor('#20120a')
+        .showNavInfo(false)
+        .warmupTicks(70)
+        .cooldownTicks(220)
+        .d3VelocityDecay(0.45)
+        .graphData({ nodes: DATA.nodes, links })
+        .nodeLabel(() => '')
+        .linkLabel(() => '')
+        .nodeThreeObject(buildNodeObject)
+        .nodeThreeObjectExtend(false)
+        .linkThreeObject(buildLinkObject)
+        .linkThreeObjectExtend(false)
+        .linkPositionUpdate(updateLinkPosition)
+        .linkDirectionalParticles(l => l.kind === 'spine' ? 2 : 0)
+        .linkDirectionalParticleWidth(l => l.kind === 'spine' ? 1.7 : 1)
+        .linkDirectionalParticleSpeed(0.0055)
+        .linkDirectionalParticleColor(() => '#eaf1fb')
+        .onNodeHover(handleHover)
+        .onNodeClick(handleClick)
+        .width(window.innerWidth)
+        .height(window.innerHeight);
+
+      // gentle, legible forces: weak charge, layer-aware link distance; y is pinned via fy
+      graph.d3Force('charge').strength(-34).distanceMax(240);
+      const linkForce = graph.d3Force('link');
+      if (linkForce){
+        linkForce.distance(l => l.kind === 'spine' ? 30 : 46);
+        linkForce.strength(l => l.kind === 'spine' ? 0.5 : 0.22);
+      }
+
+      // fog + layer guides live directly in the graph's own three.js scene
+      const scene = graph.scene();
+      scene.fog = new THREE.Fog(0x20120a, 260, 900);
+      buildLayerGuides(scene);
+
+      // let the CSS page gradient (#1a0f08 -> #241208) show through the canvas.
+      // '#20120a' set above via .backgroundColor() is the guaranteed opaque fallback
+      // in case setClearAlpha isn't honored for any reason.
+      try {
+        const renderer = graph.renderer();
+        if (renderer && typeof renderer.setClearAlpha === 'function') {
+          renderer.setClearAlpha(0);
+        }
+      } catch (err) { /* keep the opaque fallback background */ }
+
+      // initial camera: slightly above, looking at the tower
+      const midY = ((DATA.layers[0].sem + DATA.layers[DATA.layers.length-1].sem) / 2) * LAYER_GAP;
+      graph.cameraPosition(
+        { x: 250, y: midY + 150, z: 300 },
+        { x: 0, y: midY, z: 0 },
+        0
+      );
+
+      container.addEventListener('mousemove', e => {
+        mouseX = e.clientX; mouseY = e.clientY;
+        if (hoverNode) positionTooltip();
+      });
+
+      window.addEventListener('resize', () => {
+        graph.width(window.innerWidth).height(window.innerHeight);
+      });
+
+      buildLegend();
+      buildLayerLabelDom();
+      buildTicks();
+
+      /* --------- hover highlight --------- */
+      let hoverNode = null;
+      function handleHover(node){
+        hoverNode = node;
+        container.style.cursor = node ? 'pointer' : 'default';
+        if (node){
+          tooltipEl.innerHTML = tooltipHtml(node);
+          tooltipEl.classList.add('visible');
+          positionTooltip();
+        } else {
+          tooltipEl.classList.remove('visible');
+        }
+        computeTargets();
+      }
+
+      /* --------- click to focus --------- */
+      function handleClick(node){
+        const nx = node.x || 0;
+        const ny = (node.y != null ? node.y : node.fy) || 0;
+        const nz = node.z || 0;
+        graph.cameraPosition(
+          { x: nx + 55, y: ny + 32, z: nz + 88 },
+          { x: nx, y: ny, z: nz },
+          950
+        );
+      }
+
+      /* --------- reveal-through-time slider --------- */
+      const slider = document.getElementById('semSlider');
+      const playBtn = document.getElementById('playBtn');
+      const timelineLayerEl = document.getElementById('timeline-layer');
+      let playing = false;
+
+      function computeTargets(){
+        const sliderVal = parseFloat(slider.value);
+        DATA.nodes.forEach(n => {
+          const revealed = n.sem <= sliderVal + 1e-6;
+          let hf = 1;
+          if (hoverNode){
+            hf = (n === hoverNode || hoverNode.__neighbors.has(n)) ? 1 : HOVER_DIM;
+          }
+          n.__targetOpacity = revealed ? hf : 0;
+          n.__targetScale = revealed ? 1 : 0.0001;
+        });
+        links.forEach(l => {
+          const maxSem = Math.max(l.source.sem, l.target.sem);
+          const revealed = maxSem <= sliderVal + 1e-6;
+          let hf = 1;
+          if (hoverNode){
+            hf = (l.source === hoverNode || l.target === hoverNode) ? 1 : HOVER_DIM * 0.6;
+          }
+          l.__targetOpacity = revealed ? hf : 0;
+        });
+      }
+
+      function onSliderInput(){
+        computeTargets();
+        timelineLayerEl.textContent = nearestLayer(parseFloat(slider.value)).label;
+      }
+
+      function stopPlay(){
+        playing = false;
+        playBtn.textContent = '▶';
+        playBtn.setAttribute('aria-label', 'Reproducir revelado temporal');
+      }
+      function startPlay(){
+        if (parseFloat(slider.value) >= 10 - 1e-6) slider.value = 1;
+        playing = true;
+        playBtn.textContent = '❚❚';
+        playBtn.setAttribute('aria-label', 'Pausar revelado temporal');
+        onSliderInput();
+      }
+
+      slider.addEventListener('input', () => { stopPlay(); onSliderInput(); });
+      playBtn.addEventListener('click', () => { playing ? stopPlay() : startPlay(); });
+
+      /* --------- main render loop: easing + label projection + autoplay --------- */
+      function frame(){
+        requestAnimationFrame(frame);
+
+        if (playing){
+          const v = Math.min(10, parseFloat(slider.value) + 0.028);
+          slider.value = v;
+          onSliderInput();
+          if (v >= 10 - 1e-6) stopPlay();
+        }
+
+        DATA.nodes.forEach(n => {
+          n.__curOpacity += (n.__targetOpacity - n.__curOpacity) * EASE;
+          n.__curScale   += (n.__targetScale   - n.__curScale)   * (EASE + 0.02);
+          if (n.__mat){
+            const o = Math.max(0, Math.min(1, n.__curOpacity));
+            n.__mat.opacity = o * n.__baseOpacity;
+            n.__glowMat.opacity = o * n.__baseGlowOpacity;
+          }
+          if (n.__group){
+            const s = Math.max(0.0001, n.__curScale);
+            n.__group.scale.set(s, s, s);
+            n.__group.visible = n.__curOpacity > 0.003;
+          }
+        });
+
+        links.forEach(l => {
+          l.__curOpacity += (l.__targetOpacity - l.__curOpacity) * EASE;
+          if (l.__mat){
+            l.__mat.opacity = Math.max(0, Math.min(1, l.__curOpacity)) * l.__baseOpacity;
+          }
+          if (l.__line){
+            l.__line.visible = l.__curOpacity > 0.004;
+          }
+        });
+
+        updateLayerLabels(graph.camera(), graph.width(), graph.height(), parseFloat(slider.value));
+      }
+
+      computeTargets();
+      onSliderInput();
+      requestAnimationFrame(frame);
+
+      // auto-demo: let the layout settle a beat, then play the reveal once on load
+      setTimeout(() => { if (!playing) startPlay(); }, 1100);
+    }
+
+    if (document.readyState === 'complete') boot();
+    else window.addEventListener('load', boot);
+
+    // defensive: surface a visible error if the CDN libs never arrive
+    setTimeout(() => {
+      if (typeof window.ForceGraph3D !== 'function'){
+        document.getElementById('boot-error').classList.add('show');
+      }
+    }, 9000);
+  </script>
+</body>
+</html>

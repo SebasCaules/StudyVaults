@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Combinación de finales (rediseño)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults (idénticos a foundations.html)
+     6 hex base: brown #241208 · zinc #27272a · blue #92cff2 ·
+                 gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  /* ---------- DARK (brand default) ---------- */
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    --k-def: #9ab8d6; --k-theorem: #b6a4d6; --k-formula: #7cc0af;
+    --k-method: #d8b279; --k-caution: #d68f85; --k-example: #b1a8a0;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-def: #295c8e; --k-theorem: #5e3b9b; --k-formula: #227762;
+    --k-method: #8c6121; --k-caution: #ab3c2b; --k-example: #6d6155;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header (doc chrome) ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- secondary nav ---------- */
+  .subnav{ border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2);
+    max-width: 20ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:66ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.65rem, 1.6vw + 1rem, 2.35rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:74ch; margin: 0 0 var(--sp-4); font-size:1.02rem; }
+  .cutline{ border:none; border-top:1px solid var(--border); margin: var(--sp-4) 0; }
+  .quiet-note{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); margin: -8px 0 var(--sp-4); }
+  .ejemplo-note{
+    display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); padding:5px 12px;
+  }
+  .ejemplo-note svg{ width:12px; height:12px; color:var(--accent); flex:none; }
+
+  .card{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .pad{ padding: 20px 22px; }
+
+  /* ---------- chips / labels ---------- */
+  .chip{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.02em;
+    padding:4px 8px; border-radius:5px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+  }
+  .credits-chip{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); padding:3px 8px; border-radius:5px; flex:none; }
+  .course-name{ font-weight:600; font-family:var(--font-serif); }
+  .after-note{ margin-top:10px; font-size:12.5px; color:var(--text-2); }
+  .mono-code{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); }
+
+  /* ---------- select ---------- */
+  select.csel-live{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:11px;
+    background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 9px center;
+    background-size:10px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:7px 26px 7px 10px; max-width:130px; width:auto;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.csel-live:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.csel-live:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+
+  /* ---------- segmented control (período) ---------- */
+  .seg-control{ display:inline-flex; background:var(--canvas); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); padding:2px; flex:none; }
+  .seg-control button{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:11px; padding:6px 14px; border-radius:var(--radius-pill);
+    border:none; background:none; color:var(--text-2); cursor:pointer; transition: all .18s var(--ease); white-space:nowrap;
+  }
+  .seg-control button.active{ background:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .seg-control button:not(.active):hover{ color:var(--text); }
+  .seg-control button .llamado-n{ font-size:9px; opacity:.7; }
+
+  /* ---------- header buttons ---------- */
+  .hbtn{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.02em;
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    padding:6px 12px; border-radius:var(--radius-pill); cursor:pointer; transition: all .18s var(--ease); white-space:nowrap;
+  }
+  .hbtn:hover{ background:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .hbtn svg{ width:12px; height:12px; flex:none; }
+  .hbtn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .hbtn.primary:hover{ background: color-mix(in srgb, var(--accent) 85%, black); }
+  .hbtn[aria-pressed="true"]{ border-color:var(--accent); color:var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .hbtn .count{ font-size:9px; color:var(--text-2); }
+  .hbtn[aria-pressed="true"] .count{ color:var(--accent); }
+
+  /* ---------- generic tooltip ---------- */
+  .tip-wrap{ position:relative; display:inline-flex; align-items:center; gap:5px; }
+  .tip-btn{
+    width:15px; height:15px; border-radius:50%; border:1px solid var(--border); background:var(--surface-hover);
+    color:var(--text-2); display:inline-flex; align-items:center; justify-content:center; cursor:help; flex:none; padding:0;
+    font-family:var(--font-mono); font-size:9px; font-weight:700;
+  }
+  .tip-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .tip-box{
+    position:absolute; left:0; top:calc(100% + 7px); z-index:35; width:236px;
+    background:var(--surface); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow);
+    padding:10px 12px; font-family:var(--font-mono); font-size:10.5px; line-height:1.55; color:var(--text-2);
+    opacity:0; transform:translateY(-4px); pointer-events:none; transition: opacity .15s var(--ease), transform .15s var(--ease);
+  }
+  .tip-wrap:hover .tip-box, .tip-wrap:focus-within .tip-box{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .tip-box b{ color:var(--text); }
+
+  /* ============================================================
+     APP FRAME — mock del combinador de finales
+     ============================================================ */
+  .app-frame{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .app-scroll{ max-height:660px; overflow-y:auto; }
+  .scroll-hint{
+    display:flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    margin: 0 0 10px;
+  }
+  .scroll-hint svg{ width:13px; height:13px; color:var(--accent); flex:none; }
+
+  .app-header{
+    position:sticky; top:0; z-index:14;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--border-subtle);
+    padding: 12px 16px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .app-header-left{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; flex:1 1 320px; min-width:0; }
+  .app-header-right{ display:flex; align-items:center; gap:8px; flex:0 1 auto; margin-left:auto; flex-wrap:wrap; justify-content:flex-end; }
+  .period-lbl{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); }
+
+  /* resumen bar */
+  .resumen-bar{
+    display:flex; align-items:center; gap:13px; flex-wrap:wrap;
+    padding:14px 16px; border-bottom:1px solid var(--border-subtle);
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  }
+  .resumen-ico{ flex:none; width:34px; height:34px; border-radius:8px; background: color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); display:flex; align-items:center; justify-content:center; }
+  .resumen-ico svg{ width:18px; height:18px; }
+  .resumen-body{ flex:1; min-width:220px; }
+  .resumen-main{ font-family:var(--font-serif); font-size:15.5px; line-height:1.35; }
+  .resumen-main b{ color:var(--accent); font-weight:700; }
+  .resumen-sub{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); margin-top:3px; }
+
+  /* conflict flags */
+  .flags{ display:flex; flex-direction:column; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border-subtle); }
+  .flag{
+    display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:6px;
+    border-left:3px solid var(--tone); background: color-mix(in srgb, var(--tone) 10%, var(--surface));
+  }
+  .flag-ico{ color:var(--tone); width:16px; height:16px; margin-top:1px; flex:none; }
+  .flag-txt{ min-width:0; }
+  .flag-title{ font-weight:600; font-size:13px; color:var(--text); }
+  .flag-body{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); margin-top:1px; }
+  .flag-body b{ color:var(--text); font-weight:700; }
+  .flag.caution{ --tone:var(--k-caution); }
+  .flag.warn{ --tone:var(--k-method); }
+
+  /* combinación sugerida */
+  .combo-card{
+    margin:14px 16px; padding:15px 16px; border-radius:8px;
+    border:1.5px solid color-mix(in srgb, var(--status-go) 42%, var(--border-subtle));
+    background: color-mix(in srgb, var(--status-go) 9%, var(--surface));
+  }
+  .combo-eyebrow{ display:flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--status-go); font-weight:700; margin-bottom:9px; }
+  .combo-eyebrow svg{ width:14px; height:14px; flex:none; }
+  .combo-line{ font-family:var(--font-serif); font-size:14.5px; line-height:1.5; margin:0 0 4px; }
+  .combo-chips{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px; }
+  .combo-chip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:var(--font-serif); font-size:13px; color:var(--text);
+    background:var(--surface); border:1px solid color-mix(in srgb, var(--status-go) 30%, var(--border-subtle));
+    padding:5px 11px 5px 9px; border-radius:var(--radius-pill);
+  }
+  .combo-chip .cc-dot{ width:9px; height:9px; border-radius:50%; background:var(--c-color); flex:none; }
+  .combo-chip .cc-date{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+  .combo-sub{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); margin:6px 0 12px; line-height:1.6; }
+  .combo-sub b{ color:var(--text); }
+  .combo-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .combo-ok{ display:none; font-family:var(--font-mono); font-size:11px; color:var(--status-go); align-items:center; gap:6px; }
+  .combo-ok svg{ width:14px; height:14px; }
+  .combo-card.is-confirmed .combo-ok{ display:inline-flex; }
+
+  /* ---------- exportar a calendario (.ics) ---------- */
+  .export-card{
+    margin:14px 16px; padding:15px 16px; border-radius:8px;
+    border:1px solid color-mix(in srgb, var(--link) 34%, var(--border-subtle));
+    background: color-mix(in srgb, var(--link) 7%, var(--surface));
+  }
+  .export-eyebrow{ display:flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--link); font-weight:700; margin-bottom:9px; }
+  .export-eyebrow svg{ width:14px; height:14px; flex:none; }
+  .export-line{ font-family:var(--font-serif); font-size:14px; line-height:1.5; margin:0 0 12px; }
+  .export-line .mono{ color:var(--text); }
+
+  .export-controls{ display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; margin-bottom:12px; }
+  .reminder-field{ display:inline-flex; align-items:center; gap:8px; flex:none; }
+  .reminder-lbl{ font-family:var(--font-mono); font-size:10px; letter-spacing:.03em; color:var(--text-2); }
+  .reminder-field select.csel-live{ max-width:none; }
+  .reminder-hint{ font-family:var(--font-mono); font-size:9.5px; line-height:1.55; color:var(--text-2); flex:1; min-width:200px; }
+  .reminder-hint b{ color:var(--text); }
+
+  .export-included{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:13px; }
+  .export-included-lbl{ font-family:var(--font-mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-2); margin-right:2px; }
+  .export-chip{
+    display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+    font-family:var(--font-mono); font-size:10px; color:var(--text);
+    background:var(--surface); border:1px solid var(--border-subtle);
+    padding:3px 9px; border-radius:var(--radius-pill);
+  }
+  .export-chip .ec-dot{ width:7px; height:7px; border-radius:50%; background:var(--c-color); flex:none; }
+  .export-chip .ec-date{ color:var(--text-2); }
+  .export-chip.excl{ color:var(--text-2); background:transparent; border-style:dashed; border-color:var(--border); }
+  .export-chip.excl svg{ width:10px; height:10px; flex:none; }
+
+  .export-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+  .export-ok{ display:none; font-family:var(--font-mono); font-size:10.5px; color:var(--link); align-items:center; gap:6px; }
+  .export-ok svg{ width:14px; height:14px; }
+  .export-ok.is-shown{ display:inline-flex; }
+  .export-disclaimer{
+    font-family:var(--font-mono); font-size:9.5px; line-height:1.65; color:var(--text-2);
+    margin:0; padding-top:11px; border-top:1px solid var(--border-subtle);
+  }
+  .export-disclaimer b{ color:var(--text); }
+
+  /* legend */
+  .cal-legend{ display:flex; flex-wrap:wrap; gap:12px 16px; padding:10px 16px; border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .cal-legend-item{ display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); }
+  .cal-legend-item .sw{ width:10px; height:10px; border-radius:3px; flex:none; background:var(--c-color); }
+
+  /* content row: agenda + pending panel */
+  .combinador-row{ display:flex; align-items:flex-start; }
+  .cal-wrap{ flex:1 1 auto; min-width:0; padding: 14px 16px; }
+  .cal-scroll{ overflow-x:auto; }
+
+  /* AGENDA — grilla mensual por fecha (Julio 2026) */
+  .agenda-grid{
+    min-width:660px;
+    display:grid; grid-template-columns: 60px repeat(6, 1fr);
+    border:1px solid var(--border-subtle); border-radius:6px; overflow:hidden;
+    background:var(--surface);
+  }
+  .agenda-corner{ background:var(--canvas); border-bottom:1px solid var(--border-subtle); }
+  .agenda-daylabel{
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);
+    background:var(--canvas); border-bottom:1px solid var(--border-subtle); border-left:1px solid var(--border-subtle);
+    padding:6px 0;
+  }
+  .agenda-weekcell{
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-family:var(--font-mono); font-size:9px; letter-spacing:.03em; color:var(--text-2);
+    background:var(--canvas); border-top:1px solid var(--border-subtle); padding:6px 4px;
+  }
+  .agenda-day{
+    border-top:1px solid var(--border-subtle); border-left:1px solid var(--border-subtle);
+    min-height:106px; padding:5px 5px 6px; display:flex; flex-direction:column; gap:4px; position:relative;
+  }
+  .agenda-day.is-dim{ background: color-mix(in srgb, var(--canvas) 55%, var(--surface)); }
+  .agenda-daynum{ font-family:var(--font-mono); font-size:10px; color:var(--text-2); align-self:flex-start; }
+  .agenda-day.is-dim .agenda-daynum{ opacity:.6; }
+
+  .exam{
+    border-radius:5px; border-left:2.5px solid var(--c-color);
+    background: color-mix(in srgb, var(--c-color) 16%, var(--surface));
+    padding:4px 6px; display:flex; flex-direction:column; gap:2px; overflow:hidden;
+  }
+  .exam-name{ font-family:var(--font-serif); font-weight:600; font-size:11px; line-height:1.25; color:var(--text); }
+  .exam-meta{ display:flex; align-items:center; gap:5px; flex-wrap:wrap; font-family:var(--font-mono); font-size:9px; color:var(--text-2); }
+  .exam.is-conflict{ box-shadow: inset 0 0 0 1.5px var(--k-caution); }
+  .exam.is-preview{ opacity:.66; }
+
+  .oficial-badge, .manual-badge, .pisa-tag, .preview-tag{
+    font-family:var(--font-mono); font-size:8.5px; letter-spacing:.03em; text-transform:uppercase;
+    padding:1px 6px; border-radius:var(--radius-pill); white-space:nowrap;
+  }
+  .oficial-badge{ color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); }
+  .manual-badge{ color:var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+  .pisa-tag{ color:var(--k-caution); background: color-mix(in srgb, var(--k-caution) 14%, transparent); border:1px solid color-mix(in srgb, var(--k-caution) 45%, transparent); }
+  .preview-tag{ color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border); }
+
+  .date-edit{ display:inline-flex; align-items:center; gap:4px; }
+  .date-edit input{
+    font-family:var(--font-mono); font-size:9px; background:var(--surface); color:var(--text);
+    border:1px solid var(--border); border-radius:4px; padding:2px 4px; max-width:112px;
+  }
+  .date-edit input:hover{ border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
+
+  /* mini "se pisan" marker inside a day cell */
+  .day-conflict{
+    display:inline-flex; align-items:center; gap:4px; align-self:flex-start;
+    font-family:var(--font-mono); font-size:8.5px; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--k-caution); background: color-mix(in srgb, var(--k-caution) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--k-caution) 45%, transparent);
+    padding:2px 6px; border-radius:var(--radius-pill);
+  }
+  .day-conflict svg{ width:10px; height:10px; }
+
+  /* sin fecha aún — placeholder (dashed = solo vacío/placeholder, per convención) */
+  .sinfecha{
+    margin-top:12px; border:1.5px dashed var(--border); border-radius:6px; padding:12px 14px;
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  }
+  .sinfecha-txt{ flex:1; min-width:180px; }
+  .sinfecha-title{ font-family:var(--font-serif); font-weight:600; font-size:13px; }
+  .sinfecha-sub{ font-family:var(--font-mono); font-size:10px; color:var(--text-2); margin-top:2px; }
+  .addfecha-btn{
+    display:inline-flex; align-items:center; gap:6px; flex:none;
+    font-family:var(--font-mono); font-size:10.5px;
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    padding:6px 12px; border-radius:var(--radius-pill); cursor:pointer; transition: all .18s var(--ease);
+  }
+  .addfecha-btn:hover{ border-color:var(--accent); color:var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .addfecha-btn svg{ width:12px; height:12px; }
+
+  /* ---------- FINALES PENDIENTES — panel slim (reusa patrón recomendador) ---------- */
+  .rec-side{ flex:0 0 288px; border-left:1px solid var(--border-subtle); align-self:stretch; }
+  .rec-side[hidden]{ display:none; }
+  .rec-panel-head{ display:flex; align-items:center; gap:9px; padding:11px 13px; border-bottom:1px solid var(--border-subtle); }
+  .rec-panel-title{ font-family:var(--font-serif); font-weight:600; font-size:13.5px; flex:1; min-width:0; }
+  .rec-panel-count{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); white-space:nowrap; }
+  .rec-group{ border-bottom:1px solid var(--border-subtle); border-left:2px solid var(--tone); background: color-mix(in srgb, var(--tone) 5%, transparent); }
+  .rec-group:last-child{ border-bottom:none; }
+  .rec-group.is-muted{ border-left-color: var(--border); background:transparent; }
+  .rec-group-head{ display:flex; align-items:center; gap:7px; padding:8px 12px 3px; }
+  .rec-group-head .g-dot{ width:6px; height:6px; border-radius:50%; background:var(--tone); flex:none; }
+  .rec-group-title{ font-family:var(--font-mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:var(--tone); font-weight:700; }
+  .rec-group.is-muted .rec-group-title{ color:var(--text-2); }
+  .rec-group-n{ margin-left:auto; font-family:var(--font-mono); font-size:9px; color:var(--text-2); }
+  .rec-list{ list-style:none; margin:0; padding:2px 0 7px; }
+  .rec-row{ position:relative; display:flex; align-items:center; gap:8px; padding:6px 12px; }
+  .rec-row:hover, .rec-row:focus-within{ background: var(--surface-hover); }
+  .rec-row:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .fin-dot{ width:8px; height:8px; border-radius:50%; background:var(--status-go); flex:none; box-shadow:0 0 0 3px color-mix(in srgb, var(--status-go) 20%, transparent); }
+  .lock-ico{ width:13px; height:13px; color:var(--text-2); flex:none; }
+  .rec-name{ flex:1; min-width:0; font-family:var(--font-serif); font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rec-group.is-muted .rec-name{ color:var(--text-2); }
+  .rec-cr{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); flex:none; }
+  .fin-state{ font-family:var(--font-mono); font-size:8.5px; letter-spacing:.02em; text-transform:uppercase; color:var(--text-2); flex:none; }
+  .fin-state.pisa{ color:var(--k-caution); }
+  /* toggle agregar / en el período */
+  .period-toggle{
+    flex:none; display:inline-flex; align-items:center; justify-content:center; gap:0;
+    width:22px; height:22px; border-radius:6px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-2); cursor:pointer; transition: all .18s var(--ease); padding:0;
+  }
+  .period-toggle:hover{ border-color:var(--accent); color:var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .period-toggle svg{ width:11px; height:11px; }
+  .period-toggle .ico-check{ display:none; }
+  .period-toggle[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent); color:var(--accent-contrast); }
+  .period-toggle[aria-pressed="true"] .ico-plus{ display:none; }
+  .period-toggle[aria-pressed="true"] .ico-check{ display:block; }
+  .period-toggle[disabled]{ opacity:.4; cursor:not-allowed; }
+  .period-toggle[disabled]:hover{ border-color:var(--border); color:var(--text-2); background:var(--surface); }
+
+  .rec-tooltip{
+    position:absolute; left:12px; top:100%; margin-top:4px; z-index:30; max-width:230px;
+    background:var(--surface); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow);
+    padding:8px 10px; font-family:var(--font-mono); font-size:10px; line-height:1.5; color:var(--text-2);
+    opacity:0; transform:translateY(-4px); pointer-events:none; transition: opacity .15s var(--ease), transform .15s var(--ease);
+  }
+  .rec-row:hover .rec-tooltip, .rec-row:focus-within .rec-tooltip{ opacity:1; transform:translateY(0); }
+  .rec-tooltip b{ color:var(--text); font-weight:700; }
+  .rec-side-note{ padding:9px 13px; font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); border-top:1px solid var(--border-subtle); line-height:1.6; }
+
+  /* ---------- documentation helpers ---------- */
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+  .three-col{ display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
+  .doc-lbl{ font-family:var(--font-mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; display:block; }
+  .doc-card{ padding:16px 18px; }
+  .state-row-lbl{ font-family:var(--font-mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-2); margin-bottom:8px; display:block; }
+  .llamado-card{ padding:16px 18px; display:flex; flex-direction:column; gap:6px; }
+  .llamado-title{ font-family:var(--font-serif); font-weight:600; font-size:15px; }
+  .llamado-meta{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+  .llamado-card.is-active{ border-color: color-mix(in srgb, var(--accent) 45%, var(--border-subtle)); background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+  .active-pill{ align-self:flex-start; font-family:var(--font-mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent-contrast); background:var(--accent); padding:2px 8px; border-radius:var(--radius-pill); font-weight:700; }
+
+  /* standalone finales pendientes panel for docs */
+  .fin-panel{ max-width:320px; }
+
+  footer.site-footer{ border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8); color:var(--text-2); font-size:13px; }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 900px){
+    .combinador-row{ flex-direction:column; }
+    .rec-side{ flex:none; width:100%; border-left:none; border-top:1px solid var(--border-subtle); }
+    .two-col{ grid-template-columns:1fr; }
+    .three-col{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 560px){
+    .hero h1{ max-width:none; }
+    .app-header-right{ margin-left:0; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·001</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#s1">01 · Vista general</a>
+        <a href="#s2">02 · Selector de período</a>
+        <a href="#s3">03 · Finales pendientes</a>
+        <a href="#s4">04 · Fechas de mesa</a>
+        <a href="#s5">05 · Combinar y conflictos</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN</div>
+      <h1>Combinación de <em>finales</em>: un llamado, sin pisarte</h1>
+      <p class="dek">Nueva pestaña del planificador, hermana del combinador de horarios pero para las mesas de finales. Elegís el llamado (Julio · Diciembre · Febrero), agregás los finales que tenés pendientes, y la herramienta ubica cada uno en su fecha y hora de mesa, detecta los que se pisan o quedan muy pegados, y te sugiere una combinación para rendir con margen de repaso.</p>
+      <div class="hero-meta">
+        <span><b>v0.1</b> — documento de revisión</span>
+        <span>5 secciones</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. VISTA GENERAL — MOCK INTERACTIVO COMPLETO -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s1">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Vista general
+      </div>
+      <h2 class="spec-title">El llamado de Julio, de punta a punta</h2>
+      <p class="spec-dek">Mock funcional: cambiá de <span class="mono">llamado</span>, mostrá u ocultá el panel de <span class="mono">Finales pendientes</span>, tocá <span class="mono">Sugerir combinación</span> y confirmá la combinación sugerida. El calendario del período ocupa todo el ancho y cada final se ubica en su fecha y hora de mesa; el panel de la derecha lista los finales pendientes en filas de una sola línea.</p>
+
+      <p class="scroll-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M12 5l-4 4M12 5l4 4M12 19l-4-4M12 19l4-4"/></svg>
+        Scrolleá dentro del recuadro — el selector de llamado no se mueve.
+      </p>
+
+      <div class="app-frame">
+        <div class="app-scroll">
+
+          <div class="app-header">
+            <div class="app-header-left">
+              <span class="period-lbl">Llamado</span>
+              <div class="seg-control" role="group" aria-label="Llamado a finales" id="periodoSeg">
+                <button type="button" class="active" data-periodo="julio">Julio <span class="llamado-n">· 1º</span></button>
+                <button type="button" data-periodo="diciembre">Diciembre <span class="llamado-n">· 2º</span></button>
+                <button type="button" data-periodo="febrero">Febrero <span class="llamado-n">· 3º</span></button>
+              </div>
+              <select class="csel-live" aria-label="Año del llamado" id="anioSel">
+                <option selected>2026</option>
+                <option>2027</option>
+              </select>
+            </div>
+
+            <div class="app-header-right">
+              <button class="hbtn" type="button" id="finToggleBtn" aria-pressed="true" aria-controls="finSidePanel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+                Finales pendientes <span class="count">· 8</span>
+              </button>
+              <button class="hbtn primary" type="button" id="sugerirBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v3M12 18v3M5 12H2M22 12h-3M6 6l-2-2M20 6l2-2"/><circle cx="12" cy="12" r="4.2"/></svg>
+                Sugerir combinación
+              </button>
+            </div>
+          </div>
+
+          <div class="resumen-bar">
+            <div class="resumen-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div class="resumen-body">
+              <div class="resumen-main" id="resumenMain">En Julio rendís <b>3 finales</b> · te quedan <b>3</b> para Diciembre/Febrero.</div>
+              <div class="resumen-sub" id="resumenSub">según la combinación sugerida · 2 finales más siguen bloqueados por correlativa (Análisis Mat. II, EDA)</div>
+            </div>
+          </div>
+
+          <div class="flags" aria-label="Conflictos detectados">
+            <div class="flag caution">
+              <svg class="flag-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L2 20h20L12 3Z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+              <div class="flag-txt">
+                <div class="flag-title">Se pisan</div>
+                <div class="flag-body"><b>Probabilidad</b> (21/07 · 14:00) y <b>Base de Datos I</b> (21/07 · 15:00) caen la misma tarde y se superponen.</div>
+              </div>
+            </div>
+            <div class="flag warn">
+              <svg class="flag-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <div class="flag-txt">
+                <div class="flag-title">Poco margen de repaso</div>
+                <div class="flag-body">Solo <b>1 día</b> para preparar entre <b>Álgebra</b> (14/07) y <b>Análisis Matemático I</b> (16/07).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="combo-card" id="combo">
+            <div class="combo-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v3M5 12H2M6 6l-2-2"/><circle cx="12" cy="12" r="4.2"/><path d="M22 12h-3M20 6l2-2M12 18v3"/></svg>
+              Combinación sugerida
+            </div>
+            <p class="combo-line">Rendís sin pisarte, con al menos 2 días de repaso entre finales:</p>
+            <div class="combo-chips">
+              <span class="combo-chip" style="--c-color:var(--k-theorem)"><span class="cc-dot"></span>Álgebra <span class="cc-date">14/07</span></span>
+              <span class="combo-chip" style="--c-color:var(--k-formula)"><span class="cc-dot"></span>Física I <span class="cc-date">18/07</span></span>
+              <span class="combo-chip" style="--c-color:var(--k-method)"><span class="cc-dot"></span>Probabilidad <span class="cc-date">21/07</span></span>
+            </div>
+            <p class="combo-sub">Quedan para Diciembre: <b>Análisis Matemático I</b> (muy pegado a Álgebra), <b>POO</b> y <b>Base de Datos I</b> (se pisa con Probabilidad). Podés ajustar la combinación agregando o quitando finales del panel.</p>
+            <div class="combo-actions">
+              <button class="hbtn primary" type="button" id="confirmCombo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                Confirmar combinación
+              </button>
+              <span class="combo-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg> Combinación confirmada</span>
+            </div>
+          </div>
+
+          <div class="export-card" id="exportCard">
+            <div class="export-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/><path d="M12 12.5v4M10 14.5l2 2 2-2"/></svg>
+              Agregar a mi calendario
+            </div>
+            <p class="export-line">Bajás un archivo <span class="mono">.ics</span> con un evento por cada final del período — lo abrís en Google Calendar, Apple Calendar o el que uses, con la fecha y hora de cada mesa ya cargadas.</p>
+
+            <div class="export-controls">
+              <label class="reminder-field" for="reminderSel">
+                <span class="reminder-lbl">Recordatorio para anotarte</span>
+                <select class="csel-live" id="reminderSel" aria-label="Anticipación del recordatorio de inscripción">
+                  <option value="48">48 hs antes</option>
+                  <option value="72" selected>72 hs antes</option>
+                  <option value="96">96 hs antes</option>
+                </select>
+              </label>
+              <span class="reminder-hint">La inscripción a mesa cierra <b>+48 hs</b> antes del final; por eso el aviso «Anotate a la mesa» queda <b id="reminderEcho">72 hs</b> antes de cada uno.</span>
+            </div>
+
+            <div class="export-included" aria-label="Finales incluidos en el .ics">
+              <span class="export-included-lbl">Van al .ics</span>
+              <span class="export-chip" style="--c-color:var(--k-theorem)"><span class="ec-dot"></span>Álgebra <span class="ec-date">14/07</span></span>
+              <span class="export-chip" style="--c-color:var(--k-example)"><span class="ec-dot"></span>POO <span class="ec-date">15/07</span></span>
+              <span class="export-chip" style="--c-color:var(--k-def)"><span class="ec-dot"></span>Análisis Mat. I <span class="ec-date">16/07</span></span>
+              <span class="export-chip" style="--c-color:var(--k-formula)"><span class="ec-dot"></span>Física I <span class="ec-date">18/07</span></span>
+              <span class="export-chip" style="--c-color:var(--k-method)"><span class="ec-dot"></span>Probabilidad <span class="ec-date">21/07</span></span>
+              <span class="export-chip excl" title="Requiere el final de Análisis Matemático I — no se agrega hasta que lo rindas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Análisis Mat. II
+              </span>
+              <span class="export-chip excl" title="Requiere el final de POO — no se agrega hasta que lo rindas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>EDA
+              </span>
+            </div>
+
+            <div class="export-actions">
+              <button class="hbtn primary" type="button" id="exportIcsBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 4v10M8 10.5l4 4 4-4"/><path d="M5 19.5h14"/></svg>
+                Agregar a mi calendario (.ics)
+              </button>
+              <span class="export-ok" id="exportOk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg> <span id="exportOkTxt">.ics descargado</span></span>
+            </div>
+
+            <p class="export-disclaimer">Fechas sujetas a confirmación de la cátedra · revisá con el/la docente si te guarda la nota o la inscripción · las mesas bloqueadas por correlativa de final <b>no se agregan</b> hasta que rindas la anterior · el <b>.ics es una ayuda, no la fuente oficial</b>.</p>
+          </div>
+
+          <div class="cal-legend" aria-hidden="true">
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-theorem)"></span>Álgebra</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-example)"></span>POO</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-def)"></span>Análisis Mat. I</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-formula)"></span>Física I</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-method)"></span>Probabilidad</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--minor-irv)"></span>Base de Datos I</span>
+          </div>
+
+          <div class="combinador-row">
+            <div class="cal-wrap">
+              <div class="cal-scroll">
+                <div class="agenda-grid" role="grid" aria-label="Calendario de mesas — Julio 2026">
+                  <!-- header row -->
+                  <div class="agenda-corner"></div>
+                  <div class="agenda-daylabel">Lu</div>
+                  <div class="agenda-daylabel">Ma</div>
+                  <div class="agenda-daylabel">Mi</div>
+                  <div class="agenda-daylabel">Ju</div>
+                  <div class="agenda-daylabel">Vi</div>
+                  <div class="agenda-daylabel">Sá</div>
+
+                  <!-- semana 06–11 jul (contexto, sin mesas) -->
+                  <div class="agenda-weekcell">06–11<br>jul</div>
+                  <div class="agenda-day is-dim"><span class="agenda-daynum">6</span></div>
+                  <div class="agenda-day is-dim"><span class="agenda-daynum">7</span></div>
+                  <div class="agenda-day is-dim"><span class="agenda-daynum">8</span></div>
+                  <div class="agenda-day is-dim"><span class="agenda-daynum">9</span></div>
+                  <div class="agenda-day is-dim"><span class="agenda-daynum">10</span></div>
+                  <div class="agenda-day is-dim"><span class="agenda-daynum">11</span></div>
+
+                  <!-- semana 13–18 jul -->
+                  <div class="agenda-weekcell">13–18<br>jul</div>
+                  <div class="agenda-day"><span class="agenda-daynum">13</span></div>
+                  <div class="agenda-day">
+                    <span class="agenda-daynum">14</span>
+                    <div class="exam" style="--c-color:var(--k-theorem)">
+                      <span class="exam-name">Álgebra</span>
+                      <span class="exam-meta">09:00 <span class="oficial-badge">oficial</span></span>
+                    </div>
+                  </div>
+                  <div class="agenda-day">
+                    <span class="agenda-daynum">15</span>
+                    <div class="exam" style="--c-color:var(--k-example)">
+                      <span class="exam-name">POO</span>
+                      <span class="exam-meta">
+                        <span class="date-edit"><input type="time" value="18:00" aria-label="Hora de mesa de POO (editable)" /></span>
+                        <span class="manual-badge">manual</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="agenda-day">
+                    <span class="agenda-daynum">16</span>
+                    <div class="exam" style="--c-color:var(--k-def)">
+                      <span class="exam-name">Análisis Mat. I</span>
+                      <span class="exam-meta">14:00 <span class="oficial-badge">oficial</span></span>
+                    </div>
+                  </div>
+                  <div class="agenda-day"><span class="agenda-daynum">17</span></div>
+                  <div class="agenda-day">
+                    <span class="agenda-daynum">18</span>
+                    <div class="exam" style="--c-color:var(--k-formula)">
+                      <span class="exam-name">Física I</span>
+                      <span class="exam-meta">09:00 <span class="oficial-badge">oficial</span></span>
+                    </div>
+                  </div>
+
+                  <!-- semana 20–25 jul -->
+                  <div class="agenda-weekcell">20–25<br>jul</div>
+                  <div class="agenda-day"><span class="agenda-daynum">20</span></div>
+                  <div class="agenda-day">
+                    <span class="agenda-daynum">21</span>
+                    <span class="day-conflict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L2 20h20L12 3Z"/><path d="M12 10v4M12 17.5h.01"/></svg>se pisan</span>
+                    <div class="exam is-conflict" style="--c-color:var(--k-method)">
+                      <span class="exam-name">Probabilidad</span>
+                      <span class="exam-meta">14:00 <span class="oficial-badge">oficial</span></span>
+                    </div>
+                    <div class="exam is-conflict is-preview" style="--c-color:var(--minor-irv)">
+                      <span class="exam-name">Base de Datos I</span>
+                      <span class="exam-meta">15:00 <span class="preview-tag">por agregar</span></span>
+                    </div>
+                  </div>
+                  <div class="agenda-day"><span class="agenda-daynum">22</span></div>
+                  <div class="agenda-day"><span class="agenda-daynum">23</span></div>
+                  <div class="agenda-day"><span class="agenda-daynum">24</span></div>
+                  <div class="agenda-day"><span class="agenda-daynum">25</span></div>
+                </div>
+              </div>
+
+              <div class="sinfecha">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="width:18px;height:18px;color:var(--text-2);flex:none"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 4.5v3M16 4.5v3M12 13v3M10.5 14.5h3"/></svg>
+                <div class="sinfecha-txt">
+                  <div class="sinfecha-title">Sin fecha aún</div>
+                  <div class="sinfecha-sub">Un final agregado sin mesa publicada aparece acá hasta que le cargues día y hora.</div>
+                </div>
+                <button class="addfecha-btn" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 5v14M5 12h14"/></svg>
+                  agregar fecha
+                </button>
+              </div>
+            </div>
+
+            <aside class="rec-side" id="finSidePanel" aria-label="Finales pendientes">
+              <div class="rec-panel-head">
+                <span class="rec-panel-title">Finales pendientes</span>
+                <span class="rec-panel-count">6 + 2 bloqueados</span>
+              </div>
+
+              <div class="rec-group" style="--tone:var(--status-go)">
+                <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">Se pueden rendir — Julio</span><span class="rec-group-n">6</span></div>
+                <ul class="rec-list">
+                  <li class="rec-row" tabindex="0">
+                    <span class="fin-dot" aria-hidden="true"></span>
+                    <span class="rec-name">Álgebra</span>
+                    <span class="rec-cr">6 cr</span>
+                    <span class="fin-state">oficial</span>
+                    <button class="period-toggle" type="button" aria-pressed="true" aria-label="Álgebra: en el período (quitar)">
+                      <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Mesa <b>14/07 · 09:00</b> (oficial) · en el período de Julio</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <span class="fin-dot" aria-hidden="true"></span>
+                    <span class="rec-name">Análisis Matemático I</span>
+                    <span class="rec-cr">6 cr</span>
+                    <span class="fin-state">oficial</span>
+                    <button class="period-toggle" type="button" aria-pressed="true" aria-label="Análisis Matemático I: en el período (quitar)">
+                      <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Mesa <b>16/07 · 14:00</b> (oficial) · muy pegada a Álgebra</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <span class="fin-dot" aria-hidden="true"></span>
+                    <span class="rec-name">Física I</span>
+                    <span class="rec-cr">6 cr</span>
+                    <span class="fin-state">oficial</span>
+                    <button class="period-toggle" type="button" aria-pressed="true" aria-label="Física I: en el período (quitar)">
+                      <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Mesa <b>18/07 · 09:00</b> (oficial) · en el período de Julio</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <span class="fin-dot" aria-hidden="true"></span>
+                    <span class="rec-name">Probabilidad</span>
+                    <span class="rec-cr">4,5 cr</span>
+                    <span class="fin-state">oficial</span>
+                    <button class="period-toggle" type="button" aria-pressed="true" aria-label="Probabilidad: en el período (quitar)">
+                      <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Mesa <b>21/07 · 14:00</b> (oficial) · en el período de Julio</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <span class="fin-dot" aria-hidden="true"></span>
+                    <span class="rec-name">POO</span>
+                    <span class="rec-cr">6 cr</span>
+                    <span class="fin-state">manual</span>
+                    <button class="period-toggle" type="button" aria-pressed="true" aria-label="POO: en el período (quitar)">
+                      <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Mesa <b>15/07 · 18:00</b> — fecha cargada a mano (editable)</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <span class="fin-dot" aria-hidden="true"></span>
+                    <span class="rec-name">Base de Datos I</span>
+                    <span class="rec-cr">6 cr</span>
+                    <span class="fin-state pisa">se pisa</span>
+                    <button class="period-toggle" type="button" aria-pressed="false" aria-label="Base de Datos I: agregar al período">
+                      <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Mesa <b>21/07 · 15:00</b> (oficial) · se pisaría con Probabilidad si la agregás</div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="rec-group is-muted" style="--tone:var(--k-caution)">
+                <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">Bloqueados por correlativa</span><span class="rec-group-n">2</span></div>
+                <ul class="rec-list">
+                  <li class="rec-row" tabindex="0">
+                    <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                    <span class="rec-name">Análisis Matemático II</span>
+                    <span class="rec-cr">6 cr</span>
+                    <button class="period-toggle" type="button" disabled aria-label="Análisis Matemático II: bloqueado, requiere el final de Análisis I">
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Requiere el final de <b>Análisis Matemático I</b> aprobado</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                    <span class="rec-name">Estructuras de Datos (EDA)</span>
+                    <span class="rec-cr">6 cr</span>
+                    <button class="period-toggle" type="button" disabled aria-label="EDA: bloqueado, requiere el final de POO">
+                      <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <div class="rec-tooltip" role="note">Requiere el final de <b>POO</b> aprobado</div>
+                  </li>
+                </ul>
+              </div>
+
+              <p class="rec-side-note">La tildé = en el período · el «+» agrega el final · el candado marca las correlativas de final que todavía no rendiste.</p>
+            </aside>
+          </div>
+
+        </div>
+      </div>
+      <p class="ejemplo-note" style="margin-top:16px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg>
+        Datos de ejemplo — las fechas reales de mesas se cargan aparte (Diciembre y Febrero todavía no tienen mesas cargadas en esta demo).
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. SELECTOR DE PERÍODO -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s2">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Selector de período
+      </div>
+      <h2 class="spec-title">Los tres llamados a finales del año</h2>
+      <p class="spec-dek">ITBA toma finales en tres llamados: Julio, Diciembre y Febrero. El selector es un segmentado — igual al de modalidad del combinador de horarios — más el año. Cada llamado tiene su propio conjunto de mesas; cambiar de llamado recarga el calendario y el resumen.</p>
+
+      <div class="card pad" style="margin-bottom: var(--sp-4); display:flex; align-items:center; gap:14px; flex-wrap:wrap">
+        <span class="period-lbl">Llamado</span>
+        <div class="seg-control" role="group" aria-label="Llamado a finales (referencia)">
+          <button type="button" class="active">Julio <span class="llamado-n">· 1º</span></button>
+          <button type="button">Diciembre <span class="llamado-n">· 2º</span></button>
+          <button type="button">Febrero <span class="llamado-n">· 3º</span></button>
+        </div>
+        <select class="csel-live" aria-label="Año (referencia)"><option>2026</option><option>2027</option></select>
+      </div>
+
+      <div class="three-col">
+        <div class="card llamado-card is-active">
+          <span class="active-pill">Activo</span>
+          <span class="llamado-title">Julio 2026</span>
+          <span class="llamado-meta">1º llamado · mesas del 14 al 25/07</span>
+          <span class="llamado-meta">6 finales pendientes elegibles</span>
+        </div>
+        <div class="card llamado-card">
+          <span class="llamado-title">Diciembre 2026</span>
+          <span class="llamado-meta">2º llamado · mesas aún no publicadas</span>
+          <span class="llamado-meta">se habilita al cerrar el 2º cuatrimestre</span>
+        </div>
+        <div class="card llamado-card">
+          <span class="llamado-title">Febrero 2027</span>
+          <span class="llamado-meta">3º llamado · mesas aún no publicadas</span>
+          <span class="llamado-meta">último llamado del ciclo lectivo</span>
+        </div>
+      </div>
+      <p class="after-note">En esta demo solo Julio tiene mesas de ejemplo cargadas; Diciembre y Febrero muestran el estado vacío a la espera de la publicación oficial de mesas.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. FINALES PENDIENTES -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s3">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Finales pendientes
+      </div>
+      <h2 class="spec-title">El panel de finales pendientes: fila slim + correlativa de final</h2>
+      <p class="spec-dek">Reutiliza el patrón de fila de una sola línea del recomendador de electivas — <span class="mono">[estado] [nombre] [créditos] [estado corto] [acción]</span>. Un final cuya correlativa de final todavía no rendiste aparece con candado y deshabilitado; el motivo se explica en el tooltip. El resto se agrega o se saca del llamado con un click.</p>
+
+      <div class="two-col">
+        <div>
+          <span class="doc-lbl">Panel completo — estados reales</span>
+          <div class="card fin-panel">
+            <div class="rec-panel-head">
+              <span class="rec-panel-title">Finales pendientes</span>
+              <span class="rec-panel-count">6 + 2 bloqueados</span>
+            </div>
+            <div class="rec-group" style="--tone:var(--status-go)">
+              <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">Se pueden rendir — Julio</span><span class="rec-group-n">3</span></div>
+              <ul class="rec-list">
+                <li class="rec-row" tabindex="0">
+                  <span class="fin-dot" aria-hidden="true"></span>
+                  <span class="rec-name">Álgebra</span>
+                  <span class="rec-cr">6 cr</span>
+                  <span class="fin-state">oficial</span>
+                  <button class="period-toggle" type="button" aria-pressed="true" aria-label="Álgebra: en el período (quitar)">
+                    <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                    <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <div class="rec-tooltip" role="note">Mesa <b>14/07 · 09:00</b> (oficial) · en el período</div>
+                </li>
+                <li class="rec-row" tabindex="0">
+                  <span class="fin-dot" aria-hidden="true"></span>
+                  <span class="rec-name">Base de Datos I</span>
+                  <span class="rec-cr">6 cr</span>
+                  <span class="fin-state pisa">se pisa</span>
+                  <button class="period-toggle" type="button" aria-pressed="false" aria-label="Base de Datos I: agregar al período">
+                    <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                    <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <div class="rec-tooltip" role="note">Mesa <b>21/07 · 15:00</b> · se pisaría con Probabilidad</div>
+                </li>
+                <li class="rec-row" tabindex="0">
+                  <span class="fin-dot" aria-hidden="true"></span>
+                  <span class="rec-name">POO</span>
+                  <span class="rec-cr">6 cr</span>
+                  <span class="fin-state">manual</span>
+                  <button class="period-toggle" type="button" aria-pressed="true" aria-label="POO: en el período (quitar)">
+                    <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                    <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <div class="rec-tooltip" role="note">Mesa <b>15/07 · 18:00</b> — fecha manual (editable)</div>
+                </li>
+              </ul>
+            </div>
+            <div class="rec-group is-muted" style="--tone:var(--k-caution)">
+              <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">Bloqueados por correlativa</span><span class="rec-group-n">2</span></div>
+              <ul class="rec-list">
+                <li class="rec-row" tabindex="0">
+                  <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                  <span class="rec-name">Análisis Matemático II</span>
+                  <span class="rec-cr">6 cr</span>
+                  <button class="period-toggle" type="button" disabled aria-label="Análisis Matemático II: bloqueado, requiere el final de Análisis I">
+                    <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <div class="rec-tooltip" role="note">Requiere el final de <b>Análisis Matemático I</b></div>
+                </li>
+                <li class="rec-row" tabindex="0">
+                  <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                  <span class="rec-name">Estructuras de Datos (EDA)</span>
+                  <span class="rec-cr">6 cr</span>
+                  <button class="period-toggle" type="button" disabled aria-label="EDA: bloqueado, requiere el final de POO">
+                    <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <div class="rec-tooltip" role="note">Requiere el final de <b>POO</b></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="after-note">Pasá el mouse (o Tab) por una fila para ver la fecha de su mesa y el motivo del bloqueo.</p>
+        </div>
+
+        <div>
+          <span class="doc-lbl">Los tres estados de la acción</span>
+          <div class="card doc-card" style="display:flex; flex-direction:column; gap:18px">
+            <div>
+              <span class="state-row-lbl">Fuera del período — «+ agregar al período»</span>
+              <div style="display:flex; align-items:center; gap:10px">
+                <span class="fin-dot" aria-hidden="true"></span>
+                <span class="course-name" style="flex:1">Base de Datos I</span>
+                <span class="rec-cr">6 cr</span>
+                <button class="period-toggle" type="button" aria-pressed="false" aria-label="Agregar Base de Datos I (ejemplo)">
+                  <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+              </div>
+            </div>
+            <hr class="cutline" style="margin:0" />
+            <div>
+              <span class="state-row-lbl">En el período — click para quitar</span>
+              <div style="display:flex; align-items:center; gap:10px">
+                <span class="fin-dot" aria-hidden="true"></span>
+                <span class="course-name" style="flex:1">Álgebra</span>
+                <span class="rec-cr">6 cr</span>
+                <button class="period-toggle" type="button" aria-pressed="true" aria-label="Álgebra en el período (ejemplo)">
+                  <svg class="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+                  <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+              </div>
+            </div>
+            <hr class="cutline" style="margin:0" />
+            <div>
+              <span class="state-row-lbl">Bloqueado por correlativa de final — candado</span>
+              <div style="display:flex; align-items:center; gap:10px">
+                <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                <span class="course-name" style="flex:1; color:var(--text-2)">Análisis Matemático II</span>
+                <span class="rec-cr">6 cr</span>
+                <button class="period-toggle" type="button" disabled aria-label="Análisis Matemático II bloqueado (ejemplo)">
+                  <svg class="ico-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+              </div>
+              <p class="after-note" style="margin-top:8px">Tooltip: <span class="mono">requiere el final de Análisis I</span>. La correlativa es de <em>final</em>: no alcanza con tener la cursada, hace falta el final anterior rendido.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. FECHAS DE MESA — HÍBRIDAS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s4">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 04 — Fechas de mesa
+      </div>
+      <h2 class="spec-title">Fechas híbridas: oficial autopoblada, manual editable, o sin cargar</h2>
+      <p class="spec-dek">No todas las mesas llegan del mismo lado. Cuando la fecha viene del calendario oficial de ITBA, el bloque la muestra con una pastilla <span class="mono">oficial</span> y no se edita. Si todavía no hay mesa publicada, el final entra <span class="mono">sin fecha</span> y ofrece <span class="mono">+ agregar fecha</span>; una vez cargada a mano queda como <span class="mono">manual</span> y editable.</p>
+
+      <div class="three-col">
+        <div class="card doc-card">
+          <span class="doc-lbl">Autopoblada</span>
+          <div class="exam" style="--c-color:var(--k-theorem)">
+            <span class="exam-name">Álgebra</span>
+            <span class="exam-meta">14/07 · 09:00 <span class="oficial-badge">oficial</span></span>
+          </div>
+          <p class="after-note">Viene del calendario oficial de mesas. Fecha y hora fijas, no editables.</p>
+        </div>
+        <div class="card doc-card">
+          <span class="doc-lbl">Manual · editable</span>
+          <div class="exam" style="--c-color:var(--k-example)">
+            <span class="exam-name">POO</span>
+            <span class="exam-meta">
+              <span class="date-edit">
+                <input type="date" value="2026-07-15" aria-label="Fecha de mesa de POO" />
+                <input type="time" value="18:00" aria-label="Hora de mesa de POO" />
+              </span>
+              <span class="manual-badge">manual</span>
+            </span>
+          </div>
+          <p class="after-note">Cargada a mano porque la mesa aún no figura en el sistema. Editá día y hora directo en el bloque.</p>
+        </div>
+        <div class="card doc-card">
+          <span class="doc-lbl">Sin fecha aún</span>
+          <div class="sinfecha" style="margin-top:0">
+            <div class="sinfecha-txt">
+              <div class="sinfecha-title">Base de Datos I</div>
+              <div class="sinfecha-sub">mesa sin publicar</div>
+            </div>
+            <button class="addfecha-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 5v14M5 12h14"/></svg>
+              agregar fecha
+            </button>
+          </div>
+          <p class="after-note">Estado vacío (línea punteada) hasta que cargues la fecha. Es la única situación donde usamos punteado.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 5. COMBINAR Y CONFLICTOS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s5">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 05 — Combinar y conflictos
+      </div>
+      <h2 class="spec-title">El corazón: detectar choques y sugerir una combinación</h2>
+      <p class="spec-dek">Con las fechas de mesa cargadas, la herramienta cruza todos los finales del período y marca dos tipos de problema — los que <b>se pisan</b> (misma fecha y horario superpuesto) y los que quedan con <b>poco margen de repaso</b> (menos de 2 días entre uno y otro) — y propone una combinación que los evita respetando el orden de correlativas de final.</p>
+
+      <div class="two-col" style="margin-bottom: var(--sp-4)">
+        <div>
+          <span class="doc-lbl">Conflictos detectados</span>
+          <div class="card doc-card" style="display:flex; flex-direction:column; gap:10px">
+            <div class="flag caution" style="margin:0">
+              <svg class="flag-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L2 20h20L12 3Z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+              <div class="flag-txt">
+                <div class="flag-title">Se pisan</div>
+                <div class="flag-body"><b>Probabilidad</b> (21/07 · 14:00) y <b>Base de Datos I</b> (21/07 · 15:00) se superponen. No podés rendir las dos en este llamado.</div>
+              </div>
+            </div>
+            <div class="flag warn" style="margin:0">
+              <svg class="flag-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <div class="flag-txt">
+                <div class="flag-title">Poco margen de repaso</div>
+                <div class="flag-body">Solo <b>1 día</b> entre <b>Álgebra</b> (14/07) y <b>Análisis Matemático I</b> (16/07).</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <span class="doc-lbl">Correlativas de final respetadas</span>
+          <div class="card doc-card" style="display:flex; flex-direction:column; gap:12px">
+            <div style="display:flex; align-items:center; gap:10px">
+              <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              <span class="course-name" style="flex:1; color:var(--text-2)">Análisis Matemático II</span>
+              <span class="mono-code">requiere final de Análisis I</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px">
+              <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              <span class="course-name" style="flex:1; color:var(--text-2)">Estructuras de Datos</span>
+              <span class="mono-code">requiere final de POO</span>
+            </div>
+            <p class="after-note" style="margin-top:2px">Estos finales quedan deshabilitados hasta que rindas su correlativa de final. La combinación sugerida nunca los propone antes de tiempo.</p>
+          </div>
+        </div>
+      </div>
+
+      <span class="doc-lbl">Combinación sugerida + confirmación</span>
+      <div class="combo-card" style="margin:0" id="combo2">
+        <div class="combo-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v3M5 12H2M6 6l-2-2"/><circle cx="12" cy="12" r="4.2"/><path d="M22 12h-3M20 6l2-2M12 18v3"/></svg>
+          Combinación sugerida
+        </div>
+        <p class="combo-line">Rendís sin pisarte, con al menos 2 días de repaso entre finales:</p>
+        <div class="combo-chips">
+          <span class="combo-chip" style="--c-color:var(--k-theorem)"><span class="cc-dot"></span>Álgebra <span class="cc-date">14/07</span></span>
+          <span class="combo-chip" style="--c-color:var(--k-formula)"><span class="cc-dot"></span>Física I <span class="cc-date">18/07</span></span>
+          <span class="combo-chip" style="--c-color:var(--k-method)"><span class="cc-dot"></span>Probabilidad <span class="cc-date">21/07</span></span>
+        </div>
+        <p class="combo-sub"><b>3 finales en Julio</b>, con 4 y 3 días de repaso. Quedan para Diciembre: Análisis Matemático I (muy pegado a Álgebra), POO y Base de Datos I (se pisa con Probabilidad).</p>
+        <div class="combo-actions">
+          <button class="hbtn primary" type="button" id="confirmCombo2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            Confirmar combinación
+          </button>
+          <span class="combo-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5l5 5L20 6.5"/></svg> Combinación confirmada</span>
+        </div>
+      </div>
+
+      <p class="after-note">Al confirmar, el resumen del período pasa a <span class="mono">En Julio rendís 3 finales · te quedan 3 para Diciembre/Febrero</span> y los tres finales elegidos quedan fijados en el calendario.</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · v0.1 · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    // theme toggle
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+
+    // selector de período (segmentado)
+    (function () {
+      var seg = document.getElementById('periodoSeg');
+      var resumenMain = document.getElementById('resumenMain');
+      var resumenSub = document.getElementById('resumenSub');
+      if (!seg) return;
+      var buttons = seg.querySelectorAll('button');
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () {
+          buttons.forEach(function (o) { o.classList.remove('active'); });
+          b.classList.add('active');
+          var p = b.getAttribute('data-periodo');
+          if (p === 'julio') {
+            resumenMain.innerHTML = 'En Julio rendís <b>3 finales</b> · te quedan <b>3</b> para Diciembre/Febrero.';
+            resumenSub.textContent = 'según la combinación sugerida · 2 finales más siguen bloqueados por correlativa (Análisis Mat. II, EDA)';
+          } else {
+            var nombre = p.charAt(0).toUpperCase() + p.slice(1);
+            resumenMain.innerHTML = 'El llamado de <b>' + nombre + '</b> todavía no tiene mesas cargadas.';
+            resumenSub.textContent = 'datos de ejemplo — solo Julio 2026 tiene mesas en esta demo';
+          }
+        });
+      });
+    })();
+
+    // panel de finales pendientes — abrir/cerrar
+    (function () {
+      var toggle = document.getElementById('finToggleBtn');
+      var panel = document.getElementById('finSidePanel');
+      if (!toggle || !panel) return;
+      toggle.addEventListener('click', function () {
+        var open = toggle.getAttribute('aria-pressed') === 'true';
+        toggle.setAttribute('aria-pressed', String(!open));
+        if (open) { panel.setAttribute('hidden', ''); }
+        else { panel.removeAttribute('hidden'); }
+      });
+    })();
+
+    // "Sugerir combinación" — desplaza a la combinación sugerida
+    (function () {
+      var btn = document.getElementById('sugerirBtn');
+      var combo = document.getElementById('combo');
+      if (!btn || !combo) return;
+      btn.addEventListener('click', function () {
+        combo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    })();
+
+    // confirmar combinación (ambas tarjetas)
+    (function () {
+      ['confirmCombo', 'confirmCombo2'].forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (!btn) return;
+        var card = btn.closest('.combo-card');
+        btn.addEventListener('click', function () {
+          if (!card) return;
+          card.classList.add('is-confirmed');
+          btn.style.display = 'none';
+        });
+      });
+    })();
+
+    // toggles agregar / en el período (visual)
+    (function () {
+      var toggles = document.querySelectorAll('.period-toggle:not([disabled])');
+      toggles.forEach(function (t) {
+        t.addEventListener('click', function () {
+          var pressed = t.getAttribute('aria-pressed') === 'true';
+          t.setAttribute('aria-pressed', String(!pressed));
+        });
+      });
+    })();
+
+    // exportar el calendario de finales a .ics (mock, sin red)
+    (function () {
+      var btn = document.getElementById('exportIcsBtn');
+      if (!btn) return;
+      var reminderSel = document.getElementById('reminderSel');
+      var reminderEcho = document.getElementById('reminderEcho');
+      var ok = document.getElementById('exportOk');
+      var okTxt = document.getElementById('exportOkTxt');
+
+      // finales del período de Julio 2026 — mismos datos que el calendario.
+      // Los bloqueados por correlativa de FINAL quedan fuera del .ics hasta rendir la anterior.
+      var finales = [
+        { nombre: 'Álgebra',               fecha: '2026-07-14', hora: '09:00', dur: 180, fuente: 'oficial', bloqueado: false },
+        { nombre: 'POO',                   fecha: '2026-07-15', hora: '18:00', dur: 180, fuente: 'manual',  bloqueado: false },
+        { nombre: 'Análisis Matemático I', fecha: '2026-07-16', hora: '14:00', dur: 180, fuente: 'oficial', bloqueado: false },
+        { nombre: 'Física I',              fecha: '2026-07-18', hora: '09:00', dur: 180, fuente: 'oficial', bloqueado: false },
+        { nombre: 'Probabilidad',          fecha: '2026-07-21', hora: '14:00', dur: 180, fuente: 'oficial', bloqueado: false },
+        { nombre: 'Análisis Matemático II', bloqueado: true, requiere: 'Análisis Matemático I' },
+        { nombre: 'Estructuras de Datos (EDA)', bloqueado: true, requiere: 'POO' }
+      ];
+
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      // fecha 'YYYY-MM-DD' + hora 'HH:MM' -> Date local; sumo minutos y formateo 'YYYYMMDDTHHMMSS'
+      function fmt(fecha, hora, addMin) {
+        var d = fecha.split('-'), hm = hora.split(':');
+        var dt = new Date(+d[0], (+d[1]) - 1, +d[2], +hm[0], +hm[1], 0);
+        if (addMin) dt = new Date(dt.getTime() + addMin * 60000);
+        return dt.getFullYear() + pad(dt.getMonth() + 1) + pad(dt.getDate()) +
+               'T' + pad(dt.getHours()) + pad(dt.getMinutes()) + '00';
+      }
+      // escape RFC 5545: backslash, coma, punto y coma, saltos de línea
+      function esc(s) { return String(s).replace(/([\\,;])/g, '\\$1').replace(/\r?\n/g, '\\n'); }
+
+      function buildICS(hours) {
+        var stamp = '20260702T120000Z';
+        var out = [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'PRODID:-//StudyVaults ITBA//Combinador de finales//ES',
+          'CALSCALE:GREGORIAN',
+          'METHOD:PUBLISH',
+          'X-WR-CALNAME:Finales — Julio 2026 (StudyVaults)'
+        ];
+        var n = 0;
+        finales.forEach(function (f, i) {
+          if (f.bloqueado) return; // correlativa de final no rendida -> excluido
+          n++;
+          out.push('BEGIN:VEVENT');
+          out.push('UID:sv-final-' + i + '-' + f.fecha + '@studyvaults.itba.ar');
+          out.push('DTSTAMP:' + stamp);
+          out.push('DTSTART:' + fmt(f.fecha, f.hora, 0));
+          out.push('DTEND:' + fmt(f.fecha, f.hora, f.dur));
+          out.push('SUMMARY:' + esc('Final: ' + f.nombre));
+          out.push('LOCATION:' + esc('ITBA — sede a confirmar'));
+          out.push('DESCRIPTION:' + esc(
+            'Mesa de final (' + f.fuente + '). Fechas sujetas a confirmación de la cátedra — ' +
+            'revisá con el/la docente. El .ics es una ayuda, no la fuente oficial.'
+          ));
+          out.push('BEGIN:VALARM');
+          out.push('ACTION:DISPLAY');
+          out.push('TRIGGER:-PT' + hours + 'H');
+          out.push('DESCRIPTION:' + esc('Anotate a la mesa de ' + f.nombre + ' — cierra la inscripción'));
+          out.push('END:VALARM');
+          out.push('END:VEVENT');
+        });
+        out.push('END:VCALENDAR');
+        return { text: out.join('\r\n'), count: n };
+      }
+
+      function currentHours() {
+        var h = reminderSel ? parseInt(reminderSel.value, 10) : 72;
+        return (isFinite(h) && h > 0) ? h : 72;
+      }
+
+      function descargar(text) {
+        var nombreArch = 'finales-julio-2026-studyvaults.ics';
+        var a = document.createElement('a');
+        var url = null;
+        try {
+          var blob = new Blob([text], { type: 'text/calendar;charset=utf-8' });
+          url = URL.createObjectURL(blob);
+          a.href = url;
+        } catch (e) {
+          // fallback sin Blob: data-uri inline (igualmente sin red)
+          a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(text);
+        }
+        a.download = nombreArch;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (url) setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+      }
+
+      if (reminderSel && reminderEcho) {
+        reminderSel.addEventListener('change', function () {
+          reminderEcho.textContent = reminderSel.value + ' hs';
+        });
+      }
+
+      btn.addEventListener('click', function () {
+        var hours = currentHours();
+        var built = buildICS(hours);
+        descargar(built.text);
+        if (ok) {
+          if (okTxt) okTxt.textContent = built.count + ' finales · aviso ' + hours + ' hs antes';
+          ok.classList.add('is-shown');
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

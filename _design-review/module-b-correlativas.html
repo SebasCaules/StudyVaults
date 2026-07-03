@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Rediseño del mapa de correlativas</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults  (reusados de foundations)
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown:#241208; --base-zinc:#27272a; --base-blue:#92cff2;
+    --base-gray:#a1a1aa; --base-coral:#f47c59; --base-white:#ffffff;
+
+    /* spine azul de correlativas (materias obligatorias) */
+    --spine: #7f9bbf;
+  }
+
+  /* ---------- DARK (brand default) ---------- */
+  html[data-theme="dark"]{
+    --canvas:#4c3a30; --surface:#382519; --surface-hover:#54463e;
+    --border-subtle:#343437; --border:#525255;
+    --text:#ffffff; --text-2:#a1a1aa;
+    --accent:#f47c59; --accent-contrast:#241208; --link:#92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    --k-formula:#7cc0af; --k-method:#d8b279;
+    --status-go: var(--k-formula); --status-wait: var(--k-method);
+
+    /* nodos del grafo */
+    --node-oblig-fill:  color-mix(in srgb, var(--spine) 20%, var(--surface));
+    --node-oblig-stroke: var(--spine);
+    --node-elect-fill:  color-mix(in srgb, var(--accent) 15%, var(--surface));
+    --node-elect-stroke: var(--accent);
+    --node-text: var(--text);
+    --node-code: var(--text-2);
+    --edge:     color-mix(in srgb, var(--base-gray) 48%, transparent);
+    --edge-lit: var(--accent);
+    --grid-dot: color-mix(in srgb, var(--base-gray) 15%, transparent);
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas:#f5f4f4; --surface:#ffffff; --surface-hover:#f0ede9;
+    --border-subtle:#e2e0df; --border:#b3b3b4;
+    --text:#241208; --text-2:#797067;
+    --accent:#f47c59; --accent-contrast:#241208; --link:#1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-formula:#227762; --k-method:#8c6121;
+    --status-go: var(--k-formula); --status-wait: var(--k-method);
+
+    --node-oblig-fill:  color-mix(in srgb, var(--spine) 24%, #ffffff);
+    --node-oblig-stroke: #5a7a9e;
+    --node-elect-fill:  color-mix(in srgb, var(--accent) 18%, #ffffff);
+    --node-elect-stroke: #cf5f3d;
+    --node-text: var(--text);
+    --node-code: var(--text-2);
+    --edge:     color-mix(in srgb, #241208 30%, transparent);
+    --edge-lit: #cf5f3d;
+    --grid-dot: color-mix(in srgb, #241208 8%, transparent);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--canvas); color:var(--text);
+    font-family:var(--font-serif); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px;
+  }
+  code,.mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px,5vw,48px); }
+
+  /* ---------- header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-4); }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill); margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.3rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2); max-width: 20ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.12rem);
+    color:var(--text-2); max-width:64ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- problem callout ---------- */
+  .problem{
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid var(--border-subtle); border-radius:var(--radius);
+    background:var(--surface); box-shadow:var(--shadow); overflow:hidden;
+    margin-bottom: var(--sp-6);
+  }
+  .problem > div{ padding:18px 22px; }
+  .problem > div + div{ border-left:1px solid var(--border-subtle); }
+  .pcol-label{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    display:flex; align-items:center; gap:8px; margin-bottom:10px;
+  }
+  .pcol-label .line{ flex:1; height:1px; background:currentColor; opacity:.4; }
+  .pcol-label.before{ color:var(--base-gray); }
+  .pcol-label.after{ color:var(--accent); }
+  .problem p{ margin:0; font-size:14.5px; color:var(--text-2); }
+  .problem p b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: 0 0 var(--sp-8); }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.6rem, 1.6vw + 1rem, 2.25rem); margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:72ch; margin: 0 0 var(--sp-3); font-size:1.02rem; }
+
+  /* ---------- map toolbar (arriba del viewport) ---------- */
+  .map-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    flex-wrap:wrap; margin-bottom:12px;
+  }
+  .legend-inline{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:8px; font-size:12.5px; }
+  .legend-swatch{ width:26px; height:17px; border-radius:5px; border:1.6px solid; flex:none; position:relative; }
+  .legend-swatch.obligatoria{ background:var(--node-oblig-fill); border-color:var(--node-oblig-stroke); }
+  .legend-swatch.electiva{ background:var(--node-elect-fill); border-color:var(--node-elect-stroke); }
+  .legend-swatch.aprobada{
+    background: color-mix(in srgb, var(--spine) 42%, var(--surface));
+    border-color:var(--node-oblig-stroke); border-width:2px;
+  }
+  .legend-swatch.aprobada::after{
+    content:""; position:absolute; top:-6px; right:-6px; width:12px; height:12px;
+    border-radius:50%; background:var(--status-go);
+    box-shadow:0 0 0 2px var(--canvas);
+  }
+  .map-count{ font-family:var(--font-mono); font-size:11.5px; color:var(--text-2); }
+  .map-count b{ color:var(--text); font-weight:600; }
+
+  /* ---------- viewport ---------- */
+  .map-viewport{
+    position:relative; width:100%;
+    height: clamp(480px, 70vh, 760px);            /* responsivo — NO fijo 640px */
+    overflow:hidden;
+    border:1px solid var(--border); border-radius:var(--radius);
+    background:var(--canvas);
+    background-image: radial-gradient(var(--grid-dot) 1.1px, transparent 1.1px);
+    background-size: 26px 26px;
+    box-shadow:var(--shadow);
+    touch-action:none; cursor:grab; user-select:none;
+  }
+  .map-viewport.panning{ cursor:grabbing; }
+  .map-viewport svg.graph{ width:100%; height:100%; display:block; }
+
+  /* nodes & edges */
+  .node{ transition: opacity .22s var(--ease); cursor:pointer; }
+  .node.dim{ opacity:.16; }
+  .node-rect{ stroke-width:1.6; transition: fill .2s var(--ease), stroke .2s var(--ease); }
+  .node.obligatoria .node-rect{ fill:var(--node-oblig-fill); stroke:var(--node-oblig-stroke); }
+  .node.electiva   .node-rect{ fill:var(--node-elect-fill); stroke:var(--node-elect-stroke); }
+  .node.is-approved.obligatoria .node-rect{ fill: color-mix(in srgb, var(--spine) 42%, var(--surface)); stroke-width:2; }
+  .node.is-approved.electiva   .node-rect{ fill: color-mix(in srgb, var(--accent) 34%, var(--surface)); stroke-width:2; }
+  .node-code{ fill:var(--node-code); font-family:var(--font-mono); font-size:11px; }
+  .node-abbr{ fill:var(--node-text); font-family:var(--font-mono); font-weight:700; font-size:13px; letter-spacing:.02em; }
+  .approved-badge circle{ fill:var(--status-go); }
+  .approved-badge path{ stroke:var(--surface); stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .node:focus{ outline:none; }
+  .node:focus-visible .node-rect{ stroke:var(--accent); stroke-width:2.6; }
+  .node.is-selected .node-rect{ stroke:var(--accent); stroke-width:2.6; filter: drop-shadow(0 1px 5px color-mix(in srgb, var(--accent) 50%, transparent)); }
+
+  .edge{ fill:none; stroke:var(--edge); stroke-width:1.5; marker-end:url(#arrow);
+         transition: opacity .22s var(--ease), stroke .2s var(--ease); }
+  .edge.dim{ opacity:.08; }
+  .edge.lit{ stroke:var(--edge-lit); stroke-width:2.3; marker-end:url(#arrow-lit); }
+  .arrow-head{ fill:var(--edge); } .arrow-head-lit{ fill:var(--edge-lit); }
+
+  /* floating controls */
+  .map-controls{
+    position:absolute; right:12px; bottom:12px; z-index:6;
+    display:flex; flex-direction:column; align-items:stretch; gap:6px;
+  }
+  .zoom-readout{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    text-align:center; background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border:1px solid var(--border-subtle); border-radius:var(--radius-pill);
+    padding:3px 0; letter-spacing:.02em;
+  }
+  .mapbtn{
+    width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; cursor:pointer; font-family:var(--font-mono); font-size:17px;
+    transition: all .18s var(--ease); box-shadow:var(--shadow);
+  }
+  .mapbtn:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .mapbtn svg{ width:16px; height:16px; }
+  .mapbtn.fit{ width:auto; gap:7px; padding:0 12px; font-size:12px; font-weight:600; }
+  .mapbtn.fit svg{ width:14px; height:14px; }
+
+  .map-hint{
+    position:absolute; left:12px; bottom:12px; z-index:5;
+    font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border:1px solid var(--border-subtle); border-radius:var(--radius-pill);
+    padding:5px 11px; letter-spacing:.02em;
+  }
+
+  /* detail panel */
+  .detail-panel{
+    position:absolute; top:12px; right:12px; z-index:8;
+    width:min(340px, calc(100% - 24px));
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:18px 20px 20px;
+    transform:translateX(calc(100% + 20px)); opacity:0; pointer-events:none;
+    transition: transform .3s var(--ease), opacity .3s var(--ease);
+  }
+  .detail-panel.open{ transform:translateX(0); opacity:1; pointer-events:auto; }
+  .panel-close{
+    position:absolute; top:12px; right:12px; width:28px; height:28px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:transparent; border:1px solid var(--border-subtle); color:var(--text-2);
+    border-radius:6px; cursor:pointer; font-size:16px; line-height:1;
+    transition: all .18s var(--ease);
+  }
+  .panel-close:hover{ color:var(--text); border-color:var(--accent); }
+  .panel-code{ font-family:var(--font-mono); font-size:12px; color:var(--text-2); letter-spacing:.03em; margin-bottom:4px; }
+  .panel-name{ font-family:var(--font-serif); font-weight:600; font-size:19px; line-height:1.25; margin:0 0 14px; max-width:24ch; }
+  .panel-meta{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .tipo-badge{
+    font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    padding:3px 9px; border-radius:var(--radius-pill); text-transform:uppercase;
+  }
+  .tipo-badge.obligatoria{ color:var(--node-oblig-stroke); background: color-mix(in srgb, var(--spine) 16%, var(--surface)); border:1px solid color-mix(in srgb, var(--spine) 45%, transparent); }
+  .tipo-badge.electiva{ color:var(--node-elect-stroke); background: color-mix(in srgb, var(--accent) 15%, var(--surface)); border:1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+  .credits-chip{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); padding:3px 8px; border-radius:5px; }
+  .estado{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+  .avail-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .avail-dot.go{ background:var(--status-go); box-shadow:0 0 0 3px color-mix(in srgb, var(--status-go) 22%, transparent); }
+  .avail-dot.wait{ background:var(--status-wait); box-shadow:0 0 0 3px color-mix(in srgb, var(--status-wait) 22%, transparent); }
+  .panel-sec{ margin-top:14px; }
+  .panel-sec-label{ font-family:var(--font-mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-2); margin-bottom:8px; }
+  .panel-list{ display:flex; flex-wrap:wrap; gap:6px; }
+  .link-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:11px; color:var(--text);
+    background:var(--surface-hover); border:1px solid var(--border-subtle);
+    padding:4px 9px; border-radius:6px; cursor:pointer; transition: all .16s var(--ease);
+  }
+  .link-chip:hover{ border-color:var(--accent); color:var(--accent); }
+  .link-chip .lc-dot{ width:8px; height:8px; border-radius:2px; flex:none; }
+  .link-chip .lc-code{ color:var(--text-2); }
+  .link-chip:hover .lc-code{ color:inherit; }
+  .panel-empty{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 720px){
+    .problem{ grid-template-columns:1fr; }
+    .problem > div + div{ border-left:none; border-top:1px solid var(--border-subtle); }
+    .legend-inline{ gap:12px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration:.01ms !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·002</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN</div>
+      <h1>Mapa de correlativas <em>que ya no se corta</em></h1>
+      <p class="dek">Rediseño del grafo de correlatividades del planner. El DAG se mueve a un viewport con desplazamiento y zoom, así los planes anchos dejan de recortarse. Resaltado de cadena de prerrequisitos y dependientes, y panel de detalle por materia.</p>
+      <div class="hero-meta">
+        <span><b>v0.1</b> — documento de revisión</span>
+        <span>Informática · ITBA</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <div class="problem">
+      <div>
+        <div class="pcol-label before">Antes<span class="line"></span></div>
+        <p>El grafo era un <b>SVG inline renderizado a su tamaño natural</b> dentro de una caja de <b>640px fijos, sin overflow ni scroll</b>. Un plan ancho se <b>desbordaba y se recortaba</b>: no había forma de ver las materias que quedaban fuera del marco.</p>
+      </div>
+      <div>
+        <div class="pcol-label after">Después<span class="line"></span></div>
+        <p>El mismo DAG vive en un <b>viewport con pan y zoom</b> que llena su contenedor responsivo. <b>Arrastrá para mover, scroll para hacer zoom</b> y <b>Ajustar</b> encuadra todo. El grafo puede ser tan grande como haga falta: el viewport lo contiene sin cortar nada.</p>
+      </div>
+    </div>
+
+    <section class="spec">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="12" r="2.4"/><circle cx="6" cy="18" r="2.4"/><path d="M8.2 7.1 15.8 11M8.2 16.9 15.8 13"/></svg>
+        FIG. 01 — Herramienta interactiva
+      </div>
+      <h2 class="spec-title">Mapa de correlativas — Ingeniería Informática</h2>
+      <p class="spec-dek">Cada nodo es una materia (código + abreviatura mono). Las flechas curvas van del requisito a la materia que habilita, de izquierda a derecha. Pasá el mouse por un nodo para iluminar su cadena; hacé click para abrir el detalle.</p>
+
+      <div class="map-toolbar">
+        <div class="legend-inline" aria-label="Referencia de colores">
+          <div class="legend-item"><span class="legend-swatch obligatoria"></span> Obligatoria</div>
+          <div class="legend-item"><span class="legend-swatch electiva"></span> Electiva</div>
+          <div class="legend-item"><span class="legend-swatch aprobada"></span> Aprobada</div>
+        </div>
+        <div class="map-count"><b id="countN">0</b> materias · <b id="countE">0</b> correlativas</div>
+      </div>
+
+      <div class="map-viewport" id="viewport">
+        <svg class="graph" id="graph" aria-label="Grafo de correlativas — arrastrá para mover, scroll para zoom">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path class="arrow-head" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+            <marker id="arrow-lit" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.4" markerHeight="7.4" orient="auto-start-reverse">
+              <path class="arrow-head-lit" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+          </defs>
+          <g id="gview">
+            <g id="gEdges"></g>
+            <g id="gNodes"></g>
+          </g>
+        </svg>
+
+        <div class="map-hint">arrastrá para mover · scroll para zoom</div>
+
+        <div class="map-controls">
+          <div class="zoom-readout" id="zoomReadout">100%</div>
+          <button class="mapbtn" id="btnIn"  type="button" aria-label="Acercar" title="Acercar">＋</button>
+          <button class="mapbtn" id="btnOut" type="button" aria-label="Alejar"  title="Alejar">－</button>
+          <button class="mapbtn fit" id="btnFit" type="button" aria-label="Ajustar a la vista" title="Ajustar a la vista">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+            Ajustar
+          </button>
+        </div>
+
+        <aside class="detail-panel" id="panel" aria-live="polite" aria-label="Detalle de la materia">
+          <button class="panel-close" id="panelClose" type="button" aria-label="Cerrar detalle">×</button>
+          <div class="panel-code mono" data-code></div>
+          <h3 class="panel-name" data-name></h3>
+          <div class="panel-meta">
+            <span class="tipo-badge" data-tipo></span>
+            <span class="credits-chip" data-cr></span>
+            <span class="estado"><span class="avail-dot" data-dot></span><span data-estado></span></span>
+          </div>
+          <div class="panel-sec">
+            <div class="panel-sec-label">Requiere (correlativas)</div>
+            <div class="panel-list" data-req></div>
+          </div>
+          <div class="panel-sec">
+            <div class="panel-sec-label">Habilita</div>
+            <div class="panel-list" data-dep></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Módulo B · v0.1 · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    "use strict";
+
+    /* ---------- theme toggle ---------- */
+    var root = document.documentElement;
+    var tBtn = document.getElementById('themeToggle');
+    var tLabel = document.getElementById('themeLabel');
+    var tMeta = document.getElementById('themeMetaLabel');
+    function setTheme(t){
+      root.setAttribute('data-theme', t);
+      var s = t === 'dark' ? 'oscuro' : 'claro';
+      if(tLabel) tLabel.textContent = s;
+      if(tMeta) tMeta.textContent = s;
+    }
+    setTheme('dark');
+    tBtn.addEventListener('click', function(){
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ============================================================
+       DATA — subconjunto representativo del DAG de Informática ITBA
+       ============================================================ */
+    var W = 160, H = 58, COLG = 250, ROWG = 80;
+
+    var COURSES = [
+      {id:'72.03', name:'Introducción a la Informática',        abbr:'INTRO INFO',   cr:6, tipo:'obligatoria', ap:true,  layer:0, row:6},
+      {id:'93.58', name:'Álgebra',                              abbr:'ÁLGEBRA',      cr:6, tipo:'obligatoria', ap:true,  layer:0, row:3},
+      {id:'93.26', name:'Análisis Matemático I',                abbr:'ANÁLISIS I',   cr:6, tipo:'obligatoria', ap:true,  layer:0, row:0},
+      {id:'93.41', name:'Física I',                             abbr:'FÍSICA I',     cr:6, tipo:'obligatoria', ap:true,  layer:0, row:1},
+
+      {id:'72.31', name:'Programación Imperativa',              abbr:'PROG IMPER',   cr:6, tipo:'obligatoria', ap:true,  layer:1, row:6},
+      {id:'93.59', name:'Matemática Discreta',                  abbr:'MAT DISCRETA', cr:6, tipo:'obligatoria', ap:true,  layer:1, row:2},
+      {id:'93.35', name:'Lógica Computacional',                 abbr:'LÓGICA',       cr:6, tipo:'obligatoria', ap:true,  layer:1, row:3},
+      {id:'93.28', name:'Análisis Matemático II',               abbr:'ANÁLISIS II',  cr:6, tipo:'obligatoria', ap:true,  layer:1, row:0},
+
+      {id:'72.08', name:'Arquitectura de Computadoras',         abbr:'ARQ COMP',     cr:6, tipo:'obligatoria', ap:false, layer:2, row:5},
+      {id:'72.33', name:'Programación Orientada a Objetos',     abbr:'POO',          cr:6, tipo:'obligatoria', ap:true,  layer:2, row:6},
+      {id:'72.32', name:'Diseño de Programas',                  abbr:'DPDX',         cr:6, tipo:'obligatoria', ap:false, layer:2, row:7},
+      {id:'93.24', name:'Probabilidad y Estadística',          abbr:'PROBA',        cr:6, tipo:'obligatoria', ap:false, layer:2, row:0},
+      {id:'93.42', name:'Física II',                            abbr:'FÍSICA II',    cr:6, tipo:'obligatoria', ap:false, layer:2, row:1},
+
+      {id:'72.34', name:'Estructuras de Datos y Algoritmos',    abbr:'EDA',          cr:6, tipo:'obligatoria', ap:false, layer:3, row:6},
+
+      {id:'72.35', name:'Ingeniería del Software I',            abbr:'ISW I',        cr:6, tipo:'obligatoria', ap:false, layer:4, row:5},
+      {id:'72.37', name:'Base de Datos I',                      abbr:'BD I',         cr:6, tipo:'obligatoria', ap:false, layer:4, row:6},
+      {id:'72.11', name:'Sistemas Operativos',                 abbr:'SO',           cr:6, tipo:'obligatoria', ap:false, layer:4, row:7},
+
+      {id:'72.07', name:'Protocolos de Comunicación',          abbr:'PROTOCOLOS',   cr:3, tipo:'electiva',    ap:false, layer:5, row:7},
+      {id:'72.44', name:'Criptografía y Seguridad',            abbr:'CRIPTO',       cr:3, tipo:'electiva',    ap:false, layer:5, row:8}
+    ];
+
+    var EDGES = [
+      ['72.03','72.31'], ['93.58','72.31'], ['93.58','93.59'], ['93.58','93.35'],
+      ['72.31','72.08'], ['72.31','72.33'], ['72.31','72.32'],
+      ['72.33','72.34'], ['72.34','72.35'], ['72.34','72.37'], ['72.34','72.11'],
+      ['72.11','72.07'], ['72.11','72.44'],
+      ['93.26','93.28'], ['93.28','93.42'], ['93.28','93.24'], ['93.41','93.42']
+    ];
+
+    /* ---------- indices ---------- */
+    var byId = {}, prereqs = {}, deps = {};
+    COURSES.forEach(function(c){
+      c.x = c.layer * COLG; c.y = c.row * ROWG;
+      byId[c.id] = c; prereqs[c.id] = []; deps[c.id] = [];
+    });
+    EDGES.forEach(function(e){
+      prereqs[e[1]].push(e[0]);
+      deps[e[0]].push(e[1]);
+    });
+
+    document.getElementById('countN').textContent = COURSES.length;
+    document.getElementById('countE').textContent = EDGES.length;
+
+    /* ---------- build SVG ---------- */
+    var NS = 'http://www.w3.org/2000/svg';
+    function svg(tag, attrs){
+      var el = document.createElementNS(NS, tag);
+      if(attrs) for(var k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+    function edgePath(a, b){
+      var sx = a.x + W, sy = a.y + H/2, tx = b.x, ty = b.y + H/2;
+      var dx = Math.max(46, (tx - sx) * 0.5);
+      return 'M' + sx + ',' + sy + ' C' + (sx+dx) + ',' + sy + ' ' + (tx-dx) + ',' + ty + ' ' + tx + ',' + ty;
+    }
+
+    var gEdges = document.getElementById('gEdges');
+    var gNodes = document.getElementById('gNodes');
+    var gview  = document.getElementById('gview');
+    var edgeEls = [];
+    var nodeEls = {};
+
+    EDGES.forEach(function(e){
+      var a = byId[e[0]], b = byId[e[1]];
+      var p = svg('path', {'class':'edge', d: edgePath(a,b)});
+      p.dataset.a = e[0]; p.dataset.b = e[1];
+      gEdges.appendChild(p);
+      edgeEls.push({el:p, a:e[0], b:e[1]});
+    });
+
+    COURSES.forEach(function(c){
+      var g = svg('g', {
+        'class':'node ' + c.tipo + (c.ap ? ' is-approved' : ''),
+        transform:'translate(' + c.x + ' ' + c.y + ')',
+        tabindex:'0', role:'button',
+        'aria-label': c.name + ', código ' + c.id + ', ' + c.tipo + (c.ap ? ', aprobada' : '')
+      });
+      g.dataset.id = c.id;
+      g.appendChild(svg('rect', {'class':'node-rect', width:W, height:H, rx:8, ry:8}));
+      var t1 = svg('text', {'class':'node-code', x:W/2, y:23, 'text-anchor':'middle'});
+      t1.textContent = c.id;
+      var t2 = svg('text', {'class':'node-abbr', x:W/2, y:42, 'text-anchor':'middle'});
+      t2.textContent = c.abbr;
+      g.appendChild(t1); g.appendChild(t2);
+      if(c.ap){
+        var bg = svg('g', {'class':'approved-badge'});
+        bg.appendChild(svg('circle', {cx:W-13, cy:13, r:8.5}));
+        bg.appendChild(svg('path', {d:'M'+(W-16.4)+' 13 L'+(W-14)+' 15.6 L'+(W-9.2)+' 9.8'}));
+        g.appendChild(bg);
+      }
+      gNodes.appendChild(g);
+      nodeEls[c.id] = g;
+    });
+
+    /* graph bounds */
+    var maxX = 0, maxY = 0;
+    COURSES.forEach(function(c){ maxX = Math.max(maxX, c.x + W); maxY = Math.max(maxY, c.y + H); });
+
+    /* ============================================================
+       PAN / ZOOM
+       ============================================================ */
+    var vp = document.getElementById('viewport');
+    var graph = document.getElementById('graph');
+    var readout = document.getElementById('zoomReadout');
+    var MIN = 0.3, MAX = 2.4;
+    var scale = 1, tx = 0, ty = 0;
+    var userInteracted = false;
+
+    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+    function apply(){
+      gview.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + scale + ')');
+      readout.textContent = Math.round(scale * 100) + '%';
+    }
+    function zoomAt(px, py, factor){
+      var ns = clamp(scale * factor, MIN, MAX);
+      var k = ns / scale;
+      tx = px - (px - tx) * k;
+      ty = py - (py - ty) * k;
+      scale = ns; apply();
+    }
+    function zoomCenter(factor){
+      zoomAt(graph.clientWidth/2, graph.clientHeight/2, factor);
+    }
+    function fit(){
+      var vw = graph.clientWidth, vh = graph.clientHeight;
+      if(!vw || !vh) return;
+      var pad = 52;
+      var s = Math.min((vw - 2*pad) / maxX, (vh - 2*pad) / maxY);
+      s = clamp(s, MIN, MAX);
+      scale = s;
+      tx = (vw - maxX * s) / 2;
+      ty = (vh - maxY * s) / 2;
+      apply();
+    }
+
+    /* pointer pan + click/select detection */
+    var isDown = false, moved = false, sx0 = 0, sy0 = 0, stx = 0, sty = 0, downNode = null;
+    function findNode(t){
+      while(t && t !== gview){
+        if(t.classList && t.classList.contains('node')) return t;
+        t = t.parentNode;
+      }
+      return null;
+    }
+    vp.addEventListener('pointerdown', function(e){
+      if(e.button !== 0) return;
+      isDown = true; moved = false;
+      sx0 = e.clientX; sy0 = e.clientY; stx = tx; sty = ty;
+      downNode = findNode(e.target);
+      try{ vp.setPointerCapture(e.pointerId); }catch(_){}
+    });
+    vp.addEventListener('pointermove', function(e){
+      if(!isDown) return;
+      var dx = e.clientX - sx0, dy = e.clientY - sy0;
+      if(!moved && Math.hypot(dx, dy) > 5){ moved = true; userInteracted = true; vp.classList.add('panning'); }
+      if(moved){ tx = stx + dx; ty = sty + dy; apply(); }
+    });
+    function endPointer(){
+      if(!isDown) return;
+      isDown = false; vp.classList.remove('panning');
+      if(!moved){
+        if(downNode) select(downNode.dataset.id);
+        else deselect();
+      }
+      downNode = null;
+    }
+    vp.addEventListener('pointerup', endPointer);
+    vp.addEventListener('pointercancel', endPointer);
+
+    vp.addEventListener('wheel', function(e){
+      e.preventDefault();
+      var r = graph.getBoundingClientRect();
+      var f = Math.pow(1.0016, -e.deltaY);
+      userInteracted = true;
+      zoomAt(e.clientX - r.left, e.clientY - r.top, f);
+    }, {passive:false});
+
+    document.getElementById('btnIn').addEventListener('click', function(){ userInteracted = true; zoomCenter(1.25); });
+    document.getElementById('btnOut').addEventListener('click', function(){ userInteracted = true; zoomCenter(0.8); });
+    document.getElementById('btnFit').addEventListener('click', function(){ userInteracted = false; fit(); });
+
+    /* refit on resize only if the user hasn't taken control */
+    if(window.ResizeObserver){
+      var ro = new ResizeObserver(function(){ if(!userInteracted) fit(); });
+      ro.observe(vp);
+    } else {
+      window.addEventListener('resize', function(){ if(!userInteracted) fit(); });
+    }
+
+    /* ============================================================
+       HIGHLIGHT + SELECT + PANEL
+       ============================================================ */
+    function ancestors(id, acc){
+      prereqs[id].forEach(function(p){ if(!acc.has(p)){ acc.add(p); ancestors(p, acc); } });
+    }
+    function descendants(id, acc){
+      deps[id].forEach(function(d){ if(!acc.has(d)){ acc.add(d); descendants(d, acc); } });
+    }
+    function chainOf(id){
+      var s = new Set([id]); ancestors(id, s); descendants(id, s); return s;
+    }
+    function applyHighlight(set){
+      COURSES.forEach(function(c){
+        var g = nodeEls[c.id];
+        if(!set){ g.classList.remove('dim'); return; }
+        if(set.has(c.id)) g.classList.remove('dim');
+        else g.classList.add('dim');
+      });
+      edgeEls.forEach(function(ed){
+        ed.el.classList.remove('lit','dim');
+        if(!set) return;
+        if(set.has(ed.a) && set.has(ed.b)) ed.el.classList.add('lit');
+        else ed.el.classList.add('dim');
+      });
+    }
+
+    var selectedId = null, previewId = null;
+    function refreshHighlight(){
+      var id = previewId || selectedId;
+      applyHighlight(id ? chainOf(id) : null);
+    }
+    function setPreview(id){ previewId = id; refreshHighlight(); }
+    function clearPreview(){ previewId = null; refreshHighlight(); }
+
+    /* panel */
+    var panel = document.getElementById('panel');
+    var pCode = panel.querySelector('[data-code]');
+    var pName = panel.querySelector('[data-name]');
+    var pTipo = panel.querySelector('[data-tipo]');
+    var pCr   = panel.querySelector('[data-cr]');
+    var pDot  = panel.querySelector('[data-dot]');
+    var pEst  = panel.querySelector('[data-estado]');
+    var pReq  = panel.querySelector('[data-req]');
+    var pDep  = panel.querySelector('[data-dep]');
+
+    function statusOf(c){
+      if(c.ap) return {cls:'go', txt:'Aprobada'};
+      var cursable = prereqs[c.id].every(function(p){ return byId[p].ap; });
+      return cursable ? {cls:'go', txt:'Cursable'} : {cls:'wait', txt:'Requisitos pendientes'};
+    }
+    function chipDotColor(c){
+      if(c.ap) return 'var(--status-go)';
+      return c.tipo === 'electiva' ? 'var(--node-elect-stroke)' : 'var(--node-oblig-stroke)';
+    }
+    function fillList(container, ids){
+      container.innerHTML = '';
+      if(!ids.length){
+        var em = document.createElement('span');
+        em.className = 'panel-empty'; em.textContent = '— ninguna —';
+        container.appendChild(em); return;
+      }
+      ids.forEach(function(id){
+        var c = byId[id];
+        var b = document.createElement('button');
+        b.className = 'link-chip'; b.type = 'button'; b.dataset.goto = id;
+        b.innerHTML = '<span class="lc-dot" style="background:' + chipDotColor(c) + '"></span>' +
+                      '<span class="lc-code">' + id + '</span> ' + c.abbr;
+        container.appendChild(b);
+      });
+    }
+    function openPanel(id){
+      var c = byId[id];
+      pCode.textContent = c.id + ' · ' + c.abbr;
+      pName.textContent = c.name;
+      pTipo.className = 'tipo-badge ' + c.tipo;
+      pTipo.textContent = c.tipo;
+      pCr.textContent = c.cr + ' cr';
+      var st = statusOf(c);
+      pDot.className = 'avail-dot ' + st.cls;
+      pEst.textContent = st.txt;
+      fillList(pReq, prereqs[id]);
+      fillList(pDep, deps[id]);
+      panel.classList.add('open');
+    }
+    function closePanel(){ panel.classList.remove('open'); }
+
+    function select(id){
+      if(selectedId && nodeEls[selectedId]) nodeEls[selectedId].classList.remove('is-selected');
+      selectedId = id; previewId = null;
+      nodeEls[id].classList.add('is-selected');
+      openPanel(id);
+      refreshHighlight();
+    }
+    function deselect(){
+      if(selectedId && nodeEls[selectedId]) nodeEls[selectedId].classList.remove('is-selected');
+      selectedId = null; previewId = null;
+      closePanel();
+      refreshHighlight();
+    }
+
+    /* hover / focus preview via delegation */
+    gview.addEventListener('mouseover', function(e){
+      var n = findNode(e.target); if(n) setPreview(n.dataset.id);
+    });
+    gview.addEventListener('mouseout', function(e){
+      var n = findNode(e.target); if(!n) return;
+      if(findNode(e.relatedTarget) === n) return;
+      clearPreview();
+    });
+    gview.addEventListener('focusin', function(e){
+      var n = findNode(e.target); if(n) setPreview(n.dataset.id);
+    });
+    gview.addEventListener('focusout', function(e){
+      var n = findNode(e.target); if(n) clearPreview();
+    });
+    gview.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        var n = findNode(e.target);
+        if(n){ e.preventDefault(); select(n.dataset.id); }
+      }
+    });
+
+    /* panel interactions */
+    document.getElementById('panelClose').addEventListener('click', deselect);
+    panel.addEventListener('click', function(e){
+      var b = e.target.closest('.link-chip');
+      if(b) select(b.dataset.goto);
+    });
+    panel.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && selectedId) deselect();
+    });
+
+    /* ---------- initial state ---------- */
+    apply();
+    fit();
+    /* demo: una materia seleccionada con su cadena encendida */
+    select('72.34');
+    /* fit ignores the panel overlay on purpose — the graph stays uncut */
+    requestAnimationFrame(fit);
+
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Overlays del plan de cursada (Módulo E)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults (idénticos a foundations.html
+     y module-c-modal.html — misma fuente de verdad)
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+    --scrim: rgba(8,4,2,.62);
+  }
+
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+    --scrim: rgba(36,18,8,.42);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top:84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- secondary nav ---------- */
+  .subnav{ border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-6) 0 var(--sp-4); }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(1.9rem, 2.6vw + 1rem, 2.9rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.1;
+    margin: 0 0 var(--sp-2);
+    max-width: 24ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.1rem);
+    color:var(--text-2); max-width:68ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-6) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.5rem, 1.3vw + 1rem, 2rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:74ch; margin: 0 0 var(--sp-3); font-size:1rem; }
+
+  /* straight mono label — NO sticker, NO rotation, just a hairline rule */
+  .ov-label{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--text-2); margin: var(--sp-3) 0 12px;
+  }
+  .ov-label::after{ content:""; flex:1; height:1px; background:var(--border-subtle); }
+  .ov-label.sub{ margin-top:var(--sp-4); font-size:10.5px; color:var(--text-2); opacity:.85; }
+
+  .card{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .pad{ padding:20px 22px; }
+
+  .chip{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.02em;
+    padding:5px 10px; border-radius:6px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+    display:inline-block;
+  }
+
+  /* ---------- minor badge (idéntico a foundations §4) ---------- */
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:10.5px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:3px 9px; border-radius:var(--radius-pill);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+    flex:none;
+  }
+
+  /* ---------- buttons (idéntico a module-c-modal) ---------- */
+  .btn{
+    all:unset; box-sizing:border-box;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em; text-align:center; line-height:1.2;
+    padding:12px 16px; border-radius:8px; border:1px solid var(--border);
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  .btn svg{ width:14px; height:14px; flex:none; }
+  .btn-primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .btn-primary:hover{ background: color-mix(in srgb, var(--accent) 85%, black 8%); }
+  .btn-danger{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .btn-danger:hover{ background: color-mix(in srgb, var(--accent) 82%, black 14%); }
+  .btn-secondary{ background:var(--surface); color:var(--text); }
+  .btn-secondary:hover{ background:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
+  .btn-sm{ padding:8px 13px; font-size:10.5px; }
+
+  /* ---------- CommissionSelect (idéntico a foundations §6) ---------- */
+  select.csel-live{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:11.5px;
+    background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 10px center;
+    background-size:11px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:8px 30px 8px 12px; max-width:230px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.csel-live:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.csel-live:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+
+  /* ============================================================
+     STAGE — página dimeada de fondo (tablero fantasma del plan) + overlay
+     ============================================================ */
+  .stage-label{
+    font-family:var(--font-mono); font-size:11px; color:var(--text-2);
+    margin-bottom:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .stage-label b{ color:var(--text); }
+
+  .stage{
+    position:relative; border-radius:12px; overflow:hidden;
+    border:1px solid var(--border-subtle); background:var(--canvas);
+    min-height:520px;
+  }
+
+  /* tablero fantasma: toolbar + 3 tarjetas de cuatrimestre */
+  .pboard{ position:absolute; inset:0; padding:26px; opacity:.55; pointer-events:none; }
+  .pboard-toolbar{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
+  .pboard-btn{ height:32px; border-radius:8px; background:var(--surface); border:1px solid var(--border-subtle); }
+  .pboard-btn.w1{ width:104px; } .pboard-btn.w2{ width:150px; } .pboard-btn.w3{ width:190px; }
+  .pboard-grow{ flex:1; }
+  .pboard-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .pboard-card{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:8px; padding:12px; }
+  .pboard-card__tag{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); letter-spacing:.04em; }
+  .pboard-card__name{ font-family:var(--font-serif); font-size:13px; margin:2px 0 10px; }
+  .pboard-row{ height:20px; border-radius:4px; background:var(--border-subtle); margin-bottom:6px; opacity:.75; }
+  .pboard-row.w80{ width:80%; } .pboard-row.w60{ width:60%; } .pboard-row.w95{ width:95%; } .pboard-row.w45{ width:45%; }
+
+  .stage-scrim{ position:absolute; inset:0; background:var(--scrim); backdrop-filter: blur(1.5px); }
+  .stage-modalwrap{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    padding: clamp(16px, 4vh, 40px);
+  }
+  .stage-modalwrap.top{ align-items:flex-start; padding-top: clamp(28px, 6vh, 56px); }
+
+  .reopen-btn{
+    all:unset; position:absolute; inset:0; margin:auto;
+    width:200px; height:44px; display:none; align-items:center; justify-content:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em;
+    cursor:pointer; color:var(--text); box-shadow:var(--shadow); z-index:2;
+  }
+  .reopen-btn:hover{ border-color:var(--accent); background:var(--surface-hover); }
+  .reopen-btn svg{ width:14px; height:14px; color:var(--text-2); }
+  .stage-modalwrap.hidden{ opacity:0; pointer-events:none; }
+
+  .modal-close{
+    all:unset; box-sizing:border-box;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:8px; border:1px solid var(--border);
+    color:var(--text-2); cursor:pointer; transition: all .18s var(--ease);
+    position:absolute; top:14px; right:14px;
+  }
+  .modal-close:hover{ background:var(--surface-hover); color:var(--text); border-color:var(--accent); }
+  .modal-close svg{ width:14px; height:14px; }
+
+  /* ============================================================
+     1 — CONFIRM (reset)
+     ============================================================ */
+  .confirm-panel{
+    position:relative;
+    width:min(430px,100%);
+    max-height:100%; overflow-y:auto;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow); padding:26px 26px 22px;
+  }
+  .confirm-icon{
+    width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    color:var(--accent); margin-bottom:16px;
+  }
+  .confirm-icon svg{ width:21px; height:21px; }
+  .confirm-title{ font-family:var(--font-serif); font-weight:500; font-size:1.22rem; letter-spacing:-.01em; margin:0 0 10px; padding-right:26px; }
+  .confirm-body{ color:var(--text-2); font-size:14px; line-height:1.6; margin:0 0 22px; }
+  .confirm-actions{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
+
+  /* ============================================================
+     2 — IO MODAL (exportar / importar)
+     ============================================================ */
+  .io-panel{
+    position:relative;
+    width:min(760px,100%);
+    max-height:100%;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow); overflow:hidden auto;
+  }
+  .io-head{ padding:28px 30px 6px; }
+  .io-kick{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+  .io-head h3{ font-family:var(--font-serif); font-weight:500; font-size: clamp(1.35rem,1.2vw + 1rem,1.6rem); margin:8px 0 8px; letter-spacing:-.01em; }
+  .io-head p{ color:var(--text-2); font-size:14px; line-height:1.6; margin:0; max-width:58ch; }
+
+  .io-grid{ display:grid; grid-template-columns:1fr 1fr; margin-top:22px; border-top:1px solid var(--border-subtle); }
+  .io-card{ padding:22px 30px 24px; }
+  .io-card + .io-card{ border-left:1px solid var(--border-subtle); }
+  .io-card-kick{ font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); }
+  .io-card h4{ font-size:15px; font-weight:600; margin:6px 0 8px; }
+  .io-card p{ color:var(--text-2); font-size:13px; line-height:1.6; margin:0 0 14px; }
+  .io-card p b{ color:var(--text); }
+
+  .io-pickhead{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .io-minilbl{ font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); }
+  .io-all{ all:unset; font-family:var(--font-mono); font-size:10px; color:var(--link); cursor:pointer; }
+  .io-all:hover{ text-decoration:underline; }
+  .io-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .io-chip{
+    font-family:var(--font-mono); font-size:10.5px; padding:5px 10px 5px 8px; border-radius:var(--radius-pill);
+    border:1px solid var(--border); background:var(--surface); color:var(--text-2);
+    display:inline-flex; align-items:center; gap:5px; cursor:default;
+  }
+  .io-chip.is-on{ border-color:var(--accent); color:var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); font-weight:600; }
+  .io-chip svg{ width:9px; height:9px; }
+  .io-chip i{ font-style:normal; color:var(--text-2); }
+  .io-chip.is-on i{ color:var(--accent); }
+
+  .io-acts{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  .dropzone{
+    margin-top:14px; border:1.5px dashed var(--border); border-radius:10px;
+    padding:18px 14px; text-align:center; color:var(--text-2); font-size:12px; line-height:1.5;
+    display:flex; flex-direction:column; align-items:center; gap:7px;
+  }
+  .dropzone svg{ width:19px; height:19px; color:var(--text-2); }
+  .dropzone b{ color:var(--text); }
+
+  .io-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); margin-top:10px; }
+
+  .io-legend{
+    display:flex; gap:10px; align-items:flex-start; padding:15px 30px;
+    background:var(--surface-hover); border-top:1px solid var(--border-subtle);
+    font-size:12.5px; color:var(--text-2); line-height:1.6;
+  }
+  .io-legend svg{ width:15px; height:15px; flex:none; margin-top:2px; color:var(--accent); }
+  .io-legend b{ color:var(--text); }
+
+  /* ============================================================
+     3 — DOWNLOAD CHOICE (course-plan-modal logic, aplicado al plan)
+     ============================================================ */
+  .dl-panel{
+    position:relative;
+    width:min(560px,100%);
+    max-height:100%; overflow-y:auto;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow); padding:26px 26px 22px;
+  }
+  .dl-kick{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+  .dl-panel h3{ font-family:var(--font-serif); font-weight:500; font-size:1.3rem; margin:8px 0 8px; padding-right:26px; letter-spacing:-.01em; }
+  .dl-panel > p{ color:var(--text-2); font-size:13.5px; line-height:1.6; margin:0 0 6px; }
+
+  .dl-options{ display:flex; flex-direction:column; gap:10px; margin:18px 0 22px; }
+  .dl-opt{
+    display:flex; align-items:center; gap:14px; padding:14px 15px; border:1.5px solid var(--border-subtle);
+    border-radius:10px; cursor:pointer; transition: all .18s var(--ease); background:var(--surface);
+  }
+  .dl-opt:hover{ border-color: color-mix(in srgb, var(--accent) 45%, var(--border-subtle)); background:var(--surface-hover); }
+  .dl-opt.is-selected{ border-color:var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+  .dl-opt-icon{
+    width:36px; height:36px; border-radius:8px; flex:none; display:flex; align-items:center; justify-content:center;
+    background:var(--surface-hover); color:var(--text-2);
+  }
+  .dl-opt.is-selected .dl-opt-icon{ background: color-mix(in srgb, var(--accent) 18%, var(--surface)); color:var(--accent); }
+  .dl-opt-icon svg{ width:18px; height:18px; }
+  .dl-opt-text{ flex:1; min-width:0; }
+  .dl-opt-title{ font-weight:600; font-size:14px; margin-bottom:2px; }
+  .dl-opt-desc{ color:var(--text-2); font-size:12.5px; line-height:1.5; }
+  .dl-opt-radio{ width:17px; height:17px; border-radius:50%; border:1.5px solid var(--border); flex:none; display:flex; align-items:center; justify-content:center; }
+  .dl-opt.is-selected .dl-opt-radio{ border-color:var(--accent); }
+  .dl-opt.is-selected .dl-opt-radio::after{ content:""; width:8px; height:8px; border-radius:50%; background:var(--accent); }
+
+  .dl-actions{ display:flex; gap:10px; justify-content:flex-end; }
+
+  /* ============================================================
+     4 — POPOVER (finalizar cuatrimestre) + estado bloqueado
+     ============================================================ */
+  .anchor-wrap{ width:min(540px,100%); max-height:100%; overflow-y:auto; }
+  .anchor-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    box-shadow:var(--shadow); padding:16px 18px;
+  }
+  .anchor-card__h{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .anchor-card__when{ display:flex; flex-direction:column; }
+  .anchor-card__tag{ font-family:var(--font-mono); font-size:10px; color:var(--accent); letter-spacing:.06em; margin-bottom:3px; }
+  .anchor-card__h h3{ font-family:var(--font-serif); font-weight:500; font-size:1.08rem; margin:0; letter-spacing:-.01em; }
+  .anchor-card__meta{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); white-space:nowrap; margin-left:auto; margin-right:6px; }
+  .anchor-card__chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .anchor-abbr{ font-family:var(--font-mono); font-size:10.5px; padding:4px 9px; border-radius:6px; border:1px solid var(--border-subtle); background:var(--surface-hover); color:var(--text); display:inline-flex; align-items:center; gap:6px; }
+
+  .popover-wrap{ display:flex; justify-content:flex-end; margin-top:12px; padding-right:8px; }
+  .popover{
+    position:relative;
+    width:min(300px,100%); background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; box-shadow:var(--shadow); padding:16px 18px;
+  }
+  .popover::before{
+    content:""; position:absolute; top:-8px; right:32px;
+    width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent;
+    border-bottom:8px solid var(--border);
+  }
+  .popover::after{
+    content:""; position:absolute; top:-6.5px; right:33px;
+    width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent;
+    border-bottom:7px solid var(--surface);
+  }
+  .popover-title{ font-weight:600; font-size:14px; margin:0 0 7px; }
+  .popover-body{ color:var(--text-2); font-size:12.5px; line-height:1.6; margin:0 0 15px; }
+  .popover-actions{ display:flex; gap:8px; justify-content:flex-end; }
+
+  .lockstate-row{ display:flex; flex-wrap:wrap; gap:28px; margin-top: var(--sp-2); }
+  .lockstate-card{ padding:18px; flex:1 1 220px; }
+  .lockstate-caption{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-2); margin-bottom:14px; }
+  .locked-chip{
+    display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:var(--radius-pill);
+    background:var(--surface-hover); border:1px solid var(--border); color:var(--text-2);
+    font-family:var(--font-mono); font-size:11.5px;
+  }
+  .locked-chip svg{ width:12px; height:12px; flex:none; }
+  .locked-chip b{ color:var(--text); font-weight:600; }
+  .lockstate-hoverrow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .unlock-btn{
+    all:unset; font-family:var(--font-mono); font-size:10.5px; color:var(--accent); cursor:pointer;
+    padding:6px 10px; border:1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius:var(--radius-pill);
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .unlock-btn:hover{ background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .unlock-btn svg{ width:11px; height:11px; }
+
+  /* ============================================================
+     5 — TOOLTIPS
+     ============================================================ */
+  .frag-stack{ display:flex; flex-direction:column; gap:var(--sp-4); max-height:100%; overflow-y:auto; }
+  .frag-block{ width:min(460px,100%); }
+  .frag-row{
+    display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:12px 14px; box-shadow:var(--shadow);
+  }
+  .frag-abbr{
+    font-family:var(--font-mono); font-weight:700; font-size:10.5px; color:var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    padding:4px 8px; border-radius:6px; flex:none;
+  }
+  .frag-name{ flex:1; min-width:0; font-size:13px; }
+  .frag-name .code{ display:block; font-family:var(--font-mono); font-size:10px; color:var(--text-2); margin-top:2px; }
+
+  .tt-wrap{ display:flex; justify-content:flex-end; margin-top:12px; padding-right:36px; }
+  .tt-bubble{
+    position:relative; max-width:270px; background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; box-shadow:var(--shadow); padding:11px 14px; font-size:12px; color:var(--text-2); line-height:1.55;
+  }
+  .tt-bubble::before{
+    content:""; position:absolute; top:-7px; right:26px;
+    width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent;
+    border-bottom:7px solid var(--border);
+  }
+  .tt-bubble::after{
+    content:""; position:absolute; top:-5.5px; right:27px;
+    width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent;
+    border-bottom:6px solid var(--surface);
+  }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 780px){
+    .io-grid{ grid-template-columns:1fr; }
+    .io-card + .io-card{ border-left:none; border-top:1px solid var(--border-subtle); }
+    .pboard-grid{ grid-template-columns:repeat(2,1fr); }
+    .anchor-card__meta{ margin-left:0; }
+    .confirm-actions, .dl-actions{ justify-content:stretch; }
+    .confirm-actions .btn, .dl-actions .btn{ flex:1; }
+  }
+  @media (max-width: 560px){
+    .pboard-grid{ grid-template-columns:1fr; }
+    .popover-wrap, .tt-wrap{ justify-content:center; padding-right:0; }
+    .popover::before, .popover::after, .tt-bubble::before, .tt-bubble::after{ right:auto; left:32px; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·001E</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#d-reset">01 · Reset</a>
+        <a href="#d-io">02 · Exportar / importar</a>
+        <a href="#d-download">03 · Descarga</a>
+        <a href="#d-lock">04 · Finalizar cuatrimestre</a>
+        <a href="#d-tooltips">05 · Tooltips</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN — MÓDULO E</div>
+      <h1>Diálogos y <em>overlays</em> del plan de cursada</h1>
+      <p class="dek">Galería de los cinco modales/popovers/tooltips propuestos para el planner de Módulo E ("Plan de cursada"), cada uno abierto en contexto sobre un tablero fantasma del combinador. Reusa el chrome ya aprobado en <span class="mono">foundations.html</span> y <span class="mono">module-c-modal.html</span> — mismo panel, mismos botones, mismo scrim.</p>
+      <div class="hero-meta">
+        <span><b>5</b> grupos de overlays</span>
+        <span>Curso de referencia: <b>3.º cuatrimestre 2026</b></span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. CONFIRM · RESET -->
+    <!-- ============================================================ -->
+    <section class="spec" id="d-reset">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Diálogo de confirmación
+      </div>
+      <h2 class="spec-title">Restablecer, sin perder el trabajo por accidente</h2>
+      <p class="spec-dek">Hoy "Restablecer" dispara un <span class="mono">window.confirm()</span> nativo del navegador — sin estilo, sin detalle de qué se borra exactamente. Esta pieza lo reemplaza por un modal propio del sistema, con el mismo patrón de scrim que ya usa el resto del planner.</p>
+
+      <div class="ov-label">DIALOG · RESET</div>
+      <div class="stage-label">Fondo: tablero del combinador con <b>Restablecer</b> como disparador (atenuado detrás del scrim)</div>
+
+      <div class="stage" id="stageReset">
+        <div class="pboard" aria-hidden="true">
+          <div class="pboard-toolbar">
+            <div class="pboard-btn w2"></div>
+            <div class="pboard-btn w3"></div>
+            <div class="pboard-grow"></div>
+            <div class="pboard-btn w1"></div>
+          </div>
+          <div class="pboard-grid">
+            <div class="pboard-card">
+              <div class="pboard-card__tag">1C 26</div>
+              <div class="pboard-card__name">1.er cuatrimestre</div>
+              <div class="pboard-row w80"></div>
+              <div class="pboard-row w60"></div>
+              <div class="pboard-row w95"></div>
+            </div>
+            <div class="pboard-card">
+              <div class="pboard-card__tag">2C 26</div>
+              <div class="pboard-card__name">2.º cuatrimestre</div>
+              <div class="pboard-row w60"></div>
+              <div class="pboard-row w95"></div>
+              <div class="pboard-row w45"></div>
+            </div>
+            <div class="pboard-card">
+              <div class="pboard-card__tag">3C 26</div>
+              <div class="pboard-card__name">3.er cuatrimestre</div>
+              <div class="pboard-row w95"></div>
+              <div class="pboard-row w80"></div>
+            </div>
+          </div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+        <button class="reopen-btn" type="button" data-reopen="stageReset">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9 12h6M12 9v6"/></svg>
+          Reabrir modal
+        </button>
+
+        <div class="stage-modalwrap" data-wrap="stageReset">
+          <div class="confirm-panel" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+            <button class="modal-close" type="button" data-close="stageReset" aria-label="Cerrar modal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            </button>
+            <div class="confirm-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3.6 21 19.2H3L12 3.6Z" stroke-linejoin="round"/><path d="M12 9.6v4.2"/><circle cx="12" cy="16.6" r=".9" fill="currentColor" stroke="none"/></svg>
+            </div>
+            <h3 class="confirm-title" id="resetTitle">¿Restablecer el plan de cursada?</h3>
+            <p class="confirm-body">Se borran las materias agregadas y los ajustes por cuatrimestre. Esta acción no se puede deshacer.</p>
+            <div class="confirm-actions">
+              <button class="btn btn-secondary" type="button" data-close="stageReset">Cancelar</button>
+              <button class="btn btn-danger" type="button" data-close="stageReset">Restablecer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. IO MODAL · EXPORTAR / IMPORTAR -->
+    <!-- ============================================================ -->
+    <section class="spec" id="d-io">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Diálogo de hub
+      </div>
+      <h2 class="spec-title">Un solo modal para exportar, imprimir e importar</h2>
+      <p class="spec-dek">Reúne las dos cosas que hoy conviven sueltas en el toolbar: el <b>documento</b> del plan (para leer o imprimir) y las <b>preferencias</b> portables (un .json con todo el estado, para llevar el plan a otro dispositivo).</p>
+
+      <div class="ov-label">DIALOG · IMPORTAR / EXPORTAR</div>
+      <div class="stage-label">Fondo: mismo tablero, disparado desde <b>Exportar / importar</b> en el toolbar</div>
+
+      <div class="stage" id="stageIO" style="min-height:640px">
+        <div class="pboard" aria-hidden="true">
+          <div class="pboard-toolbar">
+            <div class="pboard-btn w2"></div>
+            <div class="pboard-btn w3"></div>
+            <div class="pboard-grow"></div>
+            <div class="pboard-btn w1"></div>
+          </div>
+          <div class="pboard-grid">
+            <div class="pboard-card"><div class="pboard-card__tag">1C 26</div><div class="pboard-card__name">1.er cuatrimestre</div><div class="pboard-row w80"></div><div class="pboard-row w60"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">2C 26</div><div class="pboard-card__name">2.º cuatrimestre</div><div class="pboard-row w60"></div><div class="pboard-row w95"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">3C 26</div><div class="pboard-card__name">3.er cuatrimestre</div><div class="pboard-row w95"></div><div class="pboard-row w80"></div></div>
+          </div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+        <button class="reopen-btn" type="button" data-reopen="stageIO">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9 12h6M12 9v6"/></svg>
+          Reabrir modal
+        </button>
+
+        <div class="stage-modalwrap" data-wrap="stageIO">
+          <div class="io-panel" role="dialog" aria-modal="true" aria-labelledby="ioTitle">
+            <button class="modal-close" type="button" data-close="stageIO" aria-label="Cerrar modal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            </button>
+            <div class="io-head">
+              <span class="io-kick">Plan de cursada</span>
+              <h3 id="ioTitle">Exportar o importar</h3>
+              <p>Descargá tu plan para leerlo, imprimirlo o compartirlo — o guardá y restaurá tus preferencias entre dispositivos.</p>
+            </div>
+
+            <div class="io-grid">
+              <section class="io-card">
+                <span class="io-card-kick">Documento</span>
+                <h4>Tu plan, listo para leer o imprimir</h4>
+                <p>Calendarios de cada cuatrimestre y, por materia, un resumen con los puntos clave del programa. Elegí qué cuatrimestres incluir.</p>
+
+                <div class="io-pickhead">
+                  <span class="io-minilbl">Cuatrimestres</span>
+                  <button type="button" class="io-all">Ninguno</button>
+                </div>
+                <div class="io-chips">
+                  <span class="io-chip is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 12.5l5 5L20 6.5"/></svg>1C 26<i>5</i></span>
+                  <span class="io-chip is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 12.5l5 5L20 6.5"/></svg>2C 26<i>4</i></span>
+                  <span class="io-chip is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 12.5l5 5L20 6.5"/></svg>3C 26<i>4</i></span>
+                  <span class="io-chip">4C 26<i>3</i></span>
+                </div>
+
+                <div class="io-acts">
+                  <button class="btn btn-secondary btn-sm" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+                    Exportar HTML
+                  </button>
+                  <button class="btn btn-primary btn-sm" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 9V4h10v5"/><path d="M7 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="15" width="10" height="5" rx="1"/></svg>
+                    Descargar PDF
+                  </button>
+                </div>
+              </section>
+
+              <section class="io-card">
+                <span class="io-card-kick">Preferencias</span>
+                <h4>Llevá tu plan a otro lado</h4>
+                <p>Un archivo <b>.json</b> con todo tu estado: materias agregadas, topes por cuatrimestre, método de optimización y cuatrimestres finalizados.</p>
+
+                <div class="io-acts">
+                  <button class="btn btn-secondary btn-sm" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>
+                    Exportar (.json)
+                  </button>
+                </div>
+
+                <label class="dropzone" for="ioFileInput" tabindex="0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 19h14"/></svg>
+                  <span><b>Importar</b> — arrastrá tu .json acá o hacé click para buscarlo</span>
+                  <input id="ioFileInput" type="file" accept="application/json,.json" hidden />
+                </label>
+                <p class="io-note">Importar reemplaza el plan actual en este navegador.</p>
+              </section>
+            </div>
+
+            <div class="io-legend">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/></svg>
+              <span><b>Este modal cubre todo lo de "compartir el plan":</b> el PDF se abre en el diálogo de impresión del navegador, listo para guardar o enviar; el HTML es una copia liviana para leer offline; y el .json de preferencias es la única forma de mover tu plan completo — con topes, método y cuatrimestres finalizados — a otro navegador o dispositivo.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. DOWNLOAD CHOICE -->
+    <!-- ============================================================ -->
+    <section class="spec" id="d-download">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Diálogo de opciones
+      </div>
+      <h2 class="spec-title">Elegir qué descargar, antes de generar el archivo</h2>
+      <p class="spec-dek">Reusa la lógica de selección del <span class="mono">Course Plan Modal</span> (Módulo C, la elección de qué bajar de un curso puntual) pero a escala del plan completo: tres alcances claros, cada uno con su ícono y su descripción de una línea.</p>
+
+      <div class="ov-label">DIALOG · DESCARGA</div>
+      <div class="stage-label">Fondo: mismo tablero, disparado desde <b>Descargar PDF</b></div>
+
+      <div class="stage" id="stageDL">
+        <div class="pboard" aria-hidden="true">
+          <div class="pboard-toolbar">
+            <div class="pboard-btn w2"></div>
+            <div class="pboard-btn w3"></div>
+            <div class="pboard-grow"></div>
+            <div class="pboard-btn w1"></div>
+          </div>
+          <div class="pboard-grid">
+            <div class="pboard-card"><div class="pboard-card__tag">1C 26</div><div class="pboard-card__name">1.er cuatrimestre</div><div class="pboard-row w80"></div><div class="pboard-row w60"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">2C 26</div><div class="pboard-card__name">2.º cuatrimestre</div><div class="pboard-row w60"></div><div class="pboard-row w95"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">3C 26</div><div class="pboard-card__name">3.er cuatrimestre</div><div class="pboard-row w95"></div><div class="pboard-row w80"></div></div>
+          </div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+        <button class="reopen-btn" type="button" data-reopen="stageDL">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9 12h6M12 9v6"/></svg>
+          Reabrir modal
+        </button>
+
+        <div class="stage-modalwrap" data-wrap="stageDL">
+          <div class="dl-panel" role="dialog" aria-modal="true" aria-labelledby="dlTitle">
+            <button class="modal-close" type="button" data-close="stageDL" aria-label="Cerrar modal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            </button>
+            <span class="dl-kick">Plan de cursada</span>
+            <h3 id="dlTitle">¿Qué querés descargar?</h3>
+            <p>Elegí el contenido del archivo. Podés combinar la grilla semanal con el programa de cada materia.</p>
+
+            <div class="dl-options" role="radiogroup" aria-label="Contenido a descargar">
+              <label class="dl-opt">
+                <span class="dl-opt-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/></svg>
+                </span>
+                <span class="dl-opt-text">
+                  <span class="dl-opt-title">Solo calendario</span>
+                  <span class="dl-opt-desc">La grilla semanal de cada cuatrimestre, sin el detalle de las materias.</span>
+                </span>
+                <input type="radio" name="dlChoice" value="cal" style="position:absolute;opacity:0;pointer-events:none" />
+                <span class="dl-opt-radio" aria-hidden="true"></span>
+              </label>
+
+              <label class="dl-opt is-selected">
+                <span class="dl-opt-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5M3 10.5l9 5 9-5"/></svg>
+                </span>
+                <span class="dl-opt-text">
+                  <span class="dl-opt-title">Calendario + programa</span>
+                  <span class="dl-opt-desc">Grilla semanal más el resumen del programa de cada materia incluida.</span>
+                </span>
+                <input type="radio" name="dlChoice" value="both" checked style="position:absolute;opacity:0;pointer-events:none" />
+                <span class="dl-opt-radio" aria-hidden="true"></span>
+              </label>
+
+              <label class="dl-opt">
+                <span class="dl-opt-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+                </span>
+                <span class="dl-opt-text">
+                  <span class="dl-opt-title">Solo programa</span>
+                  <span class="dl-opt-desc">El resumen del programa de cada materia, sin la grilla semanal.</span>
+                </span>
+                <input type="radio" name="dlChoice" value="programa" style="position:absolute;opacity:0;pointer-events:none" />
+                <span class="dl-opt-radio" aria-hidden="true"></span>
+              </label>
+            </div>
+
+            <div class="dl-actions">
+              <button class="btn btn-secondary" type="button" data-close="stageDL">Cancelar</button>
+              <button class="btn btn-primary" type="button" data-close="stageDL">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></svg>
+                Descargar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. POPOVER · FINALIZAR CUATRIMESTRE -->
+    <!-- ============================================================ -->
+    <section class="spec" id="d-lock">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 04 — Popover de confirmación
+      </div>
+      <h2 class="spec-title">Congelar un cuatrimestre para iterar el resto sin miedo</h2>
+      <p class="spec-dek">Propuesta nueva, sin precedente en la app actual: el optimizador re-arma el plan entero cada vez que cambiás algo, incluidos cuatrimestres que ya diste por cerrados. "Finalizar" saca ese cuatrimestre de la jugada — el optimizador deja de tocarlo mientras seguís ajustando el resto.</p>
+
+      <div class="ov-label">POPOVER · FINALIZAR CUATRIMESTRE</div>
+      <div class="stage-label">Fondo: tablero atenuado · la tarjeta de <b>3.er cuatrimestre</b> queda al frente, con su popover abierto</div>
+
+      <div class="stage" id="stageLock" style="min-height:480px">
+        <div class="pboard" aria-hidden="true">
+          <div class="pboard-toolbar">
+            <div class="pboard-btn w2"></div>
+            <div class="pboard-btn w3"></div>
+          </div>
+          <div class="pboard-grid">
+            <div class="pboard-card"><div class="pboard-card__tag">1C 26</div><div class="pboard-card__name">1.er cuatrimestre</div><div class="pboard-row w80"></div><div class="pboard-row w60"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">2C 26</div><div class="pboard-card__name">2.º cuatrimestre</div><div class="pboard-row w60"></div><div class="pboard-row w95"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">4C 26</div><div class="pboard-card__name">4.º cuatrimestre</div><div class="pboard-row w45"></div><div class="pboard-row w80"></div></div>
+          </div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+        <button class="reopen-btn" type="button" data-reopen="stageLock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9 12h6M12 9v6"/></svg>
+          Reabrir popover
+        </button>
+
+        <div class="stage-modalwrap top" data-wrap="stageLock">
+          <div class="anchor-wrap">
+            <div class="anchor-card">
+              <div class="anchor-card__h">
+                <div class="anchor-card__when">
+                  <span class="anchor-card__tag">3C 26</span>
+                  <h3>3.er cuatrimestre 2026</h3>
+                </div>
+                <span class="anchor-card__meta"><b>18</b> cr · <b>4</b> mat</span>
+                <button class="btn btn-secondary btn-sm" type="button" data-close="stageLock">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+                  Finalizar cuatrimestre
+                </button>
+              </div>
+              <div class="anchor-card__chips">
+                <span class="anchor-abbr"><span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span>VisInfo</span>
+                <span class="anchor-abbr"><span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>ML</span>
+                <span class="anchor-abbr"><span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>LLM</span>
+                <span class="anchor-abbr"><span class="minor-badge" style="--m-color:var(--minor-arq)">ARQ</span>ArqMS</span>
+              </div>
+            </div>
+
+            <div class="popover-wrap">
+              <div class="popover" role="dialog" aria-labelledby="lockTitle">
+                <p class="popover-title" id="lockTitle">¿Finalizar 3.er cuatrimestre?</p>
+                <p class="popover-body">El optimizador dejará de tocar este cuatrimestre mientras iterás el resto. Podés desbloquearlo cuando quieras.</p>
+                <div class="popover-actions">
+                  <button class="btn btn-secondary btn-sm" type="button" data-close="stageLock">Cancelar</button>
+                  <button class="btn btn-primary btn-sm" type="button" data-close="stageLock">Finalizar cuatrimestre</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ov-label sub">ESTADO RESULTANTE · CUATRIMESTRE FINALIZADO</div>
+      <div class="lockstate-row">
+        <div class="card lockstate-card">
+          <div class="lockstate-caption">Reposo</div>
+          <span class="locked-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <b>3.er cuatrimestre</b> · finalizado
+          </span>
+        </div>
+        <div class="card lockstate-card">
+          <div class="lockstate-caption">Hover — aparece "Desbloquear"</div>
+          <div class="lockstate-hoverrow">
+            <span class="locked-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+              <b>3.er cuatrimestre</b> · finalizado
+            </span>
+            <button class="unlock-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V9a4 4 0 0 1 7.4-2"/></svg>
+              Desbloquear
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 5. TOOLTIPS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="d-tooltips">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 05 — Tooltips
+      </div>
+      <h2 class="spec-title">Dos tooltips que explican qué significa "auto"</h2>
+      <p class="spec-dek">Los dos selects más usados del pool de materias ofrecen "auto" como opción por defecto, delegando la decisión al combinador. Estos tooltips aclaran, en el punto exacto de la decisión, qué hace el optimizador cuando lo dejás en automático.</p>
+
+      <div class="ov-label">TOOLTIP · AUTO (CUATRIMESTRE) + COMISIONES</div>
+
+      <div class="stage" id="stageTT" style="min-height:500px">
+        <div class="pboard" aria-hidden="true">
+          <div class="pboard-toolbar">
+            <div class="pboard-btn w2"></div>
+          </div>
+          <div class="pboard-grid">
+            <div class="pboard-card"><div class="pboard-card__tag">POOL</div><div class="pboard-card__name">Obligatorias</div><div class="pboard-row w80"></div><div class="pboard-row w60"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">POOL</div><div class="pboard-card__name">Electivas</div><div class="pboard-row w60"></div><div class="pboard-row w95"></div></div>
+            <div class="pboard-card"><div class="pboard-card__tag">3C 26</div><div class="pboard-card__name">3.er cuatrimestre</div><div class="pboard-row w95"></div><div class="pboard-row w80"></div></div>
+          </div>
+        </div>
+        <div class="stage-scrim" aria-hidden="true"></div>
+
+        <div class="stage-modalwrap">
+          <div class="frag-stack">
+
+            <div class="frag-block">
+              <div class="stage-label" style="margin-bottom:8px">Selector de cuatrimestre — "Fijar cuatrimestre"</div>
+              <div class="frag-row">
+                <span class="frag-abbr">LLM</span>
+                <span class="frag-name">Large Language Models<span class="code">73.69</span></span>
+                <select class="csel-live" aria-label="Fijar cuatrimestre de Large Language Models">
+                  <option>auto</option>
+                  <option>1.er cuatrimestre 2026</option>
+                  <option>2.º cuatrimestre 2026</option>
+                  <option>3.er cuatrimestre 2026</option>
+                </select>
+              </div>
+              <div class="tt-wrap">
+                <div class="tt-bubble">"Auto" = lo ubica el optimizador en el mejor cuatrimestre según tu método elegido.</div>
+              </div>
+            </div>
+
+            <div class="frag-block">
+              <div class="stage-label" style="margin-bottom:8px">Selector de comisión — Visualización de Información (2 comisiones)</div>
+              <div class="frag-row">
+                <span class="frag-abbr">VisInfo</span>
+                <span class="frag-name">Visualización de Información<span class="code">72.74</span></span>
+                <select class="csel-live" aria-label="Fijar comisión de Visualización de Información">
+                  <option>com. auto</option>
+                  <option>com S · Presencial</option>
+                  <option>com S2 · Presencial</option>
+                </select>
+              </div>
+              <div class="tt-wrap">
+                <div class="tt-bubble">Elegí una comisión fija o dejá "auto" para que el combinador elija.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Módulo E · overlays del plan de cursada</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+
+    (function () {
+      // cerrar / reabrir overlay dentro de cada stage (demo funcional, igual patrón que module-c-modal.html)
+      document.querySelectorAll('[data-close]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.getAttribute('data-close');
+          var stage = document.getElementById(id);
+          if (!stage) return;
+          var wrap = stage.querySelector('[data-wrap="' + id + '"]');
+          if (wrap) wrap.classList.add('hidden');
+          var reopen = stage.querySelector('[data-reopen="' + id + '"]');
+          if (reopen) reopen.style.display = 'inline-flex';
+        });
+      });
+      document.querySelectorAll('[data-reopen]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.getAttribute('data-reopen');
+          var stage = document.getElementById(id);
+          if (!stage) return;
+          var wrap = stage.querySelector('[data-wrap="' + id + '"]');
+          if (wrap) wrap.classList.remove('hidden');
+          b.style.display = 'none';
+        });
+      });
+
+      // selección de opción en el diálogo de descarga (fig. 03)
+      document.querySelectorAll('.dl-opt').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          var group = opt.closest('.dl-options');
+          if (!group) return;
+          group.querySelectorAll('.dl-opt').forEach(function (o) {
+            o.classList.remove('is-selected');
+          });
+          opt.classList.add('is-selected');
+          var input = opt.querySelector('input[type="radio"]');
+          if (input) input.checked = true;
+        });
+      });
+
+      // toggle visual de los chips de cuatrimestre en el modal IO (fig. 02)
+      document.querySelectorAll('.io-chip').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          chip.classList.toggle('is-on');
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

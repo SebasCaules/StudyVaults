@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Cards de curso rediseñadas (Módulo C)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults
+     Mismos valores que foundations.html — 6 hex base:
+     brown #241208 · zinc #27272a · blue #92cff2 ·
+     gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    /* minor badges — fijos entre temas, texto brown siempre encima */
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    --k-formula: #7cc0af;
+    --k-method: #d8b279;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-formula: #227762;
+    --k-method: #8c6121;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- secondary nav ---------- */
+  .subnav{ border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2);
+    max-width: 20ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:66ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.65rem, 1.6vw + 1rem, 2.35rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:72ch; margin: 0 0 var(--sp-4); font-size:1.02rem; }
+  .cutline{ border:none; border-top:1px solid var(--border); margin: var(--sp-4) 0; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+  }
+  .pad{ padding: 20px 22px; }
+
+  /* ---------- minor badges (Fundamentos §4) ---------- */
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:11px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:4px 10px; border-radius:var(--radius-pill);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+    white-space:nowrap;
+  }
+  .minor-dot{
+    width:14px; height:14px; border-radius:50%; background:var(--m-color);
+    box-shadow: 0 0 0 2px var(--canvas), 0 0 0 3px color-mix(in srgb, var(--minor-text) 20%, transparent);
+    flex:none;
+  }
+
+  /* ---------- before/after chips (Fundamentos §5) ---------- */
+  .ba-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  .ba-col-label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .ba-col-label.before{ color:var(--base-gray); }
+  .ba-col-label.after{ color:var(--accent); }
+  .ba-col-label .count{ font-weight:700; }
+  .ba-col-label .line{ flex:1; height:1px; background:currentColor; opacity:.4; }
+
+  .course-card{ padding:18px 20px; }
+  .course-card .top{ display:flex; justify-content:space-between; gap:10px; margin-bottom:12px; }
+  .course-title{ font-weight:600; font-size:15.5px; line-height:1.35; }
+  .course-code{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  .chips-before{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.02em;
+    padding:4px 8px; border-radius:5px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+  }
+  .chip.strong{ color:var(--text); }
+  .chip.go{ color:var(--status-go); border-color: color-mix(in srgb, var(--status-go) 40%, transparent); }
+  .chip.wait{ color:var(--status-wait); border-color: color-mix(in srgb, var(--status-wait) 40%, transparent); }
+  .chip.accent{ color:var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+  .row-after{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .abbr{ font-family:var(--font-mono); font-weight:700; font-size:13.5px; letter-spacing:.01em; }
+  .credits-chip{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); padding:3px 8px; border-radius:5px; white-space:nowrap; }
+  .avail-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .avail-dot.go{ background:var(--status-go); box-shadow:0 0 0 3px color-mix(in srgb, var(--status-go) 22%, transparent); }
+  .avail-dot.wait{ background:var(--status-wait); box-shadow:0 0 0 3px color-mix(in srgb, var(--status-wait) 22%, transparent); }
+  .promo-icon{ display:inline-flex; width:20px; height:20px; align-items:center; justify-content:center; border-radius:5px; flex:none; }
+  .promo-icon svg{ width:12px; height:12px; }
+  .promo-icon.check{ background: color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); }
+  .promo-icon.final{ background: color-mix(in srgb, var(--text-2) 18%, transparent); color:var(--text-2); }
+  .after-note{ margin-top:10px; font-size:12.5px; color:var(--text-2); }
+
+  /* ---------- §leyenda ---------- */
+  .legend-grid{ display:grid; grid-template-columns: 1.1fr 1.4fr 1fr; gap:0; }
+  .legend-col{ padding:20px 22px; }
+  .legend-col + .legend-col{ border-left:1px solid var(--border-subtle); }
+  .legend-h{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-2); margin-bottom:14px; }
+  .legend-row{ display:flex; align-items:center; gap:10px; font-size:14px; margin-bottom:11px; }
+  .legend-row:last-child{ margin-bottom:0; }
+  .legend-row .lbl-hex{ color:var(--text-2); font-family:var(--font-mono); font-size:11px; margin-left:2px; }
+
+  /* ---------- §electivas / obligatorias grid ---------- */
+  .card-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+  .grid-card{ padding:18px 20px; display:flex; flex-direction:column; gap:10px; }
+  .grid-card .course-code{ display:block; }
+  .grid-title{ margin:0; font-size:15px; line-height:1.32; }
+  .title-sub{ color:var(--text-2); font-weight:400; font-size:12.5px; }
+  .grid-card .row-after{ margin-top:auto; padding-top:2px; }
+  .req-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--status-wait); margin:0; }
+  .badges-wrap{ display:inline-flex; gap:5px; flex-wrap:wrap; }
+
+  .oblig-grid{ grid-template-columns:repeat(3, 1fr); }
+  .no-minor-note{ font-family:var(--font-mono); font-size:10px; color:var(--text-2); letter-spacing:.03em; }
+
+  section.spec + .cutline{ margin-top:0; }
+
+  @media (max-width: 900px){
+    .card-grid, .oblig-grid{ grid-template-columns:repeat(2, 1fr); }
+    .legend-grid{ grid-template-columns:1fr; }
+    .legend-col + .legend-col{ border-left:none; border-top:1px solid var(--border-subtle); }
+  }
+  @media (max-width: 860px){
+    .ba-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 560px){
+    .card-grid, .oblig-grid{ grid-template-columns:1fr; }
+    .hero h1{ max-width:none; }
+  }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·MC</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#leyenda">00 · Leyenda</a>
+        <a href="#s1">01 · Antes / Después</a>
+        <a href="#s2">02 · Grilla de electivas</a>
+        <a href="#s3">03 · Obligatorias</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">MÓDULO C · MOCKUP DE REVISIÓN</div>
+      <h1>Cards de curso, <em>simplificadas</em></h1>
+      <p class="dek">Hoy cada card del planner repite código, créditos, abreviatura, área, horario, disponibilidad y régimen como 7 a 11 chips de texto sueltos. Esta propuesta se apoya en el sistema de Fundamentos (badges de minor + punto de disponibilidad + ícono de régimen) y agrega el requisito nuevo: toda electiva muestra con qué minor(es) suma.</p>
+      <div class="hero-meta">
+        <span><b>v0.1</b> — mockup standalone, no forma parte del build</span>
+        <span>3 secciones + leyenda</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- LEYENDA -->
+    <!-- ============================================================ -->
+    <section class="spec" id="leyenda" style="padding-top:0">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        Cómo leer una card
+      </div>
+      <h2 class="spec-title">Leyenda</h2>
+      <p class="spec-dek">Tres señales reemplazan la mayoría de los chips de texto: un punto de disponibilidad, un ícono de régimen y el badge de minor (con sus cuatro iniciales fijas).</p>
+
+      <div class="card legend-grid">
+        <div class="legend-col">
+          <div class="legend-h">Punto de disponibilidad</div>
+          <div class="legend-row"><span class="avail-dot go" role="img" aria-label="Cursable"></span> Cursable — cumplís correlativas</div>
+          <div class="legend-row"><span class="avail-dot wait" role="img" aria-label="Requisitos pendientes"></span> Requisitos pendientes</div>
+        </div>
+        <div class="legend-col">
+          <div class="legend-h">Badge de minor (iniciales fijas)</div>
+          <div class="legend-row"><span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span> Ciencia de Datos <span class="lbl-hex">#85A2C2</span></div>
+          <div class="legend-row"><span class="minor-badge" style="--m-color:var(--minor-irv)">IRV</span> Imágenes y Realidad Virtual <span class="lbl-hex">#C592AB</span></div>
+          <div class="legend-row"><span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span> Inteligencia Artificial <span class="lbl-hex">#A9B27E</span></div>
+          <div class="legend-row"><span class="minor-badge" style="--m-color:var(--minor-arq)">ARQ</span> Arquitectura de Software <span class="lbl-hex">#A497C0</span></div>
+        </div>
+        <div class="legend-col">
+          <div class="legend-h">Ícono de régimen (uno solo)</div>
+          <div class="legend-row"><span class="promo-icon check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg></span> Promociona</div>
+          <div class="legend-row"><span class="promo-icon final"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/></svg></span> Con final</div>
+        </div>
+      </div>
+      <p class="after-note" style="margin-top:10px">Un curso con más de un minor muestra hasta 3 badges chicos en fila — ver la grilla de electivas más abajo.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. ANTES / DESPUÉS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s1">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Patrón
+      </div>
+      <h2 class="spec-title">Una electiva real: de 11 chips a 5 señales</h2>
+      <p class="spec-dek">"Aprendizaje Automático (Machine Learning)" — 72.75, tal como aparece hoy en el planner de electivas, y su rediseño aplicando el sistema de Fundamentos §5 con el badge de minor sumado.</p>
+
+      <div class="ba-grid">
+        <div>
+          <div class="ba-col-label before"><span class="count">11 chips</span><span class="line"></span></div>
+          <div class="card course-card">
+            <div class="top">
+              <div class="course-title">Aprendizaje Automático (Machine Learning)</div>
+            </div>
+            <div class="chips-before">
+              <span class="chip">72.75</span>
+              <span class="chip">3 cr</span>
+              <span class="chip strong">APR. AUTOMÁTICO</span>
+              <span class="chip">Inteligenc…</span>
+              <span class="chip">Horario: Ma 18–21</span>
+              <span class="chip go">Disponible</span>
+              <span class="chip accent">Promociona</span>
+              <span class="chip">Con final</span>
+              <span class="chip">Asistencia</span>
+              <span class="chip">Parcial</span>
+              <span class="chip">TP</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="ba-col-label after"><span class="count">5 señales</span><span class="line"></span></div>
+          <div class="card course-card">
+            <div class="top">
+              <div class="course-title">Aprendizaje Automático (Machine Learning)</div>
+            </div>
+            <div class="row-after">
+              <span class="abbr">APR AUTOMÁTICO</span>
+              <span class="credits-chip">3 cr</span>
+              <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+              <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+              <span class="promo-icon check" role="img" aria-label="Promociona" title="Promociona">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+              </span>
+            </div>
+            <p class="after-note">Abreviatura + créditos + badge de minor + un punto de estado + un ícono de régimen. Horario y correlativas exactas quedan en el detalle del curso, a un click.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. GRILLA DE ELECTIVAS (DESPUÉS) -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s2">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Grilla
+      </div>
+      <h2 class="spec-title">Electivas — grilla completa, después</h2>
+      <p class="spec-dek">Código mono, nombre serif, créditos, badge(s) de minor — la señal que indica con qué minor(es) suma la materia —, punto de disponibilidad e ícono de régimen. Las electivas de más de un minor muestran varios badges en fila.</p>
+
+      <div class="card-grid">
+
+        <article class="card grid-card">
+          <span class="course-code">72.75</span>
+          <h3 class="course-title grid-title">Aprendizaje Automático <span class="title-sub">(Machine Learning)</span></h3>
+          <div class="row-after">
+            <span class="credits-chip">3 cr</span>
+            <span class="badges-wrap"><span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span></span>
+            <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+            <span class="promo-icon check" role="img" aria-label="Promociona" title="Promociona">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            </span>
+          </div>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">72.80</span>
+          <h3 class="course-title grid-title">Big Data</h3>
+          <div class="row-after">
+            <span class="credits-chip">3 cr</span>
+            <span class="badges-wrap">
+              <span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span>
+              <span class="minor-badge" style="--m-color:var(--minor-irv)">IRV</span>
+              <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+            </span>
+            <span class="avail-dot wait" role="img" aria-label="Requisitos pendientes" title="Requisitos pendientes"></span>
+            <span class="promo-icon final" role="img" aria-label="Con final" title="Con final">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/></svg>
+            </span>
+          </div>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">23.15</span>
+          <h3 class="course-title grid-title">Realidad Virtual</h3>
+          <div class="row-after">
+            <span class="credits-chip">3 cr</span>
+            <span class="badges-wrap">
+              <span class="minor-badge" style="--m-color:var(--minor-irv)">IRV</span>
+              <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+            </span>
+            <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+            <span class="promo-icon check" role="img" aria-label="Promociona" title="Promociona">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            </span>
+          </div>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">25.04</span>
+          <h3 class="course-title grid-title">Computación Cuántica</h3>
+          <div class="row-after">
+            <span class="credits-chip">6 cr</span>
+            <span class="badges-wrap"><span class="minor-badge" style="--m-color:var(--minor-arq)">ARQ</span></span>
+            <span class="avail-dot wait" role="img" aria-label="Requisitos pendientes" title="Requisitos pendientes: 144 créditos aprobados"></span>
+            <span class="promo-icon final" role="img" aria-label="Con final" title="Con final">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/></svg>
+            </span>
+          </div>
+          <p class="req-note">requiere 144 cr aprobados</p>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">82.08</span>
+          <h3 class="course-title grid-title">Cloud Computing</h3>
+          <div class="row-after">
+            <span class="credits-chip">3 cr</span>
+            <span class="badges-wrap">
+              <span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span>
+              <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+              <span class="minor-badge" style="--m-color:var(--minor-arq)">ARQ</span>
+            </span>
+            <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+            <span class="promo-icon check" role="img" aria-label="Promociona" title="Promociona">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            </span>
+          </div>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">73.65</span>
+          <h3 class="course-title grid-title">Procesamiento del Lenguaje Natural</h3>
+          <div class="row-after">
+            <span class="credits-chip">3 cr</span>
+            <span class="badges-wrap"><span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span></span>
+            <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+            <span class="promo-icon final" role="img" aria-label="Con final" title="Con final">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/></svg>
+            </span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. OBLIGATORIAS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s3">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Grilla
+      </div>
+      <h2 class="spec-title">Obligatorias — mismo sistema, sin badge de minor</h2>
+      <p class="spec-dek">Las materias obligatorias no completan minors: la card usa el mismo código, nombre, créditos, punto de disponibilidad e ícono de régimen, pero sin badge — el hueco no se rellena con nada.</p>
+
+      <div class="card-grid oblig-grid">
+
+        <article class="card grid-card">
+          <span class="course-code">72.34</span>
+          <h3 class="course-title grid-title">Estructura de Datos y Algoritmos</h3>
+          <div class="row-after">
+            <span class="credits-chip">6 cr</span>
+            <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+            <span class="promo-icon final" role="img" aria-label="Con final" title="Con final">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/></svg>
+            </span>
+          </div>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">72.37</span>
+          <h3 class="course-title grid-title">Base de Datos I</h3>
+          <div class="row-after">
+            <span class="credits-chip">6 cr</span>
+            <span class="avail-dot go" role="img" aria-label="Cursable" title="Cursable"></span>
+            <span class="promo-icon check" role="img" aria-label="Promociona" title="Promociona">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            </span>
+          </div>
+        </article>
+
+        <article class="card grid-card">
+          <span class="course-code">72.11</span>
+          <h3 class="course-title grid-title">Sistemas Operativos</h3>
+          <div class="row-after">
+            <span class="credits-chip">6 cr</span>
+            <span class="avail-dot wait" role="img" aria-label="Requisitos pendientes" title="Requisitos pendientes"></span>
+            <span class="promo-icon final" role="img" aria-label="Con final" title="Con final">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/></svg>
+            </span>
+          </div>
+        </article>
+
+      </div>
+      <p class="no-minor-note" style="margin-top:14px">Sin badge de minor — las obligatorias no cuentan para ningún minor.</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — mockup standalone de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · Módulo C · v0.1 · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>

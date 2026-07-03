@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Combinador de horarios (rediseño)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults (idénticos a foundations.html)
+     6 hex base: brown #241208 · zinc #27272a · blue #92cff2 ·
+                 gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  /* ---------- DARK (brand default) ---------- */
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;
+    --surface: #382519;
+    --surface-hover: #54463e;
+    --border-subtle: #343437;
+    --border: #525255;
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    --k-def: #9ab8d6; --k-theorem: #b6a4d6; --k-formula: #7cc0af;
+    --k-method: #d8b279; --k-caution: #d68f85; --k-example: #b1a8a0;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-def: #295c8e; --k-theorem: #5e3b9b; --k-formula: #227762;
+    --k-method: #8c6121; --k-caution: #ab3c2b; --k-example: #6d6155;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header (doc chrome) ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- secondary nav ---------- */
+  .subnav{ border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2);
+    max-width: 20ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:66ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.65rem, 1.6vw + 1rem, 2.35rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:74ch; margin: 0 0 var(--sp-4); font-size:1.02rem; }
+  .cutline{ border:none; border-top:1px solid var(--border); margin: var(--sp-4) 0; }
+  .quiet-note{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); margin: -8px 0 var(--sp-4); }
+
+  .card{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .pad{ padding: 20px 22px; }
+
+  /* ---------- minor badge / dot ---------- */
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:11px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:4px 10px; border-radius:var(--radius-pill);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+    flex:none;
+  }
+  .minor-dot{
+    width:14px; height:14px; border-radius:50%; background:var(--m-color);
+    box-shadow: 0 0 0 2px var(--canvas), 0 0 0 3px color-mix(in srgb, var(--minor-text) 20%, transparent);
+    flex:none;
+  }
+  .core-tag{
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.03em; color:var(--text-2);
+    border:1px solid var(--border-subtle); padding:3px 8px; border-radius:var(--radius-pill);
+    background:var(--surface-hover); flex:none;
+  }
+
+  /* ---------- chips ---------- */
+  .chip{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.02em;
+    padding:4px 8px; border-radius:5px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+  }
+  .abbr{ font-family:var(--font-mono); font-weight:700; font-size:13.5px; letter-spacing:.01em; }
+  .credits-chip{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); padding:3px 8px; border-radius:5px; flex:none; }
+  .course-name{ font-weight:600; font-family:var(--font-serif); }
+  .after-note{ margin-top:10px; font-size:12.5px; color:var(--text-2); }
+
+  /* ---------- CommissionSelect ---------- */
+  .csel{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11.5px;
+    background:var(--surface); color:var(--text);
+    border:1px solid var(--border); border-radius:6px;
+    padding:7px 10px 7px 12px; max-width:200px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.csel-live{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:11px;
+    background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 9px center;
+    background-size:10px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:7px 26px 7px 10px; max-width:190px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.csel-live:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.csel-live:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+  select.csel-live.sm{ max-width:120px; font-size:10.5px; padding:6px 22px 6px 9px; }
+
+  /* ---------- before/after scaffolding (reused from module-c) ---------- */
+  .ba-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  .ba-col-label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .ba-col-label.before{ color:var(--base-gray); }
+  .ba-col-label.after{ color:var(--accent); }
+  .ba-col-label .line{ flex:1; height:1px; background:currentColor; opacity:.4; }
+
+  /* ---------- generic hover/focus tooltip ---------- */
+  .tip-wrap{ position:relative; display:inline-flex; align-items:center; gap:5px; }
+  .tip-btn{
+    width:15px; height:15px; border-radius:50%; border:1px solid var(--border); background:var(--surface-hover);
+    color:var(--text-2); display:inline-flex; align-items:center; justify-content:center; cursor:help; flex:none; padding:0;
+    font-family:var(--font-mono); font-size:9px; font-weight:700;
+  }
+  .tip-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .tip-box{
+    position:absolute; left:0; top:calc(100% + 7px); z-index:35; width:236px;
+    background:var(--surface); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow);
+    padding:10px 12px; font-family:var(--font-mono); font-size:10.5px; line-height:1.55; color:var(--text-2);
+    opacity:0; transform:translateY(-4px); pointer-events:none; transition: opacity .15s var(--ease), transform .15s var(--ease);
+  }
+  .tip-wrap:hover .tip-box, .tip-wrap:focus-within .tip-box{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .tip-box b{ color:var(--text); }
+
+  /* ============================================================
+     APP FRAME — mock del combinador real
+     ============================================================ */
+  .app-frame{ background:var(--surface); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .app-scroll{ max-height:600px; overflow-y:auto; }
+  .scroll-hint{
+    display:flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    margin: 0 0 10px;
+  }
+  .scroll-hint svg{ width:13px; height:13px; color:var(--accent); flex:none; }
+
+  /* header row: chips + prefs + fixed controls */
+  .app-header{
+    position:sticky; top:0; z-index:12;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--border-subtle);
+    padding: 12px 16px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .app-header-left{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1 1 260px; min-width:0; }
+  .app-header-right{ display:flex; align-items:center; gap:8px; flex:0 1 auto; margin-left:auto; flex-wrap:wrap; justify-content:flex-end; }
+
+  .materia-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px;
+    background:var(--surface-hover); border:1px solid var(--border-subtle);
+    padding:4px 7px 4px 6px; border-radius:var(--radius-pill); color:var(--text); white-space:nowrap;
+  }
+  .materia-chip .sw{ width:8px; height:8px; border-radius:50%; flex:none; background:var(--c-color); }
+  .materia-chip button{ background:none; border:none; color:var(--text-2); cursor:pointer; padding:1px; display:flex; border-radius:50%; }
+  .materia-chip button:hover{ color:var(--accent); }
+  .materia-chip button svg{ width:9px; height:9px; }
+
+  .prefs-divider{ width:1px; align-self:stretch; background:var(--border-subtle); flex:none; margin: 0 2px; }
+
+  .seg-control{ display:inline-flex; background:var(--canvas); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); padding:2px; flex:none; }
+  .seg-control button{
+    font-family:var(--font-mono); font-size:10.5px; padding:5px 11px; border-radius:var(--radius-pill);
+    border:none; background:none; color:var(--text-2); cursor:pointer; transition: all .18s var(--ease);
+  }
+  .seg-control button.active{ background:var(--accent); color:var(--accent-contrast); font-weight:600; }
+  .seg-control button:not(.active):hover{ color:var(--text); }
+
+  .switch-lbl{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); cursor:pointer; user-select:none; flex:none; }
+  .switch{ width:30px; height:17px; border-radius:var(--radius-pill); background:var(--border); position:relative; transition: background .2s var(--ease); flex:none; }
+  .switch::after{ content:""; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:var(--surface); transition: transform .2s var(--ease); }
+  .switch-input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .switch-input:checked + .switch{ background:var(--accent); }
+  .switch-input:checked + .switch::after{ transform: translateX(13px); background:var(--accent-contrast); }
+  .switch-input:focus-visible + .switch{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* view tabs — Calendario / Programa (el toggle de Electivas queda al lado) */
+  .view-tabs{ display:inline-flex; gap:2px; background:var(--canvas); border:1px solid var(--border-subtle); border-radius:var(--radius-pill); padding:2px; flex:none; }
+  .view-tabs button{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:var(--font-mono); font-size:10.5px; padding:5px 12px; border-radius:var(--radius-pill);
+    border:none; background:none; color:var(--text-2); cursor:pointer; transition: all .18s var(--ease);
+  }
+  .view-tabs button svg{ width:12px; height:12px; flex:none; }
+  .view-tabs button[aria-selected="true"]{ background:var(--surface); color:var(--text); font-weight:600; box-shadow: 0 1px 2px rgba(0,0,0,.18); }
+  .view-tabs button:not([aria-selected="true"]):hover{ color:var(--text); }
+
+  .hbtn{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.02em;
+    background:var(--surface); color:var(--text); border:1px solid var(--border);
+    padding:6px 12px; border-radius:var(--radius-pill); cursor:pointer; transition: all .18s var(--ease); white-space:nowrap;
+  }
+  .hbtn:hover{ background:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .hbtn svg{ width:12px; height:12px; flex:none; }
+  .hbtn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .hbtn.primary:hover{ background: color-mix(in srgb, var(--accent) 85%, black); }
+  .hbtn[aria-pressed="true"]{ border-color:var(--accent); color:var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .hbtn .count{ font-size:9px; color:var(--text-2); }
+  .hbtn[aria-pressed="true"] .count{ color:var(--accent); }
+
+  /* download menu */
+  .dl-wrap{ position:relative; flex:none; }
+  .dl-menu{
+    position:absolute; top:calc(100% + 7px); right:0; z-index:25; min-width:236px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:6px;
+  }
+  .dl-menu[hidden]{ display:none; }
+  .dl-item{
+    display:flex; align-items:flex-start; gap:9px; width:100%; text-align:left;
+    background:none; border:none; padding:8px 9px; border-radius:6px; cursor:pointer; color:var(--text);
+    font-family:var(--font-serif); font-size:13.5px;
+  }
+  .dl-item:hover{ background:var(--surface-hover); }
+  .dl-item svg{ width:16px; height:16px; flex:none; margin-top:2px; color:var(--accent); }
+  .dl-item-sub{ display:block; font-family:var(--font-mono); font-size:10px; color:var(--text-2); margin-top:2px; }
+
+  /* legend */
+  .cal-legend{ display:flex; flex-wrap:wrap; gap:14px; padding:10px 16px; border-bottom:1px solid var(--border-subtle); background:var(--canvas); }
+  .cal-legend-item{ display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10px; color:var(--text-2); }
+  .cal-legend-item .sw{ width:10px; height:10px; border-radius:3px; flex:none; background:var(--c-color); }
+
+  /* content row: calendar + recommender */
+  .combinador-row{ display:flex; align-items:flex-start; }
+  .cal-wrap{ flex:1 1 auto; min-width:0; padding: 14px 16px; }
+  .cal-scroll{ overflow-x:auto; }
+  .cal-grid{
+    min-width:560px;
+    display:grid; grid-template-columns: 44px repeat(5,1fr); grid-template-rows: 26px repeat(14, 38px);
+    border:1px solid var(--border-subtle); border-radius:6px; overflow:hidden;
+    background-color: var(--surface);
+    background-image:
+      linear-gradient(var(--border-subtle) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+    background-size: 100% 38px, calc((100% - 44px)/5) 100%;
+    background-position: 0 26px, 44px 0;
+  }
+  .cal-corner{ background:var(--canvas); border-bottom:1px solid var(--border-subtle); }
+  .cal-daylabel{
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);
+    background:var(--canvas); border-bottom:1px solid var(--border-subtle); border-left:1px solid var(--border-subtle);
+  }
+  .cal-hour{
+    font-family:var(--font-mono); font-size:9px; color:var(--text-2); text-align:right; padding:2px 6px 0 0;
+    background:var(--canvas); border-top:1px solid var(--border-subtle);
+  }
+  .cal-block{
+    margin:2px; padding:5px 7px; border-radius:5px; border-left:2.5px solid var(--c-color);
+    background: color-mix(in srgb, var(--c-color) 18%, var(--surface));
+    display:flex; flex-direction:column; gap:1px; overflow:hidden;
+  }
+  .cal-block .cb-name{ font-family:var(--font-serif); font-weight:600; font-size:11.5px; line-height:1.25; color:var(--text); }
+  .cal-block .cb-meta{ font-family:var(--font-mono); font-size:9px; color:var(--text-2); }
+
+  /* recommender side panel (reused pattern from module-c, sized as narrow sidebar) */
+  .rec-side{ flex:0 0 246px; border-left:1px solid var(--border-subtle); align-self:stretch; }
+  .rec-side[hidden]{ display:none; }
+  .rec-panel-head{ display:flex; align-items:center; gap:9px; padding:11px 13px; border-bottom:1px solid var(--border-subtle); }
+  .rec-panel-title{ font-family:var(--font-serif); font-weight:600; font-size:13.5px; flex:1; min-width:0; }
+  .rec-panel-count{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); white-space:nowrap; }
+  .rec-group{ border-bottom:1px solid var(--border-subtle); border-left:2px solid var(--tone); background: color-mix(in srgb, var(--tone) 5%, transparent); }
+  .rec-group:last-child{ border-bottom:none; }
+  .rec-group.is-muted{ border-left-color: var(--border); background:transparent; }
+  .rec-group-head{ display:flex; align-items:center; gap:7px; padding:8px 12px 3px; }
+  .rec-group-head .g-dot{ width:6px; height:6px; border-radius:50%; background:var(--tone); flex:none; }
+  .rec-group-title{ font-family:var(--font-mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:var(--tone); font-weight:700; }
+  .rec-group.is-muted .rec-group-title{ color:var(--text-2); }
+  .rec-group-n{ margin-left:auto; font-family:var(--font-mono); font-size:9px; color:var(--text-2); }
+  .rec-list{ list-style:none; margin:0; padding:2px 0 7px; }
+  .rec-row{ position:relative; display:flex; align-items:center; gap:8px; padding:6px 12px; }
+  .rec-row:hover, .rec-row:focus-within{ background: var(--surface-hover); }
+  .rec-row:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .rec-name{ flex:1; min-width:0; font-family:var(--font-serif); font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rec-group.is-muted .rec-name{ color:var(--text-2); }
+  .rec-cr{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); flex:none; }
+  .rec-add{
+    flex:none; width:19px; height:19px; border-radius:5px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-2); display:inline-flex; align-items:center; justify-content:center;
+    cursor:pointer; transition: all .18s var(--ease); padding:0;
+  }
+  .rec-add:hover{ border-color:var(--accent); color:var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .rec-add[disabled]{ opacity:.38; cursor:not-allowed; }
+  .rec-add svg{ width:10px; height:10px; }
+  .rec-tooltip{
+    position:absolute; left:12px; top:100%; margin-top:4px; z-index:30; max-width:206px;
+    background:var(--surface); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow);
+    padding:8px 10px; font-family:var(--font-mono); font-size:10px; line-height:1.5; color:var(--text-2);
+    opacity:0; transform:translateY(-4px); pointer-events:none; transition: opacity .15s var(--ease), transform .15s var(--ease);
+  }
+  .rec-row:hover .rec-tooltip, .rec-row:focus-within .rec-tooltip{ opacity:1; transform:translateY(0); }
+  .rec-tooltip b{ color:var(--text); font-weight:700; }
+  .rec-empty-note{ padding:10px 13px; font-family:var(--font-mono); font-size:10px; color:var(--text-2); }
+
+  /* ghost placeholder (dashed = empty/placeholder only, per convención) */
+  .ghost-box{
+    border:1.5px dashed var(--border); border-radius:6px; padding:16px 14px;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    color:var(--text-2); font-family:var(--font-mono); font-size:11px; min-height:120px;
+  }
+
+  /* course table (materias) */
+  .search-wrap{ position:relative; max-width:320px; margin-bottom:16px; }
+  .search-wrap svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-2); pointer-events:none; }
+  .search-input{
+    font-family:var(--font-mono); font-size:12px; background:var(--surface); color:var(--text);
+    border:1px solid var(--border); border-radius:var(--radius-pill); padding:9px 14px 9px 34px;
+    width:100%; transition: all .18s var(--ease);
+  }
+  .search-input:hover{ border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+  .search-input:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+  .search-input::placeholder{ color:var(--text-2); }
+
+  .table-scroll{ overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border-subtle); }
+  table.course-table{ width:100%; border-collapse:collapse; min-width:660px; }
+  table.course-table th{
+    text-align:left; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-2);
+    padding:11px 14px; border-bottom:1px solid var(--border-subtle); background:var(--surface-hover); white-space:nowrap;
+  }
+  table.course-table td{ padding:11px 14px; border-bottom:1px solid var(--border-subtle); vertical-align:middle; }
+  table.course-table tbody tr:last-child td{ border-bottom:none; }
+  table.course-table tbody tr.is-unscheduled{ opacity:.86; }
+  .name-cell{ display:flex; align-items:center; gap:10px; }
+  .course-title{ font-family:var(--font-serif); font-weight:600; font-size:14px; }
+  .course-sub{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); display:block; margin-top:1px; }
+  .status-pill{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); }
+  .status-pill.on{ color:var(--status-go); }
+
+  /* guardar preferencia panel */
+  .save-card{ display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; padding:20px 22px; }
+  .save-icon{
+    flex:none; width:38px; height:38px; border-radius:8px; background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color:var(--accent); display:flex; align-items:center; justify-content:center;
+  }
+  .save-icon svg{ width:19px; height:19px; }
+  .save-body{ flex:1; min-width:220px; }
+  .save-title{ font-weight:600; font-size:15.5px; margin-bottom:4px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .sem-tag{ font-family:var(--font-mono); font-size:10px; color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); padding:2px 8px; border-radius:5px; flex:none; }
+  .save-note{ color:var(--text-2); font-size:13.5px; max-width:60ch; margin:8px 0 0; }
+  .save-cta{ flex:none; }
+
+  /* dl demo (documentación abierta por defecto) */
+  .dl-demo-frame{ display:flex; justify-content:flex-end; padding: 10px 0 4px; }
+
+  footer.site-footer{ border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8); color:var(--text-2); font-size:13px; }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 900px){
+    .combinador-row{ flex-direction:column; }
+    .rec-side{ flex:none; width:100%; border-left:none; border-top:1px solid var(--border-subtle); }
+    .ba-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 560px){
+    .hero h1{ max-width:none; }
+    .app-header-right{ margin-left:0; }
+    .save-cta{ width:100%; }
+    .save-cta .hbtn{ width:100%; justify-content:center; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·001</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#s1">01 · Vista general</a>
+        <a href="#s2">02 · Recomendador — dos estados</a>
+        <a href="#s3">03 · Descargar</a>
+        <a href="#s4">04 · Guardar preferencia</a>
+        <a href="#s5">05 · Lista de materias</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN</div>
+      <h1>El combinador: header <em>compacto</em>, calendario a todo el ancho</h1>
+      <p class="dek">Rediseño de "Armá tu cuatrimestre": el encabezado se reduce a materias seleccionadas + preferencias + tres acciones fijas (electivas, descargar, guardar), y el calendario semanal pasa a ser el protagonista de la pantalla. El recomendador de electivas reutiliza el patrón de fila slim ya aprobado, ahora ocultable.</p>
+      <div class="hero-meta">
+        <span><b>v0.1</b> — documento de revisión</span>
+        <span>5 secciones</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. VISTA GENERAL — MOCK INTERACTIVO COMPLETO -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s1">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Vista general
+      </div>
+      <h2 class="spec-title">Header compacto + calendario a todo el ancho</h2>
+      <p class="spec-dek">Mock funcional, no una captura: probá el toggle de <span class="mono">Electivas</span>, el menú <span class="mono">Descargar</span> y el segmentado de modalidad. El bloque de la derecha del header (Electivas · Descargar · Guardar preferencia) queda fijo arriba mientras el resto de la vista se desplaza — scrolleá dentro del recuadro para comprobarlo.</p>
+
+      <p class="scroll-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M12 5l-4 4M12 5l4 4M12 19l-4-4M12 19l4-4"/></svg>
+        Scrolleá dentro del recuadro — el header con los 3 controles no se mueve.
+      </p>
+
+      <div class="app-frame">
+        <div class="app-scroll">
+
+          <div class="app-header">
+            <div class="app-header-left">
+              <span class="materia-chip" style="--c-color:var(--minor-ia)"><span class="sw"></span>ML<button type="button" aria-label="Quitar Machine Learning"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l6 6M9 3l-6 6"/></svg></button></span>
+              <span class="materia-chip" style="--c-color:var(--k-def)"><span class="sw"></span>BD1<button type="button" aria-label="Quitar Base de Datos I"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l6 6M9 3l-6 6"/></svg></button></span>
+              <span class="materia-chip" style="--c-color:var(--k-method)"><span class="sw"></span>SO<button type="button" aria-label="Quitar Sistemas Operativos"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l6 6M9 3l-6 6"/></svg></button></span>
+              <span class="materia-chip" style="--c-color:var(--minor-cd)"><span class="sw"></span>BIG DATA<button type="button" aria-label="Quitar Big Data"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l6 6M9 3l-6 6"/></svg></button></span>
+
+              <span class="prefs-divider" aria-hidden="true"></span>
+
+              <div class="seg-control" role="group" aria-label="Modalidad">
+                <button type="button" class="active" data-seg="pres">Presencial</button>
+                <button type="button" data-seg="virt">Virtual</button>
+              </div>
+
+              <label class="switch-lbl">
+                <input type="checkbox" class="switch-input" id="superponerChk">
+                <span class="switch" aria-hidden="true"></span>
+                Superponer
+              </label>
+            </div>
+
+            <div class="app-header-right">
+              <div class="view-tabs" role="tablist" aria-label="Vista del combinador">
+                <button type="button" role="tab" aria-selected="true" id="tabCal">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 4.5v3M16 4.5v3"/></svg>
+                  Calendario
+                </button>
+                <button type="button" role="tab" aria-selected="false" id="tabProg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.4"/><circle cx="4" cy="12" r="1.4"/><circle cx="4" cy="18" r="1.4"/></svg>
+                  Programa
+                </button>
+              </div>
+
+              <button class="hbtn" type="button" id="recToggleBtn" aria-pressed="true" aria-controls="recSidePanel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+                Electivas <span class="count">· 5</span>
+              </button>
+
+              <div class="dl-wrap">
+                <button class="hbtn" type="button" id="dlBtn" aria-haspopup="true" aria-expanded="false" aria-controls="dlMenu">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11m0 0l-4-4m4 4l4-4M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18"/></svg>
+                  Descargar
+                </button>
+                <div class="dl-menu" id="dlMenu" hidden role="menu" aria-label="Opciones de descarga">
+                  <button class="dl-item" type="button" role="menuitem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 4v3M16 4v3"/></svg>
+                    <span>Solo calendario<span class="dl-item-sub">Grilla semanal, sin listado</span></span>
+                  </button>
+                  <button class="dl-item" type="button" role="menuitem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="11" height="16" rx="1.5"/><path d="M17 8h4M17 12h4M17 16h4"/></svg>
+                    <span>Calendario + programa<span class="dl-item-sub">Grilla y detalle de materias/comisiones</span></span>
+                  </button>
+                  <button class="dl-item" type="button" role="menuitem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.4"/><circle cx="4" cy="12" r="1.4"/><circle cx="4" cy="18" r="1.4"/></svg>
+                    <span>Solo programa<span class="dl-item-sub">Listado: créditos, comisión, horario</span></span>
+                  </button>
+                </div>
+              </div>
+
+              <button class="hbtn primary" type="button" id="guardarBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h11l3 3v13H5V4Z"/><path d="M8 4v6h8V4M8 14h8"/></svg>
+                Guardar preferencia
+              </button>
+            </div>
+          </div>
+
+          <div class="cal-legend">
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--minor-ia)"></span>Machine Learning · IA</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-def)"></span>Base de Datos I</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--k-method)"></span>Sistemas Operativos</span>
+            <span class="cal-legend-item"><span class="sw" style="--c-color:var(--minor-cd)"></span>Big Data · CD</span>
+          </div>
+
+          <div class="combinador-row">
+            <div class="cal-wrap">
+              <div class="cal-scroll">
+                <div class="cal-grid">
+                  <div class="cal-corner" style="grid-column:1; grid-row:1"></div>
+                  <div class="cal-daylabel" style="grid-column:2; grid-row:1">Lu</div>
+                  <div class="cal-daylabel" style="grid-column:3; grid-row:1">Ma</div>
+                  <div class="cal-daylabel" style="grid-column:4; grid-row:1">Mi</div>
+                  <div class="cal-daylabel" style="grid-column:5; grid-row:1">Ju</div>
+                  <div class="cal-daylabel" style="grid-column:6; grid-row:1">Vi</div>
+
+                  <div class="cal-hour" style="grid-column:1; grid-row:2">8</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:3">9</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:4">10</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:5">11</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:6">12</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:7">13</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:8">14</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:9">15</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:10">16</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:11">17</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:12">18</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:13">19</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:14">20</div>
+                  <div class="cal-hour" style="grid-column:1; grid-row:15">21</div>
+
+                  <!-- Base de Datos I — Ma y Ju 8–11, com. 1 -->
+                  <div class="cal-block" style="grid-column:3; grid-row:2/5; --c-color:var(--k-def)">
+                    <span class="cb-name">Base de Datos I</span>
+                    <span class="cb-meta">com. 1 · 8–11</span>
+                  </div>
+                  <div class="cal-block" style="grid-column:5; grid-row:2/5; --c-color:var(--k-def)">
+                    <span class="cb-name">Base de Datos I</span>
+                    <span class="cb-meta">com. 1 · 8–11</span>
+                  </div>
+
+                  <!-- Big Data — Vi 9–12, com. 1 -->
+                  <div class="cal-block" style="grid-column:6; grid-row:3/6; --c-color:var(--minor-cd)">
+                    <span class="cb-name">Big Data</span>
+                    <span class="cb-meta">com. 1 · 9–12</span>
+                  </div>
+
+                  <!-- Sistemas Operativos — Mi 14–17, com. 3 -->
+                  <div class="cal-block" style="grid-column:4; grid-row:8/11; --c-color:var(--k-method)">
+                    <span class="cb-name">Sistemas Operativos</span>
+                    <span class="cb-meta">com. 3 · 14–17</span>
+                  </div>
+
+                  <!-- Machine Learning — Lu 18–21, com. 2 Virtual -->
+                  <div class="cal-block" style="grid-column:2; grid-row:12/15; --c-color:var(--minor-ia)">
+                    <span class="cb-name">Machine Learning</span>
+                    <span class="cb-meta">com. 2 · Virtual · 18–21</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="rec-side" id="recSidePanel" aria-label="Recomendador de electivas">
+              <div class="rec-panel-head">
+                <span class="rec-panel-title">Electivas</span>
+                <span class="rec-panel-count">5 evaluadas</span>
+              </div>
+              <div class="rec-group" style="--tone:var(--status-go)">
+                <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">No alargan tu plan</span><span class="rec-group-n">2</span></div>
+                <ul class="rec-list">
+                  <li class="rec-row" tabindex="0">
+                    <span class="minor-dot" style="--m-color:var(--minor-arq)" aria-hidden="true"></span>
+                    <span class="rec-name">Cloud Computing</span>
+                    <span class="rec-cr">3 cr</span>
+                    <button class="rec-add" type="button" aria-label="Agregar Cloud Computing al plan" aria-describedby="tt-cc-1">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                    </button>
+                    <div class="rec-tooltip" id="tt-cc-1" role="note">Entra en <b>7º cuatrimestre</b> · sin alargar</div>
+                  </li>
+                  <li class="rec-row" tabindex="0">
+                    <span class="minor-dot" style="--m-color:var(--minor-ia)" aria-hidden="true"></span>
+                    <span class="rec-name">Visión por Computadora</span>
+                    <span class="rec-cr">3 cr</span>
+                    <button class="rec-add" type="button" aria-label="Agregar Visión por Computadora al plan" aria-describedby="tt-vc-1">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                    </button>
+                    <div class="rec-tooltip" id="tt-vc-1" role="note">Entra en <b>6º cuatrimestre</b> · sin alargar</div>
+                  </li>
+                </ul>
+              </div>
+              <div class="rec-group" style="--tone:var(--status-wait)">
+                <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">Suman +1 cuatrimestre</span><span class="rec-group-n">1</span></div>
+                <ul class="rec-list">
+                  <li class="rec-row" tabindex="0">
+                    <span class="minor-dot" style="--m-color:var(--minor-irv)" aria-hidden="true"></span>
+                    <span class="rec-name">Realidad Aumentada</span>
+                    <span class="rec-cr">4,5 cr</span>
+                    <button class="rec-add" type="button" aria-label="Agregar Realidad Aumentada al plan" aria-describedby="tt-ra-1">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                    </button>
+                    <div class="rec-tooltip" id="tt-ra-1" role="note"><b>+1 cuatrimestre</b> · +1 día de campus</div>
+                  </li>
+                </ul>
+              </div>
+              <div class="rec-group is-muted" style="--tone:var(--k-caution)">
+                <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">No entran</span><span class="rec-group-n">2</span></div>
+                <ul class="rec-list">
+                  <li class="rec-row" tabindex="0">
+                    <span class="minor-dot" style="--m-color:var(--minor-arq)" aria-hidden="true"></span>
+                    <span class="rec-name">Computación Cuántica</span>
+                    <span class="rec-cr">6 cr</span>
+                    <button class="rec-add" type="button" disabled aria-label="No disponible: requiere 144 créditos" aria-describedby="tt-qc-1">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                    </button>
+                    <div class="rec-tooltip" id="tt-qc-1" role="note">Requiere <b>144 créditos</b></div>
+                  </li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+
+        </div>
+      </div>
+      <p class="after-note">Tabs, Modalidad, Superponer, Electivas y Descargar son controles reales (probalos); las materias del calendario son datos fijos para esta revisión. La tab <span class="mono">Programa</span> muestra el mismo cuatrimestre como listado (ver §05).</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. RECOMENDADOR — DOS ESTADOS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s2">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Recomendador
+      </div>
+      <h2 class="spec-title">El recomendador es ocultable — documentado en sus dos estados</h2>
+      <p class="spec-dek">Reutiliza el patrón slim de fila-única ya aprobado (nombre + créditos + <span class="mono">+</span>, detalle de encaje en tooltip). Acá lo integramos como panel angosto al lado del calendario, con un único botón de estado en el header — el mismo <span class="mono">Electivas</span> fijo que probaste en la sección anterior — que lo abre y cierra sin mover el resto de los controles.</p>
+
+      <div class="ba-grid">
+        <div>
+          <div class="ba-col-label after">Estado A — panel abierto<span class="line"></span></div>
+          <div class="card" style="max-width:280px">
+            <div class="rec-panel-head">
+              <span class="rec-panel-title">Electivas</span>
+              <span class="rec-panel-count">5 evaluadas</span>
+            </div>
+            <div class="rec-group" style="--tone:var(--status-go)">
+              <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">No alargan tu plan</span><span class="rec-group-n">2</span></div>
+              <ul class="rec-list">
+                <li class="rec-row" tabindex="0">
+                  <span class="minor-dot" style="--m-color:var(--minor-arq)" aria-hidden="true"></span>
+                  <span class="rec-name">Cloud Computing</span>
+                  <span class="rec-cr">3 cr</span>
+                  <button class="rec-add" type="button" aria-label="Agregar Cloud Computing al plan" aria-describedby="tt-cc-2">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                  </button>
+                  <div class="rec-tooltip" id="tt-cc-2" role="note">Entra en <b>7º cuatrimestre</b> · sin alargar</div>
+                </li>
+                <li class="rec-row" tabindex="0">
+                  <span class="minor-dot" style="--m-color:var(--minor-ia)" aria-hidden="true"></span>
+                  <span class="rec-name">Visión por Computadora</span>
+                  <span class="rec-cr">3 cr</span>
+                  <button class="rec-add" type="button" aria-label="Agregar Visión por Computadora al plan" aria-describedby="tt-vc-2">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                  </button>
+                  <div class="rec-tooltip" id="tt-vc-2" role="note">Entra en <b>6º cuatrimestre</b> · sin alargar</div>
+                </li>
+              </ul>
+            </div>
+            <div class="rec-group is-muted" style="--tone:var(--k-caution)">
+              <div class="rec-group-head"><span class="g-dot"></span><span class="rec-group-title">No entran</span><span class="rec-group-n">2</span></div>
+              <ul class="rec-list">
+                <li class="rec-row" tabindex="0">
+                  <span class="minor-dot" style="--m-color:var(--minor-arq)" aria-hidden="true"></span>
+                  <span class="rec-name">Computación Cuántica</span>
+                  <span class="rec-cr">6 cr</span>
+                  <button class="rec-add" type="button" disabled aria-label="No disponible: requiere 144 créditos" aria-describedby="tt-qc-2">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1.5v9M1.5 6h9"/></svg>
+                  </button>
+                  <div class="rec-tooltip" id="tt-qc-2" role="note">Requiere <b>144 créditos</b></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="after-note">Panel angosto (≈246px), pegado al borde derecho del calendario. Pasá el mouse por una fila para ver el detalle de encaje.</p>
+        </div>
+
+        <div>
+          <div class="ba-col-label before">Estado B — panel oculto<span class="line"></span></div>
+          <button class="hbtn" type="button" aria-pressed="false" style="margin-bottom:14px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+            Electivas <span class="count">· 5</span>
+          </button>
+          <div class="ghost-box">← el calendario se expande para ocupar todo este espacio</div>
+          <p class="after-note">Un solo click en el mismo botón cierra el panel: el calendario recupera el ancho completo, sin reflow del resto del header.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. DESCARGAR -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s3">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Descargar
+      </div>
+      <h2 class="spec-title">Descargar: un botón, tres formatos</h2>
+      <p class="spec-dek">Reemplaza a la exportación única actual (solo imagen del calendario). El mismo botón del header despliega un menú con tres alcances — la grilla sola, la grilla con el detalle de materias, o solo el listado de materias.</p>
+
+      <div class="card pad" style="max-width:420px; margin-left:auto">
+        <div class="dl-demo-frame">
+          <div class="dl-wrap" style="position:relative">
+            <button class="hbtn" type="button" aria-haspopup="true" aria-expanded="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11m0 0l-4-4m4 4l4-4M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18"/></svg>
+              Descargar
+            </button>
+            <div class="dl-menu" role="menu" aria-label="Opciones de descarga" style="position:static; margin-top:8px; box-shadow:none; border-color:var(--border-subtle)">
+              <button class="dl-item" type="button" role="menuitem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 4v3M16 4v3"/></svg>
+                <span>Solo calendario<span class="dl-item-sub">Grilla semanal, sin listado</span></span>
+              </button>
+              <button class="dl-item" type="button" role="menuitem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="11" height="16" rx="1.5"/><path d="M17 8h4M17 12h4M17 16h4"/></svg>
+                <span>Calendario + programa<span class="dl-item-sub">Grilla y detalle de materias/comisiones</span></span>
+              </button>
+              <button class="dl-item" type="button" role="menuitem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.4"/><circle cx="4" cy="12" r="1.4"/><circle cx="4" cy="18" r="1.4"/></svg>
+                <span>Solo programa<span class="dl-item-sub">Listado: créditos, comisión, horario</span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="after-note" style="text-align:right">Menú fijado en estado abierto acá para revisión — en la vista general (§01) se abre y cierra con el botón.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. GUARDAR PREFERENCIA -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s4">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 04 — Puente al plan
+      </div>
+      <h2 class="spec-title">Guardar preferencia: el puente entre el combinador y el Plan de cursada</h2>
+      <p class="spec-dek">El combinador arma un cuatrimestre suelto; "Guardar preferencia" es lo que lo hace persistente en el resto del plan. Aplica solo al cuatrimestre que estás viendo ahora.</p>
+
+      <div class="card save-card">
+        <div class="save-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h11l3 3v13H5V4Z"/><path d="M8 4v6h8V4M8 14h8"/></svg>
+        </div>
+        <div class="save-body">
+          <div class="save-title">Guardar preferencia <span class="sem-tag">2026 · 2C</span></div>
+          <p class="save-note">Guarda estas materias y comisiones como fijas en el Plan de cursada y recalcula el resto del plan alrededor.</p>
+        </div>
+        <div class="save-cta">
+          <button class="hbtn primary" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h11l3 3v13H5V4Z"/><path d="M8 4v6h8V4M8 14h8"/></svg>
+            Guardar preferencia
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 5. LISTA DE MATERIAS — BUSCADOR, AUTO Y COMISIÓN -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s5">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 05 — Lista de materias
+      </div>
+      <h2 class="spec-title">Buscador + lista, con encabezados que explican "Auto" y "Comisión"</h2>
+      <p class="spec-dek">Cada columna de control tiene un header corto y un ícono de ayuda — no hace falta adivinar qué hace "Auto". Los cursos ya ubicados en la grilla muestran cuatrimestre y comisión fijos; los que todavía no se agregaron quedan en <span class="mono">Auto</span> por defecto, a la espera del optimizador.</p>
+
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input class="search-input" type="search" placeholder="Buscar materia — nombre o código" aria-label="Buscar materia" />
+      </div>
+
+      <div class="table-scroll">
+        <table class="course-table">
+          <thead>
+            <tr>
+              <th>Materia</th>
+              <th>Créditos</th>
+              <th>
+                <span class="tip-wrap">
+                  Cuatrimestre
+                  <button class="tip-btn" type="button" aria-describedby="tip-auto" aria-label="Qué significa Auto">i</button>
+                  <span class="tip-box" id="tip-auto" role="note"><b>Auto</b>: lo ubica el optimizador automáticamente, en el cuatrimestre más temprano donde entra sin romper tus preferencias. Elegí un cuatrimestre puntual para fijarlo vos.</span>
+                </span>
+              </th>
+              <th>
+                <span class="tip-wrap">
+                  Comisión
+                  <button class="tip-btn" type="button" aria-describedby="tip-comision" aria-label="Qué significa la comisión">i</button>
+                  <span class="tip-box" id="tip-comision" role="note">Fijá una comisión puntual (día/horario/modalidad) o dejá <b>com. auto</b> para que el optimizador elija la que mejor encaje con el resto de tu calendario.</span>
+                </span>
+              </th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="name-cell">
+                  <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+                  <div><span class="course-title">Machine Learning</span><span class="course-sub">72.46</span></div>
+                </div>
+              </td>
+              <td><span class="credits-chip">3 cr</span></td>
+              <td><select class="csel-live sm" aria-label="Cuatrimestre de Machine Learning"><option>Auto</option><option selected>2026 · 2C</option><option>2027 · 1C</option></select></td>
+              <td><select class="csel-live" aria-label="Comisión de Machine Learning"><option>com. auto</option><option selected>com. 2 · Virtual</option><option>com. 1 · Presencial</option></select></td>
+              <td><span class="status-pill on">En calendario</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="name-cell">
+                  <span class="core-tag">OBL</span>
+                  <div><span class="course-title">Base de Datos I</span><span class="course-sub">72.30</span></div>
+                </div>
+              </td>
+              <td><span class="credits-chip">6 cr</span></td>
+              <td><select class="csel-live sm" aria-label="Cuatrimestre de Base de Datos I"><option>Auto</option><option selected>2026 · 2C</option></select></td>
+              <td><select class="csel-live" aria-label="Comisión de Base de Datos I"><option>com. auto</option><option selected>com. 1 · Presencial</option><option>com. 2 · Virtual</option></select></td>
+              <td><span class="status-pill on">En calendario</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="name-cell">
+                  <span class="core-tag">OBL</span>
+                  <div><span class="course-title">Sistemas Operativos</span><span class="course-sub">72.31</span></div>
+                </div>
+              </td>
+              <td><span class="credits-chip">6 cr</span></td>
+              <td><select class="csel-live sm" aria-label="Cuatrimestre de Sistemas Operativos"><option>Auto</option><option selected>2026 · 2C</option></select></td>
+              <td><select class="csel-live" aria-label="Comisión de Sistemas Operativos"><option>com. auto</option><option>com. 1 · Presencial</option><option selected>com. 3 · Presencial</option></select></td>
+              <td><span class="status-pill on">En calendario</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="name-cell">
+                  <span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span>
+                  <div><span class="course-title">Big Data</span><span class="course-sub">72.52</span></div>
+                </div>
+              </td>
+              <td><span class="credits-chip">3 cr</span></td>
+              <td><select class="csel-live sm" aria-label="Cuatrimestre de Big Data"><option>Auto</option><option selected>2026 · 2C</option></select></td>
+              <td><select class="csel-live" aria-label="Comisión de Big Data"><option>com. auto</option><option selected>com. 1 · Presencial</option><option>com. 2 · Virtual</option></select></td>
+              <td><span class="status-pill on">En calendario</span></td>
+            </tr>
+            <tr class="is-unscheduled">
+              <td>
+                <div class="name-cell">
+                  <span class="minor-badge" style="--m-color:var(--minor-arq)">ARQ</span>
+                  <div><span class="course-title">Cloud Computing</span><span class="course-sub">72.58</span></div>
+                </div>
+              </td>
+              <td><span class="credits-chip">3 cr</span></td>
+              <td><select class="csel-live sm" aria-label="Cuatrimestre de Cloud Computing"><option selected>Auto</option><option>2026 · 2C</option><option>2027 · 1C</option></select></td>
+              <td><select class="csel-live" aria-label="Comisión de Cloud Computing"><option selected>com. auto</option><option>com. 1 · Presencial</option><option>com. 2 · Virtual</option></select></td>
+              <td><span class="status-pill">Sin ubicar</span></td>
+            </tr>
+            <tr class="is-unscheduled">
+              <td>
+                <div class="name-cell">
+                  <span class="core-tag">OBL</span>
+                  <div><span class="course-title">Análisis Numérico</span><span class="course-sub">72.22</span></div>
+                </div>
+              </td>
+              <td><span class="credits-chip">6 cr</span></td>
+              <td><select class="csel-live sm" aria-label="Cuatrimestre de Análisis Numérico"><option selected>Auto</option><option>2026 · 2C</option><option>2027 · 1C</option></select></td>
+              <td><select class="csel-live" aria-label="Comisión de Análisis Numérico"><option selected>com. auto</option><option>com. 1 · Presencial</option><option>com. 4 · Virtual</option></select></td>
+              <td><span class="status-pill">Sin ubicar</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="after-note">Electivas muestran el badge de minor (CD/IRV/IA/ARQ); obligatorias muestran <span class="mono">OBL</span> en vez de badge de color, ya que no pertenecen a un minor.</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · v0.1 · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+
+    // recomendador — abrir/cerrar panel lateral
+    (function () {
+      var toggle = document.getElementById('recToggleBtn');
+      var panel = document.getElementById('recSidePanel');
+      if (!toggle || !panel) return;
+      toggle.addEventListener('click', function () {
+        var open = toggle.getAttribute('aria-pressed') === 'true';
+        toggle.setAttribute('aria-pressed', String(!open));
+        if (open) { panel.setAttribute('hidden', ''); }
+        else { panel.removeAttribute('hidden'); }
+      });
+    })();
+
+    // menú Descargar — abrir/cerrar + cerrar al click afuera
+    (function () {
+      var btn = document.getElementById('dlBtn');
+      var menu = document.getElementById('dlMenu');
+      if (!btn || !menu) return;
+      function close() { menu.setAttribute('hidden', ''); btn.setAttribute('aria-expanded', 'false'); }
+      function open() { menu.removeAttribute('hidden'); btn.setAttribute('aria-expanded', 'true'); }
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        if (expanded) close(); else open();
+      });
+      document.addEventListener('click', function (e) {
+        if (!menu.hasAttribute('hidden') && !menu.contains(e.target) && e.target !== btn) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+      });
+    })();
+
+    // segmentado de modalidad
+    (function () {
+      var seg = document.querySelector('.seg-control');
+      if (!seg) return;
+      var buttons = seg.querySelectorAll('button');
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () {
+          buttons.forEach(function (o) { o.classList.remove('active'); });
+          b.classList.add('active');
+        });
+      });
+    })();
+
+    // tabs de vista (Calendario / Programa) — cambia el estado activo
+    (function () {
+      var tabs = document.querySelectorAll('.view-tabs [role="tab"]');
+      if (!tabs.length) return;
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          tabs.forEach(function (o) { o.setAttribute('aria-selected', 'false'); });
+          t.setAttribute('aria-selected', 'true');
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

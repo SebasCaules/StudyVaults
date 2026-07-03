@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Programa del cuatrimestre · 1.º cuatrimestre 2026 — StudyVaults</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults  (reutilizados de foundations.html)
+     6 hex base: brown #241208 · zinc #27272a · blue #92cff2 ·
+                 gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    /* base six — fixed, never themed */
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+  }
+
+  /* ---------- DARK (brand default) ---------- */
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;         /* brown → +14% blanco */
+    --surface: #382519;        /* brown puro — panel "encastrado" */
+    --surface-hover: #54463e;  /* brown → +22% blanco, estado elevado */
+    --border-subtle: #343437;  /* zinc → +6% blanco */
+    --border: #525255;         /* zinc → +20% blanco */
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+    --paper: #2e1d12;          /* sábana del documento en oscuro — brown levemente aclarado */
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;         /* blanco → +4.5% brown, off-white cálido */
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+    --paper: #ffffff;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  svg{ display:block; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  /* ---------- topbar (no imprime) ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1080px; margin-inline:auto; padding: 14px clamp(20px,5vw,40px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+  .brand-sub{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); letter-spacing:.04em; }
+
+  .actions{ display:flex; align-items:center; gap:10px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:8px 14px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .btn:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .btn svg{ width:14px; height:14px; }
+  .btn-print{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); font-weight:700; }
+  .btn-print:hover{ background:var(--accent); filter:brightness(1.06); }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- lienzo de página ---------- */
+  .page-wrap{ max-width:1080px; margin-inline:auto; padding: clamp(20px,4vw,44px) clamp(16px,5vw,40px) 72px; }
+
+  /* la "sábana" del documento — se convierte en la hoja A4 al imprimir */
+  .doc{
+    max-width: 880px; margin-inline:auto;
+    background: var(--paper);
+    border:1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: clamp(28px, 5vw, 60px) clamp(24px, 5vw, 60px) clamp(36px, 5vw, 60px);
+  }
+
+  /* ---------- portada ---------- */
+  .doc-cover{ }
+  .cover-kicker{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-3);
+  }
+  .cover-kicker .rule{ flex:1; height:1px; background:var(--border); }
+  .cover-kicker .yr{ color:var(--text-2); letter-spacing:.1em; }
+  .doc-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.02em; line-height:1.05;
+    font-size: clamp(2rem, 3.4vw + 1rem, 3.1rem);
+    margin: 0 0 10px;
+  }
+  .doc-subtitle{
+    font-family:var(--font-serif); font-style:italic; color:var(--text-2);
+    font-size: clamp(1.05rem, 1vw + .9rem, 1.4rem); margin: 0 0 var(--sp-3);
+  }
+  .summary-line{
+    font-family:var(--font-mono); font-size:13px; color:var(--text);
+    display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center;
+    padding: 12px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  }
+  .summary-line .sep{ color:var(--text-2); }
+  .summary-line b{ color:var(--accent); font-weight:700; }
+
+  .ejemplo-note{
+    display:inline-flex; align-items:center; gap:10px;
+    margin-top: var(--sp-3);
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; color:var(--text-2);
+    background: color-mix(in srgb, var(--accent) 9%, var(--paper));
+    border:1px solid color-mix(in srgb, var(--accent) 34%, var(--border-subtle));
+    padding:8px 14px; border-radius:6px;
+  }
+  .ejemplo-note svg{ width:14px; height:14px; color:var(--accent); flex:none; }
+  .ejemplo-note b{ color:var(--text); font-weight:700; }
+
+  /* franja de estadísticas de portada */
+  .stat-strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    margin-top: var(--sp-4);
+    background:var(--border-subtle);
+    border:1px solid var(--border-subtle); border-radius:var(--radius); overflow:hidden;
+  }
+  .stat{ background:var(--paper); padding:16px 18px; }
+  .stat-num{ font-family:var(--font-serif); font-weight:500; font-size: clamp(1.6rem,2.4vw,2rem); line-height:1; letter-spacing:-.01em; }
+  .stat-lbl{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-top:8px; }
+
+  /* índice rápido — no imprime */
+  .doc-toc{ display:flex; flex-wrap:wrap; gap:8px; margin-top: var(--sp-4); }
+  .doc-toc a{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.02em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); transition: all .2s var(--ease);
+  }
+  html[data-theme="light"] .doc-toc a{ background:var(--surface-hover); }
+  .doc-toc a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- secciones del documento ---------- */
+  .doc-section{ padding-top: var(--sp-8); }
+  .sec-head{ margin-bottom: var(--sp-3); }
+  .sec-eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  .sec-eyebrow .num{ color:var(--text-2); }
+  h2.sec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.5rem, 1.6vw + 1rem, 2.05rem);
+    margin: 6px 0 8px;
+  }
+  .sec-dek{ color:var(--text-2); max-width:66ch; margin:0; font-size:1rem; }
+
+  /* ---------- tabla combinada de evaluaciones ---------- */
+  .table-scroll{ overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border-subtle); margin-top: var(--sp-3); }
+  table.evals{ width:100%; border-collapse:collapse; min-width:760px; font-size:14px; background:var(--paper); }
+  table.evals thead th{
+    text-align:left; vertical-align:bottom;
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:700;
+    color:var(--text-2); background:var(--surface-hover);
+    padding:12px 14px; border-bottom:1.5px solid var(--border);
+  }
+  html[data-theme="dark"] table.evals thead th{ color:#c8c8cd; }
+  table.evals thead th .th-sub{ display:block; font-weight:400; letter-spacing:.02em; text-transform:none; font-size:9.5px; color:var(--text-2); margin-top:3px; }
+  table.evals th[scope="col"].col-materia{ min-width:210px; }
+  table.evals td, table.evals th[scope="row"]{
+    padding:14px 14px; border-bottom:1px solid var(--border-subtle); vertical-align:top; text-align:left;
+  }
+  table.evals tbody tr:last-child td, table.evals tbody tr:last-child th{ border-bottom:none; }
+  table.evals tbody tr:hover{ background: color-mix(in srgb, var(--accent) 4%, var(--paper)); }
+
+  th[scope="row"].ev-mat{ font-weight:400; }
+  .ev-code{ display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; color:var(--accent); margin-bottom:3px; }
+  .ev-title{ display:block; font-family:var(--font-serif); font-weight:600; font-size:14.5px; line-height:1.3; }
+
+  .ev-w{ font-family:var(--font-mono); font-weight:700; font-size:13.5px; color:var(--text); }
+  .ev-d{ display:block; font-family:var(--font-mono); font-size:11px; color:var(--text-2); margin-top:4px; }
+  .ev-none{ color:var(--text-2); font-family:var(--font-mono); }
+  .ev-promo{ color:var(--accent); font-family:var(--font-mono); font-weight:700; font-size:14px; }
+  .ev-promo .ev-d{ color: color-mix(in srgb, var(--accent) 70%, var(--text-2)); }
+
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center;
+    margin-top: var(--sp-2);
+    font-family:var(--font-mono); font-size:11px; color:var(--text-2);
+  }
+  .legend .k{ color:var(--text); }
+  .legend .swatch-promo{ color:var(--accent); font-weight:700; }
+
+  /* ---------- materias (secciones por curso) ---------- */
+  .courses{ margin-top: var(--sp-3); display:flex; flex-direction:column; gap: var(--sp-4); }
+  .course{
+    border:1px solid var(--border-subtle); border-radius:var(--radius);
+    background:var(--paper); overflow:hidden;
+  }
+  .course-head{
+    display:flex; flex-wrap:wrap; align-items:flex-start; gap:12px 18px;
+    padding:20px 22px; border-bottom:1px solid var(--border-subtle);
+    background: color-mix(in srgb, var(--accent) 4%, var(--paper));
+  }
+  .course-id{ flex:1 1 auto; min-width:220px; }
+  .course-code{ font-family:var(--font-mono); font-size:12px; letter-spacing:.04em; color:var(--accent); }
+  .course-name{ font-family:var(--font-serif); font-weight:600; font-size:1.35rem; line-height:1.2; letter-spacing:-.01em; margin:4px 0 0; }
+  .course-meta{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .meta-chip{
+    font-family:var(--font-mono); font-size:11px; color:var(--text-2);
+    background:var(--surface-hover); border:1px solid var(--border-subtle);
+    padding:5px 10px; border-radius:6px; white-space:nowrap;
+  }
+  html[data-theme="dark"] .meta-chip{ background: color-mix(in srgb, var(--base-white) 5%, var(--paper)); }
+  .meta-chip b{ color:var(--text); font-weight:700; }
+  .regimen{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.02em;
+    padding:5px 11px; border-radius:var(--radius-pill); white-space:nowrap;
+  }
+  .regimen.promo{ color:var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--paper)); border:1px solid color-mix(in srgb, var(--accent) 42%, transparent); }
+  .regimen.final{ color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border); }
+
+  .course-body{ display:grid; grid-template-columns: 1.25fr 1fr; gap: clamp(20px,3vw,36px); padding:22px; }
+  .course-block h4{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-2); font-weight:700; margin:0 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border-subtle);
+  }
+  ol.unidades{ margin:0; padding:0; list-style:none; counter-reset:uni; }
+  ol.unidades li{
+    counter-increment:uni; position:relative; padding: 0 0 0 34px; margin-bottom:12px; line-height:1.5; font-size:14.5px;
+  }
+  ol.unidades li:last-child{ margin-bottom:0; }
+  ol.unidades li::before{
+    content: counter(uni,decimal-leading-zero);
+    position:absolute; left:0; top:1px;
+    font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--accent);
+    width:24px; text-align:left;
+  }
+  ol.unidades li b{ font-weight:600; }
+  ul.biblio{ margin:0; padding:0; list-style:none; }
+  ul.biblio li{
+    position:relative; padding:0 0 0 18px; margin-bottom:12px; line-height:1.45; font-size:13.5px; color:var(--text-2);
+  }
+  ul.biblio li:last-child{ margin-bottom:0; }
+  ul.biblio li::before{ content:""; position:absolute; left:0; top:9px; width:8px; height:1px; background:var(--border); }
+  ul.biblio li b{ color:var(--text); font-weight:600; }
+  ul.biblio li i{ font-style:italic; }
+  ul.biblio li .pub{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  /* ---------- desglose de trabajos prácticos (por materia) ---------- */
+  .course-block.tps-block{
+    grid-column: 1 / -1; margin-top: 4px;
+    padding-top: var(--sp-3); border-top:1px solid var(--border-subtle);
+  }
+  .course-block.tps-block h4{ border-bottom:none; padding-bottom:0; margin-bottom:14px; }
+  .tps-total{
+    font-family:var(--font-mono); font-weight:400; text-transform:none; letter-spacing:.02em;
+    color:var(--text-2); font-size:11px;
+  }
+  .tps-total b{ color:var(--accent); font-weight:700; }
+  ul.tps{
+    margin:0; padding:0; list-style:none;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:12px;
+  }
+  ul.tps li.tp{
+    border:1px solid var(--border-subtle); border-radius:6px;
+    background: color-mix(in srgb, var(--accent) 3%, var(--paper));
+    padding:12px 14px;
+  }
+  .tp-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .tp-code{ font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--accent); }
+  .tp-w{ font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text); }
+  .tp-title{ display:block; font-family:var(--font-serif); font-weight:600; font-size:13.5px; line-height:1.35; margin-top:7px; }
+  .tp-date{ display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); margin-top:9px; }
+  .tp-date::before{ content:""; width:9px; height:1px; background:var(--border); flex:none; }
+  .tps-none{
+    display:flex; align-items:flex-start; gap:10px;
+    font-family:var(--font-mono); font-size:12px; line-height:1.5; color:var(--text-2);
+    background:var(--surface-hover); border:1px dashed var(--border); border-radius:6px; padding:12px 15px;
+  }
+  .tps-none svg{ width:15px; height:15px; color:var(--text-2); flex:none; margin-top:2px; }
+  .tps-none b{ color:var(--text); font-weight:700; }
+
+  /* desglose compacto dentro de la celda "TPs" de la tabla combinada */
+  ul.ev-tps{ list-style:none; margin:9px 0 0; padding:0; display:flex; flex-direction:column; }
+  ul.ev-tps li{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    font-family:var(--font-mono); font-size:10.5px; color:var(--text-2);
+    padding:4px 0; border-top:1px dotted var(--border-subtle);
+  }
+  ul.ev-tps li .c{ color:var(--accent); font-weight:700; letter-spacing:.03em; }
+  ul.ev-tps li .w{ color:var(--text); font-weight:700; }
+  .ev-tps-none{ display:block; margin-top:6px; font-family:var(--font-mono); font-size:10.5px; color:var(--text-2); }
+
+  /* ---------- pie del documento ---------- */
+  .doc-foot{
+    margin-top: var(--sp-8); padding-top: var(--sp-3); border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    font-family:var(--font-mono); font-size:11px; color:var(--text-2);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 720px){
+    .stat-strip{ grid-template-columns:repeat(2,1fr); }
+    .course-body{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 440px){
+    .stat-strip{ grid-template-columns:1fr; }
+    .brand-sub{ display:none; }
+  }
+
+  /* ============================================================
+     IMPRESIÓN — hoja A4, tinta económica, siempre en claro
+     ============================================================ */
+  @page{ size: A4; margin: 16mm 14mm; }
+  @media print{
+    :root{ }
+    html{
+      /* fuerza paleta clara sin importar el tema activo en pantalla */
+      --canvas:#ffffff; --paper:#ffffff; --surface:#ffffff; --surface-hover:#f2f0ee;
+      --border-subtle:#d8d5d2; --border:#a29c96; --text:#1a0d05; --text-2:#5b544d;
+      --accent:#b8492b; --link:#1a5f83; --shadow:none;
+    }
+    body{ background:#fff; color:#1a0d05; font-size:11pt; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .topbar, .doc-toc{ display:none !important; }
+    .page-wrap{ max-width:none; margin:0; padding:0; }
+    .doc{ max-width:none; margin:0; border:none; border-radius:0; box-shadow:none; padding:0; }
+    .doc-title{ font-size:26pt; }
+    .doc-subtitle{ font-size:14pt; }
+    .doc-section{ padding-top: 22pt; }
+    h2.sec-title{ font-size:17pt; }
+    .table-scroll{ overflow:visible; border-color:#c9c5c1; }
+    table.evals{ min-width:0; font-size:9.5pt; }
+    table.evals thead th{ background:#efece9; }
+    table.evals tbody tr:hover{ background:transparent; }
+    /* control de saltos de página */
+    .doc-section, table.evals, table.evals thead{ break-inside:avoid; }
+    table.evals tr, .course, .stat-strip, .summary-line, .ejemplo-note{ break-inside:avoid; }
+    .doc-section:nth-of-type(2){ break-before:auto; }
+    #materias{ break-before:page; }
+    .course{ break-inside:avoid; margin-bottom:14pt; border-color:#c9c5c1; }
+    .course-head{ background:#f6f3f1; }
+    ul.tps{ gap:8pt; }
+    ul.tps li.tp, .tps-none{ break-inside:avoid; border-color:#c9c5c1; }
+    ul.ev-tps li{ border-top-color:#d8d5d2; }
+    a{ color:#1a0d05; text-decoration:none; }
+    .doc-foot{ break-before:avoid; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·D</span>
+        <span class="brand-name">StudyVaults</span>
+        <span class="brand-sub">Módulo D · programa</span>
+      </div>
+      <div class="actions">
+        <button class="btn" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+          <span id="themeLabel">oscuro</span>
+        </button>
+        <button class="btn btn-print" id="printBtn" type="button" aria-label="Imprimir o guardar como PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/></svg>
+          Imprimir / PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <article class="doc">
+
+      <!-- ================= PORTADA ================= -->
+      <header class="doc-cover">
+        <div class="cover-kicker">
+          <span>StudyVaults · Programa del cuatrimestre</span>
+          <span class="rule"></span>
+          <span class="yr">ITBA</span>
+        </div>
+
+        <h1 class="doc-title">Programa del cuatrimestre</h1>
+        <p class="doc-subtitle">1.<sup>er</sup> cuatrimestre 2026 — panorama unificado de todas las materias</p>
+
+        <div class="summary-line">
+          <span><b>4</b> materias</span>
+          <span class="sep">·</span>
+          <span><b>19</b> créditos</span>
+          <span class="sep">·</span>
+          <span><b>304</b> horas de cursada</span>
+          <span class="sep">·</span>
+          <span><b>2</b> promocionan · <b>2</b> con final</span>
+        </div>
+
+        <div class="ejemplo-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+          <span><b>Datos de ejemplo.</b> Contenidos, fechas y bibliografía son de muestra; los datos reales de las materias obligatorias son un insumo aparte.</span>
+        </div>
+
+        <div class="stat-strip" role="group" aria-label="Resumen del cuatrimestre">
+          <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Materias</div></div>
+          <div class="stat"><div class="stat-num">19</div><div class="stat-lbl">Créditos</div></div>
+          <div class="stat"><div class="stat-num">304 h</div><div class="stat-lbl">Carga horaria</div></div>
+          <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">Parciales</div></div>
+        </div>
+
+        <nav class="doc-toc" aria-label="Índice de materias">
+          <a href="#evaluaciones">Evaluaciones</a>
+          <a href="#c-93-75">93.75 · Métodos Numéricos</a>
+          <a href="#c-93-24">93.24 · Probabilidad</a>
+          <a href="#c-61-23">61.23 · Economía</a>
+          <a href="#c-61-32">61.32 · Derecho</a>
+        </nav>
+      </header>
+
+      <!-- ================= 1 · TABLA DE EVALUACIONES COMBINADA ================= -->
+      <section class="doc-section" id="evaluaciones">
+        <div class="sec-head">
+          <div class="sec-eyebrow"><span class="num">§ 01</span> — Evaluaciones</div>
+          <h2 class="sec-title">Tabla de evaluaciones combinada</h2>
+          <p class="sec-dek">Todas las instancias de todas las materias en un solo lugar, para planificar el cuatrimestre de un vistazo. Cada celda indica el peso en la nota y la fecha tentativa; la columna de TPs desglosa cada trabajo práctico con su peso, y marca las materias que no llevan prácticos.</p>
+        </div>
+
+        <div class="table-scroll">
+          <table class="evals">
+            <caption class="mono" style="text-align:left; padding:0 0 10px; font-size:11px; color:var(--text-2);">Pesos sobre la nota final · fechas tentativas (dd/mm) · datos de ejemplo</caption>
+            <colgroup>
+              <col style="width:24%"><col style="width:16%"><col style="width:16%"><col style="width:15%"><col style="width:15%"><col style="width:14%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col" class="col-materia">Materia</th>
+                <th scope="col">Parcial 1<span class="th-sub">peso · fecha</span></th>
+                <th scope="col">Parcial 2<span class="th-sub">peso · fecha</span></th>
+                <th scope="col">TPs<span class="th-sub">peso · desglose</span></th>
+                <th scope="col">Final<span class="th-sub">régimen</span></th>
+                <th scope="col">Promoción<span class="th-sub">nota mínima</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" class="ev-mat"><span class="ev-code">93.75</span><span class="ev-title">Métodos Numéricos Avanzados</span></th>
+                <td><span class="ev-w">30%</span><span class="ev-d">15/09</span></td>
+                <td><span class="ev-w">30%</span><span class="ev-d">10/11</span></td>
+                <td>
+                  <span class="ev-w">20%</span><span class="ev-d">3 TPs</span>
+                  <ul class="ev-tps">
+                    <li><span class="c">TP1</span><span class="w">6%</span></li>
+                    <li><span class="c">TP2</span><span class="w">7%</span></li>
+                    <li><span class="c">TP3</span><span class="w">7%</span></li>
+                  </ul>
+                </td>
+                <td><span class="ev-w">Con final</span><span class="ev-d">si no promo</span></td>
+                <td><span class="ev-promo">≥ 7<span class="ev-d">sin aplazos</span></span></td>
+              </tr>
+              <tr>
+                <th scope="row" class="ev-mat"><span class="ev-code">93.24</span><span class="ev-title">Probabilidad y Estadística</span></th>
+                <td><span class="ev-w">35%</span><span class="ev-d">22/09</span></td>
+                <td><span class="ev-w">35%</span><span class="ev-d">17/11</span></td>
+                <td>
+                  <span class="ev-w">30%</span><span class="ev-d">2 TPs</span>
+                  <ul class="ev-tps">
+                    <li><span class="c">TP1</span><span class="w">15%</span></li>
+                    <li><span class="c">TP2</span><span class="w">15%</span></li>
+                  </ul>
+                </td>
+                <td><span class="ev-w">Con final</span><span class="ev-d">si no promo</span></td>
+                <td><span class="ev-promo">≥ 6<span class="ev-d">ambos parciales</span></span></td>
+              </tr>
+              <tr>
+                <th scope="row" class="ev-mat"><span class="ev-code">61.23</span><span class="ev-title">Economía para Ingenieros</span></th>
+                <td><span class="ev-w">40%</span><span class="ev-d">18/09</span></td>
+                <td><span class="ev-w">40%</span><span class="ev-d">13/11</span></td>
+                <td>
+                  <span class="ev-w">20%</span><span class="ev-d">2 TPs</span>
+                  <ul class="ev-tps">
+                    <li><span class="c">TP1</span><span class="w">10%</span></li>
+                    <li><span class="c">TP2</span><span class="w">10%</span></li>
+                  </ul>
+                </td>
+                <td><span class="ev-w">Obligatorio</span><span class="ev-d">coloquio final</span></td>
+                <td><span class="ev-none">— <span class="ev-d">sin promoción</span></span></td>
+              </tr>
+              <tr>
+                <th scope="row" class="ev-mat"><span class="ev-code">61.32</span><span class="ev-title">Derecho para Ingenieros</span></th>
+                <td><span class="ev-w">45%</span><span class="ev-d">25/09</span></td>
+                <td><span class="ev-w">45%</span><span class="ev-d">20/11</span></td>
+                <td>
+                  <span class="ev-w">10%</span><span class="ev-d">coloquios</span>
+                  <span class="ev-tps-none">sin TPs</span>
+                </td>
+                <td><span class="ev-w">Obligatorio</span><span class="ev-d">oral</span></td>
+                <td><span class="ev-none">— <span class="ev-d">sin promoción</span></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="legend">
+          <span><span class="k">%</span> = peso en la nota final</span>
+          <span><span class="k">dd/mm</span> = fecha tentativa</span>
+          <span><span class="swatch-promo">≥ n</span> = nota mínima para promocionar sin final</span>
+          <span><span class="k">—</span> = la materia se rinde con final obligatorio</span>
+          <span><span class="k">TP n</span> = trabajo práctico n con su peso propio · <span class="k">sin TPs</span> = la materia no lleva prácticos</span>
+        </div>
+      </section>
+
+      <!-- ================= 2 · SECCIONES POR MATERIA ================= -->
+      <section class="doc-section" id="materias">
+        <div class="sec-head">
+          <div class="sec-eyebrow"><span class="num">§ 02</span> — Materias</div>
+          <h2 class="sec-title">Programa por materia</h2>
+          <p class="sec-dek">Ficha de cada materia con su carga y régimen, las unidades de contenido, la bibliografía de referencia y el desglose de trabajos prácticos (o el aviso de que la materia no lleva).</p>
+        </div>
+
+        <div class="courses">
+
+          <!-- 93.75 -->
+          <article class="course" id="c-93-75">
+            <header class="course-head">
+              <div class="course-id">
+                <div class="course-code">93.75</div>
+                <h3 class="course-name">Métodos Numéricos Avanzados</h3>
+              </div>
+              <div class="course-meta">
+                <span class="meta-chip"><b>6</b> créditos</span>
+                <span class="meta-chip"><b>96 h</b> · 6 h/sem</span>
+                <span class="regimen promo">Promociona ≥ 7</span>
+              </div>
+            </header>
+            <div class="course-body">
+              <div class="course-block">
+                <h4>Contenidos</h4>
+                <ol class="unidades">
+                  <li><b>Sistemas lineales.</b> Métodos directos (Gauss, factorización LU) e iterativos (Jacobi, Gauss-Seidel); condicionamiento y estabilidad.</li>
+                  <li><b>Interpolación y aproximación.</b> Polinomios de Lagrange y Newton, splines cúbicos, mínimos cuadrados.</li>
+                  <li><b>Integración y derivación numérica.</b> Reglas de Newton-Cotes, cuadratura de Gauss, extrapolación de Richardson.</li>
+                  <li><b>Ecuaciones diferenciales.</b> Métodos de un paso (Runge-Kutta) y multipaso; problemas de valores iniciales y de contorno.</li>
+                </ol>
+              </div>
+              <div class="course-block">
+                <h4>Bibliografía</h4>
+                <ul class="biblio">
+                  <li><b>Burden, R. &amp; Faires, J.</b> <i>Análisis Numérico.</i> <span class="pub">Cengage, 10.ª ed.</span></li>
+                  <li><b>Quarteroni, A.; Sacco, R.; Saleri, F.</b> <i>Numerical Mathematics.</i> <span class="pub">Springer.</span></li>
+                  <li><b>Kincaid, D. &amp; Cheney, W.</b> <i>Numerical Analysis.</i> <span class="pub">AMS.</span></li>
+                </ul>
+              </div>
+              <div class="course-block tps-block">
+                <h4>Trabajos prácticos <span class="tps-total">· <b>3 TPs</b> — 20% de la nota final</span></h4>
+                <ul class="tps">
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP1</span><span class="tp-w">6%</span></div>
+                    <span class="tp-title">Sistemas lineales: métodos directos e iterativos</span>
+                    <span class="tp-date">entrega 22/08</span>
+                  </li>
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP2</span><span class="tp-w">7%</span></div>
+                    <span class="tp-title">Interpolación, splines y cuadratura de Gauss</span>
+                    <span class="tp-date">entrega 26/09</span>
+                  </li>
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP3</span><span class="tp-w">7%</span></div>
+                    <span class="tp-title">EDOs: Runge-Kutta y problemas de contorno</span>
+                    <span class="tp-date">entrega 31/10</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- 93.24 -->
+          <article class="course" id="c-93-24">
+            <header class="course-head">
+              <div class="course-id">
+                <div class="course-code">93.24</div>
+                <h3 class="course-name">Probabilidad y Estadística</h3>
+              </div>
+              <div class="course-meta">
+                <span class="meta-chip"><b>6</b> créditos</span>
+                <span class="meta-chip"><b>96 h</b> · 6 h/sem</span>
+                <span class="regimen promo">Promociona ≥ 6</span>
+              </div>
+            </header>
+            <div class="course-body">
+              <div class="course-block">
+                <h4>Contenidos</h4>
+                <ol class="unidades">
+                  <li><b>Probabilidad.</b> Espacios muestrales, axiomas, probabilidad condicional, independencia y teorema de Bayes.</li>
+                  <li><b>Variables aleatorias.</b> Distribuciones discretas y continuas; esperanza, varianza y funciones generadoras.</li>
+                  <li><b>Inferencia.</b> Estimación puntual, intervalos de confianza y teorema central del límite.</li>
+                  <li><b>Contraste de hipótesis.</b> Pruebas paramétricas, bondad de ajuste y regresión lineal simple.</li>
+                </ol>
+              </div>
+              <div class="course-block">
+                <h4>Bibliografía</h4>
+                <ul class="biblio">
+                  <li><b>Walpole, R.; Myers, R.; Myers, S.</b> <i>Probabilidad y Estadística para Ingeniería y Ciencias.</i> <span class="pub">Pearson.</span></li>
+                  <li><b>Devore, J.</b> <i>Probabilidad y Estadística para Ingeniería.</i> <span class="pub">Cengage.</span></li>
+                  <li><b>Ross, S.</b> <i>A First Course in Probability.</i> <span class="pub">Pearson.</span></li>
+                </ul>
+              </div>
+              <div class="course-block tps-block">
+                <h4>Trabajos prácticos <span class="tps-total">· <b>2 TPs</b> — 30% de la nota final</span></h4>
+                <ul class="tps">
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP1</span><span class="tp-w">15%</span></div>
+                    <span class="tp-title">Variables aleatorias y distribuciones notables</span>
+                    <span class="tp-date">entrega 03/10</span>
+                  </li>
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP2</span><span class="tp-w">15%</span></div>
+                    <span class="tp-title">Inferencia, intervalos y contraste de hipótesis</span>
+                    <span class="tp-date">entrega 07/11</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- 61.23 -->
+          <article class="course" id="c-61-23">
+            <header class="course-head">
+              <div class="course-id">
+                <div class="course-code">61.23</div>
+                <h3 class="course-name">Economía para Ingenieros</h3>
+              </div>
+              <div class="course-meta">
+                <span class="meta-chip"><b>4</b> créditos</span>
+                <span class="meta-chip"><b>64 h</b> · 4 h/sem</span>
+                <span class="regimen final">Con final</span>
+              </div>
+            </header>
+            <div class="course-body">
+              <div class="course-block">
+                <h4>Contenidos</h4>
+                <ol class="unidades">
+                  <li><b>Microeconomía.</b> Oferta, demanda y equilibrio de mercado; elasticidades y estructuras de competencia.</li>
+                  <li><b>Macroeconomía.</b> PBI, inflación, tipo de cambio y política monetaria y fiscal.</li>
+                  <li><b>Evaluación de proyectos.</b> Flujo de fondos, valor actual neto (VAN), tasa interna de retorno (TIR) y período de repago.</li>
+                  <li><b>Ingeniería económica.</b> Análisis costo-beneficio, depreciación y decisiones de inversión bajo incertidumbre.</li>
+                </ol>
+              </div>
+              <div class="course-block">
+                <h4>Bibliografía</h4>
+                <ul class="biblio">
+                  <li><b>Mankiw, N. G.</b> <i>Principios de Economía.</i> <span class="pub">Cengage.</span></li>
+                  <li><b>Baca Urbina, G.</b> <i>Fundamentos de Ingeniería Económica.</i> <span class="pub">McGraw-Hill.</span></li>
+                  <li><b>Sapag Chain, N.</b> <i>Preparación y Evaluación de Proyectos.</i> <span class="pub">McGraw-Hill.</span></li>
+                </ul>
+              </div>
+              <div class="course-block tps-block">
+                <h4>Trabajos prácticos <span class="tps-total">· <b>2 TPs</b> — 20% de la nota final</span></h4>
+                <ul class="tps">
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP1</span><span class="tp-w">10%</span></div>
+                    <span class="tp-title">Evaluación de proyectos: VAN y TIR</span>
+                    <span class="tp-date">entrega 09/10</span>
+                  </li>
+                  <li class="tp">
+                    <div class="tp-top"><span class="tp-code">TP2</span><span class="tp-w">10%</span></div>
+                    <span class="tp-title">Análisis costo-beneficio y depreciación</span>
+                    <span class="tp-date">entrega 06/11</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- 61.32 -->
+          <article class="course" id="c-61-32">
+            <header class="course-head">
+              <div class="course-id">
+                <div class="course-code">61.32</div>
+                <h3 class="course-name">Derecho para Ingenieros</h3>
+              </div>
+              <div class="course-meta">
+                <span class="meta-chip"><b>3</b> créditos</span>
+                <span class="meta-chip"><b>48 h</b> · 3 h/sem</span>
+                <span class="regimen final">Con final</span>
+              </div>
+            </header>
+            <div class="course-body">
+              <div class="course-block">
+                <h4>Contenidos</h4>
+                <ol class="unidades">
+                  <li><b>Nociones generales.</b> Concepto de derecho, fuentes, organización del Estado y jerarquía normativa.</li>
+                  <li><b>Obligaciones y contratos.</b> Responsabilidad civil, tipos de contratos y su aplicación a la práctica profesional.</li>
+                  <li><b>Propiedad intelectual.</b> Patentes, marcas, derecho de autor y protección jurídica del software.</li>
+                  <li><b>Derecho laboral y societario.</b> Relación de trabajo, tipos de sociedades comerciales y responsabilidad de los socios.</li>
+                </ol>
+              </div>
+              <div class="course-block">
+                <h4>Bibliografía</h4>
+                <ul class="biblio">
+                  <li><b>Borda, G. A.</b> <i>Manual de Derecho Civil — Parte General.</i> <span class="pub">La Ley.</span></li>
+                  <li><b>Lorenzetti, R. L.</b> <i>Tratado de los Contratos.</i> <span class="pub">Rubinzal-Culzoni.</span></li>
+                  <li><b>Cabanellas de las Cuevas, G.</b> <i>Derecho de las Nuevas Tecnologías.</i> <span class="pub">Heliasta.</span></li>
+                </ul>
+              </div>
+              <div class="course-block tps-block">
+                <h4>Trabajos prácticos</h4>
+                <div class="tps-none">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>
+                  <span><b>Sin trabajos prácticos.</b> El componente práctico (10%) se acredita con coloquios orales durante la cursada; no hay TPs entregables.</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <footer class="doc-foot">
+        <span>StudyVaults · Módulo D — Programa del cuatrimestre</span>
+        <span>1.º cuat. 2026 · datos de ejemplo · v0.1</span>
+      </footer>
+
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+      var printBtn = document.getElementById('printBtn');
+      if (printBtn) {
+        printBtn.addEventListener('click', function () { window.print(); });
+      }
+    })();
+  </script>
+
+</body>
+</html>

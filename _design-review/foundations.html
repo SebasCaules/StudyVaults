@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StudyVaults — Lenguaje de diseño (Technical Split)</title>
+
+<style>
+  /* ============================================================
+     TOKENS — "Technical Split" · StudyVaults
+     6 hex base: brown #241208 · zinc #27272a · blue #92cff2 ·
+                 gray #a1a1aa · coral #f47c59 · white #ffffff
+     ============================================================ */
+  :root{
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-6: 48px; --sp-8: 64px;
+    --radius: 8px; --radius-pill: 9999px;
+    --ease: cubic-bezier(0.22,1,0.36,1);
+
+    /* base six — fixed, never themed */
+    --base-brown: #241208;
+    --base-zinc:  #27272a;
+    --base-blue:  #92cff2;
+    --base-gray:  #a1a1aa;
+    --base-coral: #f47c59;
+    --base-white: #ffffff;
+
+    /* sheet semantic palette — CURRENT (reference only, unchanged) */
+    --cur-def: #2563eb; --cur-theorem: #7c3aed; --cur-formula: #0f9d8f;
+    --cur-method: #d97706; --cur-caution: #dc2626; --cur-example: #6b7280;
+
+    /* minor badges — fixed across themes, brown text always sits on them */
+    --minor-cd:  #85a2c2;
+    --minor-irv: #c592ab;
+    --minor-ia:  #a9b27e;
+    --minor-arq: #a497c0;
+    --minor-text: #241208;
+  }
+
+  /* ---------- DARK (brand default) ---------- */
+  html[data-theme="dark"]{
+    --canvas: #4c3a30;         /* brown → +14% blanco */
+    --surface: #382519;        /* brown puro — panel "encastrado" */
+    --surface-hover: #54463e;  /* brown → +22% blanco, estado elevado */
+    --border-subtle: #343437;  /* zinc → +6% blanco */
+    --border: #525255;         /* zinc → +20% blanco */
+    --text: #ffffff;
+    --text-2: #a1a1aa;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #92cff2;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -8px rgba(0,0,0,.55);
+
+    /* propuesta hojas de estudio */
+    --k-def: #9ab8d6; --k-theorem: #b6a4d6; --k-formula: #7cc0af;
+    --k-method: #d8b279; --k-caution: #d68f85; --k-example: #b1a8a0;
+
+    /* estado de disponibilidad — reutiliza tokens semánticos de hojas */
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  /* ---------- LIGHT ---------- */
+  html[data-theme="light"]{
+    --canvas: #f5f4f4;         /* blanco → +4.5% brown, off-white cálido */
+    --surface: #ffffff;
+    --surface-hover: #f0ede9;
+    --border-subtle: #e2e0df;
+    --border: #b3b3b4;
+    --text: #241208;
+    --text-2: #797067;
+    --accent: #f47c59;
+    --accent-contrast: #241208;
+    --link: #1e688f;
+    --shadow: 0 1px 2px rgba(36,18,8,.06), 0 8px 24px -10px rgba(36,18,8,.18);
+
+    --k-def: #295c8e; --k-theorem: #5e3b9b; --k-formula: #227762;
+    --k-method: #8c6121; --k-caution: #ab3c2b; --k-example: #6d6155;
+
+    --status-go: var(--k-formula);
+    --status-wait: var(--k-method);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top: 84px; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--text);
+    font-family:var(--font-serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition: background .35s var(--ease), color .35s var(--ease);
+  }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--link); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code, .mono{ font-family:var(--font-mono); }
+  ::selection{ background:var(--accent); color:var(--accent-contrast); }
+
+  .wrap{ max-width:1180px; margin-inline:auto; padding-inline: clamp(20px, 5vw, 48px); }
+
+  /* ---------- header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border-subtle);
+  }
+  .topbar-inner{
+    max-width:1180px; margin-inline:auto; padding: 14px clamp(20px,5vw,48px);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.06em; }
+  .brand-name{ font-family:var(--font-serif); font-weight:600; font-size:18px; letter-spacing:-.01em; }
+
+  .theme-toggle{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em;
+    padding:7px 14px 7px 10px; border-radius:var(--radius-pill);
+    cursor:pointer; transition: all .25s var(--ease);
+  }
+  .theme-toggle:hover{ background:var(--surface-hover); border-color:var(--accent); }
+  .theme-toggle svg{ width:14px; height:14px; }
+  .icon-sun{ display:none; } .icon-moon{ display:block; }
+  html[data-theme="light"] .icon-sun{ display:block; }
+  html[data-theme="light"] .icon-moon{ display:none; }
+
+  /* ---------- secondary nav ---------- */
+  .subnav{
+    border-bottom:1px solid var(--border-subtle);
+    background:var(--canvas);
+  }
+  .subnav-inner{
+    max-width:1180px; margin-inline:auto; padding: 10px clamp(20px,5vw,48px);
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .subnav-inner::-webkit-scrollbar{ display:none; }
+  .subnav a{
+    flex:none;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; text-decoration:none;
+    color:var(--text-2); background:var(--surface); border:1px solid var(--border-subtle);
+    padding:6px 12px; border-radius:var(--radius-pill); white-space:nowrap;
+    transition: all .2s var(--ease);
+  }
+  .subnav a:hover{ color:var(--text); border-color:var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: var(--sp-8) 0 var(--sp-6); position:relative; }
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+    color:var(--text-2); border:1px solid var(--border);
+    padding:5px 12px; border-radius:var(--radius-pill);
+    margin-bottom: var(--sp-3);
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight:500; letter-spacing:-.02em; line-height:1.08;
+    margin: 0 0 var(--sp-2);
+    max-width: 16ch;
+  }
+  .hero h1 em{ font-style:italic; color:var(--accent); }
+  .hero p.dek{
+    font-size: clamp(1rem, .4vw + .95rem, 1.15rem);
+    color:var(--text-2); max-width:62ch; margin:0 0 var(--sp-3);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 6px 18px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-2);
+  }
+  .hero-meta b{ color:var(--text); font-weight:600; }
+
+  /* ---------- section scaffolding ---------- */
+  section.spec{ padding: var(--sp-8) 0; border-top:1px solid var(--border-subtle); }
+  section.spec:first-of-type{ border-top:none; }
+  .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom: var(--sp-2);
+  }
+  .eyebrow svg{ width:15px; height:15px; flex:none; }
+  h2.spec-title{
+    font-family:var(--font-serif); font-weight:500; letter-spacing:-.015em;
+    font-size: clamp(1.65rem, 1.6vw + 1rem, 2.35rem);
+    margin: 0 0 var(--sp-2);
+  }
+  .spec-dek{ color:var(--text-2); max-width:70ch; margin: 0 0 var(--sp-4); font-size:1.02rem; }
+  .cutline{ border:none; border-top:1px solid var(--border); margin: var(--sp-4) 0; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border-subtle);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+  }
+
+  /* ---------- §1 palette ---------- */
+  .base-swatches{
+    display:grid; grid-template-columns: repeat(6, 1fr); gap:12px;
+    margin-bottom: var(--sp-5, 40px);
+  }
+  .swatch{
+    border-radius:var(--radius); overflow:hidden; border:1px solid var(--border-subtle);
+    background:var(--surface);
+  }
+  .swatch-fill{ height:72px; }
+  .swatch-label{ padding:10px 12px; }
+  .swatch-name{ font-size:12.5px; font-weight:600; }
+  .swatch-hex{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  table.tokens{ width:100%; border-collapse:collapse; font-size:14px; table-layout:fixed; }
+  table.tokens col.role{ width:22%; } table.tokens col.val{ width:39%; }
+  table.tokens caption{ text-align:left; font-family:var(--font-mono); font-size:11px; color:var(--text-2); margin-bottom:8px; letter-spacing:.03em; }
+  table.tokens th, table.tokens td{ text-align:left; padding: 10px 14px; border-bottom:1px solid var(--border-subtle); vertical-align:middle; }
+  table.tokens th{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); font-weight:600; }
+  table.tokens td.role{ font-weight:600; }
+  table.tokens .chip-dual{ flex-wrap:wrap; }
+  table.tokens .chip-dual span:last-child{ white-space:normal; }
+  .chip-dual{ display:inline-flex; align-items:center; gap:8px; }
+  .dot{ width:16px; height:16px; border-radius:50%; border:1px solid rgba(0,0,0,.15); flex:none; }
+  .table-scroll{ overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border-subtle); }
+  .table-scroll table{ border:none; }
+  .table-scroll th:first-child, .table-scroll td:first-child{ padding-left:16px; }
+
+  /* ---------- §2 sheet palette compare ---------- */
+  .palette-compare{ overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border-subtle); }
+  table.compare{ width:100%; border-collapse:collapse; min-width:720px; }
+  table.compare th, table.compare td{ padding:14px 16px; border-bottom:1px solid var(--border-subtle); vertical-align:middle; }
+  table.compare th{ text-align:left; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-2); background:var(--surface-hover); }
+  table.compare tbody tr:last-child td{ border-bottom:none; }
+  table.compare td.kind{ font-weight:600; }
+  .kind-tag{ font-family:var(--font-mono); font-size:10px; letter-spacing:.04em; color:var(--text-2); display:block; margin-top:2px; }
+  .swab{ display:inline-flex; align-items:center; gap:10px; }
+  .swab .dot{ width:22px; height:22px; }
+  .swab .hex{ font-family:var(--font-mono); font-size:12px; color:var(--text-2); }
+  .col-label{ font-size:10px; }
+  .badge-mini{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.05em; padding:2px 7px; border-radius:var(--radius-pill); text-transform:uppercase; }
+  .badge-mini.old{ background: color-mix(in srgb, var(--base-gray) 22%, transparent); color:var(--text-2); }
+  .badge-mini.new{ background: color-mix(in srgb, var(--accent) 20%, transparent); color:var(--accent); }
+
+  /* ---------- §3 entry cards ---------- */
+  .entry-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+  .entry{
+    /* resaltado tenue de TODO el cuadro + borde PAREJO en los 4 lados, color suave del tipo */
+    background: color-mix(in srgb, var(--k-color) 7%, var(--surface));
+    border:1.5px solid color-mix(in srgb, var(--k-color) 30%, var(--border-subtle));
+    border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .entry-head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .tag-pill{
+    font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em;
+    color:var(--k-color); background: color-mix(in srgb, var(--k-color) 16%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--k-color) 45%, transparent);
+    padding:3px 9px; border-radius:var(--radius-pill);
+  }
+  .entry-label{ font-weight:600; font-size:15.5px; }
+  .entry-body{ color:var(--text-2); font-size:14.5px; margin:0; }
+  .entry-math{ margin-top:10px; padding:16px 14px; background: color-mix(in srgb, var(--k-color) 5%, var(--canvas)); border:1px solid color-mix(in srgb, var(--k-color) 14%, transparent); border-radius:6px; font-size:15px; overflow-x:auto; display:flex; align-items:center; justify-content:center; min-height:3.4em; text-align:center; }
+  /* static math — serif variables + italic, mono-neutral operators */
+  .math{ font-family:var(--font-serif); font-size:16.5px; line-height:1.7; color:var(--text); white-space:nowrap; }
+  .math .var{ font-style:italic; }
+  .math .op{ margin:0 .32em; color:var(--text-2); }
+  .math sup{ font-size:.72em; }
+  .math sub{ font-size:.72em; }
+  /* inline stacked fraction */
+  .frac{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 .22em; font-size:.92em; }
+  .frac > .num{ padding:0 .4em; }
+  .frac > .den{ padding:.08em .4em 0; border-top:1px solid currentColor; }
+  /* sum with limits */
+  .sum{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1; margin:0 .18em; }
+  .sum > .lim-top{ font-size:.6em; }
+  .sum > .sigma{ font-size:1.6em; line-height:.95; }
+  .sum > .lim-bot{ font-size:.6em; }
+
+  /* ---------- §4 minor badges ---------- */
+  .minor-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:700; font-size:11px; letter-spacing:.02em;
+    color:var(--minor-text); background:var(--m-color);
+    padding:4px 10px; border-radius:var(--radius-pill);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--minor-text) 18%, transparent);
+  }
+  .minor-dot{
+    width:14px; height:14px; border-radius:50%; background:var(--m-color);
+    box-shadow: 0 0 0 2px var(--canvas), 0 0 0 3px color-mix(in srgb, var(--minor-text) 20%, transparent);
+    flex:none;
+  }
+  .minor-row{ display:flex; align-items:center; gap:14px; padding:14px 16px; border-bottom:1px solid var(--border-subtle); }
+  .minor-row:last-child{ border-bottom:none; }
+  .minor-name{ font-weight:600; font-size:14.5px; flex:1; min-width:140px; }
+  .minor-hex{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+  .minor-variants{ display:flex; align-items:center; gap:22px; }
+  .variant-lbl{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-2); text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:4px; }
+
+  .multi-minor-example{
+    margin-top: var(--sp-3); padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .course-name{ font-weight:600; }
+  .course-code{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  /* ---------- §5 before/after ---------- */
+  .ba-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  .ba-col-label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .ba-col-label.before{ color:var(--base-gray); }
+  .ba-col-label.after{ color:var(--accent); }
+  .ba-col-label .line{ flex:1; height:1px; background:currentColor; opacity:.4; }
+
+  .course-card{ padding:18px 20px; }
+  .course-card .top{ display:flex; justify-content:space-between; gap:10px; margin-bottom:12px; }
+  .course-title{ font-weight:600; font-size:15.5px; line-height:1.35; }
+
+  .chips-before{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.02em;
+    padding:4px 8px; border-radius:5px; border:1px solid var(--border-subtle);
+    background:var(--surface-hover); color:var(--text-2); white-space:nowrap;
+  }
+  .chip.strong{ color:var(--text); }
+  .chip.go{ color:var(--status-go); border-color: color-mix(in srgb, var(--status-go) 40%, transparent); }
+  .chip.wait{ color:var(--status-wait); border-color: color-mix(in srgb, var(--status-wait) 40%, transparent); }
+  .chip.accent{ color:var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+  .row-after{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .abbr{ font-family:var(--font-mono); font-weight:700; font-size:13.5px; letter-spacing:.01em; }
+  .credits-chip{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); background:var(--surface-hover); border:1px solid var(--border-subtle); padding:3px 8px; border-radius:5px; }
+  .avail-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .avail-dot.go{ background:var(--status-go); box-shadow:0 0 0 3px color-mix(in srgb, var(--status-go) 22%, transparent); }
+  .avail-dot.wait{ background:var(--status-wait); box-shadow:0 0 0 3px color-mix(in srgb, var(--status-wait) 22%, transparent); }
+  .promo-icon{ display:inline-flex; width:20px; height:20px; align-items:center; justify-content:center; border-radius:5px; background: color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent); flex:none; }
+  .promo-icon svg{ width:12px; height:12px; }
+  .after-note{ margin-top:10px; font-size:12.5px; color:var(--text-2); }
+
+  /* ---------- §6 select ---------- */
+  .select-states{ display:flex; flex-wrap:wrap; gap:18px; margin-bottom: var(--sp-4); }
+  .state-card{ padding:16px; flex:1 1 220px; text-align:center; }
+  .state-lbl{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-2); margin-bottom:12px; }
+
+  .csel{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11.5px;
+    background:var(--surface); color:var(--text);
+    border:1px solid var(--border); border-radius:6px;
+    padding:7px 10px 7px 12px;
+    max-width:184px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  .csel .txt{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; text-align:left; }
+  .csel svg{ width:11px; height:11px; flex:none; color:var(--text-2); transition: transform .2s var(--ease); }
+  .csel.hover{ background:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .csel.focus{ border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+  .csel.focus svg{ transform: rotate(180deg); color:var(--accent); }
+  select.csel-live{
+    appearance:none; -webkit-appearance:none;
+    display:inline-flex; align-items:center;
+    font-family:var(--font-mono); font-size:11.5px;
+    background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="%23a1a1aa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 10px center;
+    background-size:11px;
+    color:var(--text); border:1px solid var(--border); border-radius:6px;
+    padding:8px 30px 8px 12px; max-width:200px; width:100%;
+    cursor:pointer; transition: all .18s var(--ease);
+  }
+  select.csel-live:hover{ background-color:var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  select.csel-live:focus-visible{ outline:none; border-color:var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+  .live-wrap{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .live-wrap .hint{ font-family:var(--font-mono); font-size:11px; color:var(--text-2); }
+
+  .before-selects{ display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; }
+  .old-select{ font-family:Georgia,serif; background:var(--surface); color:var(--text); border:1px solid var(--border-subtle); border-radius:3px; }
+  .old-select.a{ font-size:10px; padding:2px 4px; }
+  .old-select.b{ font-size:10.5px; padding:5px 10px; border-radius:8px; }
+  .old-select.c{ font-size:11px; padding:3px 18px 3px 3px; width:260px; }
+
+  /* ---------- section grid helpers ---------- */
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+  .pad{ padding: 20px 22px; }
+
+  footer.site-footer{
+    border-top:1px solid var(--border-subtle); padding: var(--sp-6) 0 var(--sp-8);
+    color:var(--text-2); font-size:13px;
+  }
+  footer.site-footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer.site-footer .mono{ font-size:11px; }
+
+  @media (max-width: 860px){
+    .base-swatches{ grid-template-columns:repeat(3,1fr); }
+    .entry-grid{ grid-template-columns:1fr; }
+    .ba-grid{ grid-template-columns:1fr; }
+    .two-col{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 480px){
+    .base-swatches{ grid-template-columns:repeat(2,1fr); }
+    .minor-variants{ gap:14px; }
+    .hero h1{ max-width:none; }
+  }
+</style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">SV·001</span>
+        <span class="brand-name">StudyVaults</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <span id="themeLabel">oscuro</span>
+      </button>
+    </div>
+    <nav class="subnav" aria-label="Secciones del documento">
+      <div class="subnav-inner">
+        <a href="#s1">01 · Tokens</a>
+        <a href="#s2">02 · Paleta hojas</a>
+        <a href="#s3">03 · Entradas</a>
+        <a href="#s4">04 · Badges de minor</a>
+        <a href="#s5">05 · Chips</a>
+        <a href="#s6">06 · CommissionSelect</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <div class="stamp">BORRADOR · PARA APROBACIÓN</div>
+      <h1>Lenguaje de diseño <em>compartido</em> para el rediseño de StudyVaults</h1>
+      <p class="dek">Sistema de tokens, paletas y componentes — "Technical Split" — pensado para revisar de una sola vez antes de tocar código de producción. Todo lo que ves acá son los mismos valores hexadecimales que va a usar la interfaz real.</p>
+      <div class="hero-meta">
+        <span><b>v0.1</b> — documento de revisión</span>
+        <span>6 secciones</span>
+        <span>02 jul 2026</span>
+        <span>Tema activo: <b id="themeMetaLabel">oscuro</b> — probá el toggle arriba a la derecha</span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 1. PALETA & TOKENS -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s1">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 01 — Fundaciones
+      </div>
+      <h2 class="spec-title">Paleta base y tokens de rol</h2>
+      <p class="spec-dek">Seis hex son la única fuente de verdad. Todo lo demás del sistema — canvas, superficies, texto, bordes — se deriva de estos seis, mezclándolos entre sí según el tema activo.</p>
+
+      <div class="base-swatches">
+        <div class="swatch">
+          <div class="swatch-fill" style="background:#241208"></div>
+          <div class="swatch-label"><div class="swatch-name">Brown</div><div class="swatch-hex">#241208</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-fill" style="background:#27272a"></div>
+          <div class="swatch-label"><div class="swatch-name">Zinc</div><div class="swatch-hex">#27272A</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-fill" style="background:#92cff2"></div>
+          <div class="swatch-label"><div class="swatch-name">Blue</div><div class="swatch-hex">#92CFF2</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-fill" style="background:#a1a1aa"></div>
+          <div class="swatch-label"><div class="swatch-name">Gray</div><div class="swatch-hex">#A1A1AA</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-fill" style="background:#f47c59"></div>
+          <div class="swatch-label"><div class="swatch-name">Coral</div><div class="swatch-hex">#F47C59</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-fill" style="background:#ffffff;border-bottom:1px solid #e2e0df"></div>
+          <div class="swatch-label"><div class="swatch-name">White</div><div class="swatch-hex">#FFFFFF</div></div>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="tokens">
+          <caption>Tokens de rol derivados — valores exactos en ambos temas</caption>
+          <colgroup><col class="role"><col class="val"><col class="val"></colgroup>
+          <thead>
+            <tr><th>Rol</th><th>Oscuro (default)</th><th>Claro</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="role">Canvas</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#4c3a30"></span><span class="mono">#4C3A30</span> <span style="color:var(--text-2);font-size:12px">brown aclarado (bg)</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#f5f4f4"></span><span class="mono">#F5F4F4</span> <span style="color:var(--text-2);font-size:12px">blanco +4.5% brown</span></span></td>
+            </tr>
+            <tr><td class="role">Surface (cards)</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#241208"></span><span class="mono">#241208</span> <span style="color:var(--text-2);font-size:12px">brown puro</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#ffffff;border-color:#d8d5d2"></span><span class="mono">#FFFFFF</span></span></td>
+            </tr>
+            <tr><td class="role">Surface hover/elevado</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#54463e"></span><span class="mono">#54463E</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#f0ede9"></span><span class="mono">#F0EDE9</span></span></td>
+            </tr>
+            <tr><td class="role">Borde sutil</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#343437"></span><span class="mono">#343437</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#e2e0df"></span><span class="mono">#E2E0DF</span></span></td>
+            </tr>
+            <tr><td class="role">Borde default</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#525255"></span><span class="mono">#525255</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#b3b3b4"></span><span class="mono">#B3B3B4</span></span></td>
+            </tr>
+            <tr><td class="role">Texto primario</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#ffffff;border-color:#666"></span><span class="mono">#FFFFFF</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#241208"></span><span class="mono">#241208</span></span></td>
+            </tr>
+            <tr><td class="role">Texto secundario</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#a1a1aa"></span><span class="mono">#A1A1AA</span> <span style="color:var(--text-2);font-size:12px">4.7:1</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#797067"></span><span class="mono">#797067</span> <span style="color:var(--text-2);font-size:12px">4.9:1</span></span></td>
+            </tr>
+            <tr><td class="role">Acento (coral)</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#f47c59"></span><span class="mono">#F47C59</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#f47c59"></span><span class="mono">#F47C59</span> <span style="color:var(--text-2);font-size:12px">fondo/ícono</span></span></td>
+            </tr>
+            <tr><td class="role">Link / acento secundario</td>
+              <td><span class="chip-dual"><span class="dot" style="background:#92cff2"></span><span class="mono">#92CFF2</span> <span style="color:var(--text-2);font-size:12px">7.1:1</span></span></td>
+              <td><span class="chip-dual"><span class="dot" style="background:#1e688f"></span><span class="mono">#1E688F</span> <span style="color:var(--text-2);font-size:12px">6.1:1 — oscurecido p/AA</span></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="after-note" style="margin-top:14px">Nota: el azul base (<span class="mono">#92CFF2</span>) es demasiado claro para funcionar como texto sobre blanco — en tema claro se oscurece a <span class="mono">#1E688F</span> manteniendo el mismo matiz. Todos los pares de texto de esta tabla superan 4.5:1 (AA).</p>
+      <p class="after-note" style="margin-top:6px">Tipografías del sistema (serif + monoespaciada) como sustituto de Newsreader / JetBrains Mono en esta build offline.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. PALETA SEMÁNTICA DE HOJAS — ACTUAL vs PROPUESTA -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s2">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 02 — Paleta semántica
+      </div>
+      <h2 class="spec-title">Hojas de estudio: paleta actual vs. propuesta</h2>
+      <p class="spec-dek">Las hojas categorizan cada entrada en 6 tipos. La paleta actual usa colores muy saturados (azul/violeta/rojo puros de librería UI) que "gritan" sobre el canvas cálido. La propuesta desatura y calienta cada matiz, generando dos variantes por tipo — una para tema oscuro y otra oscurecida para tema claro/impresión — conservando el significado semántico y superando 4.5:1 de contraste en ambos casos.</p>
+
+      <div class="palette-compare">
+        <table class="compare">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th><span class="badge-mini old">Actual</span></th>
+              <th><span class="badge-mini new">Propuesta · oscuro</span></th>
+              <th><span class="badge-mini new">Propuesta · claro</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="kind">Definición<span class="kind-tag">DEF</span></td>
+              <td><span class="swab"><span class="dot" style="background:#2563eb"></span><span class="hex">#2563EB</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#9ab8d6"></span><span class="hex">#9AB8D6</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#295c8e"></span><span class="hex">#295C8E</span></span></td>
+            </tr>
+            <tr>
+              <td class="kind">Teorema<span class="kind-tag">TEOREMA</span></td>
+              <td><span class="swab"><span class="dot" style="background:#7c3aed"></span><span class="hex">#7C3AED</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#b6a4d6"></span><span class="hex">#B6A4D6</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#5e3b9b"></span><span class="hex">#5E3B9B</span></span></td>
+            </tr>
+            <tr>
+              <td class="kind">Fórmula<span class="kind-tag">FÓRMULA</span></td>
+              <td><span class="swab"><span class="dot" style="background:#0f9d8f"></span><span class="hex">#0F9D8F</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#7cc0af"></span><span class="hex">#7CC0AF</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#227762"></span><span class="hex">#227762</span></span></td>
+            </tr>
+            <tr>
+              <td class="kind">Técnica<span class="kind-tag">TÉCNICA</span></td>
+              <td><span class="swab"><span class="dot" style="background:#d97706"></span><span class="hex">#D97706</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#d8b279"></span><span class="hex">#D8B279</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#8c6121"></span><span class="hex">#8C6121</span></span></td>
+            </tr>
+            <tr>
+              <td class="kind">Cuidado<span class="kind-tag">CUIDADO</span></td>
+              <td><span class="swab"><span class="dot" style="background:#dc2626"></span><span class="hex">#DC2626</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#d68f85"></span><span class="hex">#D68F85</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#ab3c2b"></span><span class="hex">#AB3C2B</span></span></td>
+            </tr>
+            <tr>
+              <td class="kind">Ejemplo<span class="kind-tag">EJEMPLO</span></td>
+              <td><span class="swab"><span class="dot" style="background:#6b7280"></span><span class="hex">#6B7280</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#b1a8a0"></span><span class="hex">#B1A8A0</span></span></td>
+              <td><span class="swab"><span class="dot" style="background:#6d6155"></span><span class="hex">#6D6155</span></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="after-note" style="margin-top:14px">Método: mismo matiz de base (azul, violeta, verde-azulado, ámbar, rojo, gris) con saturación recortada ~35–55% y luminosidad ajustada por tema (clara sobre superficie oscura, oscura sobre superficie clara). Contraste mínimo verificado: 4.46:1 — todos los pares superan AA para texto normal.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. ENTRY STYLING -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s3">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 03 — Componente
+      </div>
+      <h2 class="spec-title">Cómo se ve una entrada de hoja</h2>
+      <p class="spec-dek">Con la paleta propuesta aplicada: borde izquierdo de 2.5px en el color del tipo, pastilla mono con la etiqueta, título y cuerpo. Fórmulas y teoremas muestran una expresión matemática de ejemplo, maquetada en HTML/Unicode.</p>
+
+      <div class="entry-grid">
+        <article class="entry" style="--k-color: var(--k-def)">
+          <div class="entry-head"><span class="tag-pill">DEF</span><span class="entry-label">Convergencia uniforme</span></div>
+          <p class="entry-body">Una sucesión de funciones <span class="mono">fₙ</span> converge uniformemente a <span class="mono">f</span> en un conjunto si el error máximo entre ambas tiende a cero, sin depender del punto elegido.</p>
+        </article>
+
+        <article class="entry" style="--k-color: var(--k-theorem)">
+          <div class="entry-head"><span class="tag-pill">TEOREMA</span><span class="entry-label">Bolzano</span></div>
+          <p class="entry-body">Si <span class="mono">f</span> es continua en <span class="mono">[a,b]</span> y <span class="mono">f(a)·f(b) &lt; 0</span>, existe al menos una raíz en el intervalo.</p>
+          <div class="entry-math">
+            <span class="math"><span class="var">f</span>(<span class="var">a</span>)·<span class="var">f</span>(<span class="var">b</span>)<span class="op">&lt;</span>0<span class="op">⟹</span>∃<span class="var">c</span><span class="op">∈</span>(<span class="var">a</span>,&#8202;<span class="var">b</span>)<span class="op">:</span><span class="var">f</span>(<span class="var">c</span>)<span class="op">=</span>0</span>
+          </div>
+        </article>
+
+        <article class="entry" style="--k-color: var(--k-formula)">
+          <div class="entry-head"><span class="tag-pill">FÓRMULA</span><span class="entry-label">Serie de Taylor</span></div>
+          <p class="entry-body">Aproxima <span class="mono">f(x)</span> alrededor de <span class="mono">a</span> como una suma infinita de derivadas evaluadas en ese punto.</p>
+          <div class="entry-math">
+            <span class="math"><span class="var">f</span>(<span class="var">x</span>)<span class="op">=</span><span class="sum"><span class="lim-top">∞</span><span class="sigma">Σ</span><span class="lim-bot"><span class="var">n</span>=0</span></span><span class="frac"><span class="num"><span class="var">f</span><sup>(<span class="var">n</span>)</sup>(<span class="var">a</span>)</span><span class="den"><span class="var">n</span>!</span></span>(<span class="var">x</span>−<span class="var">a</span>)<sup><span class="var">n</span></sup></span>
+          </div>
+        </article>
+
+        <article class="entry" style="--k-color: var(--k-method)">
+          <div class="entry-head"><span class="tag-pill">TÉCNICA</span><span class="entry-label">Eliminación gaussiana</span></div>
+          <p class="entry-body">Triangulá la matriz aplicando combinaciones lineales de filas hasta anular todo debajo de la diagonal, después resolvé por sustitución hacia atrás.</p>
+        </article>
+
+        <article class="entry" style="--k-color: var(--k-caution)">
+          <div class="entry-head"><span class="tag-pill">CUIDADO</span><span class="entry-label">Pivote nulo</span></div>
+          <p class="entry-body">Si el elemento pivote da cero (o muy cercano a cero por redondeo), permutá filas antes de dividir — si no, el método diverge o explota numéricamente.</p>
+        </article>
+
+        <article class="entry" style="--k-color: var(--k-example)">
+          <div class="entry-head"><span class="tag-pill">EJEMPLO</span><span class="entry-label">Autovalores 2×2</span></div>
+          <p class="entry-body">Para hallar los autovalores de <span class="mono">A</span>, planteá el polinomio característico:</p>
+          <div class="entry-math">
+            <span class="math">det(<span class="var">A</span><span class="op">−</span>λ<span class="var">I</span>)<span class="op">=</span>0</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. MINOR BADGES -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s4">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 04 — Componente
+      </div>
+      <h2 class="spec-title">Sistema unificado de badges de minor</h2>
+      <p class="spec-dek">Cada minor tiene un color fijo (independiente del tema — el texto siempre es brown oscuro, que rinde &gt;6.6:1 sobre los cuatro colores). Pastilla con iniciales para contexto normal, punto para espacios chicos.</p>
+
+      <div class="card">
+        <div class="minor-row" style="--m-color: var(--minor-cd)">
+          <span class="minor-badge">CD</span>
+          <div class="minor-name">Ciencia de Datos<span class="minor-hex"> · #85A2C2</span></div>
+          <div class="minor-variants">
+            <div><span class="variant-lbl">Pastilla</span><span class="minor-badge">CD</span></div>
+            <div><span class="variant-lbl">Punto</span><span class="minor-dot"></span></div>
+          </div>
+        </div>
+        <div class="minor-row" style="--m-color: var(--minor-irv)">
+          <span class="minor-badge">IRV</span>
+          <div class="minor-name">Imágenes y Realidad Virtual<span class="minor-hex"> · #C592AB</span></div>
+          <div class="minor-variants">
+            <div><span class="variant-lbl">Pastilla</span><span class="minor-badge">IRV</span></div>
+            <div><span class="variant-lbl">Punto</span><span class="minor-dot"></span></div>
+          </div>
+        </div>
+        <div class="minor-row" style="--m-color: var(--minor-ia)">
+          <span class="minor-badge">IA</span>
+          <div class="minor-name">Inteligencia Artificial<span class="minor-hex"> · #A9B27E</span></div>
+          <div class="minor-variants">
+            <div><span class="variant-lbl">Pastilla</span><span class="minor-badge">IA</span></div>
+            <div><span class="variant-lbl">Punto</span><span class="minor-dot"></span></div>
+          </div>
+        </div>
+        <div class="minor-row" style="--m-color: var(--minor-arq)">
+          <span class="minor-badge">ARQ</span>
+          <div class="minor-name">Arquitectura de Software<span class="minor-hex"> · #A497C0</span></div>
+          <div class="minor-variants">
+            <div><span class="variant-lbl">Pastilla</span><span class="minor-badge">ARQ</span></div>
+            <div><span class="variant-lbl">Punto</span><span class="minor-dot"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card multi-minor-example">
+        <div>
+          <div class="course-name">Optimización No Lineal</div>
+          <div class="course-code">72.35 — ejemplo de curso en 2 minors</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="variant-lbl" style="margin:0">Badges</span>
+            <span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span>
+            <span class="minor-badge" style="--m-color:var(--minor-ia)">IA</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="variant-lbl" style="margin:0">Puntos</span>
+            <span class="minor-dot" style="--m-color:var(--minor-cd)"></span>
+            <span class="minor-dot" style="--m-color:var(--minor-ia)"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 5. CHIP TAXONOMY BEFORE/AFTER -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s5">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 05 — Patrón
+      </div>
+      <h2 class="spec-title">Tarjeta de curso: de 7 chips de texto a 4 señales visuales</h2>
+      <p class="spec-dek">Hoy cada card repite código, créditos, abreviatura, primera palabra del área, horario, disponibilidad y régimen como chips de texto sueltos — hay que leer todo para entender algo. La propuesta reemplaza casi todo por color y forma: un badge de minor, un punto de disponibilidad y un ícono de régimen.</p>
+
+      <div class="ba-grid">
+        <div>
+          <div class="ba-col-label before">Antes<span class="line"></span></div>
+          <div class="card course-card">
+            <div class="top">
+              <div class="course-title">Optimización No Lineal</div>
+            </div>
+            <div class="chips-before">
+              <span class="chip">72.35</span>
+              <span class="chip">6 cr</span>
+              <span class="chip strong">OPT. NO LINEAL</span>
+              <span class="chip">Matemát…</span>
+              <span class="chip">Horario: Lu 18–21</span>
+              <span class="chip go">Disponible</span>
+              <span class="chip accent">Promociona</span>
+              <span class="chip">Con final</span>
+              <span class="chip">Asistencia</span>
+              <span class="chip">Parcial</span>
+              <span class="chip">TP</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="ba-col-label after">Después<span class="line"></span></div>
+          <div class="card course-card">
+            <div class="top">
+              <div class="course-title">Optimización No Lineal</div>
+            </div>
+            <div class="row-after">
+              <span class="abbr">OPT NO LINEAL</span>
+              <span class="credits-chip">6 cr</span>
+              <span class="minor-badge" style="--m-color:var(--minor-cd)">CD</span>
+              <span class="avail-dot go" title="Cursable"></span>
+              <span class="promo-icon" title="Promociona">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg>
+              </span>
+            </div>
+            <p class="after-note">Abreviatura + créditos + minor + un punto de estado + un ícono de régimen. Se lee en un vistazo, sin perder información: horario y requisitos pasan al detalle del curso al hacer click/hover.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="cutline" />
+      <p class="spec-dek" style="margin-bottom:12px">Referencia rápida de las dos señales que reemplazan texto:</p>
+      <div class="two-col">
+        <div class="card pad">
+          <div class="variant-lbl" style="margin-bottom:10px">Disponibilidad — un punto</div>
+          <div style="display:flex;gap:24px">
+            <div style="display:flex;align-items:center;gap:8px"><span class="avail-dot go"></span><span style="font-size:14px">Cursable</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span class="avail-dot wait"></span><span style="font-size:14px">Requisitos pendientes</span></div>
+          </div>
+        </div>
+        <div class="card pad">
+          <div class="variant-lbl" style="margin-bottom:10px">Régimen — un ícono</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="promo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5 5L20 6.5"/></svg></span>
+            <span style="font-size:14px">Promociona (check) · sin check = con final</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 6. COMMISSIONSELECT -->
+    <!-- ============================================================ -->
+    <section class="spec" id="s6">
+      <div class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        FIG. 06 — Componente
+      </div>
+      <h2 class="spec-title">CommissionSelect — el único select de comisión</h2>
+      <p class="spec-dek">Hoy conviven tres estilos de <span class="mono">&lt;select&gt;</span> con tamaños de fuente distintos (10 / 10.5 / 11px), paddings distintos y uno sin límite de ancho. La propuesta es un solo componente: mono, padding fijo, ancho máximo con truncado por elipsis, chevron sutil y anillo coral al enfocar.</p>
+
+      <div class="select-states">
+        <div class="card state-card">
+          <div class="state-lbl">Reposo</div>
+          <span class="csel"><span class="txt">com. auto</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></span>
+        </div>
+        <div class="card state-card">
+          <div class="state-lbl">Hover</div>
+          <span class="csel hover"><span class="txt">com. 1 · Presencial</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></span>
+        </div>
+        <div class="card state-card">
+          <div class="state-lbl">Foco</div>
+          <span class="csel focus"><span class="txt">com. 2 · Virtual</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></span>
+        </div>
+        <div class="card state-card">
+          <div class="state-lbl">Texto largo (truncado)</div>
+          <span class="csel"><span class="txt">com. 3 · Virtual — turno mañana extendido</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></span>
+        </div>
+      </div>
+
+      <div class="card pad live-wrap">
+        <span class="hint">Probalo (select real, funcional):</span>
+        <select class="csel-live" aria-label="Seleccionar comisión">
+          <option>com. auto</option>
+          <option>com. 1 · Presencial</option>
+          <option>com. 2 · Virtual</option>
+          <option>com. 3 · Virtual — turno mañana extendido</option>
+        </select>
+      </div>
+
+      <hr class="cutline" />
+      <p class="spec-dek" style="margin-bottom:10px">Los tres estilos actuales que reemplaza (referencia, no usar):</p>
+      <div class="before-selects">
+        <select class="old-select a"><option>com. auto</option></select>
+        <select class="old-select b"><option>com. 1 · Presencial</option></select>
+        <select class="old-select c"><option>com. 2 · Virtual — sin límite de ancho, se estira con el contenido</option></select>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>StudyVaults — documento de revisión de diseño, no forma parte del build de producción.</div>
+      <div class="mono">Technical Split · v0.1 · 02 jul 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var label = document.getElementById('themeLabel');
+      var metaLabel = document.getElementById('themeMetaLabel');
+      function setTheme(t) {
+        root.setAttribute('data-theme', t);
+        if (label) label.textContent = t === 'dark' ? 'oscuro' : 'claro';
+        if (metaLabel) metaLabel.textContent = t === 'dark' ? 'oscuro' : 'claro';
+      }
+      setTheme('dark');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>
