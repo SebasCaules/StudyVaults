@@ -88,34 +88,64 @@
 .planner .cl-items{display:flex;flex-wrap:wrap;align-items:center;gap:7px 12px}
 .planner .cl-row{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
 
-/* ----- cuerpo: estado (cursada/final) en el plan por cuatrimestre ----- */
-.planner .estado-legend{
-  display:flex;flex-wrap:wrap;align-items:center;gap:9px 16px;
-  padding:2px 15px 13px;
-  font-family:var(--f-m);font-size:11.5px;color:var(--muted);
-}
-.planner .estado-legend .el-item{display:inline-flex;align-items:center;gap:8px}
-.planner .estado-legend .el-item b{color:var(--ink);font-weight:600}
-.planner .estado-legend .estado-ctl{cursor:default} /* muestra sólo, no interactivo */
-.planner .estado-legend .el-sep{width:1px;height:17px;background:var(--line);flex:none}
+/* la leyenda muestra controles de estado no interactivos */
+.planner .card-legend .estado-ctl{cursor:default}
 
-/* ----- etiquetas de estado por card (plan por cuatrimestre) -----
-   Hacen explícito, en palabras, cursada vs final: no dependen sólo del ícono.
-   Scope .qcard__f (0,3,0) para ganarle a .planner .tag de planner.css. */
-.planner .qcard__f .tag--final{
-  color:var(--status-go);font-weight:600;
-  border-color:color-mix(in srgb, var(--status-go) 45%, transparent);
-  background:color-mix(in srgb, var(--status-go) 13%, transparent);
-}
-.planner .qcard__f .tag--reg{
-  color:var(--status-warn);
-  border-color:color-mix(in srgb, var(--status-warn) 45%, transparent);
-  background:color-mix(in srgb, var(--status-warn) 12%, transparent);
-}
-.planner .qcard__f .tag--promo{
-  color:var(--status-promo);
-  border-color:color-mix(in srgb, var(--status-promo) 45%, transparent);
-  background:color-mix(in srgb, var(--status-promo) 12%, transparent);
+/* ============================================================
+   Plan por cuatrimestre — timeline por año (rework HCI 2026-07).
+   Un año = UNA carta partida en sus dos cuatrimestres (split vertical
+   literal del DS); cada materia es una fila checklist:
+     [EstadoControl] código nombre ………… (falta final | candado) créditos
+   Una sola codificación por estado: el control colorea, el texto solo se
+   atenúa (nada de tachado + opacidad + tag). El avance del año se lee en
+   la micro-barra de dos segmentos (terminadas / cursadas que deben final).
+   Sin .tag acá: muere de paso el "#" que filtraba badge.css del DS.
+   ============================================================ */
+.planner .cq-years{display:flex;flex-direction:column;gap:14px}
+.planner .cq-year{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.planner .cq-year__h{display:flex;align-items:baseline;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line)}
+.planner .cq-year__t{font-family:var(--f-d);font-weight:500;font-size:16.5px;letter-spacing:-.01em;color:var(--ink);margin:0}
+.planner .cq-year__ciclo{font-family:var(--f-m);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.planner .cq-year__prog{margin-left:auto;display:flex;align-items:center;gap:9px}
+.planner .cq-year__bar{display:flex;width:96px;height:3px;border-radius:3px;background:var(--panel-3);overflow:hidden}
+.planner .cq-year__bar i{display:block;height:100%}
+.planner .cq-year__bar .seg-done{background:var(--status-go)}
+.planner .cq-year__bar .seg-mid{background:var(--status-warn)}
+.planner .cq-year__n{font-family:var(--f-m);font-size:11px;color:var(--faint)}
+.planner .cq-year__n b{color:var(--ink);font-weight:500}
+
+.planner .cq-year__cols{display:grid;grid-template-columns:1fr 1fr}
+.planner .cq-year__cols--solo{grid-template-columns:1fr}
+.planner .cq-sem{min-width:0;padding:4px 10px 10px}
+.planner .cq-sem + .cq-sem{border-left:1px solid var(--line)}
+.planner .cq-sem__h{display:flex;align-items:baseline;gap:8px;margin:0;padding:8px 8px 5px;
+  font-family:var(--f-m);font-weight:400;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.planner .cq-sem__n{margin-left:auto;color:var(--faint);letter-spacing:.04em}
+.planner .cq-list{list-style:none;margin:0;padding:0}
+
+.planner .qrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;
+  transition:background var(--dur-fast) var(--ease)}
+.planner .qrow:hover{background:var(--row-hover)}
+.planner .qrow__open{display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;
+  padding:0;border:0;background:none;color:inherit;cursor:pointer;text-align:left;font:inherit}
+.planner .qrow__open:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:4px}
+.planner .qrow__code{flex:none;width:40px;font-family:var(--f-m);font-size:10px;color:var(--faint)}
+.planner .qrow__name{font-family:var(--f-d);font-size:14px;line-height:1.25;color:var(--ink-soft);min-width:0}
+.planner .qrow__open:hover .qrow__name{color:var(--ink);text-decoration:underline;
+  text-decoration-color:color-mix(in srgb, var(--ink) 30%, transparent);text-underline-offset:3px}
+.planner .qrow__cr{flex:none;font-family:var(--f-m);font-size:10.5px;color:var(--muted)}
+.planner .qrow__due{flex:none;font-family:var(--f-m);font-size:9.5px;letter-spacing:.03em;
+  color:var(--status-warn)}
+.planner .qrow .avail-lock svg{width:14px;height:14px}
+
+/* estados: el control ya es la señal fuerte; acá solo se atenúa el texto */
+.planner .qrow.is-done .qrow__name{color:var(--muted)}
+.planner .qrow.is-done .qrow__cr{color:var(--faint)}
+.planner .qrow.is-locked .qrow__name{color:var(--muted)}
+
+@media (max-width:700px){
+  .planner .cq-year__cols{grid-template-columns:1fr}
+  .planner .cq-sem + .cq-sem{border-left:0;border-top:1px solid var(--line)}
 }
 
 /* ----- ProgramaChips (modal/drawer): ícono por concepto ----- */

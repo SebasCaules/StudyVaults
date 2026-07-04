@@ -13,7 +13,7 @@ import { estadoOf, tieneFinal, type Estado } from "@/lib/planner/estado";
 // (helpers puros, consumibles también por el reducer sin ciclos de import).
 export { estadoOf, tieneFinal };
 
-const CheckSingle = () => (
+export const CheckSingle = () => (
   <svg
     viewBox="0 0 16 16"
     fill="none"
@@ -27,7 +27,7 @@ const CheckSingle = () => (
   </svg>
 );
 
-const CheckDouble = () => (
+export const CheckDouble = () => (
   <svg
     viewBox="0 0 24 16"
     fill="none"
