@@ -16,9 +16,10 @@
    ¿implementar la vista completa navegable o registrar el recorte?
 4. **PlannerIntro feature 03**: el mockup dice "Recomendador de electivas"; la impl puso
    "Combinador de finales" (y cambió el orden de features) — ¿aprobar el swap?
-5. **Recomendador del Plan**: usa cards (`rec-card`) donde el mockup module-c-recommend
-   especifica filas slim `[dot][Nombre][N cr][+]` con fit en tooltip (el Combinador SÍ las
-   implementó) — ¿migrar PlanView a slim o aprobar la divergencia?
+5. ✅ **RESUELTO 2026-07-04 — recomendador del Plan migrado a filas slim** (rediseño
+   `96b2912`/`0a69943`): vive en el rail `PlanRail` (tab Recomendadas) con filas
+   `[dot][abbr][Nombre][N cr][+]` + línea de fit, alineado a module-c-recommend.
+   Las `rec-card` viejas fueron purgadas del CSS.
 6. **Tonos de toolkit**: `--role-theorem: var(--status-promo)` (teal) vs violeta `--k-def`
    del mockup module-a-toolkits — toolkit.css:913-918.
 7. **Navbar/Footer menores**: search solo-ícono vs pill "Buscar ⌘K"; footer sin "Buscar ⌘K",
@@ -61,7 +62,8 @@ optimizar y cablear en VaultBanners/cards/landing. Hoy: SVG placeholder ciclando
 ## D4 — Fidelidad verificada OK (no tocar; base para el fidelity pass browser de P0)
 GrafoView=module-b (pan/zoom/Ajustar sin overflow) · DetailDrawer=module-c-modal (X sticky,
 grid simétrico, container queries) · cards=module-c-cards (5 señales+badge minor) ·
-PlanView=module-e-planner (banner, tabs, 3-dots, lock chip, DnD hint) · Combinador=
+PlanView=module-e-planner **[SUPERSEDIDO 2026-07-04 por el rediseño workbench `96b2912` —
+el spec vigente de PlanView es esa impl, no el mockup]** · Combinador=
 module-e-combinador/overlays · doble-check=module-f-checks (salvo electivas, ver P1.4) ·
 wiki prev/next=module-a-wiki-nav (mejorado: kbd+progreso) · toolkits bespoke=module-a-toolkits
 · electivas-intro=module-a-electivas-intro (casi 1:1, reduced-motion OK).
