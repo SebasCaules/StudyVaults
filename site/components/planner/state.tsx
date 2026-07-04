@@ -12,6 +12,7 @@ import { tieneFinal, type Estado } from "@/lib/planner/estado";
 import type { Persisted } from "@/lib/planner/persist";
 import type { PlannerUrlState } from "@/lib/planner/url-state";
 import type {
+  FinalAsignacion,
   FinalPeriodo,
   FinalesState,
   MesaFinal,
@@ -27,7 +28,7 @@ export function initialFinales(): FinalesState {
     periodo: "julio",
     anio: 2026,
     mesas: new Map<string, MesaFinal>(),
-    seleccion: new Set<string>(),
+    seleccion: new Map<string, FinalAsignacion>(),
     reminderHs: 72,
     margenDias: 2,
   };
@@ -124,7 +125,8 @@ export type Action =
   | { type: "SET_FINALES_PERIODO"; periodo: FinalPeriodo }
   | { type: "SET_FINALES_ANIO"; anio: number }
   | { type: "SET_MESA"; code: string; mesa: MesaFinal | null }
-  | { type: "TOGGLE_FINAL_SEL"; code: string }
+  // asignación por materia: en qué período+llamado se rinde (null = quitar).
+  | { type: "SET_FINAL_ASIGNACION"; code: string; asignacion: FinalAsignacion | null }
   | { type: "SET_FINALES_REMINDER"; hs: number }
   | { type: "SET_FINALES_MARGEN"; dias: number };
 
@@ -153,7 +155,7 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
               periodo: p.finales.periodo,
               anio: p.finales.anio,
               mesas: new Map(p.finales.mesas),
-              seleccion: new Set(p.finales.seleccion),
+              seleccion: new Map(p.finales.seleccion),
               reminderHs: p.finales.reminderHs,
               margenDias: p.finales.margenDias,
             }
@@ -401,11 +403,10 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       else mesas.set(a.code, a.mesa);
       return { ...s, finales: { ...s.finales, mesas } };
     }
-    case "TOGGLE_FINAL_SEL": {
-      const seleccion = new Set(s.finales.seleccion);
-      seleccion.has(a.code)
-        ? seleccion.delete(a.code)
-        : seleccion.add(a.code);
+    case "SET_FINAL_ASIGNACION": {
+      const seleccion = new Map(s.finales.seleccion);
+      if (a.asignacion === null) seleccion.delete(a.code);
+      else seleccion.set(a.code, a.asignacion);
       return { ...s, finales: { ...s.finales, seleccion } };
     }
     case "SET_FINALES_REMINDER":

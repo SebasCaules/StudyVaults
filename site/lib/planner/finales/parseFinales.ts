@@ -11,7 +11,7 @@
 // Este módulo es PURO (sin acceso a `window`/`fetch`/`FileReader`): recibe el
 // texto CSV ya leído y devuelve datos tipados. La lectura del archivo/URL vive
 // en `source.ts`; el puente al modelo del planner (`MesaFinal`) vive abajo en
-// `finalesRowsToMesas`.
+// `bucketizarFinales` (buckets por período × año lectivo × llamado).
 //
 // Robustez buscada:
 //   · tokenizer CSV real (comillas, comas dentro de comillas, "" escapadas,
@@ -24,7 +24,7 @@
 //     reportan en `warnings`.
 // ============================================================================
 
-import type { FinalPeriodo, MesaFinal } from "../types";
+import type { FinalLlamado, FinalPeriodo, MesaFinal } from "../types";
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
@@ -134,8 +134,9 @@ export function parseFechaEs(raw: string): string | null {
   const s = stripAccents(raw.toLowerCase()).trim();
   if (!s || s === "-" || s === "a confirmar" || s === "s/f") return null;
 
-  // "13 de julio de 2026"
-  const m = s.match(/(\d{1,2})\s+de\s+([a-z]+)\s+de\s+(\d{4})/);
+  // "13 de julio de 2026" — el año exige límite de palabra: la planilla real
+  // trae typos tipo "12026" que sin \b matchearían como año 1202.
+  const m = s.match(/(\d{1,2})\s+de\s+([a-z]+)\s+de\s+(\d{4})\b/);
   if (m) {
     const d = Number(m[1]);
     const mes = MESES[m[2]];
@@ -379,27 +380,124 @@ export function detectarPeriodo(rows: FinalMateriaRow[]): {
 }
 
 // ---------------------------------------------------------------------------
-// 7. Puente al modelo del planner
+// 7. Puente al modelo del planner — bucketización multi-período
 // ---------------------------------------------------------------------------
 
-export type Llamado = "primer" | "segundo";
+/** Alias de compatibilidad (la definición canónica vive en ../types). */
+export type Llamado = FinalLlamado;
+
+/** Mesas de una ingesta agrupadas por período/año lectivo y llamado, listas
+ *  para `setMesasOficialesBulk`. Una planilla de dic+feb combinada produce
+ *  hasta 4 buckets (dic 1º, dic 2º, feb 1º, feb 2º). */
+export interface FinalesBucket {
+  periodo: FinalPeriodo;
+  /** año LECTIVO (para Febrero: año calendario − 1, ver `detectarPeriodo`). */
+  anio: number;
+  llamado: FinalLlamado;
+  entries: [string, MesaFinal][];
+}
+
+/** Período que corresponde a un mes calendario de mesa, o null si no es mes
+ *  de finales (las planillas reales solo traen jul / dic / feb-mar). */
+export function mesAPeriodo(mes: number): FinalPeriodo | null {
+  if (mes === 7) return "julio";
+  if (mes === 12) return "diciembre";
+  if (mes === 2 || mes === 3) return "febrero";
+  return null;
+}
 
 /**
- * Convierte las filas parseadas en pares `[código, MesaFinal]` para el llamado
- * elegido (primer o segundo), listos para `setMesasOficiales`. Descarta las
- * materias que no tienen ese llamado. Si la planilla no traía hora, usa 09:00
- * como marcador editable (así `MesaFinal` siempre queda válido para la vista).
+ * Reparte los llamados parseados en buckets por período y llamado, mirando la
+ * FECHA de cada mesa (no la columna de origen): el período sale del mes y el
+ * llamado del orden cronológico dentro del período para esa materia. Así una
+ * misma subida cubre tanto la planilla de un período (Julio: 2 columnas → 1º y
+ * 2º llamado) como la combinada de Diciembre+Febrero, sin importar si viene en
+ * 2 columnas (dic, feb) o 4 (dic 1º/2º, feb 1º/2º).
+ *
+ * Si la planilla no traía hora se usa 09:00 como marcador editable. Fechas en
+ * meses que no son de finales se descartan con warning; una materia con más de
+ * dos fechas en el mismo período conserva las dos primeras (warning).
  */
-export function finalesRowsToMesas(
-  rows: FinalMateriaRow[],
-  llamado: Llamado,
-): [string, MesaFinal][] {
-  const out: [string, MesaFinal][] = [];
+export function bucketizarFinales(rows: FinalMateriaRow[]): {
+  buckets: FinalesBucket[];
+  warnings: string[];
+} {
+  const warnings: string[] = [];
+  // (periodo|anioLectivo) → código → fechas ordenables
+  const porPeriodo = new Map<string, Map<string, LlamadoFecha[]>>();
+
   for (const r of rows) {
-    const l = llamado === "primer" ? r.primer : r.segundo;
-    if (l && r.codigo) {
-      out.push([r.codigo, { fecha: l.fecha, hora: l.hora || "09:00" }]);
+    if (!r.codigo) continue;
+    const fechas = [r.primer, r.segundo, ...r.extra].filter(
+      (x): x is LlamadoFecha => x !== null,
+    );
+    for (const f of fechas) {
+      const [y, mo] = f.fecha.split("-").map(Number);
+      // guard de sanidad: typos de la planilla real ("12026") no deben crear
+      // buckets fantasma en años absurdos.
+      if (y < 2000 || y > 2100) {
+        warnings.push(
+          `${r.codigo}: mesa con año ${y} (typo de la planilla — descartada).`,
+        );
+        continue;
+      }
+      const periodo = mesAPeriodo(mo);
+      if (!periodo) {
+        warnings.push(
+          `${r.codigo}: mesa ${f.fecha} en un mes sin llamado (descartada).`,
+        );
+        continue;
+      }
+      const anioLectivo = periodo === "febrero" ? y - 1 : y;
+      const k = `${periodo}|${anioLectivo}`;
+      let mats = porPeriodo.get(k);
+      if (!mats) porPeriodo.set(k, (mats = new Map()));
+      let arr = mats.get(r.codigo);
+      if (!arr) mats.set(r.codigo, (arr = []));
+      arr.push(f);
     }
   }
-  return out;
+
+  const buckets: FinalesBucket[] = [];
+  const ORDEN: FinalPeriodo[] = ["julio", "diciembre", "febrero"];
+  const keys = [...porPeriodo.keys()].sort((a, b) => {
+    const [pa, ya] = a.split("|");
+    const [pb, yb] = b.split("|");
+    return (
+      Number(ya) - Number(yb) ||
+      ORDEN.indexOf(pa as FinalPeriodo) - ORDEN.indexOf(pb as FinalPeriodo)
+    );
+  });
+
+  for (const k of keys) {
+    const [periodo, anio] = k.split("|") as [FinalPeriodo, string];
+    const primer: [string, MesaFinal][] = [];
+    const segundo: [string, MesaFinal][] = [];
+    for (const [code, arr] of porPeriodo.get(k)!) {
+      arr.sort(
+        (a, b) =>
+          a.fecha.localeCompare(b.fecha) ||
+          (a.hora || "").localeCompare(b.hora || ""),
+      );
+      if (arr.length > 2) {
+        warnings.push(
+          `${code}: ${arr.length} fechas en ${periodo} — se usan las dos primeras.`,
+        );
+      }
+      const mesa = (f: LlamadoFecha): MesaFinal => ({
+        fecha: f.fecha,
+        hora: f.hora || "09:00",
+      });
+      primer.push([code, mesa(arr[0])]);
+      if (arr[1]) segundo.push([code, mesa(arr[1])]);
+    }
+    primer.sort((a, b) => a[0].localeCompare(b[0]));
+    segundo.sort((a, b) => a[0].localeCompare(b[0]));
+    buckets.push({ periodo, anio: Number(anio), llamado: "primer", entries: primer });
+    if (segundo.length) {
+      buckets.push({ periodo, anio: Number(anio), llamado: "segundo", entries: segundo });
+    }
+  }
+
+  return { buckets, warnings };
 }

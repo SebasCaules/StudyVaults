@@ -4,9 +4,15 @@
 // del combinador. Tres vías: traer del link oficial (fetch con CORS abierto),
 // subir un archivo (CSV o el HTML de la planilla publicada), o pegar el texto.
 // El ruteo CSV/HTML lo resuelve `parseFinalesInput`; el parseo puro vive en
-// lib/planner/finales/parseFinales.ts; la I/O en lib/planner/finales/source.ts;
-// las mesas cargadas van al store reactivo de lib/planner/finalesData.ts, que
-// mesaOficial() consulta antes que el mock.
+// lib/planner/finales/parseFinales.ts; la I/O en lib/planner/finales/source.ts.
+//
+// Multi-período / ambos llamados: una misma planilla puede traer varios períodos
+// (típico: Diciembre + Febrero suben JUNTOS) y siempre trae los dos llamados de
+// cada uno. Por eso la ingesta ya NO importa "un" llamado global: `bucketizarFinales`
+// reparte todo en buckets (período × año lectivo × llamado) y `setMesasOficialesBulk`
+// los carga de una en el store reactivo de lib/planner/finalesData.ts (que
+// mesaOficial() consulta antes que el mock). La elección de llamado POR materia la
+// hace el usuario en el combinador — acá no hay toggle de llamado.
 //
 // Static-export safe: fetch/FileReader corren solo en handlers del cliente.
 
@@ -14,9 +20,9 @@ import { useMemo, useRef, useState } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { byId } from "@/lib/planner/model";
 import {
-  finalesRowsToMesas,
+  bucketizarFinales,
   type FinalMateriaRow,
-  type Llamado,
+  type FinalesBucket,
 } from "@/lib/planner/finales/parseFinales";
 import {
   fetchFinalesCsv,
@@ -25,15 +31,15 @@ import {
   FINALES_PUB_HTML_URL,
 } from "@/lib/planner/finales/source";
 import {
-  setMesasOficiales,
+  setMesasOficialesBulk,
   clearMesasOficiales,
   PERIODO_LABEL,
+  periodoAnioReal,
 } from "@/lib/planner/finalesData";
 import type { FinalPeriodo } from "@/lib/planner/types";
 import {
   IconArrowUpRight,
   IconCheck,
-  IconClock,
   IconDownload,
   IconInfo,
   IconTrash,
@@ -42,23 +48,46 @@ import {
 
 type Status = "idle" | "loading" | "ok" | "error";
 
+/** Resumen de un período ingestado (para los chips + para saber qué limpiar).
+ *  `anio` es el año LECTIVO (Febrero cae en el año siguiente al mostrarlo).
+ *  `nPrimer`/`nSegundo` = cantidad de materias con mesa en cada llamado (0 si
+ *  ese llamado no vino en la planilla). */
+interface PeriodoResumen {
+  periodo: FinalPeriodo;
+  anio: number;
+  nPrimer: number;
+  nSegundo: number;
+}
+
+/** Colapsa los buckets (período × año × llamado) a un resumen por período/año.
+ *  Los buckets ya vienen ordenados (año lectivo, luego jul/dic/feb, primer antes
+ *  que segundo), así que el Map preserva ese orden para los chips. */
+function resumenDeBuckets(buckets: FinalesBucket[]): PeriodoResumen[] {
+  const map = new Map<string, PeriodoResumen>();
+  for (const b of buckets) {
+    const k = `${b.periodo}|${b.anio}`;
+    let r = map.get(k);
+    if (!r) map.set(k, (r = { periodo: b.periodo, anio: b.anio, nPrimer: 0, nSegundo: 0 }));
+    if (b.llamado === "primer") r.nPrimer = b.entries.length;
+    else r.nSegundo = b.entries.length;
+  }
+  return [...map.values()];
+}
+
 export default function FinalesIngesta() {
   const { state, dispatch } = usePlanner();
   const { periodo, anio } = state.finales;
 
   const [rows, setRows] = useState<FinalMateriaRow[] | null>(null);
-  const [detected, setDetected] = useState<{
-    periodo: FinalPeriodo;
-    anio: number;
-  } | null>(null);
-  const [llamado, setLlamado] = useState<Llamado>("primer");
+  const [periodos, setPeriodos] = useState<PeriodoResumen[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // cuántos de tus finales pendientes quedaron con fecha oficial.
+  // cuántos de tus finales pendientes quedaron con fecha oficial (en cualquier
+  // período de la planilla: alcanza con que la materia figure en `rows`).
   const matched = useMemo(() => {
     if (!rows) return 0;
     const codes = new Set(rows.map((r) => r.codigo));
@@ -68,34 +97,36 @@ export default function FinalesIngesta() {
     return n;
   }, [rows, state.approved, state.finalDone]);
 
-  // ---- pipeline: aplica filas parseadas al store + salta al llamado/año ----
-  const apply = (
-    newRows: FinalMateriaRow[],
-    per: FinalPeriodo,
-    an: number,
-    ll: Llamado,
-  ) => {
-    dispatch({ type: "SET_FINALES_PERIODO", periodo: per });
-    dispatch({ type: "SET_FINALES_ANIO", anio: an });
-    setMesasOficiales(per, an, finalesRowsToMesas(newRows, ll));
-  };
-
+  // ---- pipeline: parsea → bucketiza → carga TODOS los buckets de una ----
   const ingest = async (text: string): Promise<boolean> => {
     const res = await parseFinalesInput(text);
-    if (res.rows.length === 0) {
+    const { buckets, warnings: bWarn } = bucketizarFinales(res.rows);
+
+    if (buckets.length === 0) {
       setStatus("error");
       setError(
-        res.warnings[0] ?? "No se encontraron materias en el archivo.",
+        res.warnings[0] ??
+          bWarn[0] ??
+          "No se encontraron mesas con fecha en la planilla.",
       );
       return false;
     }
-    const per = res.periodoDetectado ?? periodo;
-    const an = res.anioDetectado ?? anio;
+
+    // carga bulk (limpia por período/año y emite un solo cambio).
+    setMesasOficialesBulk(buckets);
+
+    // salto de vista al PRIMER bucket — salvo que el período visible actual ya
+    // esté entre los ingestados (en ese caso no molestamos al usuario moviéndolo).
+    const yaVisible = buckets.some((b) => b.periodo === periodo && b.anio === anio);
+    if (!yaVisible) {
+      dispatch({ type: "SET_FINALES_PERIODO", periodo: buckets[0].periodo });
+      dispatch({ type: "SET_FINALES_ANIO", anio: buckets[0].anio });
+    }
+
     setRows(res.rows);
-    setDetected({ periodo: per, anio: an });
-    setLlamado("primer");
-    apply(res.rows, per, an, "primer");
-    setError(res.warnings.length ? `${res.warnings.length} fila(s) ignorada(s).` : "");
+    setPeriodos(resumenDeBuckets(buckets));
+    const nWarn = res.warnings.length + bWarn.length;
+    setError(nWarn ? `${nWarn} aviso(s) al leer la planilla.` : "");
     setStatus("ok");
     return true;
   };
@@ -135,22 +166,23 @@ export default function FinalesIngesta() {
     if (await ingest(pasteText)) setPasteOpen(false);
   };
 
-  const switchLlamado = (ll: Llamado) => {
-    if (!rows || !detected) return;
-    setLlamado(ll);
-    apply(rows, detected.periodo, detected.anio, ll);
+  // salta a un período ingestado desde su chip (año LECTIVO del bucket).
+  const irAPeriodo = (per: FinalPeriodo, an: number) => {
+    dispatch({ type: "SET_FINALES_PERIODO", periodo: per });
+    dispatch({ type: "SET_FINALES_ANIO", anio: an });
   };
 
   const quitar = () => {
-    if (detected) clearMesasOficiales(detected.periodo, detected.anio);
+    // limpia cada (período, año) que hayamos cargado; vuelve al mock de ejemplo.
+    for (const p of periodos) clearMesasOficiales(p.periodo, p.anio);
     setRows(null);
-    setDetected(null);
+    setPeriodos([]);
     setStatus("idle");
     setError("");
     setPasteText("");
   };
 
-  const loaded = status === "ok" && rows && detected;
+  const loaded = status === "ok" && rows && periodos.length > 0;
 
   return (
     <section className="fin__ing" aria-label="Cargar fechas oficiales de mesas">
@@ -245,10 +277,7 @@ export default function FinalesIngesta() {
         <div className="fin__ing-loaded">
           <div className="fin__ing-badge">
             <IconCheck size={13} />
-            <b>{rows!.length}</b> materias · {PERIODO_LABEL[detected!.periodo]}{" "}
-            {detected!.periodo === "febrero"
-              ? detected!.anio + 1
-              : detected!.anio}
+            <b>{rows!.length}</b> materias
             {matched > 0 && (
               <span className="fin__ing-match">
                 · {matched} de tus finales pendientes con fecha
@@ -256,23 +285,35 @@ export default function FinalesIngesta() {
             )}
           </div>
 
-          <div className="fin__ing-llamado">
-            <span className="fin__ing-llamado-lbl">
-              <IconClock size={12} /> Llamado que se usa
-            </span>
-            <div className="fin__seg" role="group" aria-label="Llamado de la mesa">
-              {(["primer", "segundo"] as Llamado[]).map((ll) => (
+          {/* un chip por período ingestado — salta a ese período (año lectivo) y
+              marca is-active el que estás mirando. Reusa el segmentado (fin__seg). */}
+          <div
+            className="fin__seg"
+            role="group"
+            aria-label="Períodos cargados de la planilla"
+          >
+            {periodos.map((p) => {
+              const activo = p.periodo === periodo && p.anio === anio;
+              const nMesas = Math.max(p.nPrimer, p.nSegundo);
+              const sufijo =
+                p.nPrimer && p.nSegundo
+                  ? "1º y 2º"
+                  : p.nSegundo
+                    ? "solo 2º"
+                    : "solo 1º";
+              return (
                 <button
-                  key={ll}
+                  key={`${p.periodo}|${p.anio}`}
                   type="button"
-                  className={"fin__seg-b" + (ll === llamado ? " is-active" : "")}
-                  aria-pressed={ll === llamado}
-                  onClick={() => switchLlamado(ll)}
+                  className={"fin__seg-b" + (activo ? " is-active" : "")}
+                  aria-pressed={activo}
+                  onClick={() => irAPeriodo(p.periodo, p.anio)}
                 >
-                  {ll === "primer" ? "Primer" : "Segundo"} llamado
+                  {PERIODO_LABEL[p.periodo]} {periodoAnioReal(p.periodo, p.anio)} ·{" "}
+                  {nMesas} mesas · {sufijo}
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
           <div className="fin__ing-loaded-actions">

@@ -4,6 +4,7 @@
 // (sv-theme lo maneja el portal, no el planner.)
 import type {
   ComboParams,
+  FinalAsignacion,
   FinalesState,
   FinalPeriodo,
   MesaFinal,
@@ -37,12 +38,14 @@ export interface PlanOpts {
   capMatByIdx?: [number, number][];
 }
 
-/** Forma serializable de `FinalesState` (Map/Set → arrays). */
+/** Forma serializable de `FinalesState` (Maps → arrays de pares). */
 export interface PersistedFinales {
   periodo: FinalPeriodo;
   anio: number;
   mesas: [string, MesaFinal][];
-  seleccion: string[];
+  /** asignación por materia. El formato viejo era `string[]` (solo códigos):
+   *  `parseFinales` lo migra a pares con el período persistido y 1.º llamado. */
+  seleccion: [string, FinalAsignacion][];
   reminderHs: number;
   margenDias: number;
 }
@@ -234,14 +237,21 @@ const isMesa = (v: unknown): v is MesaFinal =>
   isStr((v as Record<string, unknown>).fecha) &&
   isStr((v as Record<string, unknown>).hora);
 
+const isPeriodo = (v: unknown): v is FinalPeriodo =>
+  v === "julio" || v === "diciembre" || v === "febrero";
+
+const isAsignacion = (v: unknown): v is FinalAsignacion =>
+  !!v &&
+  typeof v === "object" &&
+  isPeriodo((v as Record<string, unknown>).periodo) &&
+  ((v as Record<string, unknown>).llamado === "primer" ||
+    (v as Record<string, unknown>).llamado === "segundo");
+
 /** Parsea el bloque de finales de un bundle; tolerante (campos inválidos → default). */
 function parseFinales(x: unknown): PersistedFinales | null {
   if (!x || typeof x !== "object") return null;
   const f = x as Record<string, unknown>;
-  const periodo: FinalPeriodo =
-    f.periodo === "diciembre" || f.periodo === "febrero"
-      ? f.periodo
-      : "julio";
+  const periodo: FinalPeriodo = isPeriodo(f.periodo) ? f.periodo : "julio";
   const mesas =
     Array.isArray(f.mesas) &&
     f.mesas.every(
@@ -249,11 +259,29 @@ function parseFinales(x: unknown): PersistedFinales | null {
     )
       ? (f.mesas as [string, MesaFinal][])
       : [];
+  // seleccion: formato nuevo = [código, FinalAsignacion][]; el viejo era solo
+  // string[] → se migra asignando el período persistido y el 1.º llamado.
+  let seleccion: [string, FinalAsignacion][] = [];
+  if (Array.isArray(f.seleccion)) {
+    if (
+      f.seleccion.every(
+        (p) =>
+          Array.isArray(p) && p.length === 2 && isStr(p[0]) && isAsignacion(p[1]),
+      )
+    ) {
+      seleccion = f.seleccion as [string, FinalAsignacion][];
+    } else if (isStrArr(f.seleccion)) {
+      seleccion = f.seleccion.map((code) => [
+        code,
+        { periodo, llamado: "primer" },
+      ]);
+    }
+  }
   return {
     periodo,
     anio: isNum(f.anio) ? f.anio : 2026,
     mesas,
-    seleccion: isStrArr(f.seleccion) ? f.seleccion : [],
+    seleccion,
     reminderHs: isNum(f.reminderHs) ? f.reminderHs : 72,
     margenDias: isNum(f.margenDias) ? f.margenDias : 2,
   };

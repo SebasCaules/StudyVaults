@@ -4,7 +4,7 @@
 // Spec visual: _design-review/module-f-combinador.html.
 //
 // Lee el estado global `state.finales` (types.ts / state.tsx) y las acciones
-// SET_FINALES_PERIODO / SET_FINALES_ANIO / SET_MESA / TOGGLE_FINAL_SEL /
+// SET_FINALES_PERIODO / SET_FINALES_ANIO / SET_MESA / SET_FINAL_ASIGNACION /
 // SET_FINALES_REMINDER / SET_FINALES_MARGEN. Los datos de mesas y correlativas
 // de final salen de lib/planner/finalesData.ts (DATA DE EJEMPLO, a reemplazar).
 //
@@ -17,6 +17,15 @@
 //     para las correlativas de final (ver finalesAprobados en lib/planner/estado).
 //   · para rendir un final necesitás sus correlativas de FINAL aprobadas.
 //     Si falta alguna, el final queda bloqueado (candado).
+//   · cada período (Julio/Dic/Feb) publica DOS llamados (1.º y 2.º mesa). Cada
+//     final se ASIGNA a un período + un llamado: state.finales.seleccion es un
+//     Map<code, {periodo, llamado}>. Un final asignado a OTRO período no cuenta
+//     como elegido en el llamado visible (así se planifican Dic+Feb juntos sin
+//     duplicar finales); en el panel aparece con un chip «en <período>» que lo
+//     mueve al llamado visible (re-asigna con el llamado por defecto).
+//   · mesa efectiva de una fila ELEGIDA: manual ?? oficial[llamado] (el override
+//     manual pisa siempre). Para las filas del panel sin elegir se muestra la
+//     mesa de display: manual ?? 1.º llamado ?? 2.º llamado.
 //
 // Static-export safe: el .ics se arma client-side (Blob + createObjectURL)
 // detrás de un guard `typeof window !== "undefined"`.
@@ -36,7 +45,7 @@ import {
   PERIODO_ORDINAL,
   periodoMesAnio,
   periodoAnioReal,
-  mesaOficial,
+  mesasOficialesDe,
   finalHabilitado,
   subscribeMesasOficiales,
   mesasOficialesVersion,
@@ -53,7 +62,12 @@ import {
   IconPlus,
   IconTrash,
 } from "@/components/planner/icons";
-import type { FinalPeriodo, MesaFinal } from "@/lib/planner/types";
+import type {
+  FinalAsignacion,
+  FinalLlamado,
+  FinalPeriodo,
+  MesaFinal,
+} from "@/lib/planner/types";
 import "../finales.css";
 
 /* ============================ helpers puros ============================ */
@@ -130,7 +144,34 @@ function icsFold(line: string): string {
 const cvar = (name: string, value: string): CSSProperties =>
   ({ [name]: value } as CSSProperties);
 
+/** ¿La mesa cae dentro del mes/año del llamado mostrado? (mismo criterio que hoy) */
+const mesaEnPeriodo = (m: MesaFinal, month: number, year: number): boolean => {
+  const d = parseISO(m.fecha);
+  return d.getMonth() === month - 1 && d.getFullYear() === year;
+};
+
+/** Etiqueta corta del período para el chip «en <período>» del panel. */
+const PERIODO_SHORT: Record<FinalPeriodo, string> = {
+  julio: "Julio",
+  diciembre: "Dic",
+  febrero: "Feb",
+};
+
+/** Ordinal del llamado para el badge chico «1º»/«2º». */
+const LLAMADO_ORD: Record<FinalLlamado, string> = { primer: "1º", segundo: "2º" };
+/** Etiqueta larga del llamado (para tooltips y el .ics). */
+const LLAMADO_LABEL: Record<FinalLlamado, string> = {
+  primer: "1.º llamado",
+  segundo: "2.º llamado",
+};
+
 type Source = "oficial" | "manual" | "none";
+
+/** Una opción de mesa candidata a rendir en el período visible (para «sugerir»). */
+interface Opcion {
+  mesa: MesaFinal;
+  llamado: FinalLlamado;
+}
 
 interface FinalRow {
   code: string;
@@ -142,11 +183,28 @@ interface FinalRow {
   color: string;
   blocked: boolean;
   faltan: string[];
+  /** mesa efectiva: para la fila ELEGIDA es manual ?? oficial[llamado]; para las
+   *  no elegidas (display del panel) es manual ?? 1.º ?? 2.º. */
   mesa: MesaFinal | null;
   source: Source;
+  /** llamado de la mesa oficial efectiva (para el badge «1º»/«2º»); null si manual/sin fecha. */
+  llamado: FinalLlamado | null;
   /** la mesa efectiva cae dentro del mes/año del llamado mostrado. */
   inPeriod: boolean;
+  /** elegida EN el período visible (asig.periodo === periodo). */
   selected: boolean;
+  /** asignación actual de la materia (en cualquier período), o null si no tiene. */
+  asig: FinalAsignacion | null;
+  /** si está asignada a OTRO período, cuál (para el chip «en <período>»). */
+  assignedElsewhere: FinalPeriodo | null;
+  /** ambos llamados oficiales del período visible (para la mesa efectiva y el toggle 1º/2º). */
+  oficiales: { primer?: MesaFinal; segundo?: MesaFinal };
+  /** override manual de mesa (pisa a las oficiales), o null. */
+  manual: MesaFinal | null;
+  /** ¿tiene los DOS llamados oficiales? (habilita el mini segmentado 1º|2º). */
+  hasBoth: boolean;
+  /** opciones de mesa del período visible, en orden (manual sola; oficial 1.º→2.º). */
+  opciones: Opcion[];
 }
 
 /* ============================ componente ============================ */
@@ -191,18 +249,73 @@ export default function FinalesCombinadorView() {
         ma.nombre.localeCompare(mb.nombre)
       );
     });
-    return codes.map((code, i) => {
+    return codes.map((code, i): FinalRow => {
       const m = byId.get(code)!;
       const { ok, faltan } = finalHabilitado(code, finalesOk);
-      const manual = mesas.get(code);
-      const oficial = mesaOficial(code, periodo, anio);
-      const mesa = manual ?? oficial ?? null;
-      const source: Source = manual ? "manual" : oficial ? "oficial" : "none";
-      const inPeriod = (() => {
-        if (!mesa) return false;
-        const d = parseISO(mesa.fecha);
-        return d.getMonth() === month - 1 && d.getFullYear() === year;
-      })();
+      const manual = mesas.get(code) ?? null;
+      const oficiales = mesasOficialesDe(code, periodo, anio);
+      const asig = seleccion.get(code) ?? null;
+      const selected = asig?.periodo === periodo; // elegida EN el período visible
+      const assignedElsewhere =
+        asig && asig.periodo !== periodo ? asig.periodo : null;
+
+      // Mesa efectiva + fuente + llamado. Para la fila elegida la mesa depende
+      // del llamado asignado; para las no elegidas es solo display (1.º ?? 2.º).
+      let mesa: MesaFinal | null;
+      let source: Source;
+      let llamado: FinalLlamado | null;
+      if (selected) {
+        if (manual) {
+          mesa = manual;
+          source = "manual";
+          llamado = null;
+        } else {
+          const om = oficiales[asig!.llamado];
+          if (om) {
+            mesa = om;
+            source = "oficial";
+            llamado = asig!.llamado;
+          } else {
+            // asignada a un llamado sin mesa publicada (p. ej. período sin mesas).
+            mesa = null;
+            source = "none";
+            llamado = null;
+          }
+        }
+      } else if (manual) {
+        mesa = manual;
+        source = "manual";
+        llamado = null;
+      } else if (oficiales.primer) {
+        mesa = oficiales.primer;
+        source = "oficial";
+        llamado = "primer";
+      } else if (oficiales.segundo) {
+        mesa = oficiales.segundo;
+        source = "oficial";
+        llamado = "segundo";
+      } else {
+        mesa = null;
+        source = "none";
+        llamado = null;
+      }
+
+      const inPeriod = mesa ? mesaEnPeriodo(mesa, month, year) : false;
+
+      // Opciones de mesa del período visible, en orden (para «sugerir»): el
+      // override manual anula a las oficiales (solo esa opción); si no, 1.º y
+      // después 2.º llamado. Solo las que caen en el mes/año del llamado.
+      const opciones: Opcion[] = [];
+      if (manual) {
+        if (mesaEnPeriodo(manual, month, year))
+          opciones.push({ mesa: manual, llamado: "primer" });
+      } else {
+        if (oficiales.primer && mesaEnPeriodo(oficiales.primer, month, year))
+          opciones.push({ mesa: oficiales.primer, llamado: "primer" });
+        if (oficiales.segundo && mesaEnPeriodo(oficiales.segundo, month, year))
+          opciones.push({ mesa: oficiales.segundo, llamado: "segundo" });
+      }
+
       return {
         code,
         nombre: m.nombre,
@@ -215,8 +328,15 @@ export default function FinalesCombinadorView() {
         faltan,
         mesa,
         source,
+        llamado,
         inPeriod,
-        selected: seleccion.has(code),
+        selected,
+        asig,
+        assignedElsewhere,
+        oficiales,
+        manual,
+        hasBoth: !!oficiales.primer && !!oficiales.segundo,
+        opciones,
       };
     });
     // mesasVersion: recomputa cuando el parser carga/limpia mesas oficiales.
@@ -343,37 +463,70 @@ export default function FinalesCombinadorView() {
   // ----- acciones -----
   const setPeriodo = (p: FinalPeriodo) =>
     dispatch({ type: "SET_FINALES_PERIODO", periodo: p });
-  const toggleSel = (code: string) =>
-    dispatch({ type: "TOGGLE_FINAL_SEL", code });
+  const asignar = (code: string, asignacion: FinalAsignacion | null) =>
+    dispatch({ type: "SET_FINAL_ASIGNACION", code, asignacion });
   const setMesa = (code: string, mesa: MesaFinal | null) =>
     dispatch({ type: "SET_MESA", code, mesa });
 
-  // "Sugerir combinación": elige el máximo de finales sin pisarse y con
-  // margen ≥ margenDias, y lo aplica a la selección.
+  // Llamado por defecto al agregar/mover un final al período visible: 1.º si hay
+  // 1.ª mesa oficial (o un override manual, que pisa igual); si no, 2.º.
+  const defLlamado = (r: FinalRow): FinalLlamado =>
+    r.oficiales.primer || r.manual ? "primer" : "segundo";
+  const agregarAca = (r: FinalRow) =>
+    asignar(r.code, { periodo, llamado: defLlamado(r) });
+
+  // Candidatos de «sugerir»: elegibles con alguna mesa (opción) en el período
+  // visible y que NO estén ya asignados a OTRO período (esos no se tocan). Se
+  // ordenan por (fecha de la 1.ª opción, hora, código) — determinista.
+  const sugCandidatos = useMemo(
+    () =>
+      eligibles
+        .filter((r) => r.opciones.length > 0 && !r.assignedElsewhere)
+        .sort(
+          (a, b) =>
+            a.opciones[0].mesa.fecha.localeCompare(b.opciones[0].mesa.fecha) ||
+            toMin(a.opciones[0].mesa.hora) - toMin(b.opciones[0].mesa.hora) ||
+            a.code.localeCompare(b.code),
+        ),
+    [eligibles],
+  );
+
+  // "Sugerir combinación" (determinista): recorre los candidatos ordenados y,
+  // para cada uno, prueba sus opciones en orden (manual sola; oficial 1.º→2.º),
+  // aceptando la PRIMERA que ni se pise ni viole el margen contra las ya
+  // aceptadas. Aplica {período visible, llamado aceptado} a los aceptados y
+  // limpia (asignación null) a los candidatos que quedaron afuera — sin tocar
+  // asignaciones de otros períodos (esos ni siquiera son candidatos).
   const sugerir = () => {
-    const cand = eligibles
-      .filter((r) => r.inPeriod && r.mesa)
-      .sort(
-        (a, b) =>
-          a.mesa!.fecha.localeCompare(b.mesa!.fecha) ||
-          toMin(a.mesa!.hora) - toMin(b.mesa!.hora),
-      );
-    const chosen: FinalRow[] = [];
-    for (const c of cand) {
-      const pisa = chosen.some((x) => mesasPisan(x.mesa!, c.mesa!));
-      if (pisa) continue;
-      const pegado = chosen.some((x) => {
-        const dd = Math.abs(dayDiff(x.mesa!.fecha, c.mesa!.fecha));
-        return dd === 0 || dd - 1 < margenDias;
-      });
-      if (pegado) continue;
-      chosen.push(c);
+    const aceptadas: Opcion[] = [];
+    const llamadoDe = new Map<string, FinalLlamado>();
+    for (const c of sugCandidatos) {
+      let elegida: Opcion | null = null;
+      for (const opt of c.opciones) {
+        const choca = aceptadas.some((a) => {
+          if (mesasPisan(a.mesa, opt.mesa)) return true;
+          const dd = Math.abs(dayDiff(a.mesa.fecha, opt.mesa.fecha));
+          return dd === 0 || dd - 1 < margenDias;
+        });
+        if (!choca) {
+          elegida = opt;
+          break;
+        }
+      }
+      if (elegida) {
+        aceptadas.push(elegida);
+        llamadoDe.set(c.code, elegida.llamado);
+      }
     }
-    const target = new Set(chosen.map((c) => c.code));
-    // reconciliar la selección de los elegibles con fecha en el período
-    for (const r of cand) {
-      const want = target.has(r.code);
-      if (want !== r.selected) toggleSel(r.code);
+    for (const c of sugCandidatos) {
+      const ll = llamadoDe.get(c.code);
+      if (ll) {
+        // solo re-despacho si cambia (evita renders inútiles)
+        if (!c.selected || c.asig?.llamado !== ll)
+          asignar(c.code, { periodo, llamado: ll });
+      } else if (c.selected) {
+        asignar(c.code, null);
+      }
     }
   };
 
@@ -411,9 +564,9 @@ export default function FinalesCombinadorView() {
         `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`;
       out.push(
         "BEGIN:VEVENT",
-        // UID estable por materia + llamado (SIN la fecha del evento): si
-        // corregís la fecha y re-importás, el evento se actualiza en vez de
-        // duplicarse en el calendario.
+        // UID estable por materia + período (SIN la fecha ni el llamado): si
+        // corregís la fecha o cambiás de llamado y re-importás, el evento se
+        // actualiza en vez de duplicarse en el calendario.
         `UID:sv-final-${r.code}-${periodo}-${anioReal}@studyvaults.itba`,
         `DTSTAMP:${stamp}`,
         `DTSTART;TZID=${ICS_TZID}:${fmt(start)}`,
@@ -421,7 +574,11 @@ export default function FinalesCombinadorView() {
         `SUMMARY:${icsEsc(`Final: ${r.nombre}`)}`,
         `LOCATION:${icsEsc("ITBA — sede a confirmar")}`,
         `DESCRIPTION:${icsEsc(
-          `Mesa de final (${r.source === "manual" ? "fecha cargada a mano" : "oficial"}). ` +
+          `Mesa de final (${
+            r.source === "manual"
+              ? "fecha cargada a mano"
+              : `oficial · ${LLAMADO_LABEL[r.llamado ?? "primer"]}`
+          }). ` +
             "Fechas sujetas a confirmación de la cátedra — revisá con el/la docente. " +
             "El .ics es una ayuda, no la fuente oficial.",
         )}`,
@@ -463,11 +620,19 @@ export default function FinalesCombinadorView() {
 
   // ----- textos de resumen -----
   const nSel = selectedRows.length;
-  const nEligPend = eligibles.filter((r) => !r.selected).length;
+  // desglose por llamado de los elegidos en el período visible (solo si hay 2.º).
+  const nSegundo = selectedRows.filter(
+    (r) => r.asig?.llamado === "segundo",
+  ).length;
+  const nPrimer = nSel - nSegundo;
+  const desglose =
+    nSegundo > 0 ? ` (${nPrimer} en 1.º llamado · ${nSegundo} en 2.º)` : "";
+  // "te quedan N para los otros llamados": elegibles sin asignar en NINGÚN período.
+  const nSinAsignar = eligibles.filter((r) => !r.asig).length;
   const resumenMain =
     rows.length === 0
       ? "No tenés finales pendientes en este llamado."
-      : `En ${PERIODO_LABEL[periodo]} rendís ${nSel} final${nSel === 1 ? "" : "es"} · te queda${nEligPend === 1 ? "" : "n"} ${nEligPend} para los otros llamados.`;
+      : `En ${PERIODO_LABEL[periodo]} rendís ${nSel} final${nSel === 1 ? "" : "es"}${desglose} · te queda${nSinAsignar === 1 ? "" : "n"} ${nSinAsignar} para los otros llamados.`;
   const resumenSub =
     rows.length === 0
       ? "Marcá una materia como cursada regular (una tilde) en la pestaña de aprobadas para verla acá."
@@ -554,7 +719,7 @@ export default function FinalesCombinadorView() {
             type="button"
             className="fin__hbtn is-primary"
             onClick={sugerir}
-            disabled={eligibles.filter((r) => r.inPeriod && r.mesa).length === 0}
+            disabled={sugCandidatos.length === 0}
           >
             <IconCheck size={13} />
             Sugerir combinación
@@ -636,8 +801,8 @@ export default function FinalesCombinadorView() {
               ))}
           </div>
           <p className="fin__combo-sub">
-            {nEligPend > 0
-              ? `Quedan ${nEligPend} final${nEligPend === 1 ? "" : "es"} elegible${nEligPend === 1 ? "" : "s"} sin sumar. `
+            {nSinAsignar > 0
+              ? `Quedan ${nSinAsignar} final${nSinAsignar === 1 ? "" : "es"} elegible${nSinAsignar === 1 ? "" : "s"} sin sumar. `
               : ""}
             Ajustá la combinación agregando o quitando finales del panel.
           </p>
@@ -834,10 +999,44 @@ export default function FinalesCombinadorView() {
                       </span>
                     ) : (
                       <span className="fin__mesa-edit">
+                        {r.hasBoth ? (
+                          // ambos llamados oficiales → elegí 1.º o 2.º mesa
+                          <span
+                            className="fin__llseg"
+                            role="group"
+                            aria-label={`Llamado de ${r.nombre}`}
+                          >
+                            {(["primer", "segundo"] as FinalLlamado[]).map(
+                              (l) => (
+                                <button
+                                  key={l}
+                                  type="button"
+                                  className={
+                                    "fin__llseg-b" +
+                                    (r.asig?.llamado === l ? " is-active" : "")
+                                  }
+                                  aria-pressed={r.asig?.llamado === l}
+                                  aria-label={`${r.nombre}: ${LLAMADO_LABEL[l]}`}
+                                  title={LLAMADO_LABEL[l]}
+                                  onClick={() =>
+                                    asignar(r.code, { periodo, llamado: l })
+                                  }
+                                >
+                                  {LLAMADO_ORD[l]}
+                                </button>
+                              ),
+                            )}
+                          </span>
+                        ) : null}
                         <span className="fin__mesa-oficial">
                           {ddmm(r.mesa!.fecha)} · {r.mesa!.hora}
                         </span>
                         <span className="fin__badge is-oficial">oficial</span>
+                        {!r.hasBoth && r.llamado && (
+                          <span className="fin__badge is-llamado">
+                            {LLAMADO_ORD[r.llamado]}
+                          </span>
+                        )}
                         <button
                           type="button"
                           className="fin__mesa-clear"
@@ -897,6 +1096,9 @@ export default function FinalesCombinadorView() {
                             : r.source === "oficial"
                               ? "oficial"
                               : "sin fecha";
+                      // asignado a OTRO período: chip «en <período>» que lo mueve
+                      // al llamado visible (en lugar del botón «+»).
+                      const elsewhere = r.assignedElsewhere;
                       return (
                         <li key={r.code} className="fin__srow" tabIndex={0}>
                           <span
@@ -905,35 +1107,62 @@ export default function FinalesCombinadorView() {
                           />
                           <span className="fin__srow-name">{r.nombre}</span>
                           <span className="fin__srow-cr">{r.creditos} cr</span>
-                          <span
-                            className={
-                              "fin__short" + (pisa && !r.selected ? " is-pisa" : "")
-                            }
-                          >
-                            {short}
-                          </span>
-                          <button
-                            type="button"
-                            className="fin__toggle"
-                            aria-pressed={r.selected}
-                            aria-label={
-                              r.selected
-                                ? `${r.nombre}: en el período (quitar)`
-                                : `${r.nombre}: agregar al período`
-                            }
-                            onClick={() => toggleSel(r.code)}
-                          >
-                            {r.selected ? (
-                              <IconCheck size={11} />
-                            ) : (
-                              <IconPlus size={11} />
-                            )}
-                          </button>
-                          <span className="fin__tip" role="note">
-                            {r.mesa
-                              ? `Mesa ${ddmm(r.mesa.fecha)} · ${r.mesa.hora}${r.source === "manual" ? " — fecha cargada a mano (editable)" : " (oficial)"}`
-                              : "Sin mesa publicada — cargá la fecha en «Fechas de mesa»."}
-                          </span>
+                          {elsewhere ? (
+                            <>
+                              <button
+                                type="button"
+                                className="fin__movehere"
+                                aria-label={`${r.nombre}: asignado al llamado de ${PERIODO_LABEL[elsewhere]} — mover a ${PERIODO_LABEL[periodo]}`}
+                                title={`Está en ${PERIODO_LABEL[elsewhere]} — clic para moverlo a ${PERIODO_LABEL[periodo]}`}
+                                onClick={() => agregarAca(r)}
+                              >
+                                en {PERIODO_SHORT[elsewhere]}
+                              </button>
+                              <span className="fin__tip" role="note">
+                                Ya lo asignaste al llamado de{" "}
+                                {PERIODO_LABEL[elsewhere]}. Clic en «en{" "}
+                                {PERIODO_SHORT[elsewhere]}» para moverlo a{" "}
+                                {PERIODO_LABEL[periodo]}.
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span
+                                className={
+                                  "fin__short" +
+                                  (pisa && !r.selected ? " is-pisa" : "")
+                                }
+                              >
+                                {short}
+                              </span>
+                              <button
+                                type="button"
+                                className="fin__toggle"
+                                aria-pressed={r.selected}
+                                aria-label={
+                                  r.selected
+                                    ? `${r.nombre}: en el período (quitar)`
+                                    : `${r.nombre}: agregar al período`
+                                }
+                                onClick={() =>
+                                  r.selected
+                                    ? asignar(r.code, null)
+                                    : agregarAca(r)
+                                }
+                              >
+                                {r.selected ? (
+                                  <IconCheck size={11} />
+                                ) : (
+                                  <IconPlus size={11} />
+                                )}
+                              </button>
+                              <span className="fin__tip" role="note">
+                                {r.mesa
+                                  ? `Mesa ${ddmm(r.mesa.fecha)} · ${r.mesa.hora}${r.source === "manual" ? " — fecha cargada a mano (editable)" : ` (oficial · ${LLAMADO_LABEL[r.llamado ?? "primer"]})`}`
+                                  : "Sin mesa publicada — cargá la fecha en «Fechas de mesa»."}
+                              </span>
+                            </>
+                          )}
                         </li>
                       );
                     })}
@@ -987,7 +1216,8 @@ export default function FinalesCombinadorView() {
                 )}
 
                 <p className="fin__side-note">
-                  La tilde = en el período · el «+» agrega el final · el candado
+                  La tilde = en el período · el «+» agrega el final · «en Dic/Feb»
+                  = asignado a otro llamado (clic para traerlo acá) · el candado
                   marca las correlativas de final que todavía no rendiste.
                 </p>
               </>
@@ -1066,6 +1296,11 @@ function FinalesWeek({
                   >
                     {e.source === "manual" ? "manual" : "oficial"}
                   </span>
+                  {e.source === "oficial" && e.llamado && (
+                    <span className="fin__badge is-llamado">
+                      {LLAMADO_ORD[e.llamado]}
+                    </span>
+                  )}
                 </span>
               </div>
             ))}

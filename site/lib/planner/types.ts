@@ -146,10 +146,20 @@ export type ViewKey =
 /** Llamado a mesas de finales del año. */
 export type FinalPeriodo = "julio" | "diciembre" | "febrero";
 
+/** Llamado (fecha) dentro de un período: cada período publica 1.ª y 2.ª mesa. */
+export type FinalLlamado = "primer" | "segundo";
+
 /** Fecha + hora de una mesa de final (autopoblado oficial u override manual). */
 export interface MesaFinal {
   fecha: string; // "YYYY-MM-DD"
   hora: string; // "HH:MM"
+}
+
+/** Dónde decidió rendir un final el usuario: período (Julio/Dic/Feb, con su año
+ *  lectivo implícito en `FinalesState.anio`) + llamado (1.ª o 2.ª fecha). */
+export interface FinalAsignacion {
+  periodo: FinalPeriodo;
+  llamado: FinalLlamado;
 }
 
 /** Estado del combinador de finales (persistible). El armado efímero de la
@@ -159,8 +169,11 @@ export interface FinalesState {
   anio: number;
   /** override/carga manual de fecha+hora de mesa por materia (clave: código). */
   mesas: Map<string, MesaFinal>;
-  /** finales que el usuario sumó a la combinación del período (códigos). */
-  seleccion: Set<string>;
+  /** asignación por materia: en qué período+llamado rinde cada final. Una
+   *  materia asignada a Diciembre no aparece elegida en la pestaña de Febrero:
+   *  así se planifican varios períodos juntos sin duplicar finales.
+   *  (Antes: Set<string> de códigos del período visible — migrado en persist.) */
+  seleccion: Map<string, FinalAsignacion>;
   /** anticipación del recordatorio de inscripción para el .ics (hs): 48 | 72 | 96. */
   reminderHs: number;
   /** margen mínimo de repaso deseado entre finales (días). */
