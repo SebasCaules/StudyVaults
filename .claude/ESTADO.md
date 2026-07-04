@@ -21,6 +21,16 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
+- **Rework HCI del "Plan por cuatrimestre"** — `92ad4bf` (2026-07-04, aprobado con
+  antes/después): timeline vertical por año (una carta partida en sus 2 cuatrimestres),
+  filas checklist `[EstadoControl] código nombre … señal · créditos`, micro-barra de avance
+  por año (terminadas/deben final), candado de disponibilidad unificado con Electivas
+  (`CardSignals.tsx`, fuente única), sin tags en palabras. Verificado: tsc + build 804/804 +
+  screenshots dark/light/mobile. **Pendiente menor**: click-through en browser (otra sesión
+  ocupaba :3000) y limpiar `.cuatri-grid/.qcol/.qcard` muertos en planner.css (archivo
+  caliente del track finales). **Bug transversal detectado**: `badge.css` del DS define
+  `.tag::before{content:"#"}` y colisiona con los `.tag` del planner (visible hoy en
+  DetailDrawer, "# disponible") — falta fix aparte.
 - **Overhaul UI/UX implementado y commiteado** — `25b93b4` (77 archivos, +13.953): landing
   recortada + grafo 3D hero, pseudo-landing `/electivas` vs app `/electivas/planificar`,
   planner (estado 2 niveles cursada/final, combinador de finales + .ics, lock de cuatris,
