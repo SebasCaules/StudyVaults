@@ -1,18 +1,24 @@
 "use client";
 
-// Grafo 3D de notas/wikilinks — "constelación" del hero. Estética moderna:
-//  · nodos = SPRITES luminosos (punto de luz que siempre encara la cámara →
-//    sin sombreado de esfera "3D viejo"); tamaño por grado, tinte por materia
-//  · UnrealBloomPass sobre el composer → glow real de constelación (la firma
-//    moderna que reemplaza las nubes difusas viejas)
-//  · links finos y tenues (la telaraña de la constelación) + niebla de
-//    profundidad (los nodos lejanos se disuelven en el fondo)
-//  · etiquetas de materia en PRIMERÍSIMO plano: pills nítidas con backdrop-blur,
-//    proyectadas por frame (graph2ScreenCoords) y con anti-solape 2D para que
-//    nunca se pisen entre sí
-//  · auto-órbita lenta de la cámara (OrbitControls), pausada al hover
-// Toda la inicialización imperativa se hace en UN loop rAF auto-arrancable (no
-// depende de onEngineTick/ready). SOLO cliente: import dinámico ssr:false.
+// Grafo 3D del hero — "CARTA EXTRUIDA" (diseño V4 de _design-review/graph-variants.html):
+//  · maqueta cartográfica ACOSTADA: el layout 2D real de graph.json en el plano
+//    XZ; la elevación (fy) de cada nota es su cantidad de enlaces → los hubs
+//    flotan alto y las hojas quedan al ras del piso (jerarquía visible)
+//  · VORONOI 3D exacto (intersección de semiespacios / planos bisectores,
+//    clipping Sutherland–Hodgman): territorios por wiki sembrados en la nota
+//    más conectada de cada materia. El piso se dibuja como textura canvas de
+//    alta resolución (antialiasing vectorial, sin serrucho) y los tabiques 3D
+//    son cristal fantasma. Al cargar, cada territorio CRECE desde su semilla.
+//  · CONTENCIÓN: la celda es fija; cada nube se reescala alrededor de su
+//    semilla (búsqueda binaria) hasta caber entera, con margen. Outliers
+//    clampeados a 1.25× el radio P90 de su nube.
+//  · enlaces teñidos por wiki (los cruzados, apagados) — se lee qué conecta qué
+//  · LINTERNA: el cursor excita la red (raycast + falloff gaussiano): los nodos
+//    cercanos al puntero se encienden y crecen; hover muestra la nota; click
+//    la abre. Nube difusa aditiva envuelve cada materia.
+//  · etiquetas de materia como pills proyectadas por frame con anti-solape 2D
+//    (overlay DOM), UnrealBloom suave, auto-órbita pausada al hover.
+// Todo fijo (sin simulación): warmup/cooldown 0. SOLO cliente (ssr:false).
 import { useEffect, useMemo, useRef, useState } from "react";
 import ForceGraph3D from "react-force-graph-3d";
 import type { ForceGraphMethods } from "react-force-graph-3d";
@@ -42,41 +48,247 @@ const NAMES: Record<string, string> = {
 const VORDER = ["mna", "derecho", "economia", "proba", "paw", "sds", "inge2"];
 const colorOf = (v: string) => VIVID[v] ?? "#8fb3e0";
 
-// Anclas de clúster (esfera de Fibonacci). Radio medio → constelación cohesiva
-// que llena la tarjeta a cualquier ángulo; el anti-solape 2D separa las
-// etiquetas aunque los clusters queden cerca en proyección.
-const R_ANCHOR = 96;
-function buildAnchors(): Record<string, [number, number, number]> {
-  const out: Record<string, [number, number, number]> = {};
-  const N = VORDER.length;
-  VORDER.forEach((id, i) => {
-    const y = 1 - (i / (N - 1)) * 2;
-    const rad = Math.sqrt(Math.max(0, 1 - y * y));
-    const th = Math.PI * (3 - Math.sqrt(5)) * i;
-    out[id] = [
-      Math.cos(th) * rad * R_ANCHOR,
-      y * R_ANCHOR * 0.66,
-      Math.sin(th) * rad * R_ANCHOR,
-    ];
+// ---- constantes de la carta (validadas en el mockup aprobado) ----
+const SCALE = 0.62; // unidades graph.json (0..1000) → mundo
+const SPREAD = 1.68; // separación entre clusters (sobre el centroide)
+const INTRA = 1.38; // espaciado de nodos DENTRO del cluster
+const FLOOR = 1;
+const TOP = 102; // altura de los tabiques
+const BOX = 500; // semi-lado de la caja límite
+const VOR_S = 1060; // lado del plano del piso
+const MARGIN = 10; // margen de contención dentro de la celda
+const RBIG = 1600; // polígono de arranque para el clipping
+
+type N3 = GNode & {
+  fx: number;
+  fy: number;
+  fz: number;
+  x?: number;
+  y?: number;
+  z?: number;
+  __sp?: THREE.Sprite;
+  __sz?: number;
+  __base?: THREE.Color;
+};
+type L3 = GLink & { sv: string; tv: string };
+type V3 = { x: number; y: number; z: number };
+
+const jit = (i: number) => ((i * 2654435761) % 97) - 48;
+
+// ---------------------------------------------------------------------------
+// layout: posiciones fijas + clamp de outliers + contención en la celda
+// ---------------------------------------------------------------------------
+function computeLayout(nodes: GNode[]): {
+  pos: V3[];
+  seedIdx: Record<string, number>;
+  seedsVor: Record<string, V3>; // semillas con altura amortiguada (voronoi)
+} {
+  const cen: Record<string, { x: number; y: number; k: number }> = {};
+  const seedIdx: Record<string, number> = {};
+  nodes.forEach((n, i) => {
+    const c = (cen[n.v] ||= { x: 0, y: 0, k: 0 });
+    c.x += n.x ?? 500;
+    c.y += n.y ?? 500;
+    c.k++;
+    if (!(n.v in seedIdx) || n.deg > nodes[seedIdx[n.v]].deg) seedIdx[n.v] = i;
   });
+  for (const v in cen) {
+    cen[v].x /= cen[v].k;
+    cen[v].y /= cen[v].k;
+  }
+  const pos: V3[] = nodes.map((n, i) => {
+    const cx = (cen[n.v].x - 500) * SCALE;
+    const cz = (cen[n.v].y - 500) * SCALE;
+    return {
+      x: cx * SPREAD + (((n.x ?? 500) - 500) * SCALE - cx) * INTRA,
+      z: cz * SPREAD + (((n.y ?? 500) - 500) * SCALE - cz) * INTRA,
+      y: 8 + jit(i) * 0.12 + Math.sqrt(n.deg) * 12,
+    };
+  });
+  const byVault: Record<string, number[]> = {};
+  nodes.forEach((n, i) => (byVault[n.v] ||= []).push(i));
+
+  // outliers → a no más de 1.25× el radio P90 de su nube
+  for (const v in byVault) {
+    const idxs = byVault[v];
+    let cx = 0,
+      cz = 0;
+    idxs.forEach((i) => {
+      cx += pos[i].x;
+      cz += pos[i].z;
+    });
+    cx /= idxs.length;
+    cz /= idxs.length;
+    const ds = idxs
+      .map((i) => Math.hypot(pos[i].x - cx, pos[i].z - cz))
+      .sort((a, b) => a - b);
+    const rmax = ds[Math.floor(ds.length * 0.9)] * 1.25;
+    for (const i of idxs) {
+      const d = Math.hypot(pos[i].x - cx, pos[i].z - cz);
+      if (d > rmax) {
+        const k = rmax / d;
+        pos[i].x = cx + (pos[i].x - cx) * k;
+        pos[i].z = cz + (pos[i].z - cz) * k;
+      }
+    }
+  }
+
+  // semillas del voronoi con altura amortiguada (los tabiques quedan apenas
+  // inclinados — 3D — sin rebanar los clusters vecinos)
+  const seedsVor: Record<string, V3> = {};
+  for (const v in seedIdx) {
+    const p = pos[seedIdx[v]];
+    seedsVor[v] = { x: p.x, y: 22 + p.y * 0.35, z: p.z };
+  }
+
+  // contención: celda FIJA, la nube se reescala alrededor de su semilla
+  // (búsqueda binaria del factor máximo que deja TODOS los nodos adentro)
+  const vaults = Object.keys(seedIdx);
+  for (const v of vaults) {
+    const s0 = seedsVor[v];
+    const bis = vaults
+      .filter((o) => o !== v)
+      .map((o) => {
+        const a = seedsVor[v],
+          b = seedsVor[o];
+        const n = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+        return {
+          n,
+          d:
+            (b.x * b.x + b.y * b.y + b.z * b.z -
+              (a.x * a.x + a.y * a.y + a.z * a.z)) /
+            2,
+          len: Math.hypot(n.x, n.y, n.z),
+        };
+      });
+    const idxs = byVault[v];
+    const inside = (s: number) =>
+      idxs.every((i) => {
+        const px = s0.x + (pos[i].x - s0.x) * s;
+        const pz = s0.z + (pos[i].z - s0.z) * s;
+        const py = pos[i].y;
+        if (Math.abs(px) > BOX - 12 || Math.abs(pz) > BOX - 12) return false;
+        return bis.every(
+          (b) => (b.n.x * px + b.n.y * py + b.n.z * pz + b.d) / b.len >= MARGIN,
+        );
+      });
+    if (inside(1)) continue;
+    let lo = 0.3,
+      hi = 1,
+      best = 0.3;
+    for (let it = 0; it < 14; it++) {
+      const m = (lo + hi) / 2;
+      if (inside(m)) {
+        best = m;
+        lo = m;
+      } else hi = m;
+    }
+    for (const i of idxs) {
+      pos[i].x = s0.x + (pos[i].x - s0.x) * best;
+      pos[i].z = s0.z + (pos[i].z - s0.z) * best;
+    }
+  }
+  return { pos, seedIdx, seedsVor };
+}
+
+// ---------------------------------------------------------------------------
+// voronoi 3D: celdas del piso (polígonos exactos) + tabiques entre pares
+// ---------------------------------------------------------------------------
+type Cell = { v: string; poly: THREE.Vector3[]; sx: number; sz: number };
+
+function clipPoly(poly: THREE.Vector3[], n: THREE.Vector3, d: number) {
+  const out: THREE.Vector3[] = [];
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i],
+      b = poly[(i + 1) % poly.length];
+    const da = n.dot(a) + d,
+      db = n.dot(b) + d;
+    if (da >= 0) out.push(a);
+    if (da < 0 !== db < 0) out.push(a.clone().lerp(b, da / (da - db)));
+  }
   return out;
 }
 
-type N3 = GNode & { vx?: number; vy?: number; vz?: number; x?: number; y?: number; z?: number };
+function buildVoronoi(seedsVor: Record<string, V3>): {
+  cells: Cell[];
+  walls: THREE.Vector3[][];
+} {
+  const order = VORDER.filter((v) => seedsVor[v]);
+  const S = order.map((v) => new THREE.Vector3(seedsVor[v].x, seedsVor[v].y, seedsVor[v].z));
+  const bisector = (i: number, k: number) => ({
+    n: S[i].clone().sub(S[k]),
+    d: (S[k].lengthSq() - S[i].lengthSq()) / 2,
+  });
+  const BOXP = [
+    { n: new THREE.Vector3(-1, 0, 0), d: BOX },
+    { n: new THREE.Vector3(1, 0, 0), d: BOX },
+    { n: new THREE.Vector3(0, 0, -1), d: BOX },
+    { n: new THREE.Vector3(0, 0, 1), d: BOX },
+    { n: new THREE.Vector3(0, 1, 0), d: 0 },
+    { n: new THREE.Vector3(0, -1, 0), d: TOP },
+  ];
+  const cells: Cell[] = [];
+  order.forEach((v, i) => {
+    let poly = [
+      new THREE.Vector3(RBIG, FLOOR, RBIG),
+      new THREE.Vector3(RBIG, FLOOR, -RBIG),
+      new THREE.Vector3(-RBIG, FLOOR, -RBIG),
+      new THREE.Vector3(-RBIG, FLOOR, RBIG),
+    ];
+    for (let k = 0; k < S.length && poly.length > 2; k++) {
+      if (k === i) continue;
+      const b = bisector(i, k);
+      poly = clipPoly(poly, b.n, b.d);
+    }
+    for (const bp of BOXP.slice(0, 4))
+      if (poly.length > 2) poly = clipPoly(poly, bp.n, bp.d);
+    if (poly.length > 2) cells.push({ v, poly, sx: S[i].x, sz: S[i].z });
+  });
+  const walls: THREE.Vector3[][] = [];
+  for (let i = 0; i < S.length; i++)
+    for (let j = i + 1; j < S.length; j++) {
+      const N = S[j].clone().sub(S[i]).normalize();
+      const mid = S[i].clone().add(S[j]).multiplyScalar(0.5);
+      let u = new THREE.Vector3(0, 1, 0).cross(N);
+      if (u.lengthSq() < 1e-6) u = new THREE.Vector3(1, 0, 0).cross(N);
+      u.normalize();
+      const w = N.clone().cross(u);
+      let poly = [
+        mid.clone().addScaledVector(u, RBIG).addScaledVector(w, RBIG),
+        mid.clone().addScaledVector(u, RBIG).addScaledVector(w, -RBIG),
+        mid.clone().addScaledVector(u, -RBIG).addScaledVector(w, -RBIG),
+        mid.clone().addScaledVector(u, -RBIG).addScaledVector(w, RBIG),
+      ];
+      for (let k = 0; k < S.length && poly.length > 2; k++) {
+        if (k === i || k === j) continue;
+        const b = bisector(i, k);
+        poly = clipPoly(poly, b.n, b.d);
+      }
+      for (const bp of BOXP) if (poly.length > 2) poly = clipPoly(poly, bp.n, bp.d);
+      if (poly.length > 2) walls.push(poly);
+    }
+  return { cells, walls };
+}
 
-// Textura compartida: disco luminoso con núcleo brillante y halo suave. Se tiñe
-// por-nodo vía material.color (multiplica) → punto de luz del color de materia.
-function makeDotTexture(): THREE.Texture {
+function polyGeo(poly: THREE.Vector3[]): THREE.BufferGeometry {
+  const posArr: number[] = [];
+  for (let i = 1; i < poly.length - 1; i++)
+    for (const p of [poly[0], poly[i], poly[i + 1]]) posArr.push(p.x, p.y, p.z);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(posArr, 3));
+  return g;
+}
+
+// ---------------------------------------------------------------------------
+// texturas
+// ---------------------------------------------------------------------------
+function radialTex(stops: [number, string][]): THREE.Texture {
   const s = 128;
   const c = document.createElement("canvas");
   c.width = c.height = s;
   const ctx = c.getContext("2d")!;
   const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-  g.addColorStop(0.0, "rgba(255,255,255,1)");
-  g.addColorStop(0.28, "rgba(255,255,255,0.92)");
-  g.addColorStop(0.55, "rgba(255,255,255,0.35)");
-  g.addColorStop(0.82, "rgba(255,255,255,0.08)");
-  g.addColorStop(1.0, "rgba(255,255,255,0)");
+  stops.forEach(([o, col]) => g.addColorStop(o, col));
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, s, s);
   const tex = new THREE.Texture(c);
@@ -84,6 +296,21 @@ function makeDotTexture(): THREE.Texture {
   tex.needsUpdate = true;
   return tex;
 }
+const makeDotTexture = () =>
+  radialTex([
+    [0, "rgba(255,255,255,1)"],
+    [0.28, "rgba(255,255,255,0.92)"],
+    [0.55, "rgba(255,255,255,0.35)"],
+    [0.82, "rgba(255,255,255,0.08)"],
+    [1, "rgba(255,255,255,0)"],
+  ]);
+const makeGlowTexture = () =>
+  radialTex([
+    [0, "rgba(255,255,255,0.7)"],
+    [0.4, "rgba(255,255,255,0.25)"],
+    [0.75, "rgba(255,255,255,0.06)"],
+    [1, "rgba(255,255,255,0)"],
+  ]);
 
 export default function ForceGraph3DInner({
   nodes,
@@ -98,24 +325,67 @@ export default function ForceGraph3DInner({
   motion: boolean;
   onOpen: (u: string) => void;
 }) {
-  // El canvas es un inset OSCURO en ambos temas → parámetros fijos (no dependen
-  // del tema de la página). El glow/bloom se lee siempre contra el fondo oscuro.
+  // El canvas es un inset OSCURO en ambos temas (patrón deliberado del hero):
+  // paleta fija VIVID, sin fork por tema.
   const wrapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const fgRef = useRef<ForceGraphMethods<GNode, GLink> | undefined>(undefined);
+  const fgRef = useRef<ForceGraphMethods<N3, L3> | undefined>(undefined);
   const [size, setSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
   const hoverRef = useRef(false);
+  const mouseRef = useRef<{ x: number; y: number } | null>(null);
 
-  const anchors = useMemo(buildAnchors, []);
   const dotTex = useMemo(makeDotTexture, []);
-  useEffect(() => () => dotTex.dispose(), [dotTex]);
-
-  const graphData = useMemo(
-    () => ({ nodes: nodes.map((n) => ({ ...n })) as N3[], links: links.map((l) => ({ ...l })) }),
-    [nodes, links],
+  const glowTex = useMemo(makeGlowTexture, []);
+  useEffect(
+    () => () => {
+      dotTex.dispose();
+      glowTex.dispose();
+    },
+    [dotTex, glowTex],
   );
 
-  // medir el contenedor (react-force-graph-3d necesita width/height explícitos)
+  // layout + voronoi + anclas de etiquetas: puro, una vez por dataset
+  const built = useMemo(() => {
+    const { pos, seedIdx, seedsVor } = computeLayout(nodes);
+    const gnodes: N3[] = nodes.map((n, i) => ({
+      ...n,
+      fx: pos[i].x,
+      fy: pos[i].y,
+      fz: pos[i].z,
+    }));
+    const vOf = new Map(nodes.map((n) => [n.id, n.v]));
+    const glinks: L3[] = links.map((l) => ({
+      ...l,
+      sv: vOf.get(l.source as string) ?? "",
+      tv: vOf.get(l.target as string) ?? "",
+    }));
+    const vor = buildVoronoi(seedsVor);
+    // anclas de etiqueta: centroide XZ + tope de altura del cluster
+    const anchors: Record<string, { x: number; y: number; z: number }> = {};
+    const acc: Record<string, { x: number; z: number; top: number; k: number }> = {};
+    gnodes.forEach((n) => {
+      const a = (acc[n.v] ||= { x: 0, z: 0, top: 0, k: 0 });
+      a.x += n.fx;
+      a.z += n.fz;
+      a.k++;
+      if (n.fy > a.top) a.top = n.fy;
+    });
+    for (const v in acc)
+      anchors[v] = { x: acc[v].x / acc[v].k, y: acc[v].top + 18, z: acc[v].z / acc[v].k };
+    const counts: Record<string, number> = {};
+    gnodes.forEach((n) => (counts[n.v] = (counts[n.v] ?? 0) + 1));
+    return { gnodes, glinks, vor, seedIdx, anchors, counts };
+  }, [nodes, links]);
+
+  const graphData = useMemo(
+    () => ({
+      nodes: built.gnodes.map((n) => ({ ...n })) as N3[],
+      links: built.glinks.map((l) => ({ ...l })),
+    }),
+    [built],
+  );
+
+  // medir el contenedor
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -129,98 +399,304 @@ export default function ForceGraph3DInner({
     return () => ro.disconnect();
   }, []);
 
-  // loop único: (1) setup imperativo una vez que fg está listo, (2) posición de
-  // etiquetas por frame (proyección + anti-solape 2D).
+  // linterna: NDC del mouse dentro del canvas
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const onMove = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      mouseRef.current = {
+        x: ((e.clientX - r.left) / r.width) * 2 - 1,
+        y: -(((e.clientY - r.top) / r.height) * 2 - 1),
+      };
+    };
+    const onLeave = () => (mouseRef.current = null);
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
+
+  // loop único: setup imperativo + crecimiento + linterna + etiquetas
   useEffect(() => {
     let raf = 0;
     let stopped = false;
     let setup = false;
-    let fitted = 0;
+    let growT0 = -1;
+    let growDone = !motion;
+    let drawFloorFn: ((e: number) => void) | null = null;
+    let floorTex: THREE.CanvasTexture | null = null;
+    const wallMats: { m: THREE.Material & { opacity: number }; target: number }[] = [];
+    const ray = new THREE.Raycaster();
+    let lanternGlow: THREE.Sprite | null = null;
+    const tmpC = new THREE.Color();
+    const WHITE = new THREE.Color("#ffffff");
+
     const loop = () => {
       if (stopped) return;
       const fg = fgRef.current;
       const overlay = overlayRef.current;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const anyFg = fg as any;
-      if (fg && overlay && anyFg.d3Force && anyFg.d3Force("charge")) {
+      if (fg && overlay && anyFg.scene && anyFg.camera) {
+        const scene: THREE.Scene = anyFg.scene();
         if (!setup) {
           setup = true;
-          // fuerza de clúster hacia el ancla de cada materia
-          let nds: N3[] = [];
-          const cluster = (alpha: number) => {
-            const S = 0.1 * alpha;
-            for (const n of nds) {
-              const a = anchors[n.v];
-              if (!a || n.x === undefined) continue;
-              n.vx = (n.vx ?? 0) + (a[0] - (n.x ?? 0)) * S;
-              n.vy = (n.vy ?? 0) + (a[1] - (n.y ?? 0)) * S;
-              n.vz = (n.vz ?? 0) + (a[2] - (n.z ?? 0)) * S;
-            }
-          };
-          (cluster as unknown as { initialize: (ns: N3[]) => void }).initialize = (ns) => {
-            nds = ns;
-          };
-          anyFg.d3Force("cluster", cluster);
-          anyFg.d3Force("charge").strength(-12);
-          anyFg.d3Force("link")?.distance(18).strength(0.55);
-          anyFg.d3ReheatSimulation?.();
-
-          // BLOOM: el composer ya trae un RenderPass base; sumamos glow + salida
-          // gestionada (color/tono correctos en three r15x). Es la firma moderna.
+          // ---- BLOOM suave + salida gestionada ----
           const composer = anyFg.postProcessingComposer?.();
           if (composer && composer.passes.length < 2) {
             const bloom = new UnrealBloomPass(
               new THREE.Vector2(size.w || 600, size.h || 400),
-              0.68, // strength
-              0.5, // radius
-              0.16, // threshold
+              0.5,
+              0.55,
+              0.22,
             );
             composer.addPass(bloom);
             composer.addPass(new OutputPass());
           }
-
-          // auto-órbita lenta de la cámara
+          // ---- cámara aérea 3/4 (la auto-órbita conserva la altura) ----
+          const k = Math.max(1, Math.min(1.5, 560 / (size.w || 560)));
+          anyFg.cameraPosition({ x: 0, y: 660 * k, z: 800 * k }, { x: 0, y: 0, z: 0 }, 0);
           const ctr = anyFg.controls?.();
           if (ctr) {
             ctr.autoRotate = motion;
-            ctr.autoRotateSpeed = 0.42;
+            ctr.autoRotateSpeed = 0.5;
+          }
+
+          // ---- mobiliario de la carta ----
+          const grid = new THREE.GridHelper(VOR_S, 30, 0x8a6a4a, 0x8a6a4a);
+          (grid.material as THREE.Material & { opacity: number }).transparent = true;
+          (grid.material as THREE.Material & { opacity: number }).opacity = 0.1;
+          grid.position.y = 0;
+          scene.add(grid);
+
+          // nube difusa: un halo aditivo por nodo (envuelve cada materia)
+          for (const n of graphData.nodes) {
+            const s = new THREE.Sprite(
+              new THREE.SpriteMaterial({
+                map: glowTex,
+                color: new THREE.Color(colorOf(n.v)),
+                transparent: true,
+                opacity: 0.035,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+              }),
+            );
+            s.scale.setScalar(26 + Math.sqrt(n.deg) * 6);
+            s.position.set(n.fx, n.fy, n.fz);
+            s.renderOrder = -2;
+            scene.add(s);
+          }
+
+          // piso voronoi: textura canvas de alta resolución (bordes suaves)
+          const TEXR = 2048;
+          const K = TEXR / VOR_S;
+          const u2 = (x: number) => (x / VOR_S + 0.5) * TEXR;
+          const w2 = (z: number) => (z / VOR_S + 0.5) * TEXR;
+          const fcv = document.createElement("canvas");
+          fcv.width = fcv.height = TEXR;
+          const fx2 = fcv.getContext("2d")!;
+          floorTex = new THREE.CanvasTexture(fcv);
+          floorTex.anisotropy =
+            anyFg.renderer?.().capabilities.getMaxAnisotropy?.() ?? 8;
+          const fplane = new THREE.Mesh(
+            new THREE.PlaneGeometry(VOR_S, VOR_S).rotateX(-Math.PI / 2),
+            new THREE.MeshBasicMaterial({
+              map: floorTex,
+              transparent: true,
+              depthWrite: false,
+            }),
+          );
+          fplane.position.y = FLOOR;
+          fplane.renderOrder = -3;
+          scene.add(fplane);
+          drawFloorFn = (e: number) => {
+            fx2.clearRect(0, 0, TEXR, TEXR);
+            fx2.lineJoin = "round";
+            for (const c of built.vor.cells) {
+              const su = u2(c.sx),
+                sv = w2(c.sz);
+              fx2.save();
+              fx2.translate(su, sv);
+              fx2.scale(e, e);
+              fx2.translate(-su, -sv);
+              const path = new Path2D();
+              c.poly.forEach((p, kk) =>
+                kk ? path.lineTo(u2(p.x), w2(p.z)) : path.moveTo(u2(p.x), w2(p.z)),
+              );
+              path.closePath();
+              const col = colorOf(c.v);
+              fx2.globalAlpha = 0.05;
+              fx2.fillStyle = col;
+              fx2.fill(path);
+              fx2.globalAlpha = 0.6;
+              fx2.strokeStyle = col;
+              fx2.lineWidth = 3.2;
+              fx2.shadowColor = col;
+              fx2.shadowBlur = 10;
+              fx2.stroke(path);
+              fx2.shadowBlur = 0;
+              fx2.globalAlpha = 0.6;
+              fx2.lineWidth = 2.4;
+              fx2.beginPath();
+              fx2.arc(su, sv, 11 * K, 0, 7);
+              fx2.stroke();
+              fx2.restore();
+            }
+            floorTex!.needsUpdate = true;
+          };
+
+          // tabiques 3D (cristal fantasma; aparecen al final del crecimiento)
+          for (const poly of built.vor.walls) {
+            const m = new THREE.MeshBasicMaterial({
+              color: 0xe0cdb0,
+              transparent: true,
+              opacity: 0,
+              side: THREE.DoubleSide,
+              depthWrite: false,
+            });
+            const mesh = new THREE.Mesh(polyGeo(poly), m);
+            mesh.renderOrder = -1;
+            scene.add(mesh);
+            wallMats.push({ m, target: 0.028 });
+            const lm = new THREE.LineBasicMaterial({
+              color: 0xe0cdb0,
+              transparent: true,
+              opacity: 0,
+            });
+            const line = new THREE.LineLoop(
+              new THREE.BufferGeometry().setFromPoints(poly),
+              lm,
+            );
+            line.renderOrder = -1;
+            scene.add(line);
+            wallMats.push({ m: lm, target: 0.11 });
+          }
+
+          // tallo de cada semilla (la nota más pesada de cada wiki)
+          for (const v in built.seedIdx) {
+            const n = built.gnodes[built.seedIdx[v]];
+            const stem = new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(n.fx, FLOOR + 0.5, n.fz),
+                new THREE.Vector3(n.fx, n.fy, n.fz),
+              ]),
+              new THREE.LineBasicMaterial({
+                color: new THREE.Color(colorOf(v)),
+                transparent: true,
+                opacity: 0.4,
+              }),
+            );
+            scene.add(stem);
+          }
+
+          // glow de la linterna
+          lanternGlow = new THREE.Sprite(
+            new THREE.SpriteMaterial({
+              map: glowTex,
+              color: new THREE.Color("#ffc9a0"),
+              transparent: true,
+              opacity: 0,
+              depthWrite: false,
+              blending: THREE.AdditiveBlending,
+            }),
+          );
+          lanternGlow.scale.set(95, 95, 1);
+          scene.add(lanternGlow);
+
+          if (!motion) {
+            drawFloorFn(1);
+            for (const w of wallMats) w.m.opacity = w.target;
           }
         }
-        // pausar auto-rotación con el cursor sobre un nodo
+
+        const now = performance.now();
+
+        // ---- crecimiento del voronoi (una vez, al cargar) ----
+        if (!growDone && drawFloorFn) {
+          if (growT0 < 0) growT0 = now;
+          const p = Math.min(1, (now - growT0 - 600) / 2800);
+          if (p >= 0) {
+            const e = 1 - Math.pow(1 - Math.min(1, p * 1.3), 3);
+            drawFloorFn(Math.max(e, 0.001));
+            const w = Math.max(0, (p - 0.55) / 0.45);
+            for (const wl of wallMats) wl.m.opacity = wl.target * w;
+            if (p >= 1) growDone = true;
+          }
+        }
+
+        // pausar auto-órbita con el cursor sobre un nodo
         const ctr = anyFg.controls?.();
         if (ctr && motion) ctr.autoRotate = !hoverRef.current;
-        // encuadrar unas cuantas veces mientras se asienta
-        if (fitted < 4) {
-          fitted++;
-          setTimeout(() => fgRef.current?.zoomToFit?.(600, 40), fitted * 400);
+
+        // ---- linterna: el cursor excita la red ----
+        const mouse = mouseRef.current;
+        if (lanternGlow) {
+          if (mouse) {
+            ray.setFromCamera(new THREE.Vector2(mouse.x, mouse.y), anyFg.camera());
+            const ro = ray.ray.origin,
+              rd = ray.ray.direction;
+            const R = 36;
+            let bx = 0,
+              by = 0,
+              bz = 0,
+              bw = 0;
+            for (const n of graphData.nodes) {
+              if (!n.__sp || n.x === undefined) continue;
+              const px = n.x - ro.x,
+                py = (n.y ?? 0) - ro.y,
+                pz = (n.z ?? 0) - ro.z;
+              const t = px * rd.x + py * rd.y + pz * rd.z;
+              const qx = px - rd.x * t,
+                qy = py - rd.y * t,
+                qz = pz - rd.z * t;
+              const e = Math.exp(-(qx * qx + qy * qy + qz * qz) / (2 * R * R));
+              const s = (n.__sz ?? 5) * (1 + e * 1.15);
+              n.__sp.scale.set(s, s, 1);
+              n.__sp.material.color.copy(
+                tmpC.copy(n.__base ?? WHITE).lerp(WHITE, e * 0.9),
+              );
+              if (e > 0.25) {
+                bx += n.x * e;
+                by += (n.y ?? 0) * e;
+                bz += (n.z ?? 0) * e;
+                bw += e;
+              }
+            }
+            if (bw > 0.01) {
+              lanternGlow.position.set(bx / bw, by / bw, bz / bw);
+              lanternGlow.material.opacity +=
+                (0.35 - lanternGlow.material.opacity) * 0.12;
+            } else lanternGlow.material.opacity *= 0.9;
+          } else {
+            lanternGlow.material.opacity *= 0.92;
+            for (const n of graphData.nodes) {
+              if (!n.__sp) continue;
+              n.__sp.scale.set(n.__sz ?? 5, n.__sz ?? 5, 1);
+              if (n.__base) n.__sp.material.color.copy(n.__base);
+            }
+          }
         }
-        // ---- etiquetas de materia: proyectar centroide vivo + anti-solape 2D ----
+
+        // ---- etiquetas de materia: proyectar ancla + anti-solape 2D ----
         const toScreen = anyFg.graph2ScreenCoords;
         if (typeof toScreen === "function") {
           const w = overlay.clientWidth;
           const h = overlay.clientHeight;
           const kids = overlay.children;
-          const cen: Record<string, { x: number; y: number; z: number; n: number }> = {};
-          for (const nd of graphData.nodes) {
-            if (nd.x === undefined) continue;
-            const c = (cen[nd.v] ||= { x: 0, y: 0, z: 0, n: 0 });
-            c.x += nd.x;
-            c.y += nd.y ?? 0;
-            c.z += nd.z ?? 0;
-            c.n++;
-          }
-          // posición objetivo (centroide proyectado, la pill un poco por encima)
           type Lab = { el: HTMLElement; x: number; y: number; hw: number; hh: number };
           const labs: Lab[] = [];
           for (let i = 0; i < VORDER.length; i++) {
             const el = kids[i] as HTMLElement | undefined;
             if (!el) continue;
-            const c = cen[VORDER[i]];
-            if (!c || !c.n) {
+            const a = built.anchors[VORDER[i]];
+            if (!a) {
               el.style.opacity = "0";
               continue;
             }
-            const s = toScreen.call(fg, c.x / c.n, c.y / c.n, c.z / c.n) as { x: number; y: number };
+            const s = toScreen.call(fg, a.x, a.y, a.z) as { x: number; y: number };
             const on = !!s && s.x > -60 && s.x < w + 60 && s.y > -60 && s.y < h + 60;
             if (!on) {
               el.style.opacity = "0";
@@ -229,13 +705,11 @@ export default function ForceGraph3DInner({
             labs.push({
               el,
               x: s.x,
-              y: s.y - 30,
+              y: s.y - 14,
               hw: (el.offsetWidth || 60) / 2,
               hh: (el.offsetHeight || 22) / 2,
             });
           }
-          // separación iterativa: si dos pills se solapan, se empujan por el eje
-          // de menor penetración. Barato para 7 etiquetas, corre por frame.
           const PAD = 5;
           for (let it = 0; it < 8; it++) {
             for (let a = 0; a < labs.length; a++) {
@@ -274,13 +748,14 @@ export default function ForceGraph3DInner({
     return () => {
       stopped = true;
       cancelAnimationFrame(raf);
+      floorTex?.dispose();
     };
-  }, [anchors, graphData, motion, size.w, size.h]);
+  }, [built, graphData, motion, size.w, size.h, glowTex]);
 
   return (
     <div ref={wrapRef} style={{ position: "absolute", inset: 0 }}>
       {size.w > 0 && (
-        <ForceGraph3D<GNode, GLink>
+        <ForceGraph3D<N3, L3>
           ref={fgRef}
           width={size.w}
           height={size.h}
@@ -289,6 +764,9 @@ export default function ForceGraph3DInner({
           backgroundColor="rgba(0,0,0,0)"
           showNavInfo={false}
           enableNodeDrag={false}
+          rendererConfig={{ antialias: true, alpha: true }}
+          warmupTicks={0}
+          cooldownTicks={0}
           nodeThreeObject={(n) => {
             const mat = new THREE.SpriteMaterial({
               map: dotTex,
@@ -296,22 +774,27 @@ export default function ForceGraph3DInner({
               transparent: true,
               depthWrite: false,
               blending: THREE.NormalBlending,
-              fog: true,
             });
             const sp = new THREE.Sprite(mat);
-            const sz = 5.5 + Math.sqrt(n.deg || 0) * 1.9;
+            const sz = 3.6 + Math.sqrt(n.deg || 0) * 2.4;
             sp.scale.set(sz, sz, 1);
+            n.__sp = sp;
+            n.__sz = sz;
+            n.__base = new THREE.Color(colorOf(n.v));
             return sp;
           }}
-          nodeLabel={(n) => `<div class="fg3d-tip">${escapeHtml(n.t)}</div>`}
-          linkColor={() => "#6f5f8f"}
-          linkOpacity={0.13}
-          linkWidth={0.4}
-          warmupTicks={40}
-          cooldownTicks={160}
+          nodeLabel={(n) =>
+            `<div class="fg3d-tip">${escapeHtml(n.t)}<br/><span style="color:${colorOf(
+              n.v,
+            )}">${NAMES[n.v] ?? n.v}</span> · ${n.deg} enlaces</div>`
+          }
+          linkColor={(l) => (l.sv === l.tv ? colorOf(l.sv) : "#3d3448")}
+          linkOpacity={0.27}
+          linkWidth={0}
           onNodeHover={(n) => {
             hoverRef.current = !!n;
-            if (wrapRef.current) wrapRef.current.style.cursor = n ? "pointer" : "grab";
+            if (wrapRef.current)
+              wrapRef.current.style.cursor = n ? "pointer" : "grab";
           }}
           onNodeClick={(n) => n?.u && onOpen(n.u)}
         />
@@ -320,7 +803,10 @@ export default function ForceGraph3DInner({
       <div className="fg3d-labels" ref={overlayRef} aria-hidden="true">
         {VORDER.map((v) => (
           <div key={v} className="fg3d-cluster" style={{ ["--c" as string]: colorOf(v) }}>
-            <span className="fg3d-lab">{NAMES[v] ?? v}</span>
+            <span className="fg3d-lab">
+              {NAMES[v] ?? v}
+              {built.counts[v] ? ` · ${built.counts[v]}` : ""}
+            </span>
           </div>
         ))}
       </div>

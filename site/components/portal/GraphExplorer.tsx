@@ -138,7 +138,7 @@ export default function GraphExplorer({
         <div className="hero-graph__cap" aria-hidden="true">
           <span>
             <span className="hero-graph__live" />
-            grafo de notas · 3D
+            carta del wiki · voronoi 3D
           </span>
           <span className="hero-graph__count">
             {total > 0 ? `${total} nodos` : "cargando…"}
@@ -147,7 +147,7 @@ export default function GraphExplorer({
         <div
           className="hero-graph__canvas hero-graph__canvas--3d"
           role="img"
-          aria-label="Grafo 3D interactivo de las notas del wiki: cada punto es una página; cada línea, un enlace entre notas. Constelaciones por materia."
+          aria-label="Carta 3D interactiva del wiki: cada punto es una nota, elevada según sus enlaces; cada materia ocupa su territorio voronoi, sembrado en su nota más conectada."
         >
           {data && (
             <ForceGraph3DInner
@@ -161,7 +161,8 @@ export default function GraphExplorer({
           )}
         </div>
         <p className="hero-graph__hint">
-          Cada punto es una nota · arrastrá para girar · click para abrirla
+          Cada punto es una nota (su altura: cuántos enlaces tiene) · movés el
+          cursor y la red se enciende · arrastrá para girar · click la abre
         </p>
       </div>
     );

@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mockup — Lámina de atlas del grafo de notas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --hex-brown:#241208; --hex-brown-soft:#382519;
+    --hex-blue:#92cff2; --hex-coral:#f47c59; --hex-white:#fdf9f4; --hex-gray:#a1a1aa;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    font-family:"Newsreader",serif;
+    background:#e9e2d6;
+    padding:36px;
+    display:flex; gap:36px; flex-wrap:wrap; align-items:flex-start; justify-content:center;
+  }
+  .stage{width:520px}
+  .stage h2{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;color:#5c4a3a}
+
+  /* ------- contexto de página (fondo de la landing) ------- */
+  .pagebg{padding:28px;border-radius:14px}
+  .pagebg.light{background:color-mix(in srgb,#fdf9f4 96%, #241208 4%)}
+  .pagebg.dark{background:color-mix(in srgb,#382519 90%, #fdf9f4 10%)}
+
+  /* ================= LA LÁMINA ================= */
+  .plate{
+    --paper:      #fffdf8;
+    --paper-edge: color-mix(in srgb,#241208 14%, transparent);
+    --ink:        #241208;
+    --ink-2:      color-mix(in srgb,#241208 62%, #fdf9f4);
+    --ink-faint:  color-mix(in srgb,#241208 24%, transparent);
+    --accent:     #b8542f;
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--paper-edge);
+    border-radius:10px;
+    box-shadow:0 10px 30px color-mix(in srgb,#241208 12%, transparent);
+    padding:12px 14px 10px;
+    overflow:hidden;
+  }
+  .dark .plate{
+    --paper:      color-mix(in srgb,#382519 72%, #241208 28%);
+    --paper-edge: color-mix(in srgb,#fdf9f4 16%, transparent);
+    --ink:        #f2e7d8;
+    --ink-2:      color-mix(in srgb,#f2e7d8 60%, #382519);
+    --ink-faint:  color-mix(in srgb,#f2e7d8 22%, transparent);
+    --accent:     #f4a583;
+    box-shadow:0 10px 30px color-mix(in srgb,#241208 42%, transparent);
+  }
+  /* grano de papel */
+  .plate::after{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;
+  }
+  .dark .plate::after{mix-blend-mode:screen;opacity:.5}
+
+  .plate__cap{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-2);
+    padding:2px 2px 9px;
+    border-bottom:1px solid var(--ink-faint);
+    margin-bottom:2px;
+  }
+  .plate__cap b{color:var(--ink);font-weight:600}
+  .plate__cap .num{color:var(--accent)}
+
+  .plate__canvas{position:relative;height:400px}
+  canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+
+  /* leyenda de callouts (títulos REALES) */
+  .plate__legend{
+    display:flex;flex-direction:column;gap:2px;
+    font-family:"JetBrains Mono",monospace;font-size:9.5px;line-height:1.5;
+    color:var(--ink-2);
+    border-top:1px solid var(--ink-faint);
+    padding:8px 2px 4px;
+  }
+  .plate__legend .it{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .plate__legend .no{color:var(--accent);font-weight:700}
+  .plate__legend .ti{font-family:"Newsreader",serif;font-style:italic;font-size:12px;color:var(--ink)}
+
+  /* readout de hover */
+  .plate__readout{
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.02em;
+    color:var(--ink-2);
+    padding:7px 2px 2px;min-height:22px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .plate__readout .t{font-family:"Newsreader",serif;font-style:italic;font-size:12.5px;color:var(--ink)}
+  .plate__readout .v{color:var(--accent);text-transform:uppercase}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <h2>Tema claro — tinta sobre papel</h2>
+    <div class="pagebg light">
+      <figure class="plate" id="p-light">
+        <figcaption class="plate__cap">
+          <span><b>Lámina <span class="num">01</span></b> · grafo de notas</span>
+          <span id="cap-light">—</span>
+        </figcaption>
+        <div class="plate__canvas"><canvas></canvas></div>
+        <div class="plate__readout" id="ro-light">&nbsp;</div>
+        <div class="plate__legend" id="lg-light"></div>
+      </figure>
+    </div>
+  </div>
+
+  <div class="stage">
+    <h2>Tema oscuro — tinta clara sobre papel tabaco</h2>
+    <div class="pagebg dark">
+      <figure class="plate dark-inner" id="p-dark">
+        <figcaption class="plate__cap">
+          <span><b>Lámina <span class="num">01</span></b> · grafo de notas</span>
+          <span id="cap-dark">—</span>
+        </figcaption>
+        <div class="plate__canvas"><canvas></canvas></div>
+        <div class="plate__readout" id="ro-dark">&nbsp;</div>
+        <div class="plate__legend" id="lg-dark"></div>
+      </figure>
+    </div>
+  </div>
+
+<script src="graph-atlas-data.js"></script>
+<script>
+// ============================================================================
+// LÁMINA DE ATLAS — el grafo real de notas dibujado como plancha de
+// relevamiento a tinta: retícula + ticks, curvas de nivel de densidad,
+// aristas capilares, nodos entintados por materia, rótulos con línea de guía,
+// callouts numerados a las notas más conectadas y bloque de título.
+// ============================================================================
+const NAMES = {mna:"MNA",derecho:"Derecho",economia:"Economía",proba:"Proba",paw:"PAW",sds:"SDS",inge2:"Inge2"};
+const G = window.GRAPH;
+
+function nice(n){ return n.toLocaleString("es-AR"); }
+
+function buildPlate(root, {dark}){
+  const canvas = root.querySelector("canvas");
+  const wrap   = canvas.parentElement;
+  const ctx    = canvas.getContext("2d");
+  const css    = getComputedStyle(root);
+  const C = {
+    paper: css.getPropertyValue("--paper").trim(),
+    ink:   css.getPropertyValue("--ink").trim(),
+    ink2:  css.getPropertyValue("--ink-2").trim(),
+    accent:css.getPropertyValue("--accent").trim(),
+  };
+
+  const W = wrap.clientWidth, H = wrap.clientHeight, DPR = 2;
+  canvas.width = W*DPR; canvas.height = H*DPR; ctx.scale(DPR,DPR);
+
+  // ---- fit: bounds (centro 500,500, semiejes hx,hy) → canvas con margen ----
+  const M = 26;                       // margen para ticks
+  const s = Math.min((W-2*M)/(2*G.bounds.hx), (H-2*M)/(2*G.bounds.hy));
+  const X = x => (x-500)*s + W/2;
+  const Y = y => (y-500)*s + H/2;
+
+  const nodes = G.nodes.map(n => ({...n, px:X(n.x), py:Y(n.y), color: dark? n.cDark : n.cLight, deg:0}));
+  const links = G.links.map(([a,b]) => (nodes[a].deg++, nodes[b].deg++, [nodes[a],nodes[b]]));
+
+  // ---------------- capa 0: papel + retícula + ticks + marcas ---------------
+  function furniture(){
+    ctx.save();
+    // retícula
+    ctx.strokeStyle = C.ink; ctx.globalAlpha = dark? .07 : .06; ctx.lineWidth = .5;
+    const step = 34;
+    ctx.beginPath();
+    for(let gx = M; gx <= W-M+1; gx += step){ ctx.moveTo(gx, M); ctx.lineTo(gx, H-M); }
+    for(let gy = M; gy <= H-M+1; gy += step){ ctx.moveTo(M, gy); ctx.lineTo(W-M, gy); }
+    ctx.stroke();
+    // borde de la carta
+    ctx.globalAlpha = dark? .35 : .4; ctx.lineWidth = 1;
+    ctx.strokeRect(M+.5, M+.5, W-2*M-1, H-2*M-1);
+    // ticks + números de coordenada
+    ctx.globalAlpha = .55; ctx.fillStyle = C.ink2;
+    ctx.font = "7.5px 'JetBrains Mono',monospace"; ctx.textAlign="center";
+    let k = 0;
+    for(let gx = M; gx <= W-M+1; gx += step, k++){
+      ctx.beginPath(); ctx.moveTo(gx, M); ctx.lineTo(gx, M-4); ctx.moveTo(gx, H-M); ctx.lineTo(gx, H-M+4); ctx.stroke();
+      if(k%2===0) ctx.fillText(String(k*10).padStart(2,"0"), gx, M-8);
+    }
+    ctx.textAlign="right"; k=0;
+    for(let gy = M; gy <= H-M+1; gy += step, k++){
+      ctx.beginPath(); ctx.moveTo(M, gy); ctx.lineTo(M-4, gy); ctx.moveTo(W-M, gy); ctx.lineTo(W-M+4, gy); ctx.stroke();
+      if(k%2===0) ctx.fillText(String(k*10).padStart(2,"0"), M-7, gy+2.5);
+    }
+    // marcas de esquina (crop marks) por FUERA del borde
+    ctx.globalAlpha=.8; ctx.strokeStyle=C.ink; ctx.lineWidth=1;
+    const cm = 7, o = 3;
+    [[M,M,1,1],[W-M,M,-1,1],[M,H-M,1,-1],[W-M,H-M,-1,-1]].forEach(([cx,cy,dx,dy])=>{
+      ctx.beginPath();
+      ctx.moveTo(cx-dx*o, cy-dy*(o+cm)); ctx.lineTo(cx-dx*o, cy-dy*o); ctx.lineTo(cx-dx*(o+cm), cy-dy*o);
+      ctx.stroke();
+    });
+    // firma del relevamiento en el margen inferior
+    ctx.globalAlpha=.5; ctx.fillStyle=C.ink2;
+    ctx.font="7px 'JetBrains Mono',monospace"; ctx.textAlign="left";
+    ctx.fillText("ITBA · ING. INFORMÁTICA — RELEVAMIENTO MMXXVI", M, H-M+14);
+    ctx.restore();
+  }
+
+  // --------------- capa 1: curvas de nivel de densidad (topo) ---------------
+  function contours(){
+    const cell = 7;
+    const gw = Math.ceil(W/cell), gh = Math.ceil(H/cell);
+    const f = new Float32Array(gw*gh);
+    const R = 22/cell, R2 = R*R;
+    for(const n of nodes){
+      const cx = n.px/cell, cy = n.py/cell;
+      const x0=Math.max(0,Math.floor(cx-R)), x1=Math.min(gw-1,Math.ceil(cx+R));
+      const y0=Math.max(0,Math.floor(cy-R)), y1=Math.min(gh-1,Math.ceil(cy+R));
+      const w = .6 + Math.min(2.2, n.deg*.12);
+      for(let yy=y0; yy<=y1; yy++) for(let xx=x0; xx<=x1; xx++){
+        const d2 = (xx-cx)*(xx-cx)+(yy-cy)*(yy-cy);
+        if(d2<R2) f[yy*gw+xx] += w*Math.exp(-d2/(R2*.35));
+      }
+    }
+    // marching squares por umbral
+    const TH = [1.4, 3.4, 6.2];
+    const AL = dark? [.2,.15,.11] : [.17,.13,.095];
+    ctx.save();
+    ctx.strokeStyle = C.ink; ctx.lineWidth = .7;
+    TH.forEach((t, ti)=>{
+      ctx.globalAlpha = AL[ti];
+      ctx.beginPath();
+      for(let y=0;y<gh-1;y++) for(let x=0;x<gw-1;x++){
+        const a=f[y*gw+x]>t, b=f[y*gw+x+1]>t, c=f[(y+1)*gw+x+1]>t, d=f[(y+1)*gw+x]>t;
+        const id = (a?8:0)|(b?4:0)|(c?2:0)|(d?1:0);
+        if(id===0||id===15) continue;
+        const L=(p,q)=>{ const vp=f[p[1]*gw+p[0]], vq=f[q[1]*gw+q[0]]; const r=(t-vp)/(vq-vp); return [(p[0]+(q[0]-p[0])*r)*cell,(p[1]+(q[1]-p[1])*r)*cell]; };
+        const e = {top:L([x,y],[x+1,y]), right:L([x+1,y],[x+1,y+1]), bot:L([x,y+1],[x+1,y+1]), left:L([x,y],[x,y+1])};
+        const SEG = {1:[["left","bot"]],2:[["bot","right"]],3:[["left","right"]],4:[["top","right"]],5:[["top","left"],["bot","right"]],6:[["top","bot"]],7:[["top","left"]],8:[["top","left"]],9:[["top","bot"]],10:[["top","right"],["left","bot"]],11:[["top","right"]],12:[["left","right"]],13:[["bot","right"]],14:[["left","bot"]]};
+        (SEG[id]||[]).forEach(([p,q])=>{ ctx.moveTo(e[p][0],e[p][1]); ctx.lineTo(e[q][0],e[q][1]); });
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // ---------------------------- capa 2: aristas -----------------------------
+  function edges(alpha){
+    ctx.save();
+    ctx.strokeStyle = C.ink; ctx.globalAlpha = alpha ?? (dark? .2 : .17); ctx.lineWidth = .5;
+    ctx.beginPath();
+    for(const [a,b] of links){ ctx.moveTo(a.px,a.py); ctx.lineTo(b.px,b.py); }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ----------------------------- capa 3: nodos ------------------------------
+  function dots(){
+    ctx.save();
+    for(const n of nodes){
+      const r = Math.max(.9, n.r*.45);
+      ctx.beginPath(); ctx.arc(n.px, n.py, r, 0, 7);
+      ctx.fillStyle = n.color; ctx.globalAlpha = .92; ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ------------- capa 4: rótulos de materia con línea de guía ---------------
+  function labels(){
+    const cen = {};
+    for(const n of nodes){ const c = cen[n.v] ||= {x:0,y:0,k:0}; c.x+=n.px; c.y+=n.py; c.k++; }
+    ctx.save();
+    ctx.font = "600 9px 'JetBrains Mono',monospace";
+    const placed = [];
+    for(const v of Object.keys(cen)){
+      const c = cen[v]; const cx = c.x/c.k, cy = c.y/c.k;
+      const txt = NAMES[v].toUpperCase()+" · "+c.k;
+      const tw = ctx.measureText(txt).width;
+      // el rótulo se corre hacia AFUERA del centro de la carta
+      const ang = Math.atan2(cy-H/2, cx-W/2);
+      let lx = cx + Math.cos(ang)*46, ly = cy + Math.sin(ang)*40;
+      lx = Math.max(M+14, Math.min(W-M-tw-8, lx));
+      ly = Math.max(M+16, Math.min(H-M-10, ly));
+      // anti-solape vertical burdo
+      for(const p of placed){ if(Math.abs(p.y-ly)<14 && Math.abs(p.x-lx)<tw+30) ly += (ly>p.y?14:-14); }
+      placed.push({x:lx,y:ly});
+      // línea de guía punteada
+      ctx.setLineDash([2,3]); ctx.strokeStyle=C.ink2; ctx.globalAlpha=.6; ctx.lineWidth=.7;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(lx-3, ly-3); ctx.stroke(); ctx.setLineDash([]);
+      // texto sobre parche de papel
+      ctx.globalAlpha=.85; ctx.fillStyle=C.paper;
+      ctx.fillRect(lx-3, ly-9, tw+6, 12);
+      ctx.globalAlpha=.95; ctx.fillStyle=C.ink;
+      ctx.fillText(txt, lx, ly);
+    }
+    ctx.restore();
+  }
+
+  // --------- capa 5: callouts numerados (top-3 por grado) + leyenda ---------
+  const top3 = [...nodes].sort((a,b)=>b.deg-a.deg).slice(0,3);
+  function callouts(){
+    ctx.save();
+    ctx.font = "700 8px 'JetBrains Mono',monospace"; ctx.textAlign="center";
+    const placed = [];
+    top3.forEach((n,i)=>{
+      const r = Math.max(.9, n.r*.45);
+      // anillo de tinta acento SOLO en las notas anotadas
+      ctx.beginPath(); ctx.arc(n.px, n.py, r+2, 0, 7);
+      ctx.strokeStyle=C.accent; ctx.globalAlpha=.9; ctx.lineWidth=.9; ctx.stroke();
+      // badge en ángulos distintos por índice, con nudge anti-solape
+      const ANG = [-0.9, -2.4, 0.6][i];
+      let bx = n.px + Math.cos(ANG)*(r+16), by = n.py + Math.sin(ANG)*(r+16);
+      for(const p of placed){
+        if(Math.abs(p.x-bx)<16 && Math.abs(p.y-by)<16){ by += by>p.y? 16 : -16; }
+      }
+      placed.push({x:bx,y:by});
+      ctx.strokeStyle=C.accent; ctx.lineWidth=.8; ctx.globalAlpha=.95;
+      ctx.beginPath();
+      const a2 = Math.atan2(by-n.py, bx-n.px);
+      ctx.moveTo(n.px+Math.cos(a2)*(r+2.5), n.py+Math.sin(a2)*(r+2.5));
+      ctx.lineTo(bx-Math.cos(a2)*6.5, by-Math.sin(a2)*6.5); ctx.stroke();
+      ctx.beginPath(); ctx.arc(bx, by, 5.5, 0, 7);
+      ctx.globalAlpha=1; ctx.fillStyle=C.paper; ctx.fill();
+      ctx.strokeStyle=C.accent; ctx.stroke();
+      ctx.fillStyle=C.accent; ctx.fillText(String(i+1), bx, by+2.6);
+    });
+    ctx.restore();
+  }
+
+  // -------------------- capa 6: bloque de título (cartela) ------------------
+  function titleBlock(){
+    const lines = [
+      ["FIG. 01","RELEVAMIENTO DEL WIKI"],
+      ["NODOS", nice(nodes.length)+" notas"],
+      ["ARISTAS", nice(links.length)+" enlaces"],
+      ["ESC.", "1 px : 1 idea"],
+    ];
+    ctx.save();
+    ctx.font = "7.5px 'JetBrains Mono',monospace";
+    const bw = 128, lh = 11, bh = lines.length*lh + 8;
+    const bx = W-M-bw-6, by = H-M-bh-6;
+    ctx.globalAlpha=.92; ctx.fillStyle=C.paper; ctx.fillRect(bx,by,bw,bh);
+    ctx.globalAlpha=.7; ctx.strokeStyle=C.ink; ctx.lineWidth=.7; ctx.strokeRect(bx+.5,by+.5,bw-1,bh-1);
+    ctx.beginPath(); ctx.moveTo(bx+42.5,by); ctx.lineTo(bx+42.5,by+bh); ctx.stroke();
+    lines.forEach((l,i)=>{
+      const yy = by + 8 + i*lh + 2;
+      if(i>0){ ctx.globalAlpha=.25; ctx.beginPath(); ctx.moveTo(bx,by+4.5+i*lh); ctx.lineTo(bx+bw,by+4.5+i*lh); ctx.stroke(); }
+      ctx.globalAlpha=.55; ctx.fillStyle=C.ink2; ctx.textAlign="left"; ctx.fillText(l[0], bx+5, yy);
+      ctx.globalAlpha=.95; ctx.fillStyle=C.ink; ctx.fillText(l[1], bx+48, yy);
+    });
+    ctx.restore();
+  }
+
+  function drawAll(){
+    ctx.clearRect(0,0,W,H);
+    furniture(); contours(); edges(); dots(); labels(); callouts(); titleBlock();
+  }
+  drawAll();
+
+  // ------------------------------- leyenda HTML -----------------------------
+  const short = (s,n)=> s.length>n? s.slice(0,n-1).trimEnd()+"…" : s;
+  const lg = root.querySelector(".plate__legend");
+  lg.innerHTML = top3.map((n,i)=>
+    `<div class="it"><span class="no">${i+1}.</span> <span class="ti">«${short(n.t,42)}»</span> — ${NAMES[n.v]} · ${n.deg} enlaces</div>`
+  ).join("");
+
+  // caption
+  root.querySelector(".plate__cap span[id^=cap]").textContent =
+    nice(nodes.length)+" nodos · "+nice(links.length)+" aristas";
+
+  // ------------------------------ hover readout -----------------------------
+  const ro = root.querySelector(".plate__readout");
+  canvas.addEventListener("mousemove", e=>{
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX-r.left, my = e.clientY-r.top;
+    let best=null, bd=400;
+    for(const n of nodes){ const d=(n.px-mx)**2+(n.py-my)**2; if(d<bd){bd=d;best=n;} }
+    if(best){
+      ro.innerHTML = `<span class="t">«${best.t}»</span> · <span class="v">${NAMES[best.v]}</span> · ${best.deg} enlaces`;
+      canvas.style.cursor="pointer";
+    } else { ro.innerHTML="&nbsp;"; canvas.style.cursor="crosshair"; }
+  });
+}
+
+buildPlate(document.getElementById("p-light"), {dark:false});
+buildPlate(document.getElementById("p-dark"),  {dark:true});
+</script>
+</body>
+</html>

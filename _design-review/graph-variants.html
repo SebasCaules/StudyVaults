@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Variantes del grafo 3D — StudyVaults (datos reales)</title>
+<!--
+  GALERÍA DE VARIANTES del grafo 3D del hero, con el graph.json REAL
+  (767 notas, 3.748 wikilinks). SELF-CONTAINED: three r160 UMD +
+  3d-force-graph 1.80 UMD como siblings locales, datos en graph-atlas-data.js.
+
+  V1 · SINAPSIS      — la red "piensa": señales por los enlaces + ondas de
+                       activación que se propagan de un nodo a sus vecinos.
+  V2 · NEBULOSAS     — cada wiki es una nube de color: telaraña teñida por
+                       materia + halos volumétricos + rótulos con conteo.
+  V3 · LINTERNA      — el cursor excita la red: los nodos cerca del puntero
+                       se encienden y crecen (raycast, no solo parallax).
+  V4 · CARTA EXTRUIDA— la distribución 2D real del layout (la de la lámina)
+                       levantada a 3D sobre una retícula, girando.
+
+  Todas: drag para orbitar · hover pausa la rotación y muestra la nota ·
+  parallax sutil siguiendo el cursor · click abre la nota en el sitio local.
+-->
+<style>
+  :root{
+    --bg:#161009; --card:#241208; --card2:#2d1a0e;
+    --ink:#f2e7d8; --ink2:#b9a68f; --accent:#f47c59; --hair:rgba(242,231,216,.14);
+    --mono:"JetBrains Mono","SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--mono);padding:26px 30px 60px}
+  header{margin-bottom:22px}
+  header h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+  header h1 b{color:var(--accent)}
+  header p{font-size:11px;color:var(--ink2);margin-top:6px;letter-spacing:.03em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:26px;max-width:1400px}
+  .card{background:var(--card);border:1px solid var(--hair);border-radius:12px;overflow:hidden;
+        box-shadow:0 14px 40px rgba(0,0,0,.5)}
+  .card__head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+              padding:12px 16px;border-bottom:1px solid var(--hair)}
+  .card__head h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  .card__head h2 i{color:var(--accent);font-style:normal;margin-right:8px}
+  .card__head span{font-size:10px;color:var(--ink2);text-align:right}
+  .card__view{position:relative;height:420px;background:
+      radial-gradient(120% 110% at 50% 36%, #33200f 0%, transparent 72%), #1b0f07}
+  .card__view canvas{display:block}
+  .card__foot{display:flex;justify-content:space-between;gap:14px;
+              padding:9px 16px;font-size:9.5px;color:var(--ink2);letter-spacing:.03em;
+              border-top:1px solid var(--hair)}
+  .scene-tooltip{font-family:var(--mono)!important;font-size:11px!important;
+      color:var(--ink)!important;background:rgba(36,18,8,.94)!important;
+      border:1px solid var(--hair)!important;border-radius:6px!important;
+      padding:5px 9px!important;max-width:260px;white-space:normal!important}
+  .lab3d{pointer-events:none}
+  #err{display:none;margin:40px auto;max-width:520px;text-align:center;color:var(--accent);font-size:12px}
+  #err.show{display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1><b>Variantes del grafo 3D</b> · hero de la landing — datos reales del wiki</h1>
+  <p id="meta">cargando graph.json…</p>
+</header>
+
+<div class="grid">
+  <section class="card" id="v1">
+    <div class="card__head">
+      <h2><i>V1</i> Sinapsis</h2>
+      <span>la red "piensa": señales viajan por los enlaces y cada tanto una nota dispara<br/>una onda de activación que enciende a sus vecinas</span>
+    </div>
+    <div class="card__view"></div>
+    <div class="card__foot"><span>drag orbita · hover pausa y muestra la nota · click la abre</span><span>partículas + ondas</span></div>
+  </section>
+
+  <section class="card" id="v2">
+    <div class="card__head">
+      <h2><i>V2</i> Nebulosas</h2>
+      <span>máxima distinción por materia: telaraña teñida por wiki,<br/>halo volumétrico y rótulo con conteo por cluster</span>
+    </div>
+    <div class="card__view"></div>
+    <div class="card__foot"><span>drag orbita · hover pausa y muestra la nota · click la abre</span><span>7 nubes de color</span></div>
+  </section>
+
+  <section class="card" id="v3">
+    <div class="card__view"></div>
+    <div class="card__head" style="border-top:1px solid var(--hair);border-bottom:0">
+      <h2><i>V3</i> Linterna</h2>
+      <span>el cursor EXCITA la red: los nodos cercanos al puntero se encienden,<br/>crecen y contagian brillo — la interacción es la estrella</span>
+    </div>
+    <div class="card__foot"><span>movés el mouse y la red responde · drag orbita · click abre</span><span>raycast reactivo</span></div>
+  </section>
+
+  <section class="card" id="v4">
+    <div class="card__view"></div>
+    <div class="card__head" style="border-top:1px solid var(--hair);border-bottom:0">
+      <h2><i>V4</i> Carta extruida</h2>
+      <span>maqueta cartográfica: territorios VORONOI que crecen desde la nota más pesada de cada wiki,<br/>nube difusa envolviendo cada materia, elevación = enlaces de la nota</span>
+    </div>
+    <div class="card__foot"><span>movés el mouse y la red se enciende · drag orbita · click abre</span><span>voronoi 3D + linterna</span></div>
+  </section>
+</div>
+
+<div id="err">Faltan <code>three.min.js</code> / <code>3d-force-graph.min.js</code> / <code>graph-atlas-data.js</code> como siblings locales.</div>
+
+<script src="./three.min.js"></script>
+<script>
+// three r160 UMD no trae Timer (core desde r163) y 3d-force-graph 1.80 lo usa
+// en su loop de render → polyfill mínimo API-compatible antes de cargarlo.
+if (window.THREE && !THREE.Timer) THREE.Timer = class {
+  constructor(){ this._prev = performance.now()/1000; this._delta = 0; this._elapsed = 0; }
+  update(t){ const n = (t ?? performance.now())/1000; this._delta = n - this._prev; this._elapsed += this._delta; this._prev = n; return this; }
+  getDelta(){ return this._delta; }
+  getElapsed(){ return this._elapsed; }
+  setTimescale(){ return this; }
+  reset(){ this._prev = performance.now()/1000; return this; }
+  dispose(){}
+};
+</script>
+<script src="./3d-force-graph.min.js"></script>
+<script src="./graph-atlas-data.js"></script>
+<script>
+// ============================================================================
+const VIVID = { derecho:"#E06B4F", economia:"#E6B23C", paw:"#5FC486",
+                proba:"#37C6B6", mna:"#4FA1F0", inge2:"#9A88F2", sds:"#E67CB2" };
+const NAMES = { mna:"MNA", derecho:"Derecho", economia:"Economía", proba:"Proba",
+                paw:"PAW", sds:"SDS", inge2:"Inge2" };
+const VORDER = ["mna","derecho","economia","proba","paw","sds","inge2"];
+const SITE = "http://localhost:3000/StudyVaults"; // click → nota en el build local
+const colorOf = v => VIVID[v] || "#8fb3e0";
+
+function boot(){
+  if (typeof window.ForceGraph3D !== "function" || !window.GRAPH) return setTimeout(boot, 60);
+  const G = window.GRAPH;
+
+  // ---- datos compartidos: grado + adyacencia ----
+  const deg = new Array(G.nodes.length).fill(0);
+  const adj = G.nodes.map(() => []);
+  G.links.forEach(([a,b]) => { deg[a]++; deg[b]++; adj[a].push(b); adj[b].push(a); });
+
+  // centroide 2D por wiki (para separar clusters) + nodo semilla (max grado)
+  const CEN2 = {}, SEED = {};
+  G.nodes.forEach((n,i) => {
+    const c = CEN2[n.v] || (CEN2[n.v] = {x:0,y:0,k:0});
+    c.x += n.x; c.y += n.y; c.k++;
+    if (!(n.v in SEED) || deg[i] > deg[SEED[n.v]]) SEED[n.v] = i;
+  });
+  for (const v in CEN2){ CEN2[v].x /= CEN2[v].k; CEN2[v].y /= CEN2[v].k; }
+  document.getElementById("meta").textContent =
+    `${G.nodes.length} notas · ${G.links.length} wikilinks · 7 wikis — cada punto es una página real; hover para ver cuál`;
+
+  // texturas compartidas
+  function radialTex(stops){
+    const s = 128, c = document.createElement("canvas"); c.width = c.height = s;
+    const x = c.getContext("2d");
+    const g = x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);
+    stops.forEach(([o,col]) => g.addColorStop(o,col));
+    x.fillStyle = g; x.fillRect(0,0,s,s);
+    const t = new THREE.Texture(c); t.needsUpdate = true; return t;
+  }
+  const dotTex  = radialTex([[0,"rgba(255,255,255,1)"],[.3,"rgba(255,255,255,.95)"],[.55,"rgba(255,255,255,.35)"],[.85,"rgba(255,255,255,.06)"],[1,"rgba(255,255,255,0)"]]);
+  const glowTex = radialTex([[0,"rgba(255,255,255,.7)"],[.4,"rgba(255,255,255,.25)"],[.75,"rgba(255,255,255,.06)"],[1,"rgba(255,255,255,0)"]]);
+
+  function textSprite(text, color){
+    const pad = 12, fs = 26;
+    const cv = document.createElement("canvas"), x = cv.getContext("2d");
+    x.font = `600 ${fs}px "JetBrains Mono", monospace`;
+    cv.width = Math.ceil(x.measureText(text).width) + pad*2; cv.height = fs + pad*1.6;
+    x.font = `600 ${fs}px "JetBrains Mono", monospace`;
+    x.fillStyle = "rgba(20,10,4,.72)";
+    x.beginPath(); x.roundRect(0,0,cv.width,cv.height,10); x.fill();
+    x.strokeStyle = color; x.globalAlpha = .8; x.lineWidth = 2; x.stroke(); x.globalAlpha = 1;
+    x.fillStyle = "#fdf3e6"; x.textBaseline = "middle"; x.textAlign = "center";
+    x.fillText(text, cv.width/2, cv.height/2 + 1);
+    const t = new THREE.Texture(cv); t.needsUpdate = true;
+    const m = new THREE.Sprite(new THREE.SpriteMaterial({ map:t, transparent:true, depthWrite:false }));
+    m.scale.set(cv.width*.3, cv.height*.3, 1); m.renderOrder = 10;
+    return m;
+  }
+
+  // anclas fibonacci (misma receta que el sitio)
+  const R_ANCHOR = 96;
+  const ANCHORS = {};
+  VORDER.forEach((id,i) => {
+    const y = 1 - (i/(VORDER.length-1))*2, rad = Math.sqrt(Math.max(0,1-y*y));
+    const th = Math.PI*(3-Math.sqrt(5))*i;
+    ANCHORS[id] = [Math.cos(th)*rad*R_ANCHOR, y*R_ANCHOR*0.66, Math.sin(th)*rad*R_ANCHOR];
+  });
+
+  const rand = (seed => () => (seed = (seed*1664525+1013904223)>>>0) / 4294967296)(42);
+
+  // --------------------------------------------------------------------------
+  // fábrica común de variantes
+  // --------------------------------------------------------------------------
+  function makeGraph(el, cfg){
+    const nodes = G.nodes.map((n,i) => ({
+      id:i, v:n.v, t:n.t, u:n.u, deg:deg[i],
+      ...(cfg.pos ? { fx:cfg.pos[i].x, fy:cfg.pos[i].y, fz:cfg.pos[i].z }
+        : cfg.fixed ? (() => {
+        // carta ACOSTADA (plano XZ, como maqueta sobre la mesa): la órbita
+        // siempre la ve desde arriba; la elevación (fy) es el grado de la nota.
+        // spread: aleja los clusters entre sí; intraSpread: espacia los nodos
+        // DENTRO de cada cluster (para leer bien las conexiones).
+        const sp = cfg.spread ?? 1, isp = cfg.intraSpread ?? 1;
+        const cx = (CEN2[n.v].x - 500) * 0.62, cz = (CEN2[n.v].y - 500) * 0.62;
+        return {
+          fx: cx*sp + ((n.x-500)*0.62 - cx)*isp,
+          fz: cz*sp + ((n.y-500)*0.62 - cz)*isp,
+          fy: 8 + ((i*2654435761)%97-48)*0.12 + Math.sqrt(deg[i])*12,
+        };
+      })() : {}),
+    }));
+    const links = G.links.map(([a,b],li) => ({
+      source:a, target:b, sv:G.nodes[a].v, tv:G.nodes[b].v,
+      np: cfg.particles && deg[a]+deg[b] > 7 && (li % 5 === 0) ? 1 : 0,
+      sp: 0.0035 + ((li*37)%100)/100*0.007,
+    }));
+
+    const W = el.clientWidth, H = el.clientHeight;
+    const fg = ForceGraph3D({
+      controlType:"orbit",
+      rendererConfig:{ antialias:true, alpha:true },   // MSAA: líneas suaves
+    })(el)
+      .width(W).height(H)
+      .backgroundColor("rgba(0,0,0,0)")
+      .showNavInfo(false)
+      .enableNodeDrag(false)
+      .warmupTicks(cfg.fixed ? 0 : 70)
+      .cooldownTicks(cfg.fixed ? 0 : 200)
+      .nodeLabel(n => `<div>${esc(n.t)}<br/><span style="color:${colorOf(n.v)}">${NAMES[n.v]}</span> · ${n.deg} enlaces</div>`)
+      .nodeThreeObject(n => {
+        const mat = new THREE.SpriteMaterial({
+          map:dotTex, color:new THREE.Color(colorOf(n.v)),
+          transparent:true, depthWrite:false,
+        });
+        const sp = new THREE.Sprite(mat);
+        const sz = (cfg.dotBase ?? 5) + Math.sqrt(n.deg)*(cfg.dotMul ?? 1.8);
+        sp.scale.set(sz,sz,1);
+        n.__sp = sp; n.__sz = sz; n.__base = new THREE.Color(colorOf(n.v));
+        return sp;
+      })
+      .linkColor(l => cfg.linkColor ? cfg.linkColor(l) : "#6f5f8f")
+      .linkOpacity(cfg.linkOpacity ?? 0.14)
+      .linkWidth(0)
+      .onNodeHover(n => {
+        st.hoverNode = n || null;
+        el.style.cursor = n ? "pointer" : "grab";
+      })
+      .onNodeClick(n => n && window.open(SITE + n.u, "_blank"))
+      .graphData({ nodes, links });
+
+    if (cfg.particles) fg
+      .linkDirectionalParticles(l => l.np)
+      .linkDirectionalParticleSpeed(l => l.sp)
+      .linkDirectionalParticleWidth(2.3)
+      .linkDirectionalParticleColor(() => "#ffd9b8");
+
+    if (!cfg.fixed){
+      let nds = [];
+      const cluster = a => { const S = 0.1*a; for (const n of nds){
+        const an = ANCHORS[n.v]; if (!an || n.x === undefined) continue;
+        n.vx += (an[0]-n.x)*S; n.vy += (an[1]-n.y)*S; n.vz += (an[2]-n.z)*S; } };
+      cluster.initialize = ns => nds = ns;
+      fg.d3Force("cluster", cluster);
+      fg.d3Force("charge").strength(-12);
+      fg.d3Force("link").distance(18).strength(0.55);
+    }
+
+    const st = { fg, el, nodes, links, hoverNode:null, tilt:{x:0,y:0}, tiltT:{x:0,y:0} };
+
+    // parallax: el grafo se inclina sutilmente hacia el cursor
+    el.addEventListener("mousemove", e => {
+      const r = el.getBoundingClientRect();
+      st.tiltT.x = ((e.clientY-r.top)/r.height - .5) * (cfg.tilt ?? 0.16);
+      st.tiltT.y = ((e.clientX-r.left)/r.width - .5) * (cfg.tilt ?? 0.16);
+      st.mouse = { x:((e.clientX-r.left)/r.width)*2-1, y:-(((e.clientY-r.top)/r.height)*2-1) };
+    });
+    el.addEventListener("mouseleave", () => { st.tiltT.x = st.tiltT.y = 0; st.mouse = null; });
+
+    // setup de cámara/controles + encuadre
+    setTimeout(() => {
+      const ctr = fg.controls();
+      ctr.autoRotate = true; ctr.autoRotateSpeed = cfg.spin ?? 0.5;
+      if (cfg.aerial){
+        // vista aérea 3/4 para la carta acostada (la órbita mantiene la altura)
+        fg.cameraPosition({ x:0, y:650, z:790 }, { x:0, y:0, z:0 }, 900);
+      } else {
+        fg.zoomToFit(700, 30);
+        setTimeout(() => fg.zoomToFit(700, 26), 1400);
+      }
+    }, 400);
+
+    return st;
+  }
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  // --------------------------------------------------------------------------
+  // V1 · SINAPSIS — partículas + ondas de activación
+  // --------------------------------------------------------------------------
+  const v1 = makeGraph(document.querySelector("#v1 .card__view"), {
+    particles:true, linkOpacity:0.15, spin:0.55,
+  });
+  v1.waves = [];
+  v1.fire = () => {
+    const cands = v1.nodes.filter(n => n.deg >= 5);
+    const o = cands[(rand()*cands.length)|0];
+    const delays = new Map([[o.id, 0]]);
+    for (const n1 of adj[o.id]){ if (!delays.has(n1)) delays.set(n1, 170);
+      for (const n2 of adj[n1]) if (!delays.has(n2)) delays.set(n2, 340); }
+    v1.waves.push({ t0:performance.now(), delays });
+    if (v1.waves.length > 2) v1.waves.shift();
+  };
+  setInterval(v1.fire, 1500);
+
+  // --------------------------------------------------------------------------
+  // V2 · NEBULOSAS — links teñidos por wiki + halos + rótulos con conteo
+  // --------------------------------------------------------------------------
+  const v2 = makeGraph(document.querySelector("#v2 .card__view"), {
+    linkOpacity:0.24, spin:0.45,
+    linkColor: l => l.sv === l.tv ? colorOf(l.sv) : "#4d4258",
+  });
+  v2.halos = {}; v2.labels = {};
+  setTimeout(() => {
+    const counts = {};
+    v2.nodes.forEach(n => counts[n.v] = (counts[n.v]||0)+1);
+    for (const v of VORDER){
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+        map:glowTex, color:new THREE.Color(colorOf(v)),
+        transparent:true, opacity:0.16, depthWrite:false,
+        blending:THREE.AdditiveBlending,
+      }));
+      halo.scale.set(105,105,1); halo.renderOrder = -1;
+      v2.fg.scene().add(halo); v2.halos[v] = halo;
+      const lab = textSprite(`${NAMES[v]} · ${counts[v]||0}`, colorOf(v));
+      v2.fg.scene().add(lab); v2.labels[v] = lab;
+    }
+  }, 600);
+
+  // --------------------------------------------------------------------------
+  // LINTERNA (compartida por V3 y V4) — el cursor excita la red: raycast y
+  // falloff gaussiano por distancia de cada nodo al rayo del puntero
+  // --------------------------------------------------------------------------
+  function makeLantern(st, radius, glowSize){
+    st.ray = new THREE.Raycaster();
+    st.lanternR = radius;
+    st.glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map:glowTex, color:new THREE.Color("#ffc9a0"), transparent:true,
+      opacity:0, depthWrite:false, blending:THREE.AdditiveBlending }));
+    st.glow.scale.set(glowSize, glowSize, 1);
+    setTimeout(() => st.fg.scene().add(st.glow), 500);
+  }
+  function runLantern(st, tmpC, WHITE){
+    if (!st.glow) return;
+    if (st.mouse){
+      st.ray.setFromCamera(st.mouse, st.fg.camera());
+      const ro = st.ray.ray.origin, rd = st.ray.ray.direction;
+      const R = st.lanternR;
+      let bx=0,by=0,bz=0,bw=0;
+      for (const n of st.nodes){
+        if (!n.__sp || n.x === undefined) continue;
+        const px=n.x-ro.x, py=n.y-ro.y, pz=n.z-ro.z;
+        const tproj = px*rd.x + py*rd.y + pz*rd.z;
+        const qx=px-rd.x*tproj, qy=py-rd.y*tproj, qz=pz-rd.z*tproj;
+        const d2 = qx*qx+qy*qy+qz*qz;
+        const e = Math.exp(-d2/(2*R*R));
+        const s = n.__sz * (1 + e*1.15);
+        n.__sp.scale.set(s,s,1);
+        n.__sp.material.color.copy(tmpC.copy(n.__base).lerp(WHITE, e*0.9));
+        if (e > 0.25){ bx+=n.x*e; by+=n.y*e; bz+=n.z*e; bw+=e; }
+      }
+      if (bw > 0.01){
+        st.glow.position.set(bx/bw, by/bw, bz/bw);
+        st.glow.material.opacity += (0.35 - st.glow.material.opacity)*0.12;
+      } else st.glow.material.opacity *= 0.9;
+    } else {
+      st.glow.material.opacity *= 0.92;
+      for (const n of st.nodes){
+        if (!n.__sp) continue;
+        n.__sp.scale.set(n.__sz, n.__sz, 1);
+        n.__sp.material.color.copy(n.__base);
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // V3 · LINTERNA — la interacción como protagonista
+  // --------------------------------------------------------------------------
+  const v3 = makeGraph(document.querySelector("#v3 .card__view"), {
+    linkOpacity:0.12, spin:0.22, tilt:0.10, dotBase:4.4,
+  });
+  makeLantern(v3, 26, 70);
+
+  // --------------------------------------------------------------------------
+  // V4 · CARTA EXTRUIDA — layout 2D real fijado + retícula de referencia
+  // --------------------------------------------------------------------------
+  // ---- posiciones V4 precomputadas + CONTENCIÓN: la celda voronoi es fija y
+  // cada nube se reescala alrededor de su semilla (búsqueda binaria del factor)
+  // hasta que TODOS sus nodos queden dentro de su celda, con margen ----
+  const V4BOX = 500, V4M = 10;
+  const V4POS = (() => {
+    const sp = 1.68, isp = 1.38;
+    const pos = G.nodes.map((n,i) => {
+      const cx = (CEN2[n.v].x-500)*0.62, cz = (CEN2[n.v].y-500)*0.62;
+      return {
+        x: cx*sp + ((n.x-500)*0.62 - cx)*isp,
+        z: cz*sp + ((n.y-500)*0.62 - cz)*isp,
+        y: 8 + ((i*2654435761)%97-48)*0.12 + Math.sqrt(deg[i])*12,
+      };
+    });
+    // outliers: ningún nodo a más de 1.25× el radio P90 de su nube → el
+    // solitario se arrima al borde del cluster (misma dirección, menos lejos)
+    VORDER.forEach(v => {
+      const idxs = G.nodes.map((n,i) => n.v === v ? i : -1).filter(i => i >= 0);
+      let cx = 0, cz = 0;
+      idxs.forEach(i => { cx += pos[i].x; cz += pos[i].z; });
+      cx /= idxs.length; cz /= idxs.length;
+      const ds = idxs.map(i => Math.hypot(pos[i].x-cx, pos[i].z-cz)).sort((a,b) => a-b);
+      const rmax = ds[Math.floor(ds.length*0.9)] * 1.25;
+      idxs.forEach(i => {
+        const d = Math.hypot(pos[i].x-cx, pos[i].z-cz);
+        if (d > rmax){
+          const k = rmax/d;
+          pos[i].x = cx + (pos[i].x-cx)*k;
+          pos[i].z = cz + (pos[i].z-cz)*k;
+        }
+      });
+    });
+    // semillas con altura amortiguada (MISMA fórmula que usa el voronoi visual)
+    const sv = {};
+    VORDER.forEach(v => { const p = pos[SEED[v]]; sv[v] = { x:p.x, y:22 + p.y*0.35, z:p.z }; });
+    VORDER.forEach(v => {
+      const s0 = sv[v];
+      const bis = VORDER.filter(o => o !== v).map(o => {
+        const a = sv[v], b = sv[o];
+        const n = { x:a.x-b.x, y:a.y-b.y, z:a.z-b.z };
+        return { n, d:((b.x**2+b.y**2+b.z**2)-(a.x**2+a.y**2+a.z**2))/2,
+                 len:Math.hypot(n.x,n.y,n.z) };
+      });
+      const idxs = G.nodes.map((n,i) => n.v === v ? i : -1).filter(i => i >= 0);
+      const inside = s => idxs.every(i => {
+        const px = s0.x + (pos[i].x-s0.x)*s, pz = s0.z + (pos[i].z-s0.z)*s, py = pos[i].y;
+        if (Math.abs(px) > V4BOX-12 || Math.abs(pz) > V4BOX-12) return false;
+        return bis.every(b => (b.n.x*px + b.n.y*py + b.n.z*pz + b.d)/b.len >= V4M);
+      });
+      if (inside(1)) return;
+      let lo = 0.3, hi = 1, best = 0.3;
+      for (let it = 0; it < 14; it++){
+        const m = (lo+hi)/2;
+        if (inside(m)){ best = m; lo = m; } else hi = m;
+      }
+      idxs.forEach(i => {
+        pos[i].x = s0.x + (pos[i].x-s0.x)*best;
+        pos[i].z = s0.z + (pos[i].z-s0.z)*best;
+      });
+    });
+    return pos;
+  })();
+
+  const v4 = makeGraph(document.querySelector("#v4 .card__view"), {
+    fixed:true, aerial:true, pos:V4POS,
+    // enlaces a lo V2: teñidos por wiki y bien presentes; los cruzados, apagados
+    linkColor: l => l.sv === l.tv ? colorOf(l.sv) : "#3d3448",
+    linkOpacity:0.27,
+    spin:0.55, dotBase:3.6, dotMul:2.4,    // jerarquía: hojas chicas, hubs grandes
+  });
+  makeLantern(v4, 36, 95); // la linterna de V3, escalada al tamaño de la carta
+  const VOR_S = 1060;                      // lado del plano/mapa en unidades mundo
+  setTimeout(() => {
+    const scene = v4.fg.scene();
+    const grid = new THREE.GridHelper(VOR_S, 30, 0x8a6a4a, 0x8a6a4a);
+    grid.material.transparent = true; grid.material.opacity = 0.10;
+    grid.position.y = 0;
+    scene.add(grid);
+
+    // ---- NUBE difusa por wiki: unión de halos aditivos por nodo (ultra
+    // liviana) → envuelve el cluster con su forma real desde cualquier ángulo
+    for (const n of v4.nodes){
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({
+        map:glowTex, color:new THREE.Color(colorOf(n.v)),
+        transparent:true, opacity:0.05, depthWrite:false,
+        blending:THREE.AdditiveBlending,
+      }));
+      s.material.opacity = 0.035;
+      s.scale.setScalar(26 + Math.sqrt(n.deg)*6);
+      s.position.set(n.fx, n.fy, n.fz);
+      s.renderOrder = -2;
+      scene.add(s);
+    }
+
+    // ---- VORONOI 3D exacto: intersección de semiespacios (planos bisectores)
+    // Cada celda es un poliedro convexo; acá construimos (a) el TABIQUE entre
+    // cada par de wikis = plano bisector recortado por los demás bisectores +
+    // la caja límite (clipping Sutherland–Hodgman en 3D), y (b) la celda en el
+    // piso = mismo recorte sobre el plano y=FLOOR. Geometría vectorial → nada
+    // de pixelado, nítido a cualquier zoom.
+    const FLOOR = 1.0, TOP = 102, BOX = 500, RBIG = 1600;
+    const seeds3 = VORDER.map(v => {
+      const n = v4.nodes[SEED[v]];
+      // altura AMORTIGUADA para el voronoi: el tabique sigue siendo 3D (queda
+      // levemente inclinado) pero ya no rebana los clusters vecinos por la
+      // diferencia de alturas entre semillas
+      return new THREE.Vector3(n.fx, 22 + n.fy*0.35, n.fz);
+    });
+    // recorta un polígono convexo (array de Vector3) con el semiespacio n·p+d>=0
+    function clipPoly(poly, n, d){
+      const out = [];
+      for (let i = 0; i < poly.length; i++){
+        const a = poly[i], b = poly[(i+1)%poly.length];
+        const da = n.dot(a)+d, db = n.dot(b)+d;
+        if (da >= 0) out.push(a);
+        if ((da < 0) !== (db < 0)) out.push(a.clone().lerp(b, da/(da-db)));
+      }
+      return out;
+    }
+    // semiespacio "más cerca de s_i que de s_k": n=(s_i−s_k), d=(|s_k|²−|s_i|²)/2
+    const bisector = (i,k) => ({
+      n: seeds3[i].clone().sub(seeds3[k]),
+      d: (seeds3[k].lengthSq() - seeds3[i].lengthSq())/2,
+    });
+    const BOXP = [
+      { n:new THREE.Vector3(-1,0,0), d:BOX }, { n:new THREE.Vector3(1,0,0), d:BOX },
+      { n:new THREE.Vector3(0,0,-1), d:BOX }, { n:new THREE.Vector3(0,0,1), d:BOX },
+      { n:new THREE.Vector3(0,1,0),  d:0 },   { n:new THREE.Vector3(0,-1,0), d:TOP },
+    ];
+    function polyGeo(poly, origin){ // triangle-fan de un convexo, relativo a origin
+      const pos = [];
+      for (let i = 1; i < poly.length-1; i++)
+        for (const p of [poly[0], poly[i], poly[i+1]])
+          pos.push(p.x-origin.x, p.y-origin.y, p.z-origin.z);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      return g;
+    }
+    function lineGeo(poly, origin){
+      const g = new THREE.BufferGeometry();
+      g.setFromPoints(poly.map(p => p.clone().sub(origin)));
+      return g;
+    }
+    v4.terr = { t0:performance.now(), cells:[], walls:[], done:false };
+    const O0 = new THREE.Vector3(0,0,0);
+    // ---- celdas del piso: formas EXACTAS (clipping 3D) dibujadas en una
+    // textura canvas de alta resolución → antialiasing perfecto, cero serrucho
+    VORDER.forEach((v,i) => {
+      let poly = [
+        new THREE.Vector3( RBIG, FLOOR,  RBIG), new THREE.Vector3( RBIG, FLOOR, -RBIG),
+        new THREE.Vector3(-RBIG, FLOOR, -RBIG), new THREE.Vector3(-RBIG, FLOOR,  RBIG)];
+      for (let k = 0; k < seeds3.length && poly.length > 2; k++){
+        if (k === i) continue;
+        const b = bisector(i,k); poly = clipPoly(poly, b.n, b.d);
+      }
+      for (const bp of BOXP.slice(0,4)) if (poly.length > 2) poly = clipPoly(poly, bp.n, bp.d);
+      if (poly.length < 3) return;
+      v4.terr.cells.push({ poly, col:colorOf(v), sx:seeds3[i].x, sz:seeds3[i].z });
+    });
+    const TEXR = 2048, K = TEXR / VOR_S;
+    const u2 = x => (x/VOR_S + .5)*TEXR, w2 = z => (z/VOR_S + .5)*TEXR;
+    const fcv = document.createElement("canvas"); fcv.width = fcv.height = TEXR;
+    const fx2 = fcv.getContext("2d");
+    const ftex = new THREE.CanvasTexture(fcv);
+    ftex.anisotropy = v4.fg.renderer?.().capabilities.getMaxAnisotropy?.() ?? 8;
+    const fplane = new THREE.Mesh(
+      new THREE.PlaneGeometry(VOR_S, VOR_S).rotateX(-Math.PI/2),
+      new THREE.MeshBasicMaterial({ map:ftex, transparent:true, depthWrite:false }));
+    fplane.position.y = FLOOR; fplane.renderOrder = -3;
+    scene.add(fplane);
+    v4.terr.drawFloor = e => {
+      fx2.clearRect(0, 0, TEXR, TEXR);
+      fx2.lineJoin = "round";
+      for (const c of v4.terr.cells){
+        const su = u2(c.sx), sv = w2(c.sz);
+        fx2.save();
+        fx2.translate(su, sv); fx2.scale(e, e); fx2.translate(-su, -sv);
+        const path = new Path2D();
+        c.poly.forEach((p, k) => k ? path.lineTo(u2(p.x), w2(p.z)) : path.moveTo(u2(p.x), w2(p.z)));
+        path.closePath();
+        // relleno apenas perceptible
+        fx2.globalAlpha = 0.05; fx2.fillStyle = c.col; fx2.fill(path);
+        // borde: trazo nítido con halo suave (shadow) en un solo paso
+        fx2.globalAlpha = 0.6; fx2.strokeStyle = c.col; fx2.lineWidth = 3.2;
+        fx2.shadowColor = c.col; fx2.shadowBlur = 10;
+        fx2.stroke(path);
+        fx2.shadowBlur = 0;
+        // anillo de la semilla (nace del centro del territorio)
+        fx2.globalAlpha = 0.6; fx2.lineWidth = 2.4;
+        fx2.beginPath(); fx2.arc(su, sv, 11*K, 0, 7); fx2.stroke();
+        fx2.restore();
+      }
+      ftex.needsUpdate = true;
+    };
+    // tabiques 3D entre pares de celdas (cristal fantasma, aparecen al final)
+    for (let i = 0; i < seeds3.length; i++) for (let j = i+1; j < seeds3.length; j++){
+      const N = seeds3[j].clone().sub(seeds3[i]).normalize();
+      const mid = seeds3[i].clone().add(seeds3[j]).multiplyScalar(0.5);
+      let u = new THREE.Vector3(0,1,0).cross(N);
+      if (u.lengthSq() < 1e-6) u = new THREE.Vector3(1,0,0).cross(N);
+      u.normalize();
+      const w = N.clone().cross(u);
+      let poly = [
+        mid.clone().addScaledVector(u, RBIG).addScaledVector(w, RBIG),
+        mid.clone().addScaledVector(u, RBIG).addScaledVector(w,-RBIG),
+        mid.clone().addScaledVector(u,-RBIG).addScaledVector(w,-RBIG),
+        mid.clone().addScaledVector(u,-RBIG).addScaledVector(w, RBIG)];
+      for (let k = 0; k < seeds3.length && poly.length > 2; k++){
+        if (k === i || k === j) continue;
+        const b = bisector(i,k); poly = clipPoly(poly, b.n, b.d);
+      }
+      for (const bp of BOXP) if (poly.length > 2) poly = clipPoly(poly, bp.n, bp.d);
+      if (poly.length < 3) continue;
+      const mesh = new THREE.Mesh(polyGeo(poly, O0), new THREE.MeshBasicMaterial({
+        color:0xe0cdb0, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false }));
+      const line = new THREE.LineLoop(lineGeo(poly, O0), new THREE.LineBasicMaterial({
+        color:0xe0cdb0, transparent:true, opacity:0 }));
+      mesh.renderOrder = -1; line.renderOrder = -1;
+      scene.add(mesh); scene.add(line);
+      v4.terr.walls.push({ mesh, line, mo:0.028, lo:0.11 });
+    }
+
+    // ---- semillas: tallo + anillo en el piso bajo el nodo más pesado ----
+    for (const v of VORDER){
+      const n = v4.nodes[SEED[v]];
+      const col = new THREE.Color(colorOf(v));
+      const stem = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(n.fx, 1.5, n.fz), new THREE.Vector3(n.fx, n.fy, n.fz)]),
+        new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:0.4 }));
+      scene.add(stem);
+      // (el anillo de la semilla ahora se dibuja en la textura del piso)
+    }
+
+    const counts = {};
+    v4.nodes.forEach(n => counts[n.v] = (counts[n.v]||0)+1);
+    v4.labels = {};
+    for (const v of VORDER){
+      const lab = textSprite(`${NAMES[v]} · ${counts[v]||0}`, colorOf(v));
+      v4.fg.scene().add(lab); v4.labels[v] = lab;
+    }
+  }, 600);
+
+  // --------------------------------------------------------------------------
+  // loop común: parallax + hover-pausa + efectos por variante
+  // --------------------------------------------------------------------------
+  const tmpC = new THREE.Color();
+  function tick(now){
+    for (const st of [v1,v2,v3,v4]){
+      // parallax suave hacia el cursor
+      st.tilt.x += (st.tiltT.x - st.tilt.x)*0.06;
+      st.tilt.y += (st.tiltT.y - st.tilt.y)*0.06;
+      const sc = st.fg.scene();
+      sc.rotation.x = st.tilt.x; sc.rotation.y = st.tilt.y;
+      // hover pausa la auto-órbita
+      const ctr = st.fg.controls();
+      if (ctr) ctr.autoRotate = !st.hoverNode;
+    }
+
+    // V1: ondas de activación
+    for (const n of v1.nodes){
+      if (!n.__sp) continue;
+      let inten = 0;
+      for (const w of v1.waves){
+        const d = w.delays.get(n.id);
+        if (d === undefined) continue;
+        const dt = (now - w.t0) - d;
+        if (dt > 0) inten = Math.max(inten, Math.exp(-dt/260) * (dt < 40 ? dt/40 : 1));
+      }
+      const s = n.__sz * (1 + inten*0.75);
+      n.__sp.scale.set(s,s,1);
+      n.__sp.material.color.copy(tmpC.copy(n.__base).lerp(WHITE, inten*0.6));
+    }
+
+    // V2: halos + rótulos siguen el centroide vivo de cada cluster
+    if (Object.keys(v2.halos).length){
+      const cen = {};
+      for (const n of v2.nodes){
+        if (n.x === undefined) continue;
+        const c = cen[n.v] || (cen[n.v] = {x:0,y:0,z:0,k:0});
+        c.x += n.x; c.y += n.y; c.z += n.z; c.k++;
+      }
+      for (const v of VORDER){
+        const c = cen[v]; if (!c || !c.k) continue;
+        const h = v2.halos[v], l = v2.labels[v];
+        if (h) h.position.set(c.x/c.k, c.y/c.k, c.z/c.k);
+        if (l) l.position.set(c.x/c.k, c.y/c.k + 42, c.z/c.k);
+      }
+    }
+
+    // V3 + V4: excitación por cercanía al rayo del cursor (linterna)
+    runLantern(v3, tmpC, WHITE);
+    runLantern(v4, tmpC, WHITE);
+
+    // V4: crecimiento del voronoi (pisos desde su semilla, tabiques al final)
+    if (v4.terr && !v4.terr.done){
+      const p = Math.min(1, (now - v4.terr.t0 - 900) / 2800);
+      if (p >= 0){
+        const e = 1 - Math.pow(1 - Math.min(1, p*1.3), 3); // pisos: easeOutCubic
+        v4.terr.drawFloor?.(Math.max(e, 0.001));
+        const w = Math.max(0, (p - 0.55) / 0.45);          // tabiques: fade final
+        for (const wl of v4.terr.walls){
+          wl.mesh.material.opacity = wl.mo * w;
+          wl.line.material.opacity = wl.lo * w;
+        }
+        if (p >= 1) v4.terr.done = true;
+      }
+    }
+    if (v4.labels){
+      const cen = {};
+      for (const n of v4.nodes){
+        const c = cen[n.v] || (cen[n.v] = {x:0,top:0,z:0,k:0});
+        c.x += n.fx; c.z += n.fz; c.k++;
+        if (n.fy > c.top) c.top = n.fy;
+      }
+      for (const v of VORDER){
+        const c = cen[v], l = v4.labels[v]; if (!c || !l) continue;
+        l.position.set(c.x/c.k, c.top + 26, c.z/c.k);
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+  const WHITE = new THREE.Color("#ffffff");
+  requestAnimationFrame(tick);
+}
+boot();
+setTimeout(() => {
+  if (typeof window.ForceGraph3D !== "function" || !window.GRAPH)
+    document.getElementById("err").classList.add("show");
+}, 9000);
+</script>
+</body>
+</html>
