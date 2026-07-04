@@ -254,46 +254,6 @@
   flex: none;
 }
 
-/* ---- exportar (.ics): una fila compacta, después del calendario ---- */
-.planner .fin__export {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 11px 14px;
-  border-radius: 8px;
-  margin-bottom: 14px;
-  border: 1px solid color-mix(in srgb, var(--link) 30%, var(--line));
-  background: color-mix(in srgb, var(--link) 5%, var(--panel));
-}
-.planner .fin__reminder {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-}
-.planner .fin__reminder > span {
-  font-family: var(--f-m);
-  font-size: 10px;
-  letter-spacing: 0.03em;
-  color: var(--muted);
-}
-.planner .fin__export-empty {
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  line-height: 1.5;
-  color: var(--muted);
-  margin: 0;
-}
-.planner .fin__export-ok {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--link);
-}
-
 /* ---- fila: calendario + panel de pendientes ---- */
 .planner .fin__row {
   display: flex;
@@ -311,9 +271,10 @@
 }
 .planner .fin__cal-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  row-gap: 8px;
   margin-bottom: 10px;
 }
 .planner .fin__cal-title {
@@ -329,6 +290,103 @@
 }
 .planner .fin__cal-scroll {
   overflow-x: auto;
+}
+
+/* ---- controles del calendario (fantasmas + descargar) ---- */
+.planner .fin__cal-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+/* chip de feedback del .ics: no empuja el layout (se ubica junto al botón,
+   con nowrap y ancho acotado; en angosto baja de línea con el grupo). */
+.planner .fin__dl-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--status-go);
+  white-space: nowrap;
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.planner .fin__dl-ok svg {
+  flex: none;
+}
+
+/* wrapper del botón «Descargar» (ancla del popover) */
+.planner .fin__dl {
+  position: relative;
+  display: inline-flex;
+}
+/* mini menú de descarga: mismo idioma visual que .pv-menu (panel + línea +
+   sombra), labels mono uppercase. */
+.planner .fin__dl-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  min-width: 224px;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(0, 0, 0, 0.3));
+  padding: 6px;
+}
+.planner .fin__dl-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  font-family: var(--f-d);
+  font-size: 12.5px;
+  padding: 8px 9px;
+  border-radius: 6px;
+  transition: background 0.14s var(--ease, ease);
+}
+.planner .fin__dl-item:hover:not(:disabled) {
+  background: var(--panel-3);
+}
+.planner .fin__dl-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.planner .fin__dl-item svg {
+  color: var(--muted);
+  flex: none;
+}
+.planner .fin__dl-sep {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 5px 4px;
+}
+/* fila «Aviso» (select de recordatorio, movido de la sección de export) */
+.planner .fin__dl-aviso {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 3px 9px 5px;
+}
+.planner .fin__dl-aviso > span {
+  font-family: var(--f-m);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex: none;
+}
+.planner .fin__dl-aviso select {
+  flex: 1;
+  min-width: 0;
 }
 
 /* agenda mensual */
@@ -441,6 +499,31 @@
   font-family: var(--f-m);
   font-size: 9px;
   color: var(--muted);
+}
+
+/* chip fantasma: mesa disponible NO elegida (toggle «Otras fechas»). Mismo
+   layout que .fin__exam pero más tenue + sombra + borde dashed; es un botón
+   (reset de estilos nativos) que al clic agrega/mueve el final a ese llamado. */
+.planner button.fin__exam.is-ghost {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0.5;
+  border: 1px dashed color-mix(in srgb, var(--c-color) 55%, var(--line));
+  border-left: 2.5px dashed var(--c-color);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--c-color) 22%, transparent);
+  transition: opacity 0.16s var(--ease, ease),
+    box-shadow 0.16s var(--ease, ease);
+}
+.planner button.fin__exam.is-ghost:hover {
+  opacity: 0.85;
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--c-color) 32%, transparent);
+}
+.planner button.fin__exam.is-ghost:focus-visible {
+  opacity: 0.9;
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
 }
 
 /* badges oficial / manual */
@@ -813,6 +896,21 @@
 @media (max-width: 560px) {
   .planner .fin__bar-right {
     margin-left: 0;
+  }
+  /* en angosto los controles del calendario bajan a su propia línea completa,
+     alineados a la izquierda, y el menú de descarga se ancla a la izquierda
+     para no desbordar el borde derecho. */
+  .planner .fin__cal-controls {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .planner .fin__dl {
+    margin-left: auto;
+  }
+  .planner .fin__dl-menu {
+    right: auto;
+    left: 0;
   }
 }
 

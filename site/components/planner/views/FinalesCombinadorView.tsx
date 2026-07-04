@@ -31,7 +31,9 @@
 // detrás de un guard `typeof window !== "undefined"`.
 
 import {
+  useEffect,
   useMemo,
+  useRef,
   useState,
   useSyncExternalStore,
   type CSSProperties,
@@ -59,8 +61,14 @@ import {
   IconInfo,
   IconLock,
   IconPlus,
+  IconPrinter,
   IconTrash,
 } from "@/components/planner/icons";
+import { openForPrint } from "@/lib/planner/download";
+import {
+  buildFinalesHTML,
+  type FinalesExportRow,
+} from "@/lib/planner/exportFinales";
 import type {
   FinalAsignacion,
   FinalLlamado,
@@ -143,6 +151,21 @@ function icsFold(line: string): string {
 const cvar = (name: string, value: string): CSSProperties =>
   ({ [name]: value } as CSSProperties);
 
+/** Fecha legible es-AR para el pie del PDF («generado el …»). Guardado en
+ *  try/catch como el `nowStr()` del Plan de cursada: en entornos sin Intl no
+ *  rompe el export, solo devuelve "". */
+function nowStr(): string {
+  try {
+    return new Date().toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return "";
+  }
+}
+
 /** ¿La mesa cae dentro del período visible? Julio/Diciembre = su mes exacto.
  *  Febrero ABARCA TAMBIÉN MARZO (del año siguiente al lectivo): el llamado real
  *  se extiende de fin de febrero a principios de marzo, y `mesAPeriodo` del
@@ -180,6 +203,19 @@ type Source = "oficial" | "manual" | "none";
 /** Una opción de mesa candidata a rendir en el período visible (para «sugerir»). */
 interface Opcion {
   mesa: MesaFinal;
+  llamado: FinalLlamado;
+}
+
+/** Una mesa disponible que NO está mostrada como elegida, dibujada como chip
+ *  fantasma en el calendario cuando el toggle «Otras fechas» está activo.
+ *  `key` es único por (final + llamado) para el React key y el mapa por fecha. */
+interface Ghost {
+  key: string;
+  code: string;
+  nombre: string;
+  color: string;
+  fecha: string;
+  hora: string;
   llamado: FinalLlamado;
 }
 
@@ -227,6 +263,29 @@ export default function FinalesCombinadorView() {
 
   const [panelOpen, setPanelOpen] = useState(true);
   const [exportMsg, setExportMsg] = useState<string | null>(null);
+  // menú «Descargar» (popover local) + toggle «Otras fechas» (chips fantasma).
+  const [dlOpen, setDlOpen] = useState(false);
+  const [ghostsOn, setGhostsOn] = useState(false);
+  const dlRef = useRef<HTMLDivElement | null>(null);
+
+  // Cierre del menú de descarga por click-fuera / Escape (patrón del menú ⋯ de
+  // PlanView). El effect solo corre client-side → static-export safe.
+  useEffect(() => {
+    if (!dlOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (dlRef.current && !dlRef.current.contains(e.target as Node))
+        setDlOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDlOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [dlOpen]);
 
   // Re-render cuando el store de mesas oficiales cambia (carga del parser de la
   // planilla). SSR-safe: en el server el snapshot es siempre 0.
@@ -426,6 +485,39 @@ export default function FinalesCombinadorView() {
     return selectedInPeriod.some((s) => mesasPisan(s.mesa!, r.mesa!));
   };
 
+  // ----- mesas fantasma (toggle «Otras fechas») -----
+  // Para cada final elegible (no bloqueado y no asignado a OTRO período) tomamos
+  // sus opciones de mesa del período visible EXCLUYENDO la que ya se ve pintada:
+  // si la fila está elegida acá, se excluye su mesa activa (misma fecha+hora);
+  // si no está elegida, van todas sus opciones. Cada una es un chip fantasma
+  // clickeable que asigna/mueve ese final a ese llamado.
+  const ghosts = useMemo<Ghost[]>(() => {
+    if (!ghostsOn) return [];
+    const out: Ghost[] = [];
+    for (const r of rows) {
+      if (r.blocked || r.assignedElsewhere) continue;
+      for (const opt of r.opciones) {
+        if (
+          r.selected &&
+          r.mesa &&
+          opt.mesa.fecha === r.mesa.fecha &&
+          opt.mesa.hora === r.mesa.hora
+        )
+          continue; // esa mesa ya está pintada como elegida
+        out.push({
+          key: `${r.code}-${opt.llamado}`,
+          code: r.code,
+          nombre: r.nombre,
+          color: r.color,
+          fecha: opt.mesa.fecha,
+          hora: opt.mesa.hora,
+          llamado: opt.llamado,
+        });
+      }
+    }
+    return out;
+  }, [ghostsOn, rows]);
+
   // ----- calendario del mes del llamado -----
   const calendar = useMemo(() => {
     const first = new Date(year, month - 1, 1);
@@ -441,16 +533,25 @@ export default function FinalesCombinadorView() {
       if (arr) arr.push(r);
       else byDate.set(k, [r]);
     }
+    // chips fantasma ubicados por fecha (solo si el toggle está activo).
+    const ghostsByDate = new Map<string, Ghost[]>();
+    for (const g of ghosts) {
+      const arr = ghostsByDate.get(g.fecha);
+      if (arr) arr.push(g);
+      else ghostsByDate.set(g.fecha, [g]);
+    }
 
     // El llamado de Febrero se extiende a los primeros días de marzo: si hay
-    // mesas elegidas después de fin de mes, se agregan semanas para cubrirlas
-    // (los otros períodos nunca tienen mesas fuera de su mes).
+    // mesas elegidas (o fantasmas) después de fin de mes, se agregan semanas
+    // para cubrirlas (los otros períodos nunca tienen mesas fuera de su mes).
     let lastDay = daysInMonth;
-    for (const r of selectedInPeriod) {
-      const d = parseISO(r.mesa!.fecha);
+    const stretch = (fecha: string) => {
+      const d = parseISO(fecha);
       if (d.getMonth() !== month - 1)
         lastDay = Math.max(lastDay, daysInMonth + d.getDate());
-    }
+    };
+    for (const r of selectedInPeriod) stretch(r.mesa!.fecha);
+    for (const g of ghosts) stretch(g.fecha);
     const numWeeks = Math.ceil((startOffset + lastDay) / 7);
 
     const weeks = [];
@@ -465,19 +566,23 @@ export default function FinalesCombinadorView() {
         const iso = isoOf(d);
         // las celdas fuera de mes también aceptan mesas (marzo en Febrero).
         const exams = byDate.get(iso) ?? [];
+        const dayGhosts = ghostsByDate.get(iso) ?? [];
         if (inMonth) inMonthNums.push(d.getDate());
-        days.push({ iso, dayNum: d.getDate(), inMonth, exams });
+        days.push({ iso, dayNum: d.getDate(), inMonth, exams, ghosts: dayGhosts });
       }
       const hasExams = days.some((d) => d.exams.length > 0);
+      // los fantasmas NO cuentan para conflictos, pero sí para que una semana
+      // solo-con-fantasmas NO quede atenuada (así se ven bien).
+      const hasGhosts = days.some((d) => d.ghosts.length > 0);
       const label =
         inMonthNums.length > 0
           ? `${inMonthNums[0]}–${inMonthNums[inMonthNums.length - 1]} ${MES_ABBR[month - 1]}`
           : // semana enteramente del mes siguiente (cola de marzo en Febrero)
             `${days[0].dayNum}–${days[days.length - 1].dayNum} ${MES_ABBR[month % 12]}`;
-      weeks.push({ days, hasExams, label });
+      weeks.push({ days, hasExams, hasGhosts, label });
     }
     return weeks;
-  }, [selectedInPeriod, month, year]);
+  }, [selectedInPeriod, ghosts, month, year]);
 
   // finales elegidos sin fecha cargada (para el editor "Fechas de mesa")
   const editorRows = selectedRows; // todos los elegidos, con o sin mesa
@@ -646,7 +751,49 @@ export default function FinalesCombinadorView() {
     setExportMsg(
       `${includables.length} final${includables.length === 1 ? "" : "es"} · aviso ${reminderHs} hs antes`,
     );
+    setDlOpen(false);
   };
+
+  // ----- PDF / imprimir (arma el HTML con el módulo compartido y lo abre) -----
+  const exportarPDF = () => {
+    if (includables.length === 0) return;
+    // filas ordenadas por fecha+hora; `llamado` legible solo para las oficiales.
+    const exportRows: FinalesExportRow[] = includables
+      .slice()
+      .sort(
+        (a, b) =>
+          a.mesa!.fecha.localeCompare(b.mesa!.fecha) ||
+          toMin(a.mesa!.hora) - toMin(b.mesa!.hora),
+      )
+      .map((r) => ({
+        nombre: r.nombre,
+        abbr: r.abbr,
+        fecha: r.mesa!.fecha,
+        hora: r.mesa!.hora,
+        llamado:
+          r.source === "oficial" && r.llamado ? LLAMADO_LABEL[r.llamado] : null,
+        source: r.source === "oficial" ? "oficial" : "manual",
+        color: r.color,
+      }));
+    openForPrint(
+      buildFinalesHTML({
+        periodoLabel: PERIODO_LABEL[periodo],
+        anioReal,
+        month,
+        year,
+        rows: exportRows,
+        margenDias,
+        generado: nowStr(),
+        autoPrint: true,
+      }),
+      `finales-${periodo}-${anioReal}-studyvaults.html`,
+    );
+    setDlOpen(false);
+  };
+
+  // click en un chip fantasma: asigna/mueve ese final a ese llamado del período.
+  const rendirFantasma = (g: Ghost) =>
+    asignar(g.code, { periodo, llamado: g.llamado });
 
   // ----- textos de resumen -----
   const nSel = selectedRows.length;
@@ -680,6 +827,17 @@ export default function FinalesCombinadorView() {
   const yearOpts = Array.from(new Set([2025, 2026, 2027, 2028, anio])).sort(
     (a, b) => a - b,
   );
+
+  // hint del calendario cuando no hay mesas elegidas: con «Otras fechas» activo
+  // guía hacia los fantasmas (o avisa que no hay fechas publicadas).
+  const calHint =
+    selectedInPeriod.length > 0
+      ? null
+      : ghostsOn
+        ? ghosts.length > 0
+          ? "tocá una fecha fantasma para sumar ese final"
+          : "no hay otras fechas publicadas para este período"
+        : "sumá finales del panel para verlos en su mesa";
 
   /* ============================ render ============================ */
 
@@ -814,11 +972,93 @@ export default function FinalesCombinadorView() {
                 MES_NOMBRE[month - 1].slice(1)}{" "}
               {year}
             </span>
-            {selectedInPeriod.length === 0 && (
-              <span className="fin__cal-hint">
-                sumá finales del panel para verlos en su mesa
-              </span>
-            )}
+            {calHint && <span className="fin__cal-hint">{calHint}</span>}
+
+            {/* controles del calendario: fantasmas + descargar (.ics / PDF) */}
+            <div className="fin__cal-controls">
+              <button
+                type="button"
+                className="fin__hbtn"
+                aria-pressed={ghostsOn}
+                aria-label="Mostrar como fantasmas las otras fechas de mesa disponibles de tus finales"
+                title="Ver las otras fechas de mesa disponibles (más tenues, en el calendario)"
+                onClick={() => setGhostsOn((v) => !v)}
+              >
+                <IconClock size={13} />
+                Otras fechas
+              </button>
+
+              {exportMsg && (
+                <span className="fin__dl-ok" role="status">
+                  <IconCheck size={13} /> {exportMsg}
+                </span>
+              )}
+
+              <div className="fin__dl" ref={dlRef}>
+                <button
+                  type="button"
+                  className="fin__hbtn"
+                  aria-haspopup="menu"
+                  aria-expanded={dlOpen}
+                  onClick={() => setDlOpen((v) => !v)}
+                >
+                  <IconDownload size={13} />
+                  Descargar
+                </button>
+
+                {dlOpen && (
+                  <div className="fin__dl-menu" role="menu">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="fin__dl-item"
+                      disabled={includables.length === 0}
+                      title={
+                        includables.length === 0
+                          ? "Elegí finales con fecha primero"
+                          : undefined
+                      }
+                      onClick={exportarICS}
+                    >
+                      <IconCalendar size={15} /> Calendario (.ics)
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="fin__dl-item"
+                      disabled={includables.length === 0}
+                      title={
+                        includables.length === 0
+                          ? "Elegí finales con fecha primero"
+                          : undefined
+                      }
+                      onClick={exportarPDF}
+                    >
+                      <IconPrinter size={15} /> PDF / imprimir
+                    </button>
+                    <hr className="fin__dl-sep" />
+                    <label className="fin__dl-aviso">
+                      <span>Aviso</span>
+                      <select
+                        value={reminderHs}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "SET_FINALES_REMINDER",
+                            hs: Number(e.target.value),
+                          })
+                        }
+                      >
+                        {[48, 72, 96].map((h) => (
+                          <option key={h} value={h}>
+                            {h} hs antes
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="fin__cal-scroll">
@@ -839,6 +1079,7 @@ export default function FinalesCombinadorView() {
                   week={wk}
                   pisanCodes={pisanCodes}
                   onToggleLlamado={toggleLlamado}
+                  onGhost={rendirFantasma}
                 />
               ))}
             </div>
@@ -1163,50 +1404,6 @@ export default function FinalesCombinadorView() {
         )}
       </div>
 
-      {/* ---- exportar a calendario (.ics): una fila compacta ---- */}
-      {selectedRows.length > 0 && (
-        <div className="fin__export">
-          <label className="fin__reminder">
-            <span>Aviso</span>
-            <select
-              value={reminderHs}
-              onChange={(e) =>
-                dispatch({
-                  type: "SET_FINALES_REMINDER",
-                  hs: Number(e.target.value),
-                })
-              }
-            >
-              {[48, 72, 96].map((h) => (
-                <option key={h} value={h}>
-                  {h} hs antes
-                </option>
-              ))}
-            </select>
-          </label>
-          <button
-            type="button"
-            className="fin__hbtn is-primary"
-            onClick={exportarICS}
-            disabled={includables.length === 0}
-          >
-            <IconDownload size={13} />
-            Agregar a mi calendario (.ics)
-          </button>
-          {includables.length === 0 ? (
-            <span className="fin__export-empty">
-              Cargá la fecha de mesa de los finales elegidos para exportarlos.
-            </span>
-          ) : (
-            exportMsg && (
-              <span className="fin__export-ok">
-                <IconCheck size={14} /> {exportMsg}
-              </span>
-            )
-          )}
-        </div>
-      )}
-
       <p className="fin__foot">
         <IconInfo size={13} />
         <span>
@@ -1224,23 +1421,30 @@ function FinalesWeek({
   week,
   pisanCodes,
   onToggleLlamado,
+  onGhost,
 }: {
   week: {
     label: string;
     hasExams: boolean;
+    hasGhosts: boolean;
     days: {
       iso: string;
       dayNum: number;
       inMonth: boolean;
       exams: FinalRow[];
+      ghosts: Ghost[];
     }[];
   };
   pisanCodes: Set<string>;
   onToggleLlamado: (r: FinalRow) => void;
+  onGhost: (g: Ghost) => void;
 }) {
+  // una semana con mesas elegidas O con fantasmas no se atenúa (así los
+  // fantasmas se ven); solo dim las semanas realmente vacías.
+  const active = week.hasExams || week.hasGhosts;
   return (
     <>
-      <div className={"fin__ag-week" + (week.hasExams ? "" : " is-dim")}>
+      <div className={"fin__ag-week" + (active ? "" : " is-dim")}>
         {week.label}
       </div>
       {week.days.map((d, i) => {
@@ -1251,10 +1455,10 @@ function FinalesWeek({
             className={
               "fin__ag-day" +
               (!d.inMonth ? " is-out" : "") +
-              (d.inMonth && !week.hasExams ? " is-dim" : "")
+              (d.inMonth && !active ? " is-dim" : "")
             }
           >
-            {(d.inMonth || d.exams.length > 0) && (
+            {(d.inMonth || d.exams.length > 0 || d.ghosts.length > 0) && (
               <span className="fin__ag-num">{d.dayNum}</span>
             )}
             {conflictDay && (
@@ -1304,6 +1508,25 @@ function FinalesWeek({
                     ))}
                 </span>
               </div>
+            ))}
+            {d.ghosts.map((g) => (
+              <button
+                key={g.key}
+                type="button"
+                className="fin__exam is-ghost"
+                style={cvar("--c-color", g.color)}
+                aria-label={`Rendir ${g.nombre} el ${ddmm(g.fecha)} (${LLAMADO_LABEL[g.llamado]})`}
+                title={`Agregar ${g.nombre} — ${LLAMADO_LABEL[g.llamado]}`}
+                onClick={() => onGhost(g)}
+              >
+                <span className="fin__exam-name">{g.nombre}</span>
+                <span className="fin__exam-meta">
+                  {g.hora}
+                  <span className="fin__badge is-llamado">
+                    {LLAMADO_ORD[g.llamado]}
+                  </span>
+                </span>
+              </button>
             ))}
           </div>
         );
