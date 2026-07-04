@@ -61,27 +61,29 @@
 .planner .muted{color:var(--muted);font-size:13px;margin:0}
 .planner .hk{float:right;font-family:var(--f-m);font-size:10px;color:var(--faint);font-weight:400;text-transform:none;letter-spacing:0}
 
-/* ===================== TOP BAR (stats bar) ===================== */
+/* ===================== TOP BAR (stat line) ===================== */
 .planner .topbar{
   position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
-  gap:24px;flex-wrap:wrap;padding:18px clamp(16px,3vw,44px);
+  gap:24px;flex-wrap:wrap;padding:9px clamp(16px,3vw,44px);
   background:var(--topbar);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
 }
 
-.planner .stats{display:flex;gap:0;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
-.planner .stat{min-width:120px;padding:11px 18px;border-right:1px solid var(--line);background:rgba(255,255,255,.012)}
-.planner .stat:last-child{border-right:none}
-.planner .stat__num{font-family:var(--f-d);font-weight:500;font-size:25px;line-height:1;display:block}
-.planner .stat__num i{font-style:normal;color:var(--faint);font-size:15px;font-family:var(--f-m)}
-.planner .stat:nth-child(2) .stat__num{color:var(--brass-2)}
-.planner .stat__lbl{display:block;margin-top:7px;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+/* Tira de métricas inline en una fila (~37px de alto) — reemplaza las 4
+   tarjetas .stats/.stat: mismo dato, mucho menos alto vertical. */
+.planner .statline{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 20px}
+.planner .statline__it{font-family:var(--f-m);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);white-space:nowrap}
+.planner .statline__it b{font-family:var(--f-d);font-weight:500;font-size:19px;line-height:1;letter-spacing:-.01em;color:var(--ink);margin-right:2px}
+.planner .statline__it--elec b{color:var(--brass-2);margin-right:0}
+.planner .statline__of{font-style:normal;font-family:var(--f-m);font-size:12px;color:var(--faint);margin-right:2px}
+.planner .statline__sep{flex:none;align-self:center;width:1px;height:14px;background:var(--line)}
 
-/* F10: copia window.location.href (la URL ya refleja vista/filtros/drawer). */
+/* F10: copia window.location.href (la URL ya refleja vista/filtros/drawer).
+   Icon-only, cuadrado compacto; el check + borde sage avisan que copió. */
 .planner .share-btn{
-  display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;flex:none;
+  display:inline-grid;place-items:center;width:30px;height:30px;padding:0;flex:none;
   border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink-soft);
-  font-family:var(--f-b);font-weight:500;font-size:13px;cursor:pointer;transition:.15s;
+  cursor:pointer;transition:.15s;
 }
 .planner .share-btn:hover{border-color:var(--line-2);color:var(--ink)}
 .planner .share-btn.is-copied{border-color:var(--sage);color:var(--sage)}
@@ -89,7 +91,7 @@
 /* ===================== SHELL ===================== */
 .planner .shell{position:relative;z-index:2;display:grid;grid-template-columns:230px 1fr;gap:clamp(16px,2.4vw,34px);
   padding:clamp(16px,2.4vw,32px) clamp(16px,3vw,44px) 70px;align-items:start}
-.planner .side{position:sticky;top:calc(var(--nav-h) + 88px);display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - var(--nav-h) - 100px);overflow:auto;padding-right:5px}
+.planner .side{position:sticky;top:calc(var(--nav-h) + 52px);display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - var(--nav-h) - 64px);overflow:auto;padding-right:5px}
 .planner .side>*{flex:0 0 auto}
 .planner.side-collapsed .shell{grid-template-columns:1fr}
 .planner.side-collapsed .side{display:none}
@@ -147,9 +149,9 @@
 /* ===================== PANELS ===================== */
 .planner .main{min-width:0}
 .planner .hidden{display:none !important}
-.planner .panel-head{margin-bottom:22px;border-bottom:1px solid var(--line);padding-bottom:16px}
-.planner .panel-head h2{font-family:var(--f-d);font-weight:500;font-size:clamp(24px,3vw,34px);letter-spacing:-.015em;margin:0}
-.planner .panel-head p{color:var(--muted);font-size:14px;margin:9px 0 0;max-width:74ch;line-height:1.55}
+.planner .panel-head{margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.planner .panel-head h2{font-family:var(--f-d);font-weight:500;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.015em;margin:0}
+.planner .panel-head p{color:var(--muted);font-size:13px;margin:6px 0 0;max-width:68ch;line-height:1.55}
 .planner .hor-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brass);vertical-align:middle;margin:0 1px}
 .planner .view-panel{animation:planner-rise .35s ease both}
 @keyframes planner-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -301,8 +303,11 @@
 .planner .dr-slot .au{color:var(--muted);font-size:11px}
 .planner .dr-slotmod{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;padding:1px 5px;border-radius:2px;border:1px solid var(--line)}
 
-/* ---- Detalle de materia como MODAL centrado (antes: drawer lateral) ---- */
-.planner .dr-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px}
+/* ---- Detalle de materia como MODAL centrado (antes: drawer lateral) ----
+   z-index > 1000: el navbar del portal es fixed con z:1000; con menos, el
+   panel (hasta 90vh) queda tapado por la barra en pantallas bajas.
+   Capa de overlays del planner = 1100 (misma que .fr-overlay; search usa 2000). */
+.planner .dr-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:24px}
 .planner .dr-modal__bg{position:absolute;inset:0;background:var(--scrim);backdrop-filter:blur(2px);animation:planner-fade .22s}
 .planner .dr-modal__panel{
   position:relative;z-index:1;width:min(560px,100%);max-height:88vh;overflow:auto;
@@ -365,9 +370,9 @@
   .planner .views{flex-direction:row;flex-wrap:wrap}.planner .view{flex:1;border-bottom:none;border-right:1px solid var(--line)}
 }
 @media (max-width:560px){
-  .planner .stats{width:100%;display:grid;grid-template-columns:1fr 1fr}
-  .planner .stat{border-bottom:1px solid var(--line)}
-  .planner .stat:nth-child(odd){border-right:1px solid var(--line)}
+  /* la tira inline envuelve sola en varias filas; achico el gap horizontal
+     para que entren más métricas por línea antes de saltar */
+  .planner .statline{gap:5px 14px}
   .planner .panelshow{width:100%;justify-content:center}
   .planner .pool-cols{grid-template-columns:1fr}.planner .pool-col:first-child{border-right:none;border-bottom:1px solid var(--line)}
   /* F06: en angosto el grid fijo de 5 columnas clipea texto (ref-table tenía
@@ -396,7 +401,7 @@
 /* ---------- PICKER ---------- */
 .planner .cmb__picker{
   display:flex;flex-direction:column;overflow:hidden;
-  position:sticky;top:calc(var(--nav-h) + 88px);max-height:calc(100vh - var(--nav-h) - 120px);
+  position:sticky;top:calc(var(--nav-h) + 52px);max-height:calc(100vh - var(--nav-h) - 84px);
 }
 @media (max-width:880px){ .planner .cmb__picker{position:static;max-height:420px} }
 .planner .cmb-search{
@@ -836,20 +841,9 @@
   outline:none;border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft);
 }
 
-/* nota de optimización: selector de MÉTODO + explicación de lo que hace, bajo
-   un mismo acento brass. El método vive acá (no en el toolbar): elegís y leés
-   qué hace, juntos. */
-.planner .plan2-optnote{
-  border-left:2px solid var(--brass);padding:2px 0 2px 16px;margin:22px 0 0;max-width:96ch;
-}
-.planner .plan2-optnote__pick{
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:11px;
-}
-.planner .plan2-optnote__lbl{
-  display:inline-flex;align-items:center;gap:6px;
-  font-family:var(--f-m);font-size:9px;font-weight:600;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--faint);
-}
+/* nota de optimización: la explicación del método vive colapsada en el
+   <details> .plan2-optnote-d (planview.css); acá queda solo la tipografía
+   base del texto. */
 .planner .plan2-method{
   font-family:var(--f-m);font-size:11.5px;line-height:1.6;color:var(--muted);margin:0;
 }
@@ -912,8 +906,8 @@
 .planner .plan2-split--solo{grid-template-columns:1fr}
 .planner .plan2-split__main{min-width:0;container-type:inline-size}
 .planner .plan2-split__side{
-  position:sticky;top:calc(var(--nav-h) + 88px);
-  max-height:calc(100vh - var(--nav-h) - 100px);overflow:auto;
+  position:sticky;top:calc(var(--nav-h) + 52px);
+  max-height:calc(100vh - var(--nav-h) - 64px);overflow:auto;
   min-width:0;padding-right:4px;
 }
 .planner .plan2-split__side::-webkit-scrollbar{width:8px}
@@ -950,11 +944,6 @@
 .planner .rmap-stop__when{display:flex;flex-direction:column;gap:4px;min-width:0}
 .planner .rmap-stop__when h3{
   font-family:var(--f-d);font-weight:600;font-size:16px;color:var(--ink);margin:0;letter-spacing:-.015em;
-}
-.planner .rmap-stop__tag{
-  align-self:flex-start;font-family:var(--f-m);font-size:9px;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--brass);background:var(--brass-soft);
-  border-radius:5px;padding:2px 7px;
 }
 /* numerito de orden del cuatrimestre */
 .planner .rmap-stop__step{
@@ -1365,7 +1354,8 @@
 /* =========================================================================
    MODAL — créditos de minors acumulados por cuatrimestre
    ========================================================================= */
-.planner .mnr-modal{position:fixed;inset:0;z-index:60;display:flex;
+/* z-index 1100: sobre el navbar fijo del portal (z:1000) — ver .dr-modal */
+.planner .mnr-modal{position:fixed;inset:0;z-index:1100;display:flex;
   align-items:center;justify-content:center;padding:24px}
 .planner .mnr-modal__bg{position:absolute;inset:0;background:var(--scrim);
   backdrop-filter:blur(2px);animation:planner-fade .22s}
@@ -1575,16 +1565,16 @@
 .planner .side::-webkit-scrollbar-thumb{background:transparent;border-radius:20px}
 .planner .side:hover::-webkit-scrollbar-thumb{background:var(--scroll)}
 
-/* — Header: kicker a la izquierda + flechita chica de ocultar a la derecha
-     (discreta, "que no se note", se aviva en hover) — */
-.planner .side__head{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:0 4px 0 11px}
-.planner .side__title{font-family:var(--f-m);font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.24em;color:var(--faint)}
+/* — Header: sin kicker visible (el título vive en el aria-label del <aside>);
+     queda solo la flechita chica de ocultar, anclada a la derecha (discreta,
+     "que no se note", se aviva en hover) — */
+.planner .side__head{display:flex;align-items:center;justify-content:flex-end;padding:0 4px 0 11px}
 .planner .side__collapse{width:24px;height:24px;flex:none;display:inline-grid;place-items:center;border:none;background:var(--panel-2);color:var(--ink-soft);border-radius:6px;cursor:pointer;opacity:1;transition:opacity .15s,color .15s,background .15s}
 .planner .side__collapse:hover{color:var(--brass);background:var(--brass-soft)}
 
 /* — Handle para reabrir el panel colapsado: pestañita en el borde izq de la
      pantalla (fixed → no la afecta el scroll), discreta y con reveal en hover — */
-.planner .side__reveal{position:fixed;left:0;top:calc(var(--nav-h) + 124px);z-index:30;width:26px;height:48px;display:grid;place-items:center;border:1px solid var(--line-2);border-left:none;border-radius:0 10px 10px 0;background:var(--panel);color:var(--brass);cursor:pointer;opacity:1;box-shadow:0 2px 8px color-mix(in srgb,var(--brass) 12%,transparent);transition:opacity .16s,color .16s,width .16s,border-color .16s,box-shadow .16s}
+.planner .side__reveal{position:fixed;left:0;top:calc(var(--nav-h) + 67px);z-index:30;width:26px;height:48px;display:grid;place-items:center;border:1px solid var(--line-2);border-left:none;border-radius:0 10px 10px 0;background:var(--panel);color:var(--brass);cursor:pointer;opacity:1;box-shadow:0 2px 8px color-mix(in srgb,var(--brass) 12%,transparent);transition:opacity .16s,color .16s,width .16s,border-color .16s,box-shadow .16s}
 .planner .side__reveal:hover{color:var(--brass);border-color:var(--brass);width:31px;box-shadow:0 3px 12px color-mix(in srgb,var(--brass) 22%,transparent)}
 
 /* — División sidebar ↔ contenido + acercar el rail al borde de pantalla.
@@ -1596,12 +1586,12 @@
     border-left:1px solid var(--line-2);
     padding-left:clamp(18px,1.8vw,26px);
   }
-  /* Pin exacto del rail: nace justo debajo del topbar (nav 68 + topbar 109 +
-     padding-top del shell) → queda clavado desde scroll 0 y el scroll de la
-     pantalla principal NO lo mueve. */
+  /* Pin exacto del rail: nace justo debajo del topbar (nav 68 + topbar 52 —
+     ahora la tira inline de métricas, no las tarjetas — + padding-top del shell)
+     → queda clavado desde scroll 0 y el scroll de la pantalla principal NO lo mueve. */
   .planner .side{
-    top:calc(var(--nav-h) + 109px + clamp(16px,2.4vw,32px));
-    max-height:calc(100vh - var(--nav-h) - 109px - clamp(16px,2.4vw,32px) - 18px);
+    top:calc(var(--nav-h) + 52px + clamp(16px,2.4vw,32px));
+    max-height:calc(100vh - var(--nav-h) - 52px - clamp(16px,2.4vw,32px) - 18px);
   }
 }
 

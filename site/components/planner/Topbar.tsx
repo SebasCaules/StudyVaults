@@ -12,8 +12,8 @@ import {
 // créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
 const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
 
-/** Barra superior con las cuatro tarjetas de métricas (port de updateMetrics)
- *  y el botón "Compartir" (la URL ya refleja vista/filtros/drawer → deep-link). */
+/** Barra superior con la tira inline de métricas (port de updateMetrics) y el
+ *  botón "Compartir" icon-only (la URL ya refleja vista/filtros/drawer → deep-link). */
 export default function Topbar() {
   const { state } = usePlanner();
   const { approved } = state;
@@ -55,38 +55,36 @@ export default function Topbar() {
 
   return (
     <header className="topbar">
-      <div className="stats">
-        <div className="stat">
-          <span className="stat__num">{statCreditos}</span>
-          <span className="stat__lbl">Créditos aprobados</span>
-        </div>
-        <div className="stat">
-          <span className="stat__num">
-            <span>{statElec}</span>
-            <i>&#8202;/&#8202;{ELEC_REQ}</i>
-          </span>
-          <span className="stat__lbl">Créditos electivos</span>
-        </div>
-        <div className="stat">
-          <span className="stat__num">{statDisp}</span>
-          <span className="stat__lbl">Disponibles</span>
-        </div>
-        <div className="stat">
-          <span className="stat__num">{statRestan}</span>
-          <span className="stat__lbl">Obligatorias restantes</span>
-        </div>
+      <div className="statline">
+        <span className="statline__it">
+          <b>{statCreditos}</b> cr aprobados
+        </span>
+        <span className="statline__sep" aria-hidden="true" />
+        <span className="statline__it statline__it--elec">
+          <b>{statElec}</b>
+          <i className="statline__of">/{ELEC_REQ}</i> electivos
+        </span>
+        <span className="statline__sep" aria-hidden="true" />
+        <span className="statline__it">
+          <b>{statDisp}</b> disponibles
+        </span>
+        <span className="statline__sep" aria-hidden="true" />
+        <span className="statline__it">
+          <b>{statRestan}</b> oblig. restantes
+        </span>
       </div>
       <button
         type="button"
         className={`share-btn${copied ? " is-copied" : ""}`}
         onClick={handleShare}
-        aria-label="Copiar el link de esta vista del planificador"
+        aria-label="Copiar link de esta vista"
+        title="Copiar link de esta vista"
       >
         {copied ? (
           <svg
             viewBox="0 0 24 24"
-            width="14"
-            height="14"
+            width="15"
+            height="15"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -99,8 +97,8 @@ export default function Topbar() {
         ) : (
           <svg
             viewBox="0 0 24 24"
-            width="14"
-            height="14"
+            width="15"
+            height="15"
             fill="none"
             stroke="currentColor"
             strokeWidth="1.8"
@@ -112,7 +110,9 @@ export default function Topbar() {
             <path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
           </svg>
         )}
-        <span aria-live="polite">{copied ? "¡Copiado!" : "Compartir"}</span>
+        <span className="sr-only" aria-live="polite">
+          {copied ? "¡Link copiado!" : ""}
+        </span>
       </button>
     </header>
   );

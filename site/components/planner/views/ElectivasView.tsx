@@ -69,34 +69,38 @@ function RegimeIcon({ kind }: { kind: "promo" | "final" }) {
   );
 }
 
-/** Leyenda compacta: decodifica de una vez las tres familias de señales de la
- *  card (minor · disponibilidad · régimen) para que cada ícono se lea solo. */
+/** Leyenda colapsable (cerrada por defecto): decodifica de una vez las tres
+ *  familias de señales de la card (minor · disponibilidad · régimen). Como se
+ *  lee una sola vez, va en un <details> discreto y no empuja la grilla. */
 function CardLegend() {
   return (
-    <div className="card-legend" role="note" aria-label="Cómo leer las señales de cada card">
-      <div className="cl-group">
-        <span className="cl-h">Minor que completa</span>
-        <span className="cl-items">
-          {MINORS.map((m) => (
-            <MinorBadge key={m.id} minor={m} variant="logo" />
-          ))}
-        </span>
+    <details className="legend-details">
+      <summary>Cómo leer las señales</summary>
+      <div className="card-legend" role="note" aria-label="Cómo leer las señales de cada card">
+        <div className="cl-group">
+          <span className="cl-h">Minor que completa</span>
+          <span className="cl-items">
+            {MINORS.map((m) => (
+              <MinorBadge key={m.id} minor={m} variant="logo" />
+            ))}
+          </span>
+        </div>
+        <div className="cl-group">
+          <span className="cl-h">Disponibilidad</span>
+          <span className="cl-items">
+            <span className="cl-row"><AvailLock ok /> cursable</span>
+            <span className="cl-row"><AvailLock ok={false} /> requisitos</span>
+          </span>
+        </div>
+        <div className="cl-group">
+          <span className="cl-h">Régimen</span>
+          <span className="cl-items">
+            <span className="cl-row"><RegimeIcon kind="promo" /> promociona</span>
+            <span className="cl-row"><RegimeIcon kind="final" /> con final</span>
+          </span>
+        </div>
       </div>
-      <div className="cl-group">
-        <span className="cl-h">Disponibilidad</span>
-        <span className="cl-items">
-          <span className="cl-row"><AvailLock ok /> cursable</span>
-          <span className="cl-row"><AvailLock ok={false} /> requisitos</span>
-        </span>
-      </div>
-      <div className="cl-group">
-        <span className="cl-h">Régimen</span>
-        <span className="cl-items">
-          <span className="cl-row"><RegimeIcon kind="promo" /> promociona</span>
-          <span className="cl-row"><RegimeIcon kind="final" /> con final</span>
-        </span>
-      </div>
-    </div>
+    </details>
   );
 }
 
@@ -125,8 +129,7 @@ export default function ElectivasView() {
         <h2>Materias electivas</h2>
         <p>
           {PLAN.electivas.length} materias. Filtrá por área para orientar un
-          minor. Cada card lleva tres señales, cada una con su propio ícono; el
-          detalle (horario, correlativas) queda a un click.
+          minor.
         </p>
       </div>
       <CardLegend />

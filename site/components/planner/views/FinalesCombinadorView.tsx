@@ -42,7 +42,6 @@ import { byId, credOf, PALETTE } from "@/lib/planner/model";
 import {
   PERIODOS,
   PERIODO_LABEL,
-  PERIODO_ORDINAL,
   periodoMesAnio,
   periodoAnioReal,
   mesasOficialesDe,
@@ -498,6 +497,14 @@ export default function FinalesCombinadorView() {
   const agregarAca = (r: FinalRow) =>
     asignar(r.code, { periodo, llamado: defLlamado(r) });
 
+  // Alterna 1.º↔2.º llamado de una mesa oficial con ambos llamados (usado por el
+  // badge-botón del chip del calendario). Mismo dispatch que el segmentado.
+  const toggleLlamado = (r: FinalRow) => {
+    if (!r.hasBoth || !r.llamado) return;
+    const otro: FinalLlamado = r.llamado === "primer" ? "segundo" : "primer";
+    asignar(r.code, { periodo, llamado: otro });
+  };
+
   // Candidatos de «sugerir»: elegibles con alguna mesa (opción) en el período
   // visible y que NO estén ya asignados a OTRO período (esos no se tocan). Se
   // ordenan por (fecha de la 1.ª opción, hora, código) — determinista.
@@ -681,20 +688,23 @@ export default function FinalesCombinadorView() {
       <div className="panel-head">
         <h2>Combinación de finales</h2>
         <p>
-          Elegí el llamado, sumá los finales que tenés pendientes y la
-          herramienta ubica cada uno en su mesa, marca los que se pisan o quedan
-          muy pegados, y te sugiere una combinación con margen de repaso.
+          Sumá tus finales pendientes y armá una combinación sin
+          superposiciones, con margen de repaso.
         </p>
       </div>
 
       {/* ---- ingesta de la planilla oficial (autocompleta las mesas) ---- */}
       <FinalesIngesta />
 
-      {/* ---- barra: llamado + año + panel + sugerir ---- */}
+      {/* ---- barra unificada: período + año + margen · panel + sugerir ---- */}
       <div className="fin__bar">
         <div className="fin__bar-left">
-          <span className="fin__lbl">Llamado</span>
-          <div className="fin__seg" role="group" aria-label="Llamado a finales">
+          <span className="fin__lbl">Período</span>
+          <div
+            className="fin__seg"
+            role="group"
+            aria-label="Período de finales"
+          >
             {PERIODOS.map((p) => (
               <button
                 key={p}
@@ -703,13 +713,12 @@ export default function FinalesCombinadorView() {
                 aria-pressed={p === periodo}
                 onClick={() => setPeriodo(p)}
               >
-                {PERIODO_LABEL[p]}{" "}
-                <span className="fin__seg-n">· {PERIODO_ORDINAL[p]}</span>
+                {PERIODO_LABEL[p]}
               </button>
             ))}
           </div>
           <label className="fin__year">
-            <span className="sr-only">Año del llamado</span>
+            <span className="sr-only">Año del período</span>
             <select
               value={anio}
               onChange={(e) =>
@@ -722,6 +731,24 @@ export default function FinalesCombinadorView() {
               {yearOpts.map((y) => (
                 <option key={y} value={y}>
                   {y}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="fin__margen">
+            <span>Margen de repaso</span>
+            <select
+              value={margenDias}
+              onChange={(e) =>
+                dispatch({
+                  type: "SET_FINALES_MARGEN",
+                  dias: Number(e.target.value),
+                })
+              }
+            >
+              {[1, 2, 3, 4].map((d) => (
+                <option key={d} value={d}>
+                  {d} día{d === 1 ? "" : "s"}
                 </option>
               ))}
             </select>
@@ -750,7 +777,7 @@ export default function FinalesCombinadorView() {
         </div>
       </div>
 
-      {/* ---- resumen ---- */}
+      {/* ---- resumen (una línea + sub; la combinación se ve en el calendario) ---- */}
       <div className="fin__resumen">
         <span className="fin__resumen-ico" aria-hidden="true">
           <IconGraduation />
@@ -759,24 +786,6 @@ export default function FinalesCombinadorView() {
           <div className="fin__resumen-main">{resumenMain}</div>
           <div className="fin__resumen-sub">{resumenSub}</div>
         </div>
-        <label className="fin__margen">
-          <span>Margen de repaso</span>
-          <select
-            value={margenDias}
-            onChange={(e) =>
-              dispatch({
-                type: "SET_FINALES_MARGEN",
-                dias: Number(e.target.value),
-              })
-            }
-          >
-            {[1, 2, 3, 4].map((d) => (
-              <option key={d} value={d}>
-                {d} día{d === 1 ? "" : "s"}
-              </option>
-            ))}
-          </select>
-        </label>
       </div>
 
       {/* ---- conflictos ---- */}
@@ -796,131 +805,7 @@ export default function FinalesCombinadorView() {
         </div>
       )}
 
-      {/* ---- combinación elegida ---- */}
-      {selectedInPeriod.length > 0 && (
-        <div className="fin__combo">
-          <div className="fin__combo-eyebrow">
-            <IconCheck size={14} /> Combinación elegida
-          </div>
-          <p className="fin__combo-line">
-            {flags.length === 0
-              ? `Rendís sin pisarte, con al menos ${margenDias} día${margenDias === 1 ? "" : "s"} de repaso entre finales:`
-              : "Tu combinación actual (revisá los avisos de arriba):"}
-          </p>
-          <div className="fin__combo-chips">
-            {selectedInPeriod
-              .slice()
-              .sort((a, b) => a.mesa!.fecha.localeCompare(b.mesa!.fecha))
-              .map((r) => (
-                <span
-                  key={r.code}
-                  className="fin__combo-chip"
-                  style={cvar("--c-color", r.color)}
-                >
-                  <span className="fin__cc-dot" />
-                  {r.nombre}{" "}
-                  <span className="fin__cc-date">{ddmm(r.mesa!.fecha)}</span>
-                </span>
-              ))}
-          </div>
-          <p className="fin__combo-sub">
-            {nSinAsignar > 0
-              ? `Quedan ${nSinAsignar} final${nSinAsignar === 1 ? "" : "es"} elegible${nSinAsignar === 1 ? "" : "s"} sin sumar. `
-              : ""}
-            Ajustá la combinación agregando o quitando finales del panel.
-          </p>
-        </div>
-      )}
-
-      {/* ---- exportar a calendario (.ics) ---- */}
-      {selectedRows.length > 0 && (
-        <div className="fin__export">
-          <div className="fin__export-eyebrow">
-            <IconCalendar size={14} /> Agregar a mi calendario
-          </div>
-          <p className="fin__export-line">
-            Bajás un archivo <span className="mono">.ics</span> con un evento por
-            cada final del período — lo abrís en Google Calendar, Apple Calendar
-            o el que uses, con fecha y hora de cada mesa ya cargadas.
-          </p>
-
-          <div className="fin__export-controls">
-            <label className="fin__reminder">
-              <span>Recordatorio para anotarte</span>
-              <select
-                value={reminderHs}
-                onChange={(e) =>
-                  dispatch({
-                    type: "SET_FINALES_REMINDER",
-                    hs: Number(e.target.value),
-                  })
-                }
-              >
-                {[48, 72, 96].map((h) => (
-                  <option key={h} value={h}>
-                    {h} hs antes
-                  </option>
-                ))}
-              </select>
-            </label>
-            <span className="fin__reminder-hint">
-              El aviso «Anotate a la mesa» queda <b>{reminderHs} hs</b> antes de
-              cada final, para no perder la inscripción.
-            </span>
-          </div>
-
-          {includables.length > 0 ? (
-            <div className="fin__export-chips" aria-label="Finales incluidos en el .ics">
-              <span className="fin__export-chips-lbl">Van al .ics</span>
-              {includables
-                .slice()
-                .sort((a, b) => a.mesa!.fecha.localeCompare(b.mesa!.fecha))
-                .map((r) => (
-                  <span
-                    key={r.code}
-                    className="fin__export-chip"
-                    style={cvar("--c-color", r.color)}
-                  >
-                    <span className="fin__ec-dot" />
-                    {r.nombre}{" "}
-                    <span className="fin__ec-date">{ddmm(r.mesa!.fecha)}</span>
-                  </span>
-                ))}
-            </div>
-          ) : (
-            <p className="fin__export-empty">
-              Cargá la fecha de mesa de los finales elegidos para poder
-              exportarlos.
-            </p>
-          )}
-
-          <div className="fin__export-actions">
-            <button
-              type="button"
-              className="fin__hbtn is-primary"
-              onClick={exportarICS}
-              disabled={includables.length === 0}
-            >
-              <IconDownload size={13} />
-              Agregar a mi calendario (.ics)
-            </button>
-            {exportMsg && (
-              <span className="fin__export-ok">
-                <IconCheck size={14} /> {exportMsg}
-              </span>
-            )}
-          </div>
-
-          <p className="fin__export-disclaimer">
-            Fechas sujetas a confirmación de la cátedra · revisá con el/la
-            docente · las mesas bloqueadas por correlativa de final <b>no se
-            agregan</b> hasta que rindas la anterior · el <b>.ics es una ayuda,
-            no la fuente oficial</b>.
-          </p>
-        </div>
-      )}
-
-      {/* ---- calendario + panel de pendientes ---- */}
+      {/* ---- calendario + panel de pendientes (protagonista) ---- */}
       <div className="fin__row">
         <div className="fin__cal-wrap">
           <div className="fin__cal-head">
@@ -949,7 +834,12 @@ export default function FinalesCombinadorView() {
                 </div>
               ))}
               {calendar.map((wk, wi) => (
-                <FinalesWeek key={wi} week={wk} pisanCodes={pisanCodes} />
+                <FinalesWeek
+                  key={wi}
+                  week={wk}
+                  pisanCodes={pisanCodes}
+                  onToggleLlamado={toggleLlamado}
+                />
               ))}
             </div>
           </div>
@@ -960,9 +850,6 @@ export default function FinalesCombinadorView() {
               <div className="fin__mesas-head">
                 <IconClock size={13} />
                 <span>Fechas de mesa</span>
-                <span className="fin__mesas-sub">
-                  oficial autopoblada · manual editable · sin fecha a cargar
-                </span>
               </div>
               <ul className="fin__mesas-list">
                 {editorRows.map((r) => (
@@ -1150,14 +1037,47 @@ export default function FinalesCombinadorView() {
                             </>
                           ) : (
                             <>
-                              <span
-                                className={
-                                  "fin__short" +
-                                  (pisa && !r.selected ? " is-pisa" : "")
-                                }
-                              >
-                                {short}
-                              </span>
+                              {r.selected && r.hasBoth && !r.manual ? (
+                                // elegido con ambos llamados oficiales → elegí
+                                // 1.º/2.º acá mismo (mismo dispatch que el editor).
+                                <span
+                                  className="fin__llseg"
+                                  role="group"
+                                  aria-label={`Llamado de ${r.nombre}`}
+                                >
+                                  {(["primer", "segundo"] as FinalLlamado[]).map(
+                                    (l) => (
+                                      <button
+                                        key={l}
+                                        type="button"
+                                        className={
+                                          "fin__llseg-b" +
+                                          (r.asig?.llamado === l
+                                            ? " is-active"
+                                            : "")
+                                        }
+                                        aria-pressed={r.asig?.llamado === l}
+                                        aria-label={`${r.nombre}: ${LLAMADO_LABEL[l]}`}
+                                        title={LLAMADO_LABEL[l]}
+                                        onClick={() =>
+                                          asignar(r.code, { periodo, llamado: l })
+                                        }
+                                      >
+                                        {LLAMADO_ORD[l]}
+                                      </button>
+                                    ),
+                                  )}
+                                </span>
+                              ) : (
+                                <span
+                                  className={
+                                    "fin__short" +
+                                    (pisa && !r.selected ? " is-pisa" : "")
+                                  }
+                                >
+                                  {short}
+                                </span>
+                              )}
                               <button
                                 type="button"
                                 className="fin__toggle"
@@ -1237,17 +1157,55 @@ export default function FinalesCombinadorView() {
                     </ul>
                   </div>
                 )}
-
-                <p className="fin__side-note">
-                  La tilde = en el período · el «+» agrega el final · «en Dic/Feb»
-                  = asignado a otro llamado (clic para traerlo acá) · el candado
-                  marca las correlativas de final que todavía no rendiste.
-                </p>
               </>
             )}
           </aside>
         )}
       </div>
+
+      {/* ---- exportar a calendario (.ics): una fila compacta ---- */}
+      {selectedRows.length > 0 && (
+        <div className="fin__export">
+          <label className="fin__reminder">
+            <span>Aviso</span>
+            <select
+              value={reminderHs}
+              onChange={(e) =>
+                dispatch({
+                  type: "SET_FINALES_REMINDER",
+                  hs: Number(e.target.value),
+                })
+              }
+            >
+              {[48, 72, 96].map((h) => (
+                <option key={h} value={h}>
+                  {h} hs antes
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="fin__hbtn is-primary"
+            onClick={exportarICS}
+            disabled={includables.length === 0}
+          >
+            <IconDownload size={13} />
+            Agregar a mi calendario (.ics)
+          </button>
+          {includables.length === 0 ? (
+            <span className="fin__export-empty">
+              Cargá la fecha de mesa de los finales elegidos para exportarlos.
+            </span>
+          ) : (
+            exportMsg && (
+              <span className="fin__export-ok">
+                <IconCheck size={14} /> {exportMsg}
+              </span>
+            )
+          )}
+        </div>
+      )}
 
       <p className="fin__foot">
         <IconInfo size={13} />
@@ -1265,6 +1223,7 @@ export default function FinalesCombinadorView() {
 function FinalesWeek({
   week,
   pisanCodes,
+  onToggleLlamado,
 }: {
   week: {
     label: string;
@@ -1277,6 +1236,7 @@ function FinalesWeek({
     }[];
   };
   pisanCodes: Set<string>;
+  onToggleLlamado: (r: FinalRow) => void;
 }) {
   return (
     <>
@@ -1321,11 +1281,27 @@ function FinalesWeek({
                   >
                     {e.source === "manual" ? "manual" : "oficial"}
                   </span>
-                  {e.source === "oficial" && e.llamado && (
-                    <span className="fin__badge is-llamado">
-                      {LLAMADO_ORD[e.llamado]}
-                    </span>
-                  )}
+                  {e.source === "oficial" &&
+                    e.llamado &&
+                    (e.hasBoth ? (
+                      // ambos llamados oficiales → el badge alterna 1.º↔2.º.
+                      <button
+                        type="button"
+                        className="fin__badge is-llamado fin__llbtn"
+                        aria-label={`${e.nombre}: ${LLAMADO_LABEL[e.llamado]} — cambiar de llamado`}
+                        title={`Cambiar al ${e.llamado === "primer" ? "2.º" : "1.º"} llamado`}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          onToggleLlamado(e);
+                        }}
+                      >
+                        {LLAMADO_ORD[e.llamado]}
+                      </button>
+                    ) : (
+                      <span className="fin__badge is-llamado">
+                        {LLAMADO_ORD[e.llamado]}
+                      </span>
+                    ))}
                 </span>
               </div>
             ))}

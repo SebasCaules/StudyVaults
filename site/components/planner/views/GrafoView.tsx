@@ -354,10 +354,7 @@ export default function GrafoView() {
         <p>
           Cada columna es un cuatrimestre de la carrera (1º·1c &rarr; 5º·2c): las
           correlativas fluyen de izquierda a derecha. Tono pizarra: obligatorias.
-          Tono latón: electivas. Arrastrá para moverte, usá la rueda o los botones
-          +/− para el zoom, y &laquo;Ajustar&raquo; encuadra todo el mapa. Pasá el
-          mouse por una materia para iluminar su cadena; hacé click para ver el
-          detalle.
+          Tono latón: electivas.
         </p>
       </div>
 

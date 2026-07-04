@@ -71,10 +71,6 @@
   color: var(--block-ink);
   font-weight: 700;
 }
-.planner .fin__seg-n {
-  font-size: 9px;
-  opacity: 0.75;
-}
 
 /* selects del combinador (año / margen / reminder) */
 .planner .fin select {
@@ -159,9 +155,9 @@
 .planner .fin__resumen {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
   flex-wrap: wrap;
-  padding: 14px 16px;
+  padding: 11px 14px;
   border: 1px solid var(--line);
   border-radius: var(--r);
   background: color-mix(in srgb, var(--brass) 6%, var(--panel));
@@ -169,8 +165,8 @@
 }
 .planner .fin__resumen-ico {
   flex: none;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   background: color-mix(in srgb, var(--brass) 16%, transparent);
   color: var(--brass);
@@ -248,54 +244,7 @@
   line-height: 1.5;
 }
 
-/* ---- combinación elegida ---- */
-.planner .fin__combo {
-  padding: 15px 16px;
-  border-radius: 8px;
-  margin-bottom: 14px;
-  border: 1.5px solid color-mix(in srgb, var(--status-go) 42%, var(--line));
-  background: color-mix(in srgb, var(--status-go) 9%, var(--panel));
-}
-.planner .fin__combo-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--f-m);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--status-go);
-  font-weight: 700;
-  margin-bottom: 9px;
-}
-.planner .fin__combo-line {
-  font-family: var(--f-d);
-  font-size: 14.5px;
-  line-height: 1.5;
-  margin: 0 0 8px;
-  color: var(--ink);
-}
-.planner .fin__combo-chips,
-.planner .fin__export-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-.planner .fin__combo-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--f-d);
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--panel);
-  border: 1px solid color-mix(in srgb, var(--status-go) 30%, var(--line));
-  padding: 5px 11px 5px 9px;
-  border-radius: 999px;
-}
-.planner .fin__cc-dot,
-.planner .fin__ec-dot,
+/* dot categórico por final (panel de pendientes + editor de mesas) */
 .planner .fin__fin-dot,
 .planner .fin__mesa-dot {
   width: 9px;
@@ -304,57 +253,18 @@
   background: var(--c-color);
   flex: none;
 }
-.planner .fin__cc-date,
-.planner .fin__ec-date {
-  font-family: var(--f-m);
-  font-size: 11px;
-  color: var(--muted);
-}
-.planner .fin__combo-sub {
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--muted);
-  margin: 10px 0 0;
-  line-height: 1.6;
-}
 
-/* ---- exportar (.ics) ---- */
+/* ---- exportar (.ics): una fila compacta, después del calendario ---- */
 .planner .fin__export {
-  padding: 15px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 11px 14px;
   border-radius: 8px;
   margin-bottom: 14px;
-  border: 1px solid color-mix(in srgb, var(--link) 34%, var(--line));
-  background: color-mix(in srgb, var(--link) 6%, var(--panel));
-}
-.planner .fin__export-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--f-m);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--link);
-  font-weight: 700;
-  margin-bottom: 9px;
-}
-.planner .fin__export-line {
-  font-family: var(--f-d);
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 0 0 12px;
-  color: var(--ink);
-}
-.planner .fin__export-line .mono,
-.planner .fin .mono {
-  font-family: var(--f-m);
-}
-.planner .fin__export-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px 14px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
+  border: 1px solid color-mix(in srgb, var(--link) 30%, var(--line));
+  background: color-mix(in srgb, var(--link) 5%, var(--panel));
 }
 .planner .fin__reminder {
   display: inline-flex;
@@ -368,57 +278,12 @@
   letter-spacing: 0.03em;
   color: var(--muted);
 }
-.planner .fin__reminder-hint {
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  line-height: 1.55;
-  color: var(--muted);
-  flex: 1;
-  min-width: 200px;
-}
-.planner .fin__reminder-hint b {
-  color: var(--ink);
-}
-.planner .fin__export-chips {
-  margin-bottom: 13px;
-}
-.planner .fin__export-chips-lbl {
-  font-family: var(--f-m);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-right: 2px;
-}
-.planner .fin__export-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  font-family: var(--f-m);
-  font-size: 10px;
-  color: var(--ink);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  padding: 3px 9px;
-  border-radius: 999px;
-}
-.planner .fin__ec-dot {
-  width: 7px;
-  height: 7px;
-}
 .planner .fin__export-empty {
   font-family: var(--f-m);
   font-size: 10.5px;
+  line-height: 1.5;
   color: var(--muted);
-  margin: 0 0 13px;
-}
-.planner .fin__export-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin: 0;
 }
 .planner .fin__export-ok {
   display: inline-flex;
@@ -427,18 +292,6 @@
   font-family: var(--f-m);
   font-size: 10.5px;
   color: var(--link);
-}
-.planner .fin__export-disclaimer {
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  line-height: 1.65;
-  color: var(--muted);
-  margin: 0;
-  padding-top: 11px;
-  border-top: 1px solid var(--line);
-}
-.planner .fin__export-disclaimer b {
-  color: var(--ink);
 }
 
 /* ---- fila: calendario + panel de pendientes ---- */
@@ -629,15 +482,6 @@
   font-weight: 600;
   font-size: 13px;
   background: var(--bg);
-}
-.planner .fin__mesas-sub {
-  font-family: var(--f-m);
-  font-weight: 400;
-  font-size: 9.5px;
-  color: var(--muted);
-  margin-left: auto;
-  text-transform: none;
-  letter-spacing: 0;
 }
 .planner .fin__mesas-list {
   list-style: none;
@@ -933,16 +777,6 @@
   opacity: 1;
   transform: translateY(0);
 }
-.planner .fin__side-note {
-  padding: 9px 13px;
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  color: var(--muted);
-  border-top: 1px solid var(--line);
-  line-height: 1.6;
-  margin: 0;
-}
-
 /* pie ejemplo */
 .planner .fin__foot {
   display: flex;
@@ -992,44 +826,36 @@
   padding: 14px 16px;
   margin-bottom: 16px;
 }
-.planner .fin__ing-head {
+.planner .fin__ing-bar {
   display: flex;
-  align-items: flex-start;
-  gap: 11px;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .planner .fin__ing-ico {
   flex: none;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   border-radius: 8px;
   color: var(--brass);
   background: color-mix(in srgb, var(--brass) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--brass) 26%, transparent);
 }
-.planner .fin__ing-head-txt {
-  min-width: 0;
-}
 .planner .fin__ing-title {
-  margin: 1px 0 3px;
+  margin: 0;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.01em;
-}
-.planner .fin__ing-sub {
-  margin: 0;
-  font-size: 11.5px;
-  line-height: 1.5;
-  color: var(--muted);
 }
 .planner .fin__ing-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 9px;
-  margin-top: 13px;
+  margin-left: auto;
 }
 /* input file estilizado como el resto de botones pill */
 .planner .fin__ing-file {
@@ -1075,7 +901,6 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  margin-left: auto;
   font-family: var(--f-m);
   font-size: 10.5px;
   color: var(--link);
@@ -1149,20 +974,6 @@
 .planner .fin__ing-match {
   color: var(--muted);
 }
-.planner .fin__ing-llamado {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.planner .fin__ing-llamado-lbl {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--muted);
-}
 .planner .fin__ing-loaded-actions {
   display: flex;
   align-items: center;
@@ -1189,18 +1000,6 @@
   font-size: 10px;
   color: var(--status-warn);
 }
-.planner .fin__ing-disclaimer {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  margin: 12px 0 0;
-  padding-top: 11px;
-  border-top: 1px dashed var(--line);
-  font-family: var(--f-m);
-  font-size: 10px;
-  line-height: 1.5;
-  color: var(--muted);
-}
 
 /* ==== llamados 1º/2º (combinador multi-fecha) ==== */
 /* Extiende el combinador para elegir 1.º/2.º mesa por materia y asignar cada
@@ -1212,6 +1011,26 @@
   color: var(--brass);
   background: color-mix(in srgb, var(--brass) 10%, transparent);
   border: 1px solid color-mix(in srgb, var(--brass) 28%, transparent);
+}
+
+/* badge-botón del chip del calendario: con ambos llamados, el 1º/2º alterna de
+   mesa al clic. Target ≥18px + hover/focus sobre el reset de .fin__badge. */
+.planner button.fin__llbtn {
+  cursor: pointer;
+  min-height: 18px;
+  line-height: 1;
+  padding: 2px 7px;
+  transition: color 0.14s var(--ease, ease),
+    background 0.14s var(--ease, ease), border-color 0.14s var(--ease, ease);
+}
+.planner button.fin__llbtn:hover {
+  color: var(--block-ink);
+  background: var(--brass);
+  border-color: var(--brass);
+}
+.planner button.fin__llbtn:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
 }
 
 /* mini segmentado 1º|2º por fila del editor «Fechas de mesa» (elige la mesa). */

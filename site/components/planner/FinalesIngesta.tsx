@@ -188,21 +188,18 @@ export default function FinalesIngesta() {
 
   return (
     <section className="fin__ing" aria-label="Cargar fechas oficiales de mesas">
-      <div className="fin__ing-head">
+      <div className="fin__ing-bar">
         <span className="fin__ing-ico" aria-hidden="true">
-          <IconDownload size={15} />
+          <IconDownload size={14} />
         </span>
-        <div className="fin__ing-head-txt">
-          <h3 className="fin__ing-title">Fechas oficiales de mesas</h3>
-          <p className="fin__ing-sub">
-            Traé el calendario oficial de finales y autocompletá la fecha y hora
-            de cada mesa. Todo se procesa en tu navegador — no se sube nada.
-          </p>
-        </div>
-      </div>
+        <h3
+          className="fin__ing-title"
+          title="Traé el calendario oficial de finales y autocompletá cada mesa. Todo se procesa en tu navegador — no se sube nada."
+        >
+          Fechas oficiales de mesas
+        </h3>
 
-      {!loaded && (
-        <>
+        {!loaded && (
           <div className="fin__ing-actions">
             <button
               type="button"
@@ -244,29 +241,29 @@ export default function FinalesIngesta() {
               ver la planilla <IconArrowUpRight size={12} />
             </a>
           </div>
+        )}
+      </div>
 
-          {pasteOpen && (
-            <div className="fin__ing-paste">
-              <textarea
-                value={pasteText}
-                onChange={(e) => setPasteText(e.target.value)}
-                placeholder={
-                  "Pegá acá el contenido del CSV\nCód,Materia,Primer llamado,Hora,Segundo llamado,Hora\n10.01,…"
-                }
-                rows={4}
-                spellCheck={false}
-              />
-              <button
-                type="button"
-                className="fin__hbtn is-primary"
-                onClick={procesarPegado}
-                disabled={!pasteText.trim()}
-              >
-                <IconCheck size={13} /> Procesar
-              </button>
-            </div>
-          )}
-        </>
+      {!loaded && pasteOpen && (
+        <div className="fin__ing-paste">
+          <textarea
+            value={pasteText}
+            onChange={(e) => setPasteText(e.target.value)}
+            placeholder={
+              "Pegá acá el contenido del CSV\nCód,Materia,Primer llamado,Hora,Segundo llamado,Hora\n10.01,…"
+            }
+            rows={4}
+            spellCheck={false}
+          />
+          <button
+            type="button"
+            className="fin__hbtn is-primary"
+            onClick={procesarPegado}
+            disabled={!pasteText.trim()}
+          >
+            <IconCheck size={13} /> Procesar
+          </button>
+        </div>
       )}
 
       {status === "error" && (
@@ -326,14 +323,6 @@ export default function FinalesIngesta() {
           </div>
         </div>
       )}
-
-      <p className="fin__ing-disclaimer">
-        <IconInfo size={12} />
-        <span>
-          Las fechas salen de la planilla que cargues. Verificá siempre con la
-          cátedra: la fuente oficial es la planilla, no esta herramienta.
-        </span>
-      </p>
     </section>
   );
 }

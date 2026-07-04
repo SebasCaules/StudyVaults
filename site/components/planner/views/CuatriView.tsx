@@ -48,28 +48,31 @@ export default function CuatriView() {
           si tenés la cursada o también el final.
         </p>
       </div>
-      <div className="estado-legend" role="note" aria-label="Cómo leer el estado de cada materia">
-        <span className="el-item">
-          <span className="estado-ctl st-regular" aria-hidden="true">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+      <details className="legend-details">
+        <summary>Cómo leer el estado</summary>
+        <div className="estado-legend" role="note" aria-label="Cómo leer el estado de cada materia">
+          <span className="el-item">
+            <span className="estado-ctl st-regular" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+            </span>
+            <b>✓ cursada</b> — falta el final
           </span>
-          <b>✓ cursada</b> — falta el final
-        </span>
-        <span className="el-sep" aria-hidden="true" />
-        <span className="el-item">
-          <span className="estado-ctl st-final" aria-hidden="true">
-            <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 8.5 6 12 11.5 4.5" /><path d="M9.5 8.5 13 12 18.5 4.5" /></svg>
+          <span className="el-sep" aria-hidden="true" />
+          <span className="el-item">
+            <span className="estado-ctl st-final" aria-hidden="true">
+              <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 8.5 6 12 11.5 4.5" /><path d="M9.5 8.5 13 12 18.5 4.5" /></svg>
+            </span>
+            <b>✓✓ final</b> — aprobado
           </span>
-          <b>✓✓ final</b> — aprobado
-        </span>
-        <span className="el-sep" aria-hidden="true" />
-        <span className="el-item">
-          <span className="estado-ctl st-promo" aria-hidden="true">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+          <span className="el-sep" aria-hidden="true" />
+          <span className="el-item">
+            <span className="estado-ctl st-promo" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+            </span>
+            <b>promociona</b> — sin final
           </span>
-          <b>promociona</b> — sin final
-        </span>
-      </div>
+        </div>
+      </details>
       <div className="cuatri-grid">
         {groups.length === 0 ? (
           <div className="empty">No hay obligatorias que cumplan los filtros.</div>

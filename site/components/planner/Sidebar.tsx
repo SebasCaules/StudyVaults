@@ -80,9 +80,8 @@ export default function Sidebar() {
   const showElect = view === "elect";
 
   return (
-    <aside className="side">
+    <aside className="side" aria-label="Panel de control">
       <div className="side__head">
-        <span className="side__title">Panel de control</span>
         <button
           type="button"
           className="side__collapse"
@@ -228,20 +227,22 @@ export default function Sidebar() {
         </>
       )}
 
-      <button
-        className="reset"
-        onClick={() => {
-          if (
-            !window.confirm(
-              "¿Restablecer todas las materias a pendiente? Esta acción no se puede deshacer."
+      {showFilters && (
+        <button
+          className="reset"
+          onClick={() => {
+            if (
+              !window.confirm(
+                "¿Restablecer todas las materias a pendiente? Esta acción no se puede deshacer."
+              )
             )
-          )
-            return;
-          dispatch({ type: "RESET_APPROVED" });
-        }}
-      >
-        Restablecer materias aprobadas
-      </button>
+              return;
+            dispatch({ type: "RESET_APPROVED" });
+          }}
+        >
+          Restablecer materias aprobadas
+        </button>
+      )}
 
       <p className="foot">
         Horarios del SGA, 2.<sup>do</sup> cuatrimestre 2026. El progreso se guarda

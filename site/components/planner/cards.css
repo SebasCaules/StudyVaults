@@ -5,7 +5,8 @@
      · Minor  → insignia con LOGO propio + sigla, en el color del minor.
      · Dispon.→ candado (abierto = cursable / cerrado = requisitos).
      · Régimen→ ícono en cuadro (promociona / con final).
-   Una leyenda arriba de la grilla decodifica las tres familias una sola vez.
+   Una leyenda colapsable arriba de la grilla (cerrada por defecto) decodifica
+   las tres familias una sola vez, sin empujar el contenido.
    Presentación 100% por roles/tokens §12 + color-mix() — sin hex hardcodeado.
    Clases NUEVAS: no pisan planner.css (los badges/dots de minor y el
    EstadoControl base viven allá). Se importa desde ElectivasView + CuatriView.
@@ -50,11 +51,34 @@
   border-color:color-mix(in srgb, var(--text-secondary) 26%, transparent);
 }
 
-/* ----- leyenda de la grilla de electivas (decodifica las 3 señales) ----- */
+/* ----- leyenda colapsable compartida (Electivas + Cuatri) -----
+   La leyenda se lee una sola vez, así que va en un <details> discreto,
+   cerrado por defecto: no empuja la grilla hasta que la abrís. El chrome
+   (borde/fondo/margin) vive acá; el cuerpo interno (cl-* / el-*) queda igual. */
+.planner .legend-details{
+  margin:0 0 18px;
+  border:1px solid var(--line);border-radius:8px;background:var(--surface-2);
+}
+.planner .legend-details > summary{
+  list-style:none;cursor:pointer;user-select:none;
+  display:flex;align-items:center;gap:8px;padding:8px 15px;
+  font-family:var(--f-m);font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);
+}
+.planner .legend-details > summary::-webkit-details-marker{display:none}
+/* chevron custom sutil: ▸ cerrado → ▾ abierto */
+.planner .legend-details > summary::before{
+  content:"";width:6px;height:6px;flex:none;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(-45deg);transition:transform .15s ease;
+}
+.planner .legend-details[open] > summary::before{transform:rotate(45deg)}
+.planner .legend-details > summary:hover{color:var(--ink)}
+
+/* ----- cuerpo: grilla de electivas (decodifica las 3 señales) ----- */
 .planner .card-legend{
   display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 26px;
-  margin:0 0 18px;padding:12px 15px;
-  border:1px solid var(--line);border-radius:8px;background:var(--surface-2);
+  padding:2px 15px 14px;
   font-family:var(--f-m);font-size:11px;color:var(--muted);
 }
 .planner .cl-group{display:flex;flex-direction:column;gap:7px;min-width:0}
@@ -64,11 +88,10 @@
 .planner .cl-items{display:flex;flex-wrap:wrap;align-items:center;gap:7px 12px}
 .planner .cl-row{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
 
-/* ----- leyenda de estado (cursada/final) en el plan por cuatrimestre ----- */
+/* ----- cuerpo: estado (cursada/final) en el plan por cuatrimestre ----- */
 .planner .estado-legend{
   display:flex;flex-wrap:wrap;align-items:center;gap:9px 16px;
-  margin:0 0 18px;padding:11px 15px;
-  border:1px solid var(--line);border-radius:8px;background:var(--surface-2);
+  padding:2px 15px 13px;
   font-family:var(--f-m);font-size:11.5px;color:var(--muted);
 }
 .planner .estado-legend .el-item{display:inline-flex;align-items:center;gap:8px}
