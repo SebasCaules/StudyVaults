@@ -19,7 +19,9 @@
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-1);
-  padding: clamp(18px, 3vw, 30px);
+  /* apretado un escalón (antes 18–30px): que el primer cuatri del timeline
+     asome en el primer viewport */
+  padding: clamp(15px, 2.4vw, 24px);
 }
 .planner .pv-banner::before {
   content: "";
@@ -323,17 +325,6 @@
   font-weight: 700;
   border-bottom-color: var(--brass);
 }
-.planner .pv-tab__new {
-  font-family: var(--f-m);
-  font-size: 8.5px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--block-ink);
-  background: var(--brass);
-  border-radius: 999px;
-  padding: 2px 6px;
-  font-weight: 700;
-}
 .planner .pv-tabs__actions {
   display: flex;
   align-items: center;
@@ -343,53 +334,6 @@
 }
 
 /* toggle recomendador (switch) */
-.planner .pv-rec-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  cursor: pointer;
-  user-select: none;
-  background: none;
-  border: none;
-  padding: 6px 4px;
-  font-family: var(--f-m);
-  font-size: 11px;
-  color: var(--muted);
-}
-.planner .pv-switch {
-  position: relative;
-  width: 36px;
-  height: 21px;
-  flex: none;
-  background: var(--panel-3);
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  transition: background var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
-}
-.planner .pv-switch::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: var(--muted);
-  transition: left var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
-}
-.planner .pv-rec-toggle[aria-checked="true"] {
-  color: var(--ink);
-}
-.planner .pv-rec-toggle[aria-checked="true"] .pv-switch {
-  background: var(--brass);
-  border-color: var(--brass);
-}
-.planner .pv-rec-toggle[aria-checked="true"] .pv-switch::after {
-  left: 17px;
-  background: var(--block-ink);
-}
 
 /* botones de ícono (reset / import-export) */
 .planner .pv-iconbtn {
@@ -473,12 +417,6 @@
    grilla rellena TODO el ancho según la cantidad real de cuatrimestres, sin
    dejar tracks fantasma a la derecha. `grid-auto-rows:1fr` + `height:100%` en la
    card empareja las alturas por fila (mismo alto, prolijo). */
-.planner .pv-semgrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-  grid-auto-rows: 1fr;
-  gap: 16px;
-}
 .planner .pv-sem {
   position: relative;
   display: flex;
@@ -508,9 +446,6 @@
   opacity: 0.74;
 }
 /* espejo en el Roadmap: un stop finalizado se atenúa igual que su card */
-.planner .rmap-stop.is-locked {
-  opacity: 0.82;
-}
 /* destino activo del drag (soltar una electiva acá la fija en este cuatri) */
 .planner .pv-sem.is-drop-over {
   border-color: var(--brass);
@@ -587,13 +522,13 @@
   height: 15px;
 }
 
-/* botón 3-puntos */
+/* botón 3-puntos (área de click generosa: es el único overflow por cuatri) */
 .planner .pv-dotbtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 26px;
+  width: 34px;
+  height: 30px;
   border-radius: 6px;
   background: transparent;
   border: 1px solid transparent;
@@ -933,18 +868,6 @@
   gap: 3px;
   flex: none;
 }
-.planner .rmap-mat__rec {
-  font-family: var(--f-m);
-  font-size: 8px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--brass);
-  border: 1px solid color-mix(in srgb, var(--brass) 45%, transparent);
-  background: color-mix(in srgb, var(--brass) 12%, transparent);
-  padding: 1px 5px;
-  border-radius: 999px;
-  flex: none;
-}
 
 /* ============================ MINORS (tab) ================================= */
 .planner .pv-minors {
@@ -1086,109 +1009,9 @@
 }
 
 /* ============================ FILTROS DEL RECOMENDADOR ==================== */
-.planner .plan2-recfilt {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
-  padding: 12px 0 6px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid var(--line);
-}
-.planner .plan2-recfilt__grp {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.planner .plan2-recfilt__lbl {
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-right: 1px;
-}
-.planner .plan2-fchip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--muted);
-  background: var(--panel-2);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 5px 11px;
-  cursor: pointer;
-  transition: color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
-}
-.planner .plan2-fchip:hover {
-  color: var(--ink);
-  border-color: var(--line-2);
-}
-.planner .plan2-fchip__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--fchip-color, var(--brass));
-  flex: none;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--block-ink) 20%, transparent);
-}
-.planner .plan2-fchip.is-on {
-  color: var(--ink);
-  border-color: var(--brass);
-  background: color-mix(in srgb, var(--brass) 12%, var(--panel));
-  font-weight: 600;
-}
-.planner .plan2-fchip.is-on .plan2-fchip__dot {
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--brass) 42%, transparent);
-}
-.planner .plan2-recfilt__clear {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--brass);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 5px 4px;
-  margin-left: auto;
-}
-.planner .plan2-recfilt__clear:hover {
-  text-decoration: underline;
-}
-.planner .plan2-recfilt__clear svg {
-  width: 11px;
-  height: 11px;
-}
-.planner .plan2-recfilt__empty {
-  font-size: 12.5px;
-  color: var(--muted);
-  padding: 14px 2px 4px;
-}
-.planner .plan2-recfilt__empty button {
-  font-family: var(--f-m);
-  font-size: 12px;
-  color: var(--brass);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-.planner .plan2-recfilt__empty button:hover {
-  text-decoration: underline;
-}
 
 /* ============================ RESPONSIVE ================================== */
 @media (max-width: 640px) {
-  .planner .pv-semgrid {
-    grid-template-columns: 1fr;
-  }
   .planner .pv-banner__mid {
     flex-direction: column;
     align-items: stretch;
@@ -1199,8 +1022,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .planner .pv-seg__opt,
-  .planner .pv-switch,
-  .planner .pv-switch::after,
   .planner .pv-meter__bar > i,
   .planner .pv-loadbar > i,
   .planner .pv-minor-track > i,
@@ -1209,8 +1030,7 @@
   .planner .pv-menu__item,
   .planner .pv-tip__bubble,
   .planner .pv-elrow,
-  .planner .pv-elrow__grip,
-  .planner .plan2-fchip {
+  .planner .pv-elrow__grip {
     transition: none;
   }
 }

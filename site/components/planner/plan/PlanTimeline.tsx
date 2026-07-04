@@ -12,7 +12,7 @@
  * `ptl-` y vive en `plan-timeline.css`.
  */
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { byId, PALETTE } from "@/lib/planner/model";
 import {
@@ -281,7 +281,7 @@ function PlanStop({
                   <span className="ptl-mat__abbr">{x.m.abbr}</span>
                   <span className="ptl-mat__name">{x.m.nombre}</span>
                   <span className="ptl-mat__cr">{x.m.creditos}</span>
-                  {isRecTagged(x.m, recOn) && (
+                  {isRecTagged(x.m, recOn) && !isPrev && (
                     <span className="ptl-mat__rec">rec</span>
                   )}
                   {isPrev && <span className="ptl-mat__new">nueva</span>}
@@ -420,25 +420,38 @@ export default function PlanTimeline({
         className="ptl"
         onMouseLeave={() => setHoverCode(null)}
       >
-        {used.map(({ it, i }) => (
-          <PlanStop
-            key={i}
-            it={it}
-            i={i}
-            start={start}
-            accBefore={R.accBefore}
-            previewCode={previewCode}
-            recOn={recOn}
-            warns={warnsByIdx.get(i) ?? []}
-            chainMap={chainMap}
-            dragCode={dragCode}
-            onDragCode={setDragCode}
-            onHover={setHoverCode}
-            onFinalize={onFinalize}
-            onUnlock={onUnlock}
-            onDownload={onDownload}
-          />
-        ))}
+        {used.map(({ it, i }, k) => {
+          // ritmo visual por año: un separador sobrio cuando cambia el año
+          // calendario entre paradas consecutivas (facilita escanear el plan)
+          const year = cuatriAt(start, i).year;
+          const prevYear =
+            k > 0 ? cuatriAt(start, used[k - 1].i).year : year;
+          return (
+            <Fragment key={i}>
+              {year !== prevYear && (
+                <li className="ptl-year" aria-hidden="true">
+                  <span className="ptl-year__lbl">{year}</span>
+                </li>
+              )}
+              <PlanStop
+                it={it}
+                i={i}
+                start={start}
+                accBefore={R.accBefore}
+                previewCode={previewCode}
+                recOn={recOn}
+                warns={warnsByIdx.get(i) ?? []}
+                chainMap={chainMap}
+                dragCode={dragCode}
+                onDragCode={setDragCode}
+                onHover={setHoverCode}
+                onFinalize={onFinalize}
+                onUnlock={onUnlock}
+                onDownload={onDownload}
+              />
+            </Fragment>
+          );
+        })}
 
         <li className="ptl-grad">
           <span className="ptl-node ptl-node--grad" aria-hidden="true">

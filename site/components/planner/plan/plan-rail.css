@@ -304,7 +304,8 @@
   color: var(--muted);
 }
 
-/* select nativo "fijar cuatrimestre" (calcado del look de CommissionSelect) */
+/* select nativo "fijar cuatrimestre" (calcado del look de CommissionSelect,
+   incl. appearance:none + chevron propio — sin el dropdown chrome del SO) */
 .planner .prl-sel {
   flex: 1 1 118px;
   min-width: 0;
@@ -312,10 +313,19 @@
   font-family: var(--f-m);
   font-size: 10.5px;
   color: var(--ink-soft);
-  background: var(--panel);
+  background-color: var(--panel);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  background-size: 11px;
   border: 1px solid var(--line-2);
   border-radius: 6px;
-  padding: 5px 8px;
+  padding: 5px 24px 5px 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
   transition: border-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
@@ -755,10 +765,11 @@
   color: var(--slate);
   border-color: color-mix(in srgb, var(--slate) 38%, transparent);
 }
+/* neutro a propósito: el grupo ("No alargan la carrera") ya dice lo mismo;
+   un verde acá sumaría un color de sistema fuera del acento brass único */
 .planner .prl-fit--ok {
-  color: var(--sage);
-  border-color: color-mix(in srgb, var(--sage) 38%, transparent);
-  background: color-mix(in srgb, var(--sage) 12%, transparent);
+  color: var(--muted);
+  border-color: var(--line-2);
 }
 .planner .prl-fit--warn {
   color: var(--brass-2);

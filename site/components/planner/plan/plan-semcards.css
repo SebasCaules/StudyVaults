@@ -39,6 +39,9 @@
    cards deben medir su contenido para que la grilla densa no deje aire. */
 .planner .psc-card {
   height: auto;
+  /* piso común: las compactas no quedan como sellos sueltos al lado de una
+     grilla semanal alta — el masonry gana ritmo sin estirar contenido */
+  min-height: 168px;
 }
 .planner .psc-card--rich {
   grid-column: span 2;

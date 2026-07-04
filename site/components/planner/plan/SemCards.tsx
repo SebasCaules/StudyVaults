@@ -211,7 +211,7 @@ function SemCard({
                   )}
                   <MinorDots m={x.m} />
                   <span className="pv-elrow__abbr">{x.m.abbr}</span>
-                  {isRecTagged(x.m, recOn) && (
+                  {isRecTagged(x.m, recOn) && x.m.codigo !== previewCode && (
                     <span className="pv-rectag">recomendada</span>
                   )}
                   {x.m.codigo === previewCode && (
@@ -270,7 +270,7 @@ function SemCard({
                     <MinorDots m={x.m} />
                     <span className="psc-mat__abbr">{x.m.abbr}</span>
                     <span className="psc-mat__name">{x.m.nombre}</span>
-                    {isRecTagged(x.m, recOn) && (
+                    {isRecTagged(x.m, recOn) && !isPrev && (
                       <span className="pv-rectag">rec</span>
                     )}
                     {isPrev && <span className="psc-newtag">nueva</span>}
