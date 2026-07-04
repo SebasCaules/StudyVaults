@@ -48,6 +48,25 @@ const NAMES: Record<string, string> = {
 const VORDER = ["mna", "derecho", "economia", "proba", "paw", "sds", "inge2"];
 const colorOf = (v: string) => VIVID[v] ?? "#8fb3e0";
 
+// tema CLARO: tintas sobre papel — los vivid se oscurecen hacia el marrón ancla
+function mixHex(a: string, b: string, pa: number): string {
+  const h = (x: string) => [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16));
+  const A = h(a),
+    B = h(b);
+  return (
+    "#" +
+    A.map((v, i) =>
+      Math.round(v * pa + B[i] * (1 - pa))
+        .toString(16)
+        .padStart(2, "0"),
+    ).join("")
+  );
+}
+const inkOf = (v: string) => mixHex(colorOf(v), "#241208", 0.58);
+const dotColorOf = (v: string, light: boolean) => (light ? inkOf(v) : colorOf(v));
+const CROSS_DARK = "#3d3448";
+const CROSS_LIGHT = "#c9baa9";
+
 // ---- constantes de la carta (validadas en el mockup aprobado) ----
 const SCALE = 0.62; // unidades graph.json (0..1000) → mundo
 const SPREAD = 1.68; // separación entre clusters (sobre el centroide)
@@ -315,6 +334,7 @@ const makeGlowTexture = () =>
 export default function ForceGraph3DInner({
   nodes,
   links,
+  light,
   motion,
   onOpen,
 }: {
@@ -325,9 +345,11 @@ export default function ForceGraph3DInner({
   motion: boolean;
   onOpen: (u: string) => void;
 }) {
-  // El canvas es un inset OSCURO en ambos temas (patrón deliberado del hero):
-  // paleta fija VIVID, sin fork por tema.
+  // Theme-aware: dark = vivid sobre inset tabaco; light = tintas sobre papel
+  // (el fondo del canvas lo conmuta el CSS; acá se restilizan materiales).
   const wrapRef = useRef<HTMLDivElement>(null);
+  const lightRef = useRef(light);
+  lightRef.current = light;
   const overlayRef = useRef<HTMLDivElement>(null);
   const fgRef = useRef<ForceGraphMethods<N3, L3> | undefined>(undefined);
   const [size, setSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
@@ -426,13 +448,61 @@ export default function ForceGraph3DInner({
     let setup = false;
     let growT0 = -1;
     let growDone = !motion;
+    let lastE = 0.001; // último factor de crecimiento dibujado (para re-temar)
     let drawFloorFn: ((e: number) => void) | null = null;
     let floorTex: THREE.CanvasTexture | null = null;
-    const wallMats: { m: THREE.Material & { opacity: number }; target: number }[] = [];
+    const wallMats: {
+      m: (THREE.Material & { opacity: number }) & { color: THREE.Color };
+      kind: "fill" | "line";
+      target: number;
+    }[] = [];
+    const mists: THREE.Sprite[] = [];
+    const stemMats: { m: THREE.LineBasicMaterial; v: string }[] = [];
+    let gridMat: (THREE.Material & { opacity: number }) | null = null;
+    let bloomPass: UnrealBloomPass | null = null;
+    let appliedLight: boolean | null = null;
     const ray = new THREE.Raycaster();
     let lanternGlow: THREE.Sprite | null = null;
+    let lanternTarget = 0.35; // opacidad objetivo del glow (depende del tema)
     const tmpC = new THREE.Color();
     const WHITE = new THREE.Color("#ffffff");
+    const VIVIDC: Record<string, THREE.Color> = {};
+    for (const v of VORDER) VIVIDC[v] = new THREE.Color(colorOf(v));
+
+    // re-estiliza TODO el mobiliario según el tema (se llama en setup y al
+    // conmutar data-theme; los props de react-force-graph se re-aplican solos)
+    const styleTheme = (lt: boolean) => {
+      appliedLight = lt;
+      for (const n of graphData.nodes) {
+        if (!n.__base) continue;
+        n.__base.set(dotColorOf(n.v, lt));
+        n.__sp?.material.color.copy(n.__base);
+      }
+      for (const s of mists) {
+        s.material.blending = lt ? THREE.NormalBlending : THREE.AdditiveBlending;
+        s.material.opacity = lt ? 0.05 : 0.035;
+        s.material.color.set(lt ? mixHex(colorOf(s.userData.v), "#fdf9f4", 0.62) : colorOf(s.userData.v));
+        s.material.needsUpdate = true;
+      }
+      for (const w of wallMats) {
+        w.m.color.set(lt ? 0x4a3527 : 0xe0cdb0);
+        w.target = w.kind === "fill" ? (lt ? 0.02 : 0.028) : lt ? 0.08 : 0.11;
+        if (growDone) w.m.opacity = w.target;
+      }
+      for (const st of stemMats) {
+        st.m.color.set(dotColorOf(st.v, lt));
+        st.m.opacity = lt ? 0.35 : 0.4;
+      }
+      if (gridMat) gridMat.opacity = lt ? 0.16 : 0.1;
+      if (bloomPass) bloomPass.strength = lt ? 0 : 0.45; // bloom no aporta en papel
+      if (lanternGlow) {
+        lanternGlow.material.blending = lt ? THREE.NormalBlending : THREE.AdditiveBlending;
+        lanternGlow.material.color.set(lt ? "#e0663a" : "#ffc9a0");
+        lanternGlow.material.needsUpdate = true;
+      }
+      lanternTarget = lt ? 0.16 : 0.35;
+      drawFloorFn?.(lastE);
+    };
 
     const loop = () => {
       if (stopped) return;
@@ -447,13 +517,15 @@ export default function ForceGraph3DInner({
           // ---- BLOOM suave + salida gestionada ----
           const composer = anyFg.postProcessingComposer?.();
           if (composer && composer.passes.length < 2) {
-            const bloom = new UnrealBloomPass(
+            // bloom contenido (sobrio): menos strength y umbral más alto para
+            // que el piso voronoi no "brille"; en light se apaga (styleTheme)
+            bloomPass = new UnrealBloomPass(
               new THREE.Vector2(size.w || 600, size.h || 400),
+              0.45,
               0.5,
-              0.55,
-              0.22,
+              0.32,
             );
-            composer.addPass(bloom);
+            composer.addPass(bloomPass);
             composer.addPass(new OutputPass());
           }
           // ---- cámara aérea 3/4 (la auto-órbita conserva la altura) ----
@@ -467,8 +539,9 @@ export default function ForceGraph3DInner({
 
           // ---- mobiliario de la carta ----
           const grid = new THREE.GridHelper(VOR_S, 30, 0x8a6a4a, 0x8a6a4a);
-          (grid.material as THREE.Material & { opacity: number }).transparent = true;
-          (grid.material as THREE.Material & { opacity: number }).opacity = 0.1;
+          gridMat = grid.material as THREE.Material & { opacity: number };
+          gridMat.transparent = true;
+          gridMat.opacity = 0.1;
           grid.position.y = 0;
           scene.add(grid);
 
@@ -487,7 +560,9 @@ export default function ForceGraph3DInner({
             s.scale.setScalar(26 + Math.sqrt(n.deg) * 6);
             s.position.set(n.fx, n.fy, n.fz);
             s.renderOrder = -2;
+            s.userData.v = n.v;
             scene.add(s);
+            mists.push(s);
           }
 
           // piso voronoi: textura canvas de alta resolución (bordes suaves)
@@ -499,6 +574,7 @@ export default function ForceGraph3DInner({
           fcv.width = fcv.height = TEXR;
           const fx2 = fcv.getContext("2d")!;
           floorTex = new THREE.CanvasTexture(fcv);
+          floorTex.colorSpace = THREE.SRGBColorSpace; // sin esto el OutputPass lava las tintas
           floorTex.anisotropy =
             anyFg.renderer?.().capabilities.getMaxAnisotropy?.() ?? 8;
           const fplane = new THREE.Mesh(
@@ -512,7 +588,10 @@ export default function ForceGraph3DInner({
           fplane.position.y = FLOOR;
           fplane.renderOrder = -3;
           scene.add(fplane);
+          // dibujo SOBRIO: trazo fino sin glow (nada de shadowBlur), relleno
+          // apenas perceptible; en light las tintas se oscurecen hacia marrón
           drawFloorFn = (e: number) => {
+            const lt = lightRef.current;
             fx2.clearRect(0, 0, TEXR, TEXR);
             fx2.lineJoin = "round";
             for (const c of built.vor.cells) {
@@ -527,19 +606,16 @@ export default function ForceGraph3DInner({
                 kk ? path.lineTo(u2(p.x), w2(p.z)) : path.moveTo(u2(p.x), w2(p.z)),
               );
               path.closePath();
-              const col = colorOf(c.v);
-              fx2.globalAlpha = 0.05;
+              const col = dotColorOf(c.v, lt);
+              fx2.globalAlpha = lt ? 0.045 : 0.04;
               fx2.fillStyle = col;
               fx2.fill(path);
-              fx2.globalAlpha = 0.6;
+              fx2.globalAlpha = lt ? 0.55 : 0.34;
               fx2.strokeStyle = col;
-              fx2.lineWidth = 3.2;
-              fx2.shadowColor = col;
-              fx2.shadowBlur = 10;
+              fx2.lineWidth = 2.2;
               fx2.stroke(path);
-              fx2.shadowBlur = 0;
-              fx2.globalAlpha = 0.6;
-              fx2.lineWidth = 2.4;
+              fx2.globalAlpha = lt ? 0.4 : 0.3;
+              fx2.lineWidth = 2;
               fx2.beginPath();
               fx2.arc(su, sv, 11 * K, 0, 7);
               fx2.stroke();
@@ -560,7 +636,7 @@ export default function ForceGraph3DInner({
             const mesh = new THREE.Mesh(polyGeo(poly), m);
             mesh.renderOrder = -1;
             scene.add(mesh);
-            wallMats.push({ m, target: 0.028 });
+            wallMats.push({ m, kind: "fill", target: 0.028 });
             const lm = new THREE.LineBasicMaterial({
               color: 0xe0cdb0,
               transparent: true,
@@ -572,24 +648,26 @@ export default function ForceGraph3DInner({
             );
             line.renderOrder = -1;
             scene.add(line);
-            wallMats.push({ m: lm, target: 0.11 });
+            wallMats.push({ m: lm, kind: "line", target: 0.11 });
           }
 
           // tallo de cada semilla (la nota más pesada de cada wiki)
           for (const v in built.seedIdx) {
             const n = built.gnodes[built.seedIdx[v]];
+            const sm = new THREE.LineBasicMaterial({
+              color: new THREE.Color(colorOf(v)),
+              transparent: true,
+              opacity: 0.4,
+            });
             const stem = new THREE.Line(
               new THREE.BufferGeometry().setFromPoints([
                 new THREE.Vector3(n.fx, FLOOR + 0.5, n.fz),
                 new THREE.Vector3(n.fx, n.fy, n.fz),
               ]),
-              new THREE.LineBasicMaterial({
-                color: new THREE.Color(colorOf(v)),
-                transparent: true,
-                opacity: 0.4,
-              }),
+              sm,
             );
             scene.add(stem);
+            stemMats.push({ m: sm, v });
           }
 
           // glow de la linterna
@@ -606,11 +684,13 @@ export default function ForceGraph3DInner({
           lanternGlow.scale.set(95, 95, 1);
           scene.add(lanternGlow);
 
-          if (!motion) {
-            drawFloorFn(1);
-            for (const w of wallMats) w.m.opacity = w.target;
-          }
+          if (!motion) lastE = 1;
+          styleTheme(lightRef.current); // estiliza todo + dibuja el piso
         }
+
+        // conmutación de tema en caliente (data-theme cambió)
+        if (setup && appliedLight !== lightRef.current)
+          styleTheme(lightRef.current);
 
         const now = performance.now();
 
@@ -620,7 +700,8 @@ export default function ForceGraph3DInner({
           const p = Math.min(1, (now - growT0 - 600) / 2800);
           if (p >= 0) {
             const e = 1 - Math.pow(1 - Math.min(1, p * 1.3), 3);
-            drawFloorFn(Math.max(e, 0.001));
+            lastE = Math.max(e, 0.001);
+            drawFloorFn(lastE);
             const w = Math.max(0, (p - 0.55) / 0.45);
             for (const wl of wallMats) wl.m.opacity = wl.target * w;
             if (p >= 1) growDone = true;
@@ -655,8 +736,11 @@ export default function ForceGraph3DInner({
               const e = Math.exp(-(qx * qx + qy * qy + qz * qz) / (2 * R * R));
               const s = (n.__sz ?? 5) * (1 + e * 1.15);
               n.__sp.scale.set(s, s, 1);
+              // dark: encender hacia blanco; light: saturar hacia el vivid puro
               n.__sp.material.color.copy(
-                tmpC.copy(n.__base ?? WHITE).lerp(WHITE, e * 0.9),
+                tmpC
+                  .copy(n.__base ?? WHITE)
+                  .lerp(appliedLight ? VIVIDC[n.v] ?? WHITE : WHITE, e * 0.9),
               );
               if (e > 0.25) {
                 bx += n.x * e;
@@ -668,7 +752,7 @@ export default function ForceGraph3DInner({
             if (bw > 0.01) {
               lanternGlow.position.set(bx / bw, by / bw, bz / bw);
               lanternGlow.material.opacity +=
-                (0.35 - lanternGlow.material.opacity) * 0.12;
+                (lanternTarget - lanternGlow.material.opacity) * 0.12;
             } else lanternGlow.material.opacity *= 0.9;
           } else {
             lanternGlow.material.opacity *= 0.92;
@@ -770,7 +854,7 @@ export default function ForceGraph3DInner({
           nodeThreeObject={(n) => {
             const mat = new THREE.SpriteMaterial({
               map: dotTex,
-              color: new THREE.Color(colorOf(n.v)),
+              color: new THREE.Color(dotColorOf(n.v, lightRef.current)),
               transparent: true,
               depthWrite: false,
               blending: THREE.NormalBlending,
@@ -780,7 +864,7 @@ export default function ForceGraph3DInner({
             sp.scale.set(sz, sz, 1);
             n.__sp = sp;
             n.__sz = sz;
-            n.__base = new THREE.Color(colorOf(n.v));
+            n.__base = new THREE.Color(dotColorOf(n.v, lightRef.current));
             return sp;
           }}
           nodeLabel={(n) =>
@@ -788,8 +872,14 @@ export default function ForceGraph3DInner({
               n.v,
             )}">${NAMES[n.v] ?? n.v}</span> · ${n.deg} enlaces</div>`
           }
-          linkColor={(l) => (l.sv === l.tv ? colorOf(l.sv) : "#3d3448")}
-          linkOpacity={0.27}
+          linkColor={(l) =>
+            l.sv === l.tv
+              ? dotColorOf(l.sv, light)
+              : light
+                ? CROSS_LIGHT
+                : CROSS_DARK
+          }
+          linkOpacity={light ? 0.32 : 0.27}
           linkWidth={0}
           onNodeHover={(n) => {
             hoverRef.current = !!n;
