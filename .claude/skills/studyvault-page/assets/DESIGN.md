@@ -312,8 +312,7 @@ Estética visual derivada del template Neuform **"Premium Agency Portal — Tech
 | Token | Hex | Rol |
 |---|---|---|
 | `--primary` | `#92CFF2` | Azul claro: links, focos, acentos secundarios, detalles |
-| `--accent` | `#F47C59` | Coral: CTA principal, énfasis |
-| `--background` | `#F47C59` | Coral: **acento de realce** (CTA, foco visual). El canvas de página **no** es coral — es `--surface` |
+| `--accent` | `#F47C59` | Coral: CTA principal, énfasis. **Solo acento** — el canvas de página (`--background`) nunca es coral: es un rol por tema (ver 12.9) |
 | `--surface` | `#241208` | Marrón casi negro: **ancla de tinta** (sombras, texto en light, on-accent) + base estructural |
 | `--brown-soft` | `#382519` | Marrón cálido aclarado: **superficies del tema oscuro** (cards `#382519` / canvas `#4C3A30` / elevado `#54463E`) |
 | `--secondary` | `#382519` | Marrón cálido (rol estructural, tema oscuro) |
@@ -322,7 +321,9 @@ Estética visual derivada del template Neuform **"Premium Agency Portal — Tech
 | `--border` | `#27272A` | Bordes de cards, controls, divisores |
 | `--status-go` / `--status-promo` / `--status-warn` / `--status-caution` | `#46A86E` / `#2F9F8F` / `#D8B279` / `#D68F85` | Estados semánticos (éxito·verde / promociona·teal / aviso·ámbar / conflicto·rojo). Relleno/borde/ícono a baja opacidad, nunca texto sobre superficie |
 
-**Roles.** Los tokens de **rol de color se conmutan por tema** (ver 12.9). En **dark** las superficies son un **marrón cálido aclarado y parejo**: cards `--surface = #382519` (`--brown-soft`), canvas `--background ≈ #4C3A30` (`color-mix(in srgb, var(--brown-soft) 90%, #FFFFFF)`) y elevado `≈ #54463E` — la tinta profunda `#241208` se reserva para sombras / on-accent / texto en light. En **light**, un off-white cálido. Los paneles/cards se elevan sobre el canvas con un derivado `--surface-2` + borde 1px `--border`. El **coral `#F47C59` es acento** —CTA, palabra de realce del hero, objeto focal, dots de estado—; el azul `#92CFF2` es acento secundario y focos (oscurecido en light para contraste). **No se inventan colores nuevos**: los neutros de cada tema se derivan vía `color-mix` de las hex base (6 + `--brown-soft`); los `--status-*` son los únicos semánticos.
+**Roles.** Los tokens de **rol de color se conmutan por tema** (ver 12.9). En **dark** las superficies son un **marrón cálido aclarado y parejo**: cards `--surface = #382519` (`--brown-soft`), canvas `--background ≈ #4C3A30` (`color-mix(in srgb, var(--brown-soft) 90%, #FFFFFF)`) y elevado `≈ #54463E` — la tinta profunda `#241208` se reserva para sombras / on-accent / texto en light. En **light**, un off-white cálido. Los paneles/cards se elevan sobre el canvas con un derivado `--surface-2` + borde 1px `--border`. El **coral `#F47C59` es acento** —CTA, palabra de realce del hero, objeto focal, dots de estado—; el azul `#92CFF2` es acento secundario y focos (oscurecido en light para contraste). **No se inventan colores nuevos**: los neutros de cada tema se derivan vía `color-mix` de las hex base (6 + `--brown-soft`); los `--status-*` y la paleta de hojas (12.10) son los únicos semánticos con hex propio.
+
+**Tint por materia (`--vt-*`).** Cada vault tiene un tinte `--vt-mna|derecho|economia|proba|paw|sds|inge2` **derivado 100% por `color-mix` de las hex base** (mna = azul puro; derecho/economia/sds = mezclas de coral; proba/paw/inge2 = mezclas de azul/gris) — no son hex nuevos y valen en ambos temas. `[data-vault="…"]` en un contenedor los expone como `--vault-tint`. **Regla de uso:** solo como **fondo a baja opacidad, borde o relleno de SVG/nodo** (umbral no-texto 3:1); **nunca como color de texto** sobre superficie (para texto van `--link`/`--ink-strong`, que pasan AA). Espejo obligatorio: los valores deben coincidir con `VTINT` en `site/app/graph.json/route.ts` (el grafo los consume server-side).
 
 ### 12.2 Tipografía
 
@@ -340,22 +341,23 @@ El estilo mono se usa para señal técnica tipo `SYS.01 // Topo_Eval Coords: 34.
 
 ### 12.3 Espaciado y radios
 
-Escala de **8**:
+Escala de **8** — en el código es la serie `--s-1`…`--s-7` (`tokens.css`):
 
-| Token | Valor | Uso |
+| Token | Valor | Uso típico |
 |---|---|---|
-| `--space-base` | 8px | unidad base |
-| `--space-gap` | 16px | gap entre elementos |
-| `--space-card` | 24px | padding interno de cards/paneles |
-| `--space-section` | 80px | padding vertical de secciones |
+| `--s-1` | 8px | unidad base |
+| `--s-2` | 16px | gap entre elementos |
+| `--s-3` | 24px | padding interno de cards/paneles |
+| `--s-4` / `--s-5` / `--s-6` | 32 / 48 / 64px | separaciones intermedias |
+| `--s-7` | 80px | padding vertical de secciones |
 
 Radios:
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--radius-card` | 8px | cards, paneles |
-| `--radius-control` | 8px | botones, inputs, code blocks |
-| `--radius-pill` | 9999px | badges/pills, nav pills |
+| `--r-card` | 8px | cards, paneles |
+| `--r-ctrl` | 8px | botones, inputs, code blocks |
+| `--r-pill` | 9999px | badges/pills, nav pills |
 
 ### 12.4 Componentes
 
@@ -373,7 +375,7 @@ Lenguaje común: mismo radio (8px en cards/controls, full en pills), borde `--bo
 
 ### 12.5 Motion
 
-Suave y contenido. Easing `cubic-bezier(0.22, 1, 0.36, 1)`, duración **300–700ms**.
+Suave y contenido. Easing `--ease` = `cubic-bezier(0.22, 1, 0.36, 1)`; duraciones `--dur-fast: 240ms` · `--dur: 420ms` · `--dur-slow: 680ms`.
 
 - **Masked reveal** en headings y secciones (`clip-path` / `translateY` + `mask`).
 - **Staggered entrance**: las cards entran escalonadas (delay incremental).
@@ -405,10 +407,10 @@ Tokens como CSS copy-paste (capa web — permitido aquí, **nunca** en `.md`). E
 
 ```css
 :root {
-  /* Color */
+  /* Color (hex base + firma — los tokens de ROL, incl. --background/canvas,
+     se conmutan por tema en [data-theme], ver 12.9) */
   --primary:        #92CFF2;
   --accent:         #F47C59;
-  --background:     #F47C59;
   --surface:        #241208; /* ancla de tinta: sombras, on-accent, texto en light */
   --brown-soft:     #382519; /* superficies del tema oscuro (cards) */
   --secondary:      #382519;
@@ -429,20 +431,24 @@ Tokens como CSS copy-paste (capa web — permitido aquí, **nunca** en `.md`). E
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Espaciado (escala de 8) */
-  --space-base:    8px;
-  --space-gap:     16px;
-  --space-card:    24px;
-  --space-section: 80px;
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --s-7: 80px;
 
   /* Radios */
-  --radius-card:    8px;
-  --radius-control: 8px;
-  --radius-pill:    9999px;
+  --r-card: 8px;
+  --r-ctrl: 8px;
+  --r-pill: 9999px;
 
   /* Motion */
-  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
-  --dur-fast:    300ms;
-  --dur-slow:    700ms;
+  --ease:     cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 240ms;
+  --dur:      420ms;
+  --dur-slow: 680ms;
 }
 ```
 
@@ -456,11 +462,26 @@ Archivos de referencia:
 La capa web tiene **dos temas** conmutables; el **dark es el default**. La firma (coral de acento, serif display, mono técnico) es idéntica en ambos: solo cambian los **neutros** (canvas, superficies, texto, bordes) y el azul de links/focos.
 
 - **Mecánica.** Atributo `data-theme="dark"|"light"` en `<html>`. La elección persiste en `localStorage` (clave `sv-theme`) y se aplica en un `<script>` al inicio del `<head>` **antes de pintar** (sin flash). Toggle sol/luna en navbar + menú mobile (`aria-label`, `aria-pressed`). Transición suave, guardada por `prefers-reduced-motion`. Primera visita sin elección → **dark**.
-- **Tokens por tema.** Las hex base (6 + `--brown-soft`) viven en `:root`; los tokens de **rol** (`--background`, `--surface`, `--surface-2/3`, `--text-*`, `--border`, hairlines, sombras, glows, ring de focus) se definen dentro de `[data-theme="dark"]` y `[data-theme="light"]`, **derivados 100%** por `color-mix`/alpha de esas bases. No se introduce ningún hex de color nuevo (salvo los `--status-*`, fijos en ambos temas).
+- **Tokens por tema.** Las hex base (6 + `--brown-soft`) viven en `:root`; los tokens de **rol** (`--background`, `--surface`, `--surface-2/3`, `--text-*`, `--border`, hairlines, sombras, glows, ring de focus) se definen dentro de `[data-theme="dark"]` y `[data-theme="light"]`, **derivados 100%** por `color-mix`/alpha de esas bases. No se introduce ningún hex de color nuevo (salvo los `--status-*`, fijos en ambos temas, y la paleta de hojas de 12.10, con variante por tema).
 - **Dark (default).** Superficies de **marrón cálido aclarado y parejo** ancladas en `--brown-soft #382519`: cards `--surface = #382519`, canvas `--background = color-mix(in srgb, var(--brown-soft) 90%, #FFFFFF)` (≈ `#4C3A30`), elevado `--surface-2 ≈ #54463E` (heads/inputs `--surface-3` un paso más claro). La tinta profunda `#241208` queda para sombras / on-accent. Texto blanco; acentos coral/azul.
 - **Light.** Canvas off-white cálido (`color-mix(in srgb, #FFFFFF 96%, var(--surface) 4%)`); paneles blancos con borde claro derivado y sombras grises suaves. Texto `--text-primary = #241208`, secundario gris cálido derivado. El coral se mantiene; el **azul `#92CFF2` se oscurece** para links/focos/código (`color-mix` con `#241208`) por contraste sobre claro.
 - **Accesibilidad.** Contraste **AA** medido en ambos temas; el ring de focus tiene color por tema para que sea siempre visible. La capa ambient adapta su alpha por tema (sutil en light).
 - **Foundations.** Los swatches del style guide muestran las **6 hex base** en cualquier tema.
+
+### 12.10 Paleta semántica de hojas (EntryKind)
+
+Las hojas imprimibles (`/[vault]/hojas`) colorean sus entradas por categoría semántica. Paleta **"refinada"** vigente (decisión 2026-07-04; reemplaza la propuesta original de los mockups de `_design-review/foundations.html`):
+
+| Kind | Light (y print) | Dark | Rol |
+|---|---|---|---|
+| `def` | `#275C8C` | `#9AC7EA` | definición — azul |
+| `theorem` | `#5A3897` | `#C4B0E8` | teorema — violeta |
+| `formula` | `#16745C` | `#85CFB0` | fórmula — verde/teal |
+| `method` | `#8A591C` | `#E1B878` | técnica — ámbar |
+| `caution` | `#B23A28` | `#EDA08D` | cuidado — coral/rojo |
+| `example` | `#695D51` | `#C4BAB0` | ejemplo — topo cálido |
+
+Contraste **AA verificado** (light/print sobre blanco ≥ 4.6:1). Existe un 7.º kind `code` **neutral** (`#5D5D65` light / `#B4B4BC` dark) que **no** forma parte de los 6 sincronizados. Los 6 valores viven **sincronizados byte a byte en 3 lugares del código** además de esta tabla: `site/components/vault-sheets/types.ts` (`KIND_META`), `site/packages/ui/src/styles/sheets.css` (bloques light + dark + print) y `site/components/vault-sheets/exporters.ts` (`TEX_COLOR_DEFS`, usa los hex light para el `.tex`). Todo cambio de la paleta se replica a los 4 en la misma edición.
 
 ---
 

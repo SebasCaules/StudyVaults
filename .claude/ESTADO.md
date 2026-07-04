@@ -51,8 +51,9 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 - **Auditoría integral 2026-07-03/04: COMPLETA (4/4)** e integrada a los planes; hallazgos
   alto re-verificados por el overseer. P4 (directivas stale) **aplicado el 2026-07-04**:
   PROJECT.md, README raíz, HOME.md, SKILL.md (toolkit/sheet/ui/data/design), ui/README y
-  headers de .plans viejos corregidos contra el código real. Restante menor: sync DESIGN.md
-  §12 vía `studyvault-design` (ver P4 del plan de correcciones).
+  headers de .plans viejos corregidos contra el código real. DESIGN.md §12 sincronizado el
+  2026-07-04 (paleta de hojas refinada en §12.10 — decisión del usuario —, tints `--vt-*`,
+  motion/espaciado/radios reales; 3 copias md5 `c6061c05…`).
 - **Pendientes reales del overhaul** (verificado: TODO lo demás del BUILD_PLAN está
   implementado, incl. footer en /electivas y de-stick del topbar): (1) las 7 ilustraciones
   raster (hoy SVG placeholder), (2) syllabus real de obligatorias (placeholder "próximamente";

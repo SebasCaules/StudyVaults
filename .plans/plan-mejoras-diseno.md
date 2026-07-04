@@ -6,11 +6,9 @@
 > **[WIP]** = tocan archivos en edición por otra sesión — coordinar.
 
 ## D0 — Divergencias vs mockups: DECISIONES del usuario (spec manda salvo que apruebes el cambio)
-1. **Paleta de hojas "refinada"**: los 12 hex implementados difieren del spec aprobado
-   (foundations.html §2) — p.ej. def dark `#9AC7EA` vs `#9AB8D6`. La sync interna
-   types↔css↔tex es perfecta y el comentario la llama "Paleta refinada (rework 2026-07)".
-   Decidir: ¿manda el spec o el refinamiento? En ambos casos, replicar la ganadora a
-   DESIGN.md §12 (skill `studyvault-design`) — hoy DESIGN.md no tiene NINGÚN hex de hojas.
+1. ✅ **RESUELTO 2026-07-04 — gana la paleta "refinada"** (decisión del usuario). Documentada
+   en DESIGN.md **§12.10** (3 copias en sync, md5 `c6061c05…`); la sync types↔css↔tex ya era
+   perfecta. La propuesta original de foundations.html queda como histórico del mockup.
 2. **Hero-planner box de la landing** (module-a-landing:456-465): la caja destacada con
    eyebrow quedó reducida a un botón primario más — ¿reponer o aprobar la simplificación?
 3. **Banda "Grafo" + vista de grafo completa** (module-a-landing:762-797): no existe ni la

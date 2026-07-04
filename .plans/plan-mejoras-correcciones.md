@@ -116,12 +116,11 @@
 - .claude/skills/README.md: ya lo había actualizado otra sesión (8 skills). ✓
 
 **Restante de P4** (menor, con dueño claro):
-1. **DESIGN.md §12 vía `studyvault-design`** (3 copias sync): documentar tints `--vt-*`
-   (con la regla "solo fondo/borde/SVG, nunca texto"), alinear nombres/valores de motion
-   (`--ease`, `--dur` 240/420/680 vs lo escrito), limpiar la fila legacy `--background: coral`
-   de la tabla §12.1, y **replicar la paleta de hojas ganadora** (bloqueado por decisión D0.1
-   del plan de diseño; hoy DESIGN.md no tiene ningún hex de hojas pese a que types.ts:171 y
-   sheets.css:15 dicen lo contrario — corregir también esos comentarios).
+1. ✅ **DESIGN.md §12 sincronizado (2026-07-04, vía `studyvault-design`)**: paleta de hojas
+   refinada documentada en §12.10 (decisión D0.1 resuelta), tints `--vt-*` con su regla de
+   uso, motion real (`--ease`, 240/420/680), fila legacy `--background: coral` eliminada,
+   nombres `--s-*`/`--r-*` alineados al código. 3 copias byte-idénticas (md5 `c6061c05…`);
+   los comentarios de types.ts:171 y sheets.css:15 ahora son verdaderos sin tocarlos.
 2. BAJAs no aplicadas: smoke-tests de ship sin `/electivas/planificar` ni `/[vault]/biblioteca`
    (SKILL ship); patrón `launcher`/`poster` en TOOL_TEMPLATE.tsx; mencionar modo "Libro" en
    SKILL sheet.
