@@ -21,6 +21,18 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
+- **Ronda 2 de pulido UX/HCI del planner** — `7130f16` (2026-07-04, orquestado: 4 builders +
+  3 auditores HCI (Gestalt/Nielsen/Fitts) + overseer; verificado en build estático, 804 págs):
+  Plan (cards del calendario solo-cuatri, LockToggle visible, banner ~55% de alto, filtros del
+  rail rediseñados), finales declutter (ingesta colapsable, card de resultado única con badges
+  1º/2º, calendario vacío compacto, llamado clickeable en el chip del examen), Electivas (barra
+  de filtros en contexto control+leyenda, cards densas, EstadoControl canónico), Mi avance (sin
+  `#`, vocabulario unificado, tachado solo para terminado, masonry), Combinador de horarios
+  (toolbar agrupada, vacío compacto, `+` 32px), Grafo (instructivo→popover, tooltip nombre en
+  hover), shell (nav=H1: "Mi avance"/"Mapa de correlativas", reset en región propia, topbar
+  compacta, Referencias con header sticky). HCI diferidos (recomendaciones, no aplicados):
+  unificar el picker de horarios a rail lateral, editor de fechas de finales dentro del rail,
+  reubicar "Compartir", orden/vista default del nav.
 - **Rediseño UX del Plan de cursada** — `96b2912` + `0a69943` (2026-07-04, orquestado:
   3 builders + review adversarial + auditoría UX, todo verificado en build estático):
   workbench acoplado board+rail (pool y recomendador slim unificados en un rail sticky
