@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 import { usePlanner } from "@/components/planner/state";
+import { EstadoControl } from "@/components/planner/EstadoControl";
+import { estadoOf } from "@/lib/planner/estado";
 import { PLAN, hasHorario } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
 import { FICHAS } from "@/lib/planner/fichas";
@@ -100,7 +102,7 @@ function CardLegend() {
 
 export default function ElectivasView() {
   const { state, dispatch } = usePlanner();
-  const { approved, combo, areasOn, search, fDisp, fHor } = state;
+  const { approved, finalDone, combo, areasOn, search, fDisp, fHor } = state;
 
   const list = useMemo(() => {
     const q = search.toLowerCase();
@@ -141,7 +143,10 @@ export default function ElectivasView() {
   );
 
   function ElectCard({ m }: { m: Materia }) {
-    const appr = approved.has(m.codigo);
+    // "aprobada" visual de la card = cualquier avance real (cursada o final);
+    // el nivel exacto lo marca el EstadoControl de la fila de acciones.
+    const estado = estadoOf(m.codigo, approved, finalDone);
+    const appr = estado !== "pendiente";
     const avail = isAvailable(m, approved);
     const inCombo = combo.has(m.codigo);
     const hor = hasHorario(m.codigo);
@@ -168,15 +173,11 @@ export default function ElectivasView() {
           {reg ? <RegimeIcon kind={reg} /> : null}
         </div>
         <div className="card__acts">
-          <button
-            className={"mini btn-ap" + (appr ? " on" : "")}
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch({ type: "TOGGLE_APPROVED", code: m.codigo });
-            }}
-          >
-            {appr ? "aprobada ✓" : "aprobada"}
-          </button>
+          {/* tri-estado canónico (pendiente → ✓ cursada → ✓✓ final); el span
+              sólo centra verticalmente el control frente al botón vecino. */}
+          <span style={{ display: "inline-flex", alignItems: "center" }}>
+            <EstadoControl code={m.codigo} />
+          </span>
           <button
             className={"mini btn-co" + (inCombo ? " on plan" : "")}
             disabled={!hor}

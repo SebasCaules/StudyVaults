@@ -8,6 +8,7 @@
 // patrón que MinorsModal, para escapar el transform de `.view-panel`.
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useModalFocus } from "@/components/planner/useModalFocus";
 import {
   IconClose,
   IconCheck,
@@ -41,6 +42,8 @@ export default function IOModal({
   prefsError: string | null;
 }) {
   const fileRef = useRef<HTMLInputElement | null>(null);
+  // foco accesible del modal: foco inicial en el panel + trap de Tab + restore
+  const panelRef = useModalFocus<HTMLDivElement>();
   // selección de cuatrimestres a incluir en el documento (arranca con todos).
   const [sel, setSel] = useState<Set<number>>(
     () => new Set(cuatris.map((c) => c.idx)),
@@ -74,7 +77,8 @@ export default function IOModal({
       aria-label="Exportar o importar el plan de cursada"
     >
       <div className="mnr-modal__bg" onClick={onClose} />
-      <div className="mnr-modal__panel plan2-io">
+      {/* tabIndex=-1: fallback de foco inicial para useModalFocus */}
+      <div className="mnr-modal__panel plan2-io" ref={panelRef} tabIndex={-1}>
         <button className="mnr-close" onClick={onClose} aria-label="Cerrar">
           <IconClose size={15} />
         </button>

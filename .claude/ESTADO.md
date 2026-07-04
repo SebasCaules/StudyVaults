@@ -41,6 +41,17 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 - Regla: antes de tocar CUALQUIER archivo, `git status` + mtime; si está modificado y no lo
   modificaste vos, es de otra sesión. Commitear temprano y seguido, solo tus paths.
 
+## Batch de correcciones EJECUTADO (2026-07-04)
+
+Todo lo autónomo de los planes se aplicó (6 agentes en carriles disjuntos + overseer, `tsc`
+verde): P1 bugs altos (CommissionSelect light, DnD/Roadmap respetan locks, tri-estado en
+electivas/drawer), P1b (contrato `lockPins` completo con persistencia, migraciones saneadas),
+P1c (.ics con TZID/UID estable/folding, texEscape), P2 (a11y de tablists y modales, perf del
+recomendador, reset veraz, sitemap), P3 parcial (charFilters/result muertos fuera, planner.css
+−341 líneas, TEX_COLOR_DEFS derivado), D3 (status por tema + DESIGN.md sync `d720a581…`).
+**Falta la verificación P0 en build+browser** (vedada: dev server de la sesión del grafo vivo)
+→ correr `studyvault-ship` Fase A al aterrizar ese WIP. Detalle ítem por ítem en los planes.
+
 ## Pendiente (backlog priorizado en `.plans/`)
 
 - `.plans/plan-mejoras-correcciones.md` — correcciones y deuda (funcional).

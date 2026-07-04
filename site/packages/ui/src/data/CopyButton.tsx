@@ -7,7 +7,9 @@ import { cn } from "../cn";
 /**
  * CopyButton — botón `.vtool-copy` que copia `text` al portapapeles con
  * `navigator.clipboard`. Tras copiar, muestra `copiedLabel` y aplica
- * `.copied` durante ~1.2s, luego vuelve al estado base.
+ * `.copied` + `.is-copied` durante ~1.2s, luego vuelve al estado base.
+ * (Se emiten ambas: toolkit.css estila `.vtool-copy.copied` y la wiki
+ * `.wiki-code__copy.is-copied` — ver CodeBlock.)
  *
  * @example
  *   <CopyButton text="git clone …" />
@@ -58,7 +60,7 @@ export function CopyButton({
       type="button"
       aria-live="polite"
       title="Copiar al portapapeles"
-      className={cn("vtool-copy", copied && "copied", className)}
+      className={cn("vtool-copy", copied && "copied is-copied", className)}
       onClick={onCopy}
       {...rest}
     >

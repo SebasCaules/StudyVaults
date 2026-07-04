@@ -109,14 +109,6 @@ export interface FichaDerivado {
   asistenciaPct: number | null;
 }
 
-/** Filtros por características para "armar plan" (Combinador). `any`/false = sin filtrar. */
-export interface CharFilters {
-  regimen: "any" | "promocionable" | "sin-final";
-  sinAsistenciaObligatoria: boolean;
-  maxHsSemanales: number | null;
-  soloConPrograma: boolean;
-}
-
 export interface Edge {
   from: string;
   to: string;
@@ -219,7 +211,10 @@ export interface PlanState {
    *  (no mete materias nuevas ahí ni mueve las existentes hacia/desde ese
    *  índice). Las materias de un índice lockeado se pinean vía `fixed`. */
   lockedIdx: Set<number>;
-  result: PlanResult | null;
+  /** registro de qué pines agregó cada lock (índice → códigos pineados POR el
+   *  lock, sin los manuales previos): al des-lockear se liberan SOLO esos.
+   *  Sin registro para un índice (estado viejo) el unlock no borra nada. */
+  lockPins: Map<number, string[]>;
 }
 
 export interface PlannerState {
@@ -244,8 +239,6 @@ export interface PlannerState {
   sideCollapsed: boolean;
   drawerCode: string | null;
   fichaCode: string | null; // electiva abierta en el lector full-screen (efímero, sin persistir)
-  /** filtros por características del programa para el Combinador (efímero, sin persistir). */
-  charFilters: CharFilters;
   /** estado del combinador de finales (período, mesas, selección). */
   finales: FinalesState;
   hydrated: boolean;

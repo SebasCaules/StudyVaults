@@ -61,6 +61,9 @@ porque en producción `next.config.ts` aplica `basePath: "/StudyVaults"` (solo c
    - `preview_start` apuntando a `http://localhost:3000` (dev) o
      `http://localhost:3000/StudyVaults/` (build).
    - `preview_screenshot` de las páginas tocadas.
+   - Smoke-tests mínimos de un cambio amplio: home `/`, una nota de wiki, `/electivas`
+     (pseudo-landing) **y** `/electivas/planificar/` (la app real), un `/[vault]/herramientas/`,
+     un `/[vault]/hojas/` y un `/[vault]/biblioteca/` si el vault lo tiene.
    - `preview_console_logs` para confirmar **0 errores de consola**.
 
    **Higiene de preview** (de la auditoría de sesiones — estos errores costaron ~100 reintentos):

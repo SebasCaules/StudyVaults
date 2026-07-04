@@ -1,126 +1,77 @@
 # Plan — mejoras y correcciones (funcional)
 
-> 2026-07-03 (v2, con auditoría integrada). Fuente: auditoría de 4 agentes solo-lectura
-> (portal/UI · planner · hojas/toolkits/pipelines · directivas) sobre el árbol post-overhaul
-> `25b93b4`. Los hallazgos ALTO fueron re-verificados por el overseer leyendo el código.
-> Ejecutar con las skills del repo; nada está "hecho" sin `tsc` + `./run.sh build` + browser.
-> Marcados **[WIP]**: tocan archivos que otra sesión está editando (grafo 3D / finales) —
-> coordinar antes de tocar. `tsc --noEmit` limpio al 2026-07-03.
+> v3 — 2026-07-04. **Batch autónomo EJECUTADO** (6 agentes + overseer, `tsc` verde ×3).
+> Quedan solo los ítems bloqueados por (a) el WIP vivo de la sesión del grafo/hero,
+> (b) decisiones/datos del usuario, y (c) la verificación en build+browser real.
 
-## P0 — Verificación integral del overhaul
-1. **Ship Fase A completa**: `./run.sh build` + recorrida browser (dark+light) de los módulos
-   vs mockups, con screenshots. Hacerla cuando aterrice el WIP vivo (grafo 3D + finales).
-2. Coordinar con las sesiones activas antes de cualquier build (comparten `.next`).
+## P0 — Verificación integral — ⏳ PENDIENTE (bloqueada)
+`./run.sh build` + browser quedó **vedado durante el batch**: la sesión del grafo tiene su
+dev server vivo en :3000 (comparten `.next`). Al aterrizar ese WIP → correr `studyvault-ship`
+Fase A completa (build ~800 pág + smoke-tests + screenshots dark/light) sobre TODO lo de abajo.
+Lo ejecutado se verificó con `tsc` limpio + revisión adversarial de diffs + spot-checks estáticos.
 
-## P1 — Bugs confirmados (alto)
-1. **Tema claro ilegible en CommissionSelect** — `packages/ui/src/styles/forms.css:59`:
-   `option { color: var(--text-primary); background: var(--surface) }` y en light ambos
-   resuelven a `--hex-brown` → texto invisible. Fix: fondo `var(--surface-2)`. ✅ verificado.
-2. **DnD pisa cuatris finalizados** — `components/planner/views/PlanView.tsx:456-461`: el
-   `onDrop` de SemCard dispara `PLAN_SET_FIXED` sin chequear `locked`. ✅ verificado.
-3. **Roadmap ignora `lockedIdx` por completo** — PlanView.tsx:736-953/2129-2144: draggable,
-   acepta drops, permite `PLAN_POOL_REMOVE` y no muestra candado en cuatris finalizados.
-4. **Las electivas nunca llegan a `estado:"final"`** — ElectivasView.tsx:175 y
-   DetailDrawer.tsx:551 usan `TOGGLE_APPROVED` binario; `EstadoControl` solo está en
-   CuatriView → toda electiva aprobada queda como final-pendiente PARA SIEMPRE en la tab
-   "Combinación de finales" (rows = `approved && !finalDone`). El mockup `module-f-checks`
-   sí incluye electivas. Fix: `EstadoControl` en ElectCard/DetailDrawer. ✅ verificado.
-5. **[WIP] Tooltip del grafo 3D ilegible en light** — globals.css:956-960, mismo choque
-   brown-sobre-brown (avisar a la sesión del grafo).
+## P1 — Bugs altos — ✅ HECHO (4/5)
+1. ✅ CommissionSelect legible en light (`forms.css`: option → `--surface-2`).
+2. ✅ DnD no acepta drops en cuatris finalizados (SemCard: dropEffect none + drop ignorado).
+3. ✅ Roadmap respeta `lockedIdx` (draggable/drops/quitar gateados + candado + chip + Desbloquear).
+4. ✅ Electivas llegan a `estado:"final"`: `EstadoControl` en ElectCard y DetailDrawer; el action
+   binario `TOGGLE_APPROVED` quedó huérfano y se eliminó (type + case). CSS `.btn-ap` huérfano fuera.
+5. ⏸ Tooltip 3D en light — **probablemente obsoleto**: la sesión del grafo borró
+   `ForceGraph3DInner` y está construyendo `HeroAtlas`; re-evaluar cuando aterrice.
 
-## P1b — Bugs medios (estado/locks/persistencia)
-1. "Guardar preferencia" ofrece cuatris lockeados como destino — CombinadorView.tsx:355-382.
-2. Desbloquear un cuatri borra TODOS los pines de ese índice, incl. los manuales previos —
-   state.tsx:317-320. Fix: recordar qué pines agregó el lock y liberar solo esos.
-3. Migración `finalDone = new Set(approved)` mete promocionables/sin-final (muestran ✓✓
-   en vez de tilde terminal) — state.tsx:52,141. Fix: filtrar con `tieneFinal(code)`.
-4. `plan_finales_combo_v1` corrupto en localStorage hace throw en el reducer (la ruta
-   localStorage no pasa por `parseFinales`) — persist.ts:63-70 + state.tsx:145-153.
-5. Guard de rutas incompleto: `/[vault]/[...slug]` no filtra `hojas` (sí herramientas y
-   biblioteca) — app/[vault]/[...slug]/page.tsx:24-30. Latente. ✅ patrón verificado.
-6. **`three` phantom dependency** — se importa directo en ForceGraph3DInner pero no está en
-   `package.json` (llega hoisted); riesgo ante `npm ci`/dedupe. Fix: declararla. ✅ verificado.
+## P1b — Estado / locks / persistencia — ✅ HECHO
+1. ✅ "Guardar preferencia" excluye cuatris lockeados (+ estado local rancio saneado con `safeSaveIdx`).
+2. ✅ Unlock ya no borra pines manuales: contrato `lockPins` completo — action
+   `PLAN_TOGGLE_LOCK{pinnedByLock}`, `plan.lockPins` en el estado, persistencia
+   `plan_lock_pins_v1` + `PreferenceBundle.lockPins` (compat con bundles viejos: unlock
+   conservador que no borra nada), effect en PlannerApp, `finalizeCuatri` con dispatch único.
+3. ✅ Migración `finalDone` filtrada con `tieneFinal` (+ saneo idempotente de datos ya
+   contaminados al hidratar). Helpers puros movidos a `lib/planner/estado.ts` (fuente única).
+4. ✅ localStorage de finales validado con `parseFinales` (corrupto → default, sin throw).
+5. ✅ Guard `hojas` en `[...slug]/page.tsx`.
+6. ⏸ `three` phantom dep — **bloqueado**: `package.json` caliente (sesión del grafo lo está
+   tocando; puede que su rework ya lo resuelva). Verificar al aterrizar.
 
-## P1c — Bugs medios (finales / .ics / export) **[WIP: coordinar con sesión de finales]**
-1. Dos finales el MISMO día sin superponerse no generan ningún aviso (`prep = -1` descartado)
-   — FinalesCombinadorView.tsx:228-240.
-2. .ics sin `TZID`/`VTIMEZONE` (hora flotante: se corre si el calendario no está en TZ
-   Argentina) — FinalesCombinadorView.tsx:350-357. + UID incluye la fecha (editar fecha y
-   re-importar duplica el evento, :354) + sin folding RFC 5545 (:333-375).
-3. `texEscape` manda tipográficos a modo math: `—`→`$---$` (imprime −−−), `–`, `’`, `“` —
-   exporters.ts:83; ~118 ocurrencias en data de paw/inge2/mna/economia/proba.
-4. Meta-note del export multi-cuatri dice siempre "minimiza cuatrimestres" aunque el método
-   sea dias/balance — exportPlan.ts:876-879.
+## P1c — Finales / .ics / export — ✅ HECHO
+1. ✅ Dos finales el mismo día sin pisarse → aviso propio (warn) + texto de días consecutivos corregido.
+2. ✅ .ics: `TZID=America/Argentina/Buenos_Aires` + VTIMEZONE, UID estable (code+período+año,
+   re-importar actualiza), folding RFC 5545 (75 octetos, validado con script + roundtrip).
+3. ✅ `texEscape`: tipográficos en modo texto (`—`→`---`, comillas curvas → TeX), math intacta.
+4. ✅ Meta-note del export según método (ExportArgs.method, default compat) + los 2 call-sites
+   de PlanView pasan `method: PL.method`.
 
-## P2 — Correcciones menores y perf
-1. **Reset de aprobadas: texto personal Y falso** — Sidebar.tsx:230-233 describe el avance
-   del autor ("1.º a 3.º + economía…") violando la despersonalización, y `aprobadasDefault`
-   es `[]` → el confirm miente. Fix: "¿Restablecer todas las materias a pendiente?".
-2. `recommendElectives(…, Infinity)` corre `optimizePlan` por ~90 candidatas en cada cambio,
-   incluso con el recomendador oculto — PlanView.tsx:1589-1605. Gatear con `recOn` + memo.
-3. Selects de "fijar cuatri" inconsistentes: 8 opciones (Roadmap/pool) vs 12 (combinador) vs
-   N=14 del optimizer — PlanView.tsx:904,1410 / CombinadorView.tsx:361. Helper único.
-4. Tablist del PlanView sin flechas de teclado (roving tabindex sin onKeyDown): Roadmap y
-   Minors inalcanzables por teclado — PlanView.tsx:1993-2024. + Modales del planner sin
-   focus-trap/foco inicial (DetailDrawer.tsx:504-510, IOModal, MinorsModal, ResetConfirm).
-5. PlannerIntro: autoplay no se reinicia al click manual (pisa la elección a los ≤3.4s) y
-   tablist ARIA incompleto — PlannerIntro.tsx:96-121.
-6. `CopyButton` emite clase `copied` pero el CSS espera `.is-copied` → feedback visual del
-   chrome de código nunca aplica — packages/ui/src/data/CopyButton.tsx:61 vs globals.css:685.
-7. WikiRail: cerrar el drawer en mobile persiste `"0"` y deja el rail colapsado en desktop —
-   WikiRail.tsx:98-125. No persistir cierres en modo drawer.
-8. Sitemap sin `/herramientas/`, `/hojas/`, `/biblioteca/` — app/sitemap.ts:10-16.
+## P2 — Menores y perf — ✅ HECHO
+1. ✅ Reset despersonalizado y veraz ("¿Restablecer todas las materias a pendiente?").
+2. ✅ Recomendador no computa oculto (memo gateado; antes ~90×optimizePlan por render).
+3. ✅ Selects de fijar cuatri unificados en `MAX_PLAN_CUATRIS = 14` (`lib/planner/consts.ts`).
+4. ✅ Tablist de PlanView con flechas/Home/End; foco accesible (`useModalFocus`: foco inicial +
+   trap + restore) en DetailDrawer (extraído a `DrawerModal` montado-al-abrir), IOModal,
+   MinorsModal y ResetConfirm.
+5. ✅ PlannerIntro: click manual frena el autoplay; ARIA correcto (`role=group`+`aria-pressed`).
+6. ✅ CopyButton emite `copied is-copied` (compat con el CSS de wiki sin tocar globals.css).
+7. ✅ WikiRail: cierre en drawer no persiste; scroll-lock reacciona al cruce de breakpoint.
+8. ✅ Sitemap con `/herramientas/`, `/hojas/`, `/biblioteca/` por flags.
 
-## P3 — Deuda técnica (barridas)
-1. **Camino muerto del grafo 2D**: `ForceGraphInner.tsx` (464 líneas, solo se usan sus types)
-   + `GraphExplorer variant="full"` sin render + ~130 líneas `.graph__*` en globals.css +
-   dep `react-force-graph-2d` + debug `window.__frame` (:188-219). Extraer types y borrar.
-2. `html2canvas` declarada y sin ningún import — `npm uninstall`. ✅ verificado en package.json.
-3. `charFilters` es estado muerto (actions/helpers/CSS sin consumidores) — types.ts:113-118,
-   state.tsx:380-383, programa.ts:100-150, `cmbx-charpanel*` en planner.css.
-4. `PlanState.result` nunca se escribe; rama de pineo muerta en `PLAN_TOGGLE_LOCK` —
-   types.ts:222 + state.tsx:325.
-5. **planner.css: ~125 clases sin consumidor** (combinador viejo `cmb-*`/`cmbx-*`, drawer
-   lateral pre-modal `drawer__*`/`dr-*`/`pick-*`, PlanView viejo `plan2-hero*`…) en un
-   archivo de 2142 líneas + tokens `--a-*` (:35-38) con colores DISTINTOS a los canónicos
-   de `AREA_COLOR`. Barrida con cuidado de clases dinámicas (`plan2-recgrp__dot--`+tone).
-6. Hojas: PAW/Inge2 sin migrar al esquema Unidad→Sub-unidad (mna/economia/proba sí; la UI
-   pierde encabezados/filtro/códigos en esos dos vaults) — data/paw.ts + inge2.ts.
-7. `TEX_COLOR_DEFS` hardcodea hex aparte de `KIND_META` (sync manual): generarlo desde
-   `KIND_META.*.light` para hacer estructural la invariante — exporters.ts:117.
-8. Menores: `IconLock` duplicado (PlanView:82-98, FinalesCombinadorView:1013-1029);
-   `27`/`14` hardcodeados (Topbar.tsx:28-30, Sidebar.tsx:192,214); 17 íconos sin uso en
-   ToolIcon.tsx; header AUTO-GENERADO sin comando en proba/finales/wiki-hrefs.ts;
-   `/public/electivas/` stale en site/.gitignore; `"use client"` innecesario en
-   UseWithClaude.tsx; leftovers en graph.json/route.ts (:114-116, campos `s`/`r` no
-   consumidos); clase `hero-graph__canvas--3d` sin CSS; reglas `.nav__burger .ico-*`
-   huérfanas en nav.css.
+## P3 — Deuda — parcial
+1. ⏸ **Grafo 2D muerto** (ForceGraphInner + CSS + dep `react-force-graph-2d` + `html2canvas`) —
+   bloqueado: la sesión del grafo está reemplazando ese subsistema entero (HeroAtlas); es
+   probable que su rework lo limpie. Re-evaluar al aterrizar (ídem leftovers de
+   `graph.json/route.ts` y clase `hero-graph__canvas--3d`).
+2. ✅ `charFilters` eliminado (types+actions+helpers; el CSS lo barrió la pasada de planner.css).
+3. ✅ `PlanState.result` eliminado (+ rama muerta del reducer + workaround de PlanView).
+4. ✅ **planner.css: −341 líneas** (2143→1802) — familias muertas verificadas por grep
+   (combinador viejo, drawer pre-modal, plan2-hero/seg/methodseg/controls/boardbar, cal-card,
+   tokens `--a-*`) + dashed decorativos → solid (rec-fit, card__read). El agente dejó una
+   **lista de candidatos 2ª tanda** (`.drawer`, `.cmb-grid`, `.cmbx*`, `.cmb2-*`, `.ctl*`…)
+   conservados por prudencia — confirmar y barrer en una pasada futura.
+5. ✅ IconLock/IconUnlock a `icons.tsx`; 27/14 → constantes; header honesto en wiki-hrefs.ts;
+   `/public/electivas/` fuera de site/.gitignore; `use client` fuera de UseWithClaude;
+   `.ico-*` huérfanas fuera de nav.css; `TEX_COLOR_DEFS` derivado de `KIND_META`
+   (verificado byte-idéntico).
+6. ⏭ ToolIcon poda — SKIPPED a propósito (17 íconos sin uso pero útiles para tools futuras).
+7. 🧑‍🎓 Hojas PAW/Inge2 → esquema Unidad→Sub-unidad — requiere criterio editorial TUYO
+   (cómo agrupar el contenido); no se automatizó.
 
-## P4 — Directivas stale — ✅ CERRADO 2026-07-04 (auditoría de directivas integrada y aplicada)
-
-**Corregido y verificado** (commit de esta fecha):
-- PROJECT.md: guard `herramientas`/`biblioteca` (no `hojas`), inventario completo de rutas
-  (pseudo-landing + planificar + biblioteca + graph.json/robots/sitemap), flags `library`/
-  `navByUnit`/`unitLabels`, 8.º pilar ingesta, párrafo de arquitectura planner+grafo 3D,
-  ~47 componentes, sync DESIGN.md sin hash hardcodeado.
-- README raíz: HOME.md ya no figura "pendiente de crear", URL real de clone, sección
-  "El sitio web", diagrama con Electivas/site/run.sh, counts 774 (criterio wiki/), suite de
-  8 skills. HOME.md: counts alineados al mismo criterio.
-- SKILL.md: toolkit (guard corregido + campos `tone/blurb/poster` + `launcher` bespoke),
-  sheet (jerarquía Unidad→Sub-unidad, `unitDesc`, 7.º kind `code`, `vars/code/figure`),
-  ui (7 hex base, `--status-*`, Callout/CommissionSelect/CodeCopy/ToolCard, forms/library css),
-  data (build-fichas-data.mjs + fichas.ts tracked), design (estado de sync actualizado).
-- packages/ui/README.md: 7 hex + status tokens, catálogo completo (47), 19 css.
-- .plans viejos: headers actualizados a EJECUTADO con su backlog real (programas: 139 PDFs
-  faltantes + extensión 614-wide; texture-pack: anexo "nodos sueltos" probablemente superado).
-- .claude/skills/README.md: ya lo había actualizado otra sesión (8 skills). ✓
-
-**Restante de P4** (menor, con dueño claro):
-1. ✅ **DESIGN.md §12 sincronizado (2026-07-04, vía `studyvault-design`)**: paleta de hojas
-   refinada documentada en §12.10 (decisión D0.1 resuelta), tints `--vt-*` con su regla de
-   uso, motion real (`--ease`, 240/420/680), fila legacy `--background: coral` eliminada,
-   nombres `--s-*`/`--r-*` alineados al código. 3 copias byte-idénticas (md5 `c6061c05…`);
-   los comentarios de types.ts:171 y sheets.css:15 ahora son verdaderos sin tocarlos.
-2. BAJAs no aplicadas: smoke-tests de ship sin `/electivas/planificar` ni `/[vault]/biblioteca`
-   (SKILL ship); patrón `launcher`/`poster` en TOOL_TEMPLATE.tsx; mencionar modo "Libro" en
-   SKILL sheet.
+## P4 — Directivas — ✅ CERRADO (2026-07-04)
+Incluye las 3 BAJAs finales: smoke-tests en ship (con `/electivas/planificar/` y biblioteca),
+patrón `launcher`/`poster` en TOOL_TEMPLATE, modo "Libro" documentado en la skill sheet.

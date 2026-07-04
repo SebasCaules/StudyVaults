@@ -507,6 +507,10 @@
 .planner .pv-sem.is-locked .pv-sem__title {
   opacity: 0.74;
 }
+/* espejo en el Roadmap: un stop finalizado se atenúa igual que su card */
+.planner .rmap-stop.is-locked {
+  opacity: 0.82;
+}
 /* destino activo del drag (soltar una electiva acá la fija en este cuatri) */
 .planner .pv-sem.is-drop-over {
   border-color: var(--brass);

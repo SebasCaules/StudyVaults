@@ -44,6 +44,7 @@ import {
   IconClock,
   IconDownload,
   IconInfo,
+  IconLock,
   IconPlus,
   IconTrash,
 } from "@/components/planner/icons";
@@ -94,6 +95,31 @@ function mesasPisan(a: MesaFinal, b: MesaFinal): boolean {
 /** Escape RFC 5545 (backslash, coma, punto y coma, saltos de línea). */
 const icsEsc = (s: string) =>
   String(s).replace(/([\\,;])/g, "\\$1").replace(/\r?\n/g, "\\n");
+
+/** Zona horaria de las mesas. Argentina es UTC-3 fijo todo el año (sin DST):
+ *  alcanza con un único bloque STANDARD en el VTIMEZONE. */
+const ICS_TZID = "America/Argentina/Buenos_Aires";
+
+/** Octetos UTF-8 de un code point (para plegar sin partir caracteres). */
+const cpOctets = (cp: number) =>
+  cp < 0x80 ? 1 : cp < 0x800 ? 2 : cp < 0x10000 ? 3 : 4;
+
+/** Plegado de líneas RFC 5545 §3.1: máximo 75 octetos por línea física; la
+ *  continuación arranca con CRLF + un espacio (el espacio cuenta en el tope). */
+function icsFold(line: string): string {
+  let out = "";
+  let len = 0;
+  for (const ch of line) {
+    const n = cpOctets(ch.codePointAt(0)!);
+    if (len + n > 75) {
+      out += "\r\n ";
+      len = 1;
+    }
+    out += ch;
+    len += n;
+  }
+  return out;
+}
 
 /** Objeto style con una custom property CSS (tipado seguro para tsc). */
 const cvar = (name: string, value: string): CSSProperties =>
@@ -226,17 +252,28 @@ export default function FinalesCombinadorView() {
         }
       }
     }
-    // poco margen (consecutivos por fecha, sin superponerse)
+    // sin margen / poco margen (consecutivos por fecha, sin superponerse)
     for (let i = 0; i < withMesa.length - 1; i++) {
       const a = withMesa[i];
       const b = withMesa[i + 1];
       if (mesasPisan(a.mesa!, b.mesa!)) continue;
-      const prep = dayDiff(a.mesa!.fecha, b.mesa!.fecha) - 1;
-      if (prep >= 0 && prep < margenDias) {
+      const dd = dayDiff(a.mesa!.fecha, b.mesa!.fecha);
+      if (dd === 0) {
+        // mismo día sin cruzarse en hora: se pueden rendir las dos, pero no
+        // queda ningún margen de estudio entre una y otra.
+        fl.push({
+          kind: "warn",
+          title: "Dos finales el mismo día",
+          body: `${a.nombre} (${a.mesa!.hora}) y ${b.nombre} (${b.mesa!.hora}) caen el mismo día (${ddmm(a.mesa!.fecha)}). No se superponen en horario, pero no tenés margen de estudio entre uno y otro.`,
+        });
+        continue;
+      }
+      const prep = dd - 1; // días completos de preparación entre ambos
+      if (prep < margenDias) {
         fl.push({
           kind: "warn",
           title: "Poco margen de repaso",
-          body: `Solo ${prep === 0 ? "el mismo día" : `${prep} día${prep === 1 ? "" : "s"}`} para preparar entre ${a.nombre} (${ddmm(a.mesa!.fecha)}) y ${b.nombre} (${ddmm(b.mesa!.fecha)}).`,
+          body: `${prep === 0 ? "Ningún día completo" : `Solo ${prep} día${prep === 1 ? "" : "s"}`} para preparar entre ${a.nombre} (${ddmm(a.mesa!.fecha)}) y ${b.nombre} (${ddmm(b.mesa!.fecha)}).`,
         });
       }
     }
@@ -342,6 +379,17 @@ export default function FinalesCombinadorView() {
       "CALSCALE:GREGORIAN",
       "METHOD:PUBLISH",
       `X-WR-CALNAME:${icsEsc(`Finales — ${PERIODO_LABEL[periodo]} ${anioReal} (StudyVaults)`)}`,
+      // Hora local con zona explícita: sin TZID los clientes interpretan la
+      // hora "flotante" según la zona del dispositivo que abre el .ics.
+      "BEGIN:VTIMEZONE",
+      `TZID:${ICS_TZID}`,
+      "BEGIN:STANDARD",
+      "DTSTART:19700101T000000",
+      "TZOFFSETFROM:-0300",
+      "TZOFFSETTO:-0300",
+      "TZNAME:-03",
+      "END:STANDARD",
+      "END:VTIMEZONE",
     ];
     for (const r of includables) {
       const { fecha, hora } = r.mesa!;
@@ -353,10 +401,13 @@ export default function FinalesCombinadorView() {
         `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`;
       out.push(
         "BEGIN:VEVENT",
-        `UID:sv-final-${r.code}-${fecha}@studyvaults.itba`,
+        // UID estable por materia + llamado (SIN la fecha del evento): si
+        // corregís la fecha y re-importás, el evento se actualiza en vez de
+        // duplicarse en el calendario.
+        `UID:sv-final-${r.code}-${periodo}-${anioReal}@studyvaults.itba`,
         `DTSTAMP:${stamp}`,
-        `DTSTART:${fmt(start)}`,
-        `DTEND:${fmt(end)}`,
+        `DTSTART;TZID=${ICS_TZID}:${fmt(start)}`,
+        `DTEND;TZID=${ICS_TZID}:${fmt(end)}`,
         `SUMMARY:${icsEsc(`Final: ${r.nombre}`)}`,
         `LOCATION:${icsEsc("ITBA — sede a confirmar")}`,
         `DESCRIPTION:${icsEsc(
@@ -373,7 +424,8 @@ export default function FinalesCombinadorView() {
       );
     }
     out.push("END:VCALENDAR");
-    return out.join("\r\n");
+    // plegado RFC 5545 sobre TODAS las líneas (DESCRIPTION suele pasar los 75).
+    return out.map(icsFold).join("\r\n");
   };
 
   const exportarICS = () => {
@@ -900,7 +952,7 @@ export default function FinalesCombinadorView() {
                       {blocked.map((r) => (
                         <li key={r.code} className="fin__srow" tabIndex={0}>
                           <span className="fin__lock" aria-hidden="true">
-                            <IconLock />
+                            <IconLock size={13} strokeWidth={1.8} />
                           </span>
                           <span className="fin__srow-name is-muted">
                             {r.nombre}
@@ -1015,24 +1067,6 @@ function FinalesWeek({
 }
 
 /* ---- íconos locales que no están en icons.tsx ---- */
-function IconLock() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="13"
-      height="13"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="5" y="11" width="14" height="9" rx="2" />
-      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-    </svg>
-  );
-}
 function IconAlert() {
   return (
     <svg

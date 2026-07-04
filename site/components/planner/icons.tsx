@@ -234,3 +234,19 @@ export const IconScale = (p: IconProps) => (
     <path d="M8 6.5 12 5l4 1.5" />
   </Svg>
 );
+
+/** Candado cerrado (cuatri finalizado / correlativa de final bloqueada). */
+export const IconLock = (p: IconProps) => (
+  <Svg size={15} strokeWidth={1.7} {...p}>
+    <rect x="5" y="11" width="14" height="9" rx="2" />
+    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+  </Svg>
+);
+
+/** Candado abierto (desbloquear cuatri). */
+export const IconUnlock = (p: IconProps) => (
+  <Svg size={15} strokeWidth={1.7} {...p}>
+    <rect x="5" y="11" width="14" height="9" rx="2" />
+    <path d="M8 11V8a4 4 0 0 1 7.5-1.3" />
+  </Svg>
+);

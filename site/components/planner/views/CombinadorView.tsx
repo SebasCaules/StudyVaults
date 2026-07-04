@@ -23,6 +23,7 @@ import {
   cuatriName,
 } from "@/lib/planner/optimize";
 import { minorsOf } from "@/lib/planner/minors";
+import { MAX_PLAN_CUATRIS } from "@/lib/planner/consts";
 import { hasPrograma } from "@/lib/planner/programa";
 import { buildComboHTML } from "@/lib/planner/exportPlan";
 import { openForPrint } from "@/lib/planner/download";
@@ -358,9 +359,11 @@ export default function CombinadorView() {
     base.items.forEach((it, i) => {
       if (it.length) maxUsed = i;
     });
-    const upto = Math.min(Math.max(maxUsed + 1, 2), 11);
+    const upto = Math.min(Math.max(maxUsed + 1, 2), MAX_PLAN_CUATRIS - 1);
     const opts: { value: string; label: string; title: string }[] = [];
     for (let i = 0; i <= upto; i++) {
+      // los cuatrimestres finalizados (candado en el Plan) no son destino válido
+      if (PL.lockedIdx.has(i)) continue;
       const c = cuatriAt(PL.start, i);
       opts.push({ value: String(i), label: cuatriName(c), title: cuatriLabel(c) });
     }
@@ -380,6 +383,12 @@ export default function CombinadorView() {
     state.approved,
     state.fixedCom,
   ]);
+
+  // si el destino elegido dejó de ofrecerse (p. ej. se lockeó ese cuatri en el
+  // Plan), cae a "" = Auto en vez de guardar en un cuatrimestre finalizado.
+  const safeSaveIdx = cuatriOptions.some((o) => o.value === saveIdx)
+    ? saveIdx
+    : "";
 
   const noResults = filtered.obs.length === 0 && filtered.els.length === 0;
   const showPicker = pickerOpen || selected.length === 0;
@@ -411,7 +420,7 @@ export default function CombinadorView() {
   const savePreference = () => {
     const placed = ranked[safeIdx];
     if (!placed) return;
-    const targetIdx = saveIdx === "" ? undefined : Number(saveIdx);
+    const targetIdx = safeSaveIdx === "" ? undefined : Number(safeSaveIdx);
     dispatch({
       type: "PLAN_SAVE_PREFERENCE",
       codes: placed.map((x) => x.m.codigo),
@@ -710,7 +719,7 @@ export default function CombinadorView() {
                   Fijar en el cuatrimestre
                   <InfoTip
                     label="Qué hace Auto al guardar"
-                    text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual."
+                    text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual. Los cuatrimestres finalizados (candado) no se ofrecen."
                   />
                 </span>
                 <CommissionSelect
@@ -718,7 +727,7 @@ export default function CombinadorView() {
                   className="cmb9-savemenu__sel"
                   placeholder="Auto — que el plan la ubique"
                   aria-label="Cuatrimestre donde fijar la cursada"
-                  value={saveIdx}
+                  value={safeSaveIdx}
                   options={cuatriOptions}
                   onChange={(e) => setSaveIdx(e.target.value)}
                 />

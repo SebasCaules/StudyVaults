@@ -127,9 +127,6 @@
   justify-content: center;
 }
 .nav__burger svg { width: 20px; height: 20px; }
-.nav__burger .ico-close { display: none; }
-.nav__burger[aria-expanded="true"] .ico-open { display: none; }
-.nav__burger[aria-expanded="true"] .ico-close { display: block; }
 
 /* scrim del drawer mobile — mismo patrón que .rail__scrim (WikiRail):
    fixed debajo de la navbar, por detrás de .nav__mobile. */

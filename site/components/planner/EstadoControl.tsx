@@ -6,28 +6,12 @@
 // Las materias que promocionan / no rinden final tienen un solo nivel terminal
 // (una tilde teal). Fuente única del control; lo consume CuatriView (aprobadas)
 // y puede reusarlo la vista de finales.
-import { usePlanner, type Estado } from "@/components/planner/state";
-import { charsOf } from "@/lib/planner/programa";
+import { usePlanner } from "@/components/planner/state";
+import { estadoOf, tieneFinal, type Estado } from "@/lib/planner/estado";
 
-/** ¿La materia rinde final (2 niveles) o promociona / no rinde (1 nivel)? */
-export function tieneFinal(code: string): boolean {
-  const d = charsOf(code);
-  if (!d) return true; // sin ficha (típico de obligatorias) → asumimos que rinde final
-  if (d.promocionable === true) return false;
-  if (d.tieneFinal === false) return false;
-  return true;
-}
-
-/** Estado actual de una materia derivado de approved + finalDone. */
-export function estadoOf(
-  code: string,
-  approved: Set<string>,
-  finalDone: Set<string>,
-): Estado {
-  if (finalDone.has(code)) return "final";
-  if (approved.has(code)) return "regular";
-  return "pendiente";
-}
+// Re-export de compatibilidad: la fuente única ahora es lib/planner/estado.ts
+// (helpers puros, consumibles también por el reducer sin ciclos de import).
+export { estadoOf, tieneFinal };
 
 const CheckSingle = () => (
   <svg

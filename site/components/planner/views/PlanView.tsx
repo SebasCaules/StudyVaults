@@ -49,8 +49,12 @@ import {
   IconLayers,
   IconFileText,
   IconCheck,
+  IconLock,
+  IconUnlock,
   type IconProps,
 } from "@/components/planner/icons";
+import { useModalFocus } from "@/components/planner/useModalFocus";
+import { MAX_PLAN_CUATRIS } from "@/lib/planner/consts";
 import type {
   MateriaM,
   OptMethod,
@@ -77,40 +81,6 @@ const IconDots = ({ size = 16, ...rest }: IconProps) => (
     <circle cx="5" cy="12" r="1.9" />
     <circle cx="12" cy="12" r="1.9" />
     <circle cx="19" cy="12" r="1.9" />
-  </svg>
-);
-const IconLock = ({ size = 15, ...rest }: IconProps) => (
-  <svg
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={1.7}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-    {...rest}
-  >
-    <rect x="5" y="11" width="14" height="9" rx="2" />
-    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-  </svg>
-);
-const IconUnlock = ({ size = 15, ...rest }: IconProps) => (
-  <svg
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={1.7}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-    {...rest}
-  >
-    <rect x="5" y="11" width="14" height="9" rx="2" />
-    <path d="M8 11V8a4 4 0 0 1 7.5-1.3" />
   </svg>
 );
 const IconWarnTri = ({ size = 21, ...rest }: IconProps) => (
@@ -444,8 +414,13 @@ function SemCard({
         (menuOpen || confirmOpen ? " is-menu-open" : "")
       }
       onDragOver={(e: React.DragEvent) => {
-        // permitimos el drop y marcamos esta card como destino activo
+        // permitimos el drop y marcamos esta card como destino activo;
+        // un cuatri finalizado no es destino válido (el lock manda).
         if (!e.dataTransfer.types.includes("text/plain")) return;
+        if (locked) {
+          e.dataTransfer.dropEffect = "none";
+          return;
+        }
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
         if (!dragOver) setDragOver(true);
@@ -455,9 +430,10 @@ function SemCard({
       }}
       onDrop={(e: React.DragEvent) => {
         e.preventDefault();
+        setDragOver(false);
+        if (locked) return;
         const code = e.dataTransfer.getData("text/plain");
         if (code) dispatch({ type: "PLAN_SET_FIXED", code, idx: i });
-        setDragOver(false);
       }}
     >
       {dragOver && (
@@ -742,6 +718,8 @@ function RoadmapStop({
   maxMat,
   previewCode,
   recOn,
+  locked,
+  onUnlock,
 }: {
   it: PlacedMateria[];
   i: number;
@@ -751,6 +729,8 @@ function RoadmapStop({
   maxMat: number;
   previewCode: string | null;
   recOn: boolean;
+  locked: boolean;
+  onUnlock: (idx: number) => void;
 }) {
   const { state, dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
@@ -778,13 +758,19 @@ function RoadmapStop({
         "rmap-stop" +
         (hasPreview ? " has-preview" : "") +
         (dragOver ? " drop-over" : "") +
-        (isCapped ? " is-capped" : "")
+        (isCapped ? " is-capped" : "") +
+        (locked ? " is-locked" : "")
       }
     >
       <div
         className="rmap-stop__card"
         onDragOver={(e: React.DragEvent) => {
-          // permite el drop y marca este cuatrimestre como destino activo
+          // permite el drop y marca este cuatrimestre como destino activo;
+          // un cuatri finalizado no es destino válido (el lock manda).
+          if (locked) {
+            e.dataTransfer.dropEffect = "none";
+            return;
+          }
           e.preventDefault();
           e.dataTransfer.dropEffect = "move";
           if (!dragOver) setDragOver(true);
@@ -797,9 +783,10 @@ function RoadmapStop({
         }}
         onDrop={(e: React.DragEvent) => {
           e.preventDefault();
+          setDragOver(false);
+          if (locked) return;
           const code = e.dataTransfer.getData("text/plain");
           if (code) dispatch({ type: "PLAN_SET_FIXED", code, idx: i });
-          setDragOver(false);
         }}
       >
         <div className="rmap-stop__head">
@@ -807,12 +794,19 @@ function RoadmapStop({
             <span className="rmap-stop__tag">{cuatriLabel(cu)}</span>
             <h3>{cuatriName(cu)}</h3>
           </div>
+          {locked && (
+            <span className="pv-lockbadge" title="Cuatrimestre finalizado">
+              <IconLock size={15} />
+            </span>
+          )}
           <span className="rmap-stop__step" aria-hidden="true">
             {i + 1}
           </span>
-          <span className="rmap-drophint">
-            arrastrá para mover de cuatrimestre
-          </span>
+          {!locked && (
+            <span className="rmap-drophint">
+              arrastrá para mover de cuatrimestre
+            </span>
+          )}
         </div>
 
         <div className="rmap-stop__ledger">
@@ -829,12 +823,14 @@ function RoadmapStop({
           )}
         </div>
 
-        <CuatriCaps
-          i={i}
-          idPrefix="rmap"
-          globalCred={maxCred}
-          globalMat={maxMat}
-        />
+        {!locked && (
+          <CuatriCaps
+            i={i}
+            idPrefix="rmap"
+            globalCred={maxCred}
+            globalMat={maxMat}
+          />
+        )}
 
         <div className="rmap-stop__load" aria-hidden="true">
           <i style={{ width: `${load}%` }} />
@@ -855,13 +851,18 @@ function RoadmapStop({
                 style={
                   { "--blk": PALETTE[k % PALETTE.length] } as React.CSSProperties
                 }
-                title={`${x.m.codigo} · ${x.m.nombre} — arrastrá para mover de cuatrimestre`}
+                title={
+                  locked
+                    ? `${x.m.codigo} · ${x.m.nombre}`
+                    : `${x.m.codigo} · ${x.m.nombre} — arrastrá para mover de cuatrimestre`
+                }
               >
                 <button
                   type="button"
                   className="rmap-mat__main"
-                  draggable
+                  draggable={!locked}
                   onDragStart={(e: React.DragEvent) => {
+                    if (locked) return;
                     e.dataTransfer.setData("text/plain", x.m.codigo);
                     e.dataTransfer.effectAllowed = "move";
                     setDraggingCode(x.m.codigo);
@@ -871,9 +872,11 @@ function RoadmapStop({
                     dispatch({ type: "OPEN_DRAWER", code: x.m.codigo })
                   }
                 >
-                  <span className="rmap-mat__grip" aria-hidden="true">
-                    <IconGrip size={12} />
-                  </span>
+                  {!locked && (
+                    <span className="rmap-mat__grip" aria-hidden="true">
+                      <IconGrip size={12} />
+                    </span>
+                  )}
                   <span className="rmap-mat__abbr">{x.m.abbr}</span>
                   <MinorDots m={x.m} />
                   <span className="rmap-mat__cr">{x.m.creditos}</span>
@@ -882,61 +885,63 @@ function RoadmapStop({
                   )}
                   {isPrev && <span className="rmap-mat__new">nueva</span>}
                 </button>
-                <div
-                  className="rmap-mat__tools"
-                  draggable={false}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <select
-                    className="rmap-mat__sel"
-                    aria-label={`Fijar cuatrimestre de ${x.m.nombre}`}
-                    value={fx === undefined ? "" : String(fx)}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "PLAN_SET_FIXED",
-                        code: x.m.codigo,
-                        idx: e.target.value === "" ? null : +e.target.value,
-                      })
-                    }
+                {!locked && (
+                  <div
+                    className="rmap-mat__tools"
+                    draggable={false}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <option value="">auto</option>
-                    {Array.from({ length: 8 }, (_, ci) => (
-                      <option value={String(ci)} key={ci}>
-                        {cuatriLabel(cuatriAt(start, ci))}
-                      </option>
-                    ))}
-                  </select>
-                  {x.m.horario && x.m.horario.comisiones.length > 1 && (
-                    <CommissionSelect
-                      size="sm"
-                      placeholder="com. auto"
-                      aria-label={`Fijar comisión de ${x.m.nombre}`}
-                      value={state.fixedCom.get(x.m.codigo) || ""}
+                    <select
+                      className="rmap-mat__sel"
+                      aria-label={`Fijar cuatrimestre de ${x.m.nombre}`}
+                      value={fx === undefined ? "" : String(fx)}
                       onChange={(e) =>
                         dispatch({
-                          type: "SET_FIXED_COM",
+                          type: "PLAN_SET_FIXED",
                           code: x.m.codigo,
-                          comision: e.target.value || null,
+                          idx: e.target.value === "" ? null : +e.target.value,
                         })
                       }
-                      options={x.m.horario.comisiones.map((c) => ({
-                        value: c.comision,
-                        label: `com ${c.comision} · ${comModalidad(c)}`,
-                      }))}
-                    />
-                  )}
-                  <button
-                    type="button"
-                    className="rmap-mat__rm"
-                    aria-label={`Quitar ${x.m.nombre} del plan`}
-                    onClick={() =>
-                      dispatch({ type: "PLAN_POOL_REMOVE", code: x.m.codigo })
-                    }
-                  >
-                    <IconClose size={13} />
-                  </button>
-                </div>
+                    >
+                      <option value="">auto</option>
+                      {Array.from({ length: MAX_PLAN_CUATRIS }, (_, ci) => (
+                        <option value={String(ci)} key={ci}>
+                          {cuatriLabel(cuatriAt(start, ci))}
+                        </option>
+                      ))}
+                    </select>
+                    {x.m.horario && x.m.horario.comisiones.length > 1 && (
+                      <CommissionSelect
+                        size="sm"
+                        placeholder="com. auto"
+                        aria-label={`Fijar comisión de ${x.m.nombre}`}
+                        value={state.fixedCom.get(x.m.codigo) || ""}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "SET_FIXED_COM",
+                            code: x.m.codigo,
+                            comision: e.target.value || null,
+                          })
+                        }
+                        options={x.m.horario.comisiones.map((c) => ({
+                          value: c.comision,
+                          label: `com ${c.comision} · ${comModalidad(c)}`,
+                        }))}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      className="rmap-mat__rm"
+                      aria-label={`Quitar ${x.m.nombre} del plan`}
+                      onClick={() =>
+                        dispatch({ type: "PLAN_POOL_REMOVE", code: x.m.codigo })
+                      }
+                    >
+                      <IconClose size={13} />
+                    </button>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -947,6 +952,22 @@ function RoadmapStop({
             acumulado <b>{acc}</b> cr
           </span>
         </div>
+
+        {locked && (
+          <div className="pv-lockcap">
+            <span className="pv-lockchip">
+              <IconLock size={12} />
+              <b>finalizado</b> · el optimizador no lo toca
+            </span>
+            <button
+              type="button"
+              className="pv-unlock"
+              onClick={() => onUnlock(i)}
+            >
+              <IconUnlock size={11} /> Desbloquear
+            </button>
+          </div>
+        )}
       </div>
     </li>
   );
@@ -1047,6 +1068,9 @@ function ResetConfirm({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  // foco inicial + trap de Tab + restore al cerrar
+  const panelRef = useModalFocus<HTMLDivElement>();
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCancel();
@@ -1065,7 +1089,7 @@ function ResetConfirm({
         aria-labelledby="pv-reset-title"
       >
         <div className="mnr-modal__bg" onClick={onCancel} />
-        <div className="pv-reset">
+        <div className="pv-reset" ref={panelRef}>
           <div className="pv-reset__icon">
             <IconWarnTri size={21} />
           </div>
@@ -1407,7 +1431,7 @@ function PlanPool({ start }: { start: PlanStart }) {
 
   const cuatriOpts = () => {
     const opts: { value: string; label: string }[] = [];
-    for (let i = 0; i < 8; i++)
+    for (let i = 0; i < MAX_PLAN_CUATRIS; i++)
       opts.push({ value: String(i), label: cuatriLabel(cuatriAt(start, i)) });
     return opts;
   };
@@ -1586,10 +1610,16 @@ export default function PlanView() {
 
   // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
   // rankeadas. Recommendations las agrupa según si alargan o no la carrera.
+  // Con el recomendador oculto no computamos nada: corre optimizePlan por
+  // ~90 candidatas y nadie consume el resultado.
   const recs = useMemo(
-    () => recommendElectives(PL, approved, Infinity, state.fixedCom),
+    () =>
+      recsHidden
+        ? []
+        : recommendElectives(PL, approved, Infinity, state.fixedCom),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      recsHidden,
       PL.pool,
       PL.fixed,
       PL.start,
@@ -1720,6 +1750,7 @@ export default function PlanView() {
       generado: nowStr(),
       autoPrint: format === "pdf",
       cuatris,
+      method: PL.method,
     });
     if (format === "html") downloadHTMLFile(html, "plan-de-cursada.html");
     else openForPrint(html);
@@ -1741,19 +1772,22 @@ export default function PlanView() {
       cuatris: [idx],
       includeCalendar: scope !== "programa",
       includeSpecs: scope !== "cal",
+      method: PL.method,
     });
     openForPrint(html);
   };
 
-  // Finalizar un cuatrimestre: fija su ubicación actual (para que el optimizador
-  // la respete tal cual) y lo marca como lockeado. Pre-fijamos desde baseR
-  // porque `state.plan.result` no está poblado (ver REPORTE/gaps): así el lock
-  // es funcional aunque el reducer no encuentre `result.items[idx]`.
+  // Finalizar un cuatrimestre: `pinnedByLock` lleva los códigos ubicados hoy
+  // en ese cuatri según baseR (la única fuente del resultado optimizado) que
+  // NO estaban ya fijados por el usuario. El reducer los pinea y los registra
+  // en plan.lockPins: al desbloquear libera solo esos, sin pisar los pines
+  // manuales previos. No pre-pineamos con PLAN_SET_FIXED — el reducer
+  // descartaría de lockPins todo lo ya fijado y el unlock no liberaría nada.
   const finalizeCuatri = (idx: number) => {
-    (baseR.items[idx] ?? []).forEach((x) =>
-      dispatch({ type: "PLAN_SET_FIXED", code: x.m.codigo, idx }),
-    );
-    dispatch({ type: "PLAN_TOGGLE_LOCK", idx });
+    const pinnedByLock = (baseR.items[idx] ?? [])
+      .map((x) => x.m.codigo)
+      .filter((code) => !PL.fixed.has(code));
+    dispatch({ type: "PLAN_TOGGLE_LOCK", idx, pinnedByLock });
   };
   const unlockCuatri = (idx: number) =>
     dispatch({ type: "PLAN_TOGGLE_LOCK", idx });
@@ -1812,6 +1846,23 @@ export default function PlanView() {
     };
     reader.onerror = () => showPrefsError("No se pudo leer el archivo.");
     reader.readAsText(file);
+  };
+
+  // Navegación por teclado del tablist (roving tabindex): flechas con wrap,
+  // Home/End. Mueve la selección y el foco al tab elegido.
+  const TAB_ORDER: PlanTab[] = ["cal", "road", "min"];
+  const onTablistKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    let next: number;
+    const cur = TAB_ORDER.indexOf(tab);
+    if (e.key === "ArrowLeft") next = (cur + TAB_ORDER.length - 1) % TAB_ORDER.length;
+    else if (e.key === "ArrowRight") next = (cur + 1) % TAB_ORDER.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = TAB_ORDER.length - 1;
+    else return;
+    e.preventDefault();
+    setTab(TAB_ORDER[next]);
+    const tabs = e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs[next]?.focus();
   };
 
   const recOn = !recsHidden;
@@ -1990,7 +2041,12 @@ export default function PlanView() {
 
       {used.length > 0 && (
         <div className="pv-tabs">
-          <div className="pv-tablist" role="tablist" aria-label="Vistas del plan">
+          <div
+            className="pv-tablist"
+            role="tablist"
+            aria-label="Vistas del plan"
+            onKeyDown={onTablistKeyDown}
+          >
             <button
               type="button"
               role="tab"
@@ -2139,6 +2195,8 @@ export default function PlanView() {
                       maxMat={PL.maxMat}
                       previewCode={preview}
                       recOn={recOn}
+                      locked={PL.lockedIdx.has(i)}
+                      onUnlock={unlockCuatri}
                     />
                   ))}
                 </ol>

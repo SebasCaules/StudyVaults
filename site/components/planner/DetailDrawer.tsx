@@ -12,6 +12,9 @@ import { byId } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
 import { comModalidad, isAsync } from "@/lib/planner/time";
 import { usePlanner } from "@/components/planner/state";
+import { EstadoControl } from "@/components/planner/EstadoControl";
+import { estadoOf, tieneFinal } from "@/lib/planner/estado";
+import { useModalFocus } from "@/components/planner/useModalFocus";
 import { FICHAS } from "@/lib/planner/fichas";
 import { minorsOf } from "@/lib/planner/minors";
 import { MinorBadge } from "@/components/planner/MinorBadge";
@@ -430,10 +433,6 @@ export default function DetailDrawer() {
   const code = state.drawerCode;
   const m = code ? byId.get(code) : undefined;
 
-  // sombra de la barra de cierre sticky cuando el contenido pasa por debajo
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
-
   // cierre con Escape (hook siempre montado, antes de cualquier return)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -446,8 +445,32 @@ export default function DetailDrawer() {
   // Modal cerrado (sin código o materia inexistente): no renderiza nada.
   if (!code || !m) return null;
 
+  if (typeof document === "undefined") return null;
+
+  // El cuerpo vive en un componente que monta recién al abrir (y remonta por
+  // materia vía key): así el useModalFocus de adentro corre en cada apertura
+  // (foco inicial + trap de Tab) y restaura el foco al cerrar.
+  return createPortal(
+    <div className="planner" style={{ padding: 0 }}>
+      <DrawerModal key={code} m={m} code={code} />
+    </div>,
+    document.body,
+  );
+}
+
+function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
+  const { state, dispatch } = usePlanner();
+
+  // sombra de la barra de cierre sticky cuando el contenido pasa por debajo
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  // foco accesible del modal: foco inicial en el panel + trap de Tab + restore
+  const panelRef = useModalFocus<HTMLDivElement>();
+
   const ob = m.tipo === "obligatoria";
-  const appr = state.approved.has(code);
+  const estado = estadoOf(code, state.approved, state.finalDone);
+  const appr = estado !== "pendiente";
   const avail = isAvailable(m, state.approved);
   const hor = m.horario;
   const inCombo = state.combo.has(code);
@@ -475,9 +498,19 @@ export default function DetailDrawer() {
     ? [...WEEK_BASE, { key: "Sábado", ab: "Sá" }]
     : WEEK_BASE;
 
-  // acciones que se renderizan: aprobar + descargar (siempre) + combinador (si
+  // acciones que se renderizan: estado + descargar (siempre) + combinador (si
   // hay comisiones). El grid se ajusta a 2 o 3 columnas para quedar simétrico.
   const actionCount = hasComs ? 3 : 2;
+
+  // estado académico en palabras, al lado del control tri-estado
+  const estadoLabel =
+    estado === "pendiente"
+      ? "pendiente"
+      : estado === "final"
+        ? "final aprobado"
+        : tieneFinal(code)
+          ? "cursada regular — falta el final"
+          : "promociona / terminada";
 
   // meta de identidad como items sueltos: el CSS agrega los separadores de punto
   // (así el ritmo es uniforme y no se concatena una cadena a mano).
@@ -499,9 +532,7 @@ export default function DetailDrawer() {
     downloadHTMLFile(html, filename);
   };
 
-  if (typeof document === "undefined") return null;
-
-  const modal = (
+  return (
     <div
       className="dr-modal"
       role="dialog"
@@ -510,8 +541,9 @@ export default function DetailDrawer() {
     >
       <div className="dr-modal__bg" onClick={close} />
       {/* .dd-panel = contenedor de las container queries (flex column: barra de
-          cierre sticky + cuerpo scrolleable). */}
-      <div className="dd-panel">
+          cierre sticky + cuerpo scrolleable). tabIndex=-1: fallback de foco
+          inicial para useModalFocus. */}
+      <div className="dd-panel" ref={panelRef} tabIndex={-1}>
         <div
           className="dd-scroll"
           ref={scrollRef}
@@ -546,18 +578,25 @@ export default function DetailDrawer() {
 
             {/* FIX B — fila de acciones simétrica (grid 2/3 columnas parejas). */}
             <div className={"dd-actions" + (actionCount === 2 ? " dd-actions--2" : "")}>
-              <button
-                className={"mini btn-ap " + (appr ? "on" : "")}
-                onClick={() => dispatch({ type: "TOGGLE_APPROVED", code })}
+              {/* tri-estado canónico + estado en palabras (reemplaza al viejo
+                  toggle binario). El div ocupa una celda del grid de acciones;
+                  el inline style sólo lo alinea a la altura de los botones. */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  minHeight: 42,
+                }}
               >
-                {appr ? (
-                  <>
-                    <IconCheck size={13} /> aprobada
-                  </>
-                ) : (
-                  "marcar aprobada"
-                )}
-              </button>
+                <EstadoControl code={code} stopPropagation={false} />
+                <span
+                  className="muted"
+                  style={{ fontSize: 11.5, lineHeight: 1.3 }}
+                >
+                  {estadoLabel}
+                </span>
+              </div>
               {hasComs ? (
                 <button
                   className={"mini btn-co " + (inCombo ? "on plan" : "")}
@@ -778,12 +817,5 @@ export default function DetailDrawer() {
         </div>
       </div>
     </div>
-  );
-
-  return createPortal(
-    <div className="planner" style={{ padding: 0 }}>
-      {modal}
-    </div>,
-    document.body,
   );
 }

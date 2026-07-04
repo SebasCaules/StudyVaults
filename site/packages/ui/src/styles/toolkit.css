@@ -248,7 +248,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   padding: 9px 0;
-  border-top: 1px dashed var(--hairline);
+  border-top: 1px solid var(--hairline);
 }
 .vtool-kv:first-child { border-top: none; }
 .vtool-kv .k { color: var(--text-secondary); letter-spacing: 0.02em; }
@@ -1267,7 +1267,7 @@
 .vfin-ex__solution {
   margin-top: 14px;
   padding-top: 4px;
-  border-top: 1px dashed var(--hairline);
+  border-top: 1px solid var(--hairline);
 }
 .vfin-step { margin-top: 14px; }
 .vfin-step__label {

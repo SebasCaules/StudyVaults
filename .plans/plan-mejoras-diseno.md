@@ -42,24 +42,21 @@
 Generar/conseguir las 7 (MNA/Derecho/Economía/Proba/PAW/SDS/Inge2), aprobación por materia,
 optimizar y cablear en VaultBanners/cards/landing. Hoy: SVG placeholder ciclando 3 acentos.
 
-## D3 — Pulido transversal (ejecutable sin decisiones)
-1. **Anti-IA sweep** (la regla: dashed solo para vacío/placeholder; nada de ◆):
-   - `◆` decorativo en TODOS los h2 de prosa — globals.css:456-463 **[WIP archivo]**.
-   - dashed decorativo: separadores `.wikinav__grouppages` (globals:273) y proof env
-     (globals:571); `.vtool-kv`/steps (toolkit.css:251,1270); chips informativos
-     `rec-fit--soft/--nohor` y botón `.card__read` (planner.css:1523,1526,1850) → solid.
-   - Verificado limpio: sin tags rotados ni ◆ en planner/toolkits/hojas (los rotate son
-     chevrons/checkmarks funcionales).
-2. **Tokens / theming**:
-   - `--status-go/promo/warn/caution` fijos en `:root` sin variante light (el spec
-     foundations los conmuta por tema); `#d8b279` rinde ~1.9:1 sobre blanco — tokens.css:57-64.
-   - Hex hardcodeado → tokens: `.vl-cmd__code` (globals:1894), chevron del select
-     (forms.css:16, no conmuta en light), `.vtool-code` + `--dvt-*` de quizzes
-     (toolkit.css:409,1796-1804), paleta del editor de diagramas (diagram.css:270-290) —
-     consolidar como tokens semánticos documentados en §12.
-3. **A11y**: flechas de teclado en tablists (PlanView, PlannerIntro), focus-trap + foco
-   inicial en modales del planner, contraste AA de status en light, reduced-motion ya OK.
-4. **Print**: verificar la capa print de hojas y syllabus post-paleta (b/n legible, cortes).
+## D3 — Pulido transversal — mayormente ✅ HECHO (batch 2026-07-04)
+1. **Anti-IA sweep**: ✅ dashed→solid en toolkit.css (`.vtool-kv`, solución de ejercicios) y
+   planner.css (`rec-fit--soft/--nohor`, `.card__read`). ⏸ Pendiente SOLO lo de globals.css
+   (◆ en h2 de prosa, separadores wikinav/proof, `.vl-cmd__code` hex) — archivo caliente de
+   la sesión del grafo/hero.
+2. **Tokens / theming**: ✅ `--status-*` ahora conmutan por tema (variantes light profundas
+   alineadas a la paleta de hojas; documentado en DESIGN.md §12, 3 copias md5 `d720a581…`).
+   ⏸ Pendiente: `--dvt-*` de quizzes (toolkit.css:1796) y paleta del editor de diagramas
+   (diagram.css) — consolidarlos como tokens semánticos requiere decisión de diseño; chevron
+   de forms.css:16 (data-URI por tema) evaluado y dejado.
+3. **A11y**: ✅ flechas en tablist de PlanView, autoplay/ARIA de PlannerIntro, foco accesible
+   (inicial+trap+restore) en DetailDrawer/IOModal/MinorsModal/ResetConfirm, contraste de
+   status en light.
+4. **Print**: ⏳ verificar la capa print de hojas y syllabus post-paleta — va con la
+   verificación P0 (browser real).
 
 ## D4 — Fidelidad verificada OK (no tocar; base para el fidelity pass browser de P0)
 GrafoView=module-b (pan/zoom/Ajustar sin overflow) · DetailDrawer=module-c-modal (X sticky,

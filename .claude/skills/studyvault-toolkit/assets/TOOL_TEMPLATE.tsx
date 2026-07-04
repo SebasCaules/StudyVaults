@@ -7,6 +7,9 @@
    herramientas con contenido real de la materia (leído de wiki/) y registralo:
      1) site/lib/content/vaults.ts          → toolkit: true en el VaultConfig
      2) site/components/vault-tools/registry.tsx → TOOLKITS.<id> = <Xxx>Tools
+     3) identidad bespoke (overhaul 2026-07): pasale a ToolkitShell la prop
+        `launcher` (kicker / motif SVG / pattern / variant) y por-tool los campos
+        `tone`/`blurb`/`poster` para el afiche de la card — referencia: MnaTools.tsx.
 
    Patrón monolítico (todas las tools en un archivo). Para toolkits grandes o con
    progreso compartido, partí cada tool a su archivo en vault-tools/<vault>/ y

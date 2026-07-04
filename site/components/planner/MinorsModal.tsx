@@ -6,6 +6,7 @@
 // con 14 créditos electivos del área.
 import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
+import { useModalFocus } from "@/components/planner/useModalFocus";
 import { PLAN, AREA_COLOR, byId, credOf } from "@/lib/planner/model";
 import { cuatriAt, cuatriLabel, cuatriName } from "@/lib/planner/optimize";
 import { IconClose, IconCheck } from "@/components/planner/icons";
@@ -48,6 +49,9 @@ export default function MinorsModal({
   onClose: () => void;
 }) {
   const areas = PLAN.areas;
+
+  // foco accesible del modal: foco inicial en el panel + trap de Tab + restore
+  const panelRef = useModalFocus<HTMLDivElement>();
 
   // cierre con Escape
   useEffect(() => {
@@ -115,7 +119,8 @@ export default function MinorsModal({
   const modal = (
     <div className="mnr-modal" role="dialog" aria-modal="true" aria-label="Créditos de minors por cuatrimestre">
       <div className="mnr-modal__bg" onClick={onClose} />
-      <div className="mnr-modal__panel">
+      {/* tabIndex=-1: fallback de foco inicial para useModalFocus */}
+      <div className="mnr-modal__panel" ref={panelRef} tabIndex={-1}>
         <button className="mnr-close" onClick={onClose} aria-label="Cerrar">
           <IconClose size={15} />
         </button>

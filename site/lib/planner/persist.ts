@@ -19,6 +19,7 @@ const K = {
   pool: "plan_pool_v3",
   fixed: "plan_fixed_v3",
   locked: "plan_locked_v1",
+  lockPins: "plan_lock_pins_v1",
   sidebar: "plan_sidebar",
   comboParams: "plan_combo_params_v1",
   fixedCom: "plan_fixed_com_v1",
@@ -53,6 +54,8 @@ export interface Persisted {
   pool: string[] | null;
   fixed: [string, number][] | null;
   lockedIdx: number[] | null;
+  /** registro índice→códigos pineados por cada lock (ver PlanState.lockPins). */
+  lockPins: [number, string[]][] | null;
   comboParams: ComboParams | null;
   fixedCom: [string, string][] | null;
   planOpts: PlanOpts | null;
@@ -70,6 +73,7 @@ function read<T>(key: string): T | null {
 }
 
 export function loadPersisted(): Persisted {
+  const rawLockPins = read<unknown>(K.lockPins);
   return {
     approved: read<string[]>(K.approved),
     finalDone: read<string[]>(K.finalDone),
@@ -77,10 +81,14 @@ export function loadPersisted(): Persisted {
     pool: read<string[]>(K.pool),
     fixed: read<[string, number][]>(K.fixed),
     lockedIdx: read<number[]>(K.locked),
+    lockPins: isLockPinsArr(rawLockPins) ? rawLockPins : null,
     comboParams: read<ComboParams>(K.comboParams),
     fixedCom: read<[string, string][]>(K.fixedCom),
     planOpts: read<PlanOpts>(K.planOpts),
-    finales: read<PersistedFinales>(K.finalesCombo),
+    // mismo validador que el import de archivo: un JSON corrupto en
+    // localStorage (p. ej. `mesas` no-iterable) cae a default en vez de
+    // reventar el `new Map(...)` del reducer.
+    finales: parseFinales(read<unknown>(K.finalesCombo)),
     sideCollapsed: ((): boolean => {
       try {
         return localStorage.getItem(K.sidebar) === "1";
@@ -107,6 +115,8 @@ export const savePlanPool = (pool: Set<string>, fixed: Map<string, number>) => {
   write(K.fixed, [...fixed]);
 };
 export const saveLocked = (s: Set<number>) => write(K.locked, [...s]);
+export const saveLockPins = (m: Map<number, string[]>) =>
+  write(K.lockPins, [...m]);
 
 /** Serializa `FinalesState` (Map/Set) a su forma persistible (arrays). */
 export const serializeFinales = (f: FinalesState): PersistedFinales => ({
@@ -152,6 +162,7 @@ export interface PreferenceBundle {
   pool: string[];
   fixed: [string, number][];
   lockedIdx: number[];
+  lockPins: [number, string[]][];
   fixedCom: [string, string][];
   comboParams: ComboParams;
   planOpts: PlanOpts;
@@ -174,6 +185,7 @@ export function buildPreferenceBundle(
     pool: [...state.plan.pool],
     fixed: [...state.plan.fixed],
     lockedIdx: [...state.plan.lockedIdx],
+    lockPins: [...state.plan.lockPins],
     fixedCom: [...state.fixedCom],
     comboParams: state.comboParams,
     planOpts: {
@@ -210,6 +222,11 @@ const isNumPairArr = (x: unknown): x is [number, number][] =>
   x.every((p) => Array.isArray(p) && p.length === 2 && isNum(p[0]) && isNum(p[1]));
 const isNumArr = (x: unknown): x is number[] =>
   Array.isArray(x) && x.every(isNum);
+const isLockPinsArr = (x: unknown): x is [number, string[]][] =>
+  Array.isArray(x) &&
+  x.every(
+    (p) => Array.isArray(p) && p.length === 2 && isNum(p[0]) && isStrArr(p[1]),
+  );
 
 const isMesa = (v: unknown): v is MesaFinal =>
   !!v &&
@@ -290,6 +307,8 @@ export function parsePreferences(text: string): Persisted | null {
     pool: isStrArr(b.pool) ? b.pool : null,
     fixed: isPairArr(b.fixed, isNum) ? b.fixed : null,
     lockedIdx: isNumArr(b.lockedIdx) ? b.lockedIdx : null,
+    // bundles viejos no traen lockPins → null (HYDRATE resuelve el default)
+    lockPins: isLockPinsArr(b.lockPins) ? b.lockPins : null,
     comboParams:
       b.comboParams && typeof b.comboParams === "object"
         ? (b.comboParams as ComboParams)

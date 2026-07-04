@@ -4,7 +4,11 @@ import { useMemo, useRef, useState, useEffect } from "react";
 import { usePlanner } from "./state";
 import { PLAN, AREA_COLOR, credOf, byId } from "@/lib/planner/model";
 import { electiveCredits } from "@/lib/planner/metrics";
+import { MINOR_REQ } from "@/lib/planner/minors";
 import type { ViewKey } from "@/lib/planner/types";
+
+// créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
+const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
 
 const VIEWS: { view: ViewKey; label: string }[] = [
   { view: "cuatri", label: "Plan por cuatrimestre" },
@@ -189,12 +193,12 @@ export default function Sidebar() {
                 <span className="minrow__top">
                   <span className="swatch" style={{ background: AREA_COLOR[a] }} />
                   <span className="minrow__name">{a}</span>
-                  <b>{s}/14</b>
+                  <b>{s}/{MINOR_REQ}</b>
                 </span>
                 <span className="minibar">
                   <i
                     style={{
-                      width: Math.min(100, (s / 14) * 100) + "%",
+                      width: Math.min(100, (s / MINOR_REQ) * 100) + "%",
                       background: AREA_COLOR[a],
                     }}
                   />
@@ -211,13 +215,13 @@ export default function Sidebar() {
         </div>
         <div className="gauge__read">
           <b>{ec}</b>
-          <span className="gauge__of">/ 27 créditos</span>
-          {ec >= 27 ? <span className="gauge__done">completo</span> : null}
+          <span className="gauge__of">/ {ELEC_REQ} créditos</span>
+          {ec >= ELEC_REQ ? <span className="gauge__done">completo</span> : null}
         </div>
         <div className="bar">
           <div
             className="bar__fill"
-            style={{ width: Math.min(100, (ec / 27) * 100) + "%" }}
+            style={{ width: Math.min(100, (ec / ELEC_REQ) * 100) + "%" }}
           />
         </div>
       </section>
@@ -229,7 +233,7 @@ export default function Sidebar() {
         onClick={() => {
           if (
             !window.confirm(
-              "¿Restablecer las materias aprobadas a tu estado actual (1.º a 3.º + economía, derecho, simulación, ISW II)?"
+              "¿Restablecer todas las materias a pendiente? Esta acción no se puede deshacer."
             )
           )
             return;

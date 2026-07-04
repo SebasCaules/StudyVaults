@@ -8,11 +8,10 @@ import {
   type ReactNode,
 } from "react";
 import { PLAN, remainingOblig } from "@/lib/planner/model";
-import { DEFAULT_CHAR_FILTERS } from "@/lib/planner/programa";
+import { tieneFinal, type Estado } from "@/lib/planner/estado";
 import type { Persisted } from "@/lib/planner/persist";
 import type { PlannerUrlState } from "@/lib/planner/url-state";
 import type {
-  CharFilters,
   FinalPeriodo,
   FinalesState,
   MesaFinal,
@@ -34,8 +33,8 @@ export function initialFinales(): FinalesState {
   };
 }
 
-/** Estado de una materia derivado de approved + finalDone. */
-export type Estado = "pendiente" | "regular" | "final";
+// Fuente única del tipo: lib/planner/estado.ts (re-export de compatibilidad).
+export type { Estado };
 
 const clampInt = (n: number, min: number, max: number) =>
   Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : min;
@@ -48,8 +47,10 @@ export function initialState(): PlannerState {
   return {
     view: "cuatri",
     approved,
-    // migración: lo que arranca aprobado se trata como final aprobado (estado:"final").
-    finalDone: new Set<string>(approved),
+    // migración: lo aprobado se toma como final aprobado (estado:"final"), pero
+    // SOLO si la materia rinde final — invariante: promocionables/sin-final
+    // nunca entran en finalDone (ver types.ts).
+    finalDone: new Set<string>([...approved].filter(tieneFinal)),
     combo: new Set<string>(),
     fixedCom: new Map<string, string>(),
     areasOn: new Set<string>(PLAN.areas),
@@ -73,12 +74,11 @@ export function initialState(): PlannerState {
       capCredByIdx: new Map<number, number>(),
       capMatByIdx: new Map<number, number>(),
       lockedIdx: new Set<number>(),
-      result: null,
+      lockPins: new Map<number, string[]>(),
     },
     sideCollapsed: false,
     drawerCode: null,
     fichaCode: null,
-    charFilters: { ...DEFAULT_CHAR_FILTERS },
     finales: initialFinales(),
     hydrated: false,
   };
@@ -88,7 +88,6 @@ export type Action =
   | { type: "HYDRATE"; payload: Persisted }
   | { type: "HYDRATE_URL"; payload: PlannerUrlState }
   | { type: "SET_VIEW"; view: ViewKey }
-  | { type: "TOGGLE_APPROVED"; code: string }
   | { type: "SET_ESTADO"; code: string; estado: Estado }
   | { type: "TOGGLE_COMBO"; code: string }
   | { type: "SET_FIXED_COM"; code: string; comision: string | null }
@@ -110,7 +109,10 @@ export type Action =
   | { type: "PLAN_POOL_ADD"; code: string }
   | { type: "PLAN_POOL_REMOVE"; code: string }
   | { type: "PLAN_SET_FIXED"; code: string; idx: number | null }
-  | { type: "PLAN_TOGGLE_LOCK"; idx: number }
+  // `pinnedByLock`: códigos ubicados en el cuatri al momento de lockear (los
+  // manda PlanView); el reducer registra los que el lock efectivamente pinea
+  // para liberarlos —y solo a ellos— al des-lockear.
+  | { type: "PLAN_TOGGLE_LOCK"; idx: number; pinnedByLock?: string[] }
   | { type: "PLAN_SAVE_PREFERENCE"; codes: string[]; idx?: number }
   | { type: "PLAN_RESET" }
   | { type: "RESET_APPROVED" }
@@ -119,8 +121,6 @@ export type Action =
   | { type: "CLOSE_DRAWER" }
   | { type: "OPEN_FICHA"; code: string }
   | { type: "CLOSE_FICHA" }
-  | { type: "SET_CHAR_FILTERS"; patch: Partial<CharFilters> }
-  | { type: "RESET_CHAR_FILTERS" }
   | { type: "SET_FINALES_PERIODO"; periodo: FinalPeriodo }
   | { type: "SET_FINALES_ANIO"; anio: number }
   | { type: "SET_MESA"; code: string; mesa: MesaFinal | null }
@@ -136,9 +136,15 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return {
         ...s,
         approved,
-        // migración: sin `finalDone` persistido (datos pre-feature), todo lo
-        // aprobado se toma como final aprobado (estado:"final").
-        finalDone: p.finalDone ? new Set(p.finalDone) : new Set(approved),
+        // migración: sin `finalDone` persistido (datos pre-feature), lo aprobado
+        // se toma como final aprobado (estado:"final"). En ambas ramas se filtra
+        // por `tieneFinal` (y ⊆ approved): datos persistidos por la migración
+        // vieja venían contaminados con promocionables/sin-final.
+        finalDone: p.finalDone
+          ? new Set(
+              p.finalDone.filter((c) => approved.has(c) && tieneFinal(c)),
+            )
+          : new Set([...approved].filter(tieneFinal)),
         combo: p.combo ? new Set(p.combo) : s.combo,
         fixedCom: p.fixedCom ? new Map(p.fixedCom) : s.fixedCom,
         comboParams: p.comboParams ?? s.comboParams,
@@ -157,6 +163,13 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
           pool: p.pool ? new Set(p.pool) : new Set(remainingOblig(approved)),
           fixed: p.fixed ? new Map(p.fixed) : s.plan.fixed,
           lockedIdx: p.lockedIdx ? new Set(p.lockedIdx) : s.plan.lockedIdx,
+          // tolerante a datos viejos sin registro de pines: si el payload trae
+          // locks pero no lockPins, arranca sin registro (unlock conservador).
+          lockPins: p.lockPins
+            ? new Map(p.lockPins)
+            : p.lockedIdx
+              ? new Map()
+              : s.plan.lockPins,
           start: p.planOpts?.start ?? s.plan.start,
           // clamp defensivo: valores persistidos fuera de rango (de versiones
           // previas con el input roto) no deben romper el plan
@@ -200,17 +213,6 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
     }
     case "SET_VIEW":
       return { ...s, view: a.view };
-    case "TOGGLE_APPROVED": {
-      const approved = new Set(s.approved);
-      const finalDone = new Set(s.finalDone);
-      if (approved.has(a.code)) {
-        approved.delete(a.code);
-        finalDone.delete(a.code); // mantiene la invariante finalDone ⊆ approved
-      } else {
-        approved.add(a.code);
-      }
-      return { ...s, approved, finalDone };
-    }
     case "SET_ESTADO": {
       const approved = new Set(s.approved);
       const finalDone = new Set(s.finalDone);
@@ -314,18 +316,28 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
     case "PLAN_TOGGLE_LOCK": {
       const lockedIdx = new Set(s.plan.lockedIdx);
       const fixed = new Map(s.plan.fixed);
+      const lockPins = new Map(s.plan.lockPins);
       if (lockedIdx.has(a.idx)) {
-        // desbloquear: liberar los pines de ese cuatrimestre
+        // des-lockear: liberar SOLO los pines que agregó el lock; los manuales
+        // previos quedan. Sin registro (estado viejo) no se borra nada.
         lockedIdx.delete(a.idx);
-        for (const [code, idx] of fixed) if (idx === a.idx) fixed.delete(code);
+        for (const code of lockPins.get(a.idx) ?? []) {
+          if (fixed.get(code) === a.idx) fixed.delete(code);
+        }
+        lockPins.delete(a.idx);
       } else {
         // finalizar: pinear lo que hoy está ubicado en ese cuatrimestre para
-        // que el optimizador lo respete tal cual.
+        // que el optimizador lo respete tal cual. Se registra SOLO lo que este
+        // lock agrega (lo ya pineado a ese índice era manual y no se toca al
+        // des-lockear).
         lockedIdx.add(a.idx);
-        const placed = s.plan.result?.items[a.idx] ?? [];
-        for (const x of placed) fixed.set(x.m.codigo, a.idx);
+        const added = (a.pinnedByLock ?? []).filter(
+          (code) => fixed.get(code) !== a.idx,
+        );
+        lockPins.set(a.idx, added);
+        for (const code of added) fixed.set(code, a.idx);
       }
-      return { ...s, plan: { ...s.plan, lockedIdx, fixed } };
+      return { ...s, plan: { ...s.plan, lockedIdx, fixed, lockPins } };
     }
     case "PLAN_SAVE_PREFERENCE": {
       // combinador → plan: suma las materias elegidas al pool del plan (las
@@ -351,6 +363,7 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
           capCredByIdx: new Map(),
           capMatByIdx: new Map(),
           lockedIdx: new Set(),
+          lockPins: new Map(),
         },
       };
     case "RESET_APPROVED": {
@@ -358,12 +371,13 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return {
         ...s,
         approved,
-        finalDone: new Set(approved),
+        finalDone: new Set([...approved].filter(tieneFinal)),
         plan: {
           ...s.plan,
           pool: new Set(remainingOblig(approved)),
           fixed: new Map(),
           lockedIdx: new Set(),
+          lockPins: new Map(),
         },
       };
     }
@@ -377,10 +391,6 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       return { ...s, fichaCode: a.code };
     case "CLOSE_FICHA":
       return { ...s, fichaCode: null };
-    case "SET_CHAR_FILTERS":
-      return { ...s, charFilters: { ...s.charFilters, ...a.patch } };
-    case "RESET_CHAR_FILTERS":
-      return { ...s, charFilters: { ...DEFAULT_CHAR_FILTERS } };
     case "SET_FINALES_PERIODO":
       return { ...s, finales: { ...s.finales, periodo: a.periodo } };
     case "SET_FINALES_ANIO":

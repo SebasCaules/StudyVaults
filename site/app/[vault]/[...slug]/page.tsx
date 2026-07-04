@@ -20,11 +20,12 @@ export async function generateStaticParams() {
   return m.notes
     .filter((n) => !n.isIndex)
     // Guard: una nota cuyo slug colisione con una ruta dedicada de la materia
-    // (/herramientas, /biblioteca) pisaría el path de salida de esa ruta.
+    // (/herramientas, /hojas, /biblioteca) pisaría el path de salida de esa ruta.
     .filter((n) => {
       const cfg = getVault(n.vault);
       if (n.slug.length !== 1) return true;
       if (cfg?.toolkit && n.slug[0] === "herramientas") return false;
+      if (cfg?.sheets && n.slug[0] === "hojas") return false;
       if (cfg?.library && n.slug[0] === "biblioteca") return false;
       return true;
     })

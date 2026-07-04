@@ -95,31 +95,57 @@ export default function WikiRail({
     } catch {}
   }, [storageKey, side]);
 
+  // En modo drawer abrir/cerrar es transitorio (navegar por el menú en el
+  // teléfono): no se persiste, así un cierre de drawer no deja el riel
+  // colapsado en la próxima visita desktop.
+  const isDrawer = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia(`(max-width: ${DRAWER_BREAKPOINT[side]}px)`).matches;
+
   const toggle = () => {
+    const persist = !isDrawer();
     setOpen((v) => {
       const nv = !v;
-      try {
-        localStorage.setItem(storageKey, nv ? "1" : "0");
-      } catch {}
+      if (persist) {
+        try {
+          localStorage.setItem(storageKey, nv ? "1" : "0");
+        } catch {}
+      }
       return nv;
     });
   };
 
   // drawer (izq <860px, der/TOC <1100px): bloquear scroll del body + cerrar
   // con Escape mientras esté abierto. El lock cuenta referencias porque los
-  // dos rieles pueden ser drawer a la vez (ver lockBodyScroll arriba).
+  // dos rieles pueden ser drawer a la vez (ver lockBodyScroll arriba). Se
+  // escucha el media query para soltar/retomar el lock si el viewport cruza
+  // el breakpoint con el riel abierto (antes quedaba el body bloqueado).
   useEffect(() => {
     if (!open) return;
     const mq = window.matchMedia(`(max-width: ${DRAWER_BREAKPOINT[side]}px)`);
-    if (!mq.matches) return;
-    lockBodyScroll();
+    let locked = false;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") toggle();
     };
-    document.addEventListener("keydown", onKey);
+    const sync = () => {
+      if (mq.matches && !locked) {
+        lockBodyScroll();
+        document.addEventListener("keydown", onKey);
+        locked = true;
+      } else if (!mq.matches && locked) {
+        unlockBodyScroll();
+        document.removeEventListener("keydown", onKey);
+        locked = false;
+      }
+    };
+    sync();
+    mq.addEventListener("change", sync);
     return () => {
-      unlockBodyScroll();
-      document.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", sync);
+      if (locked) {
+        unlockBodyScroll();
+        document.removeEventListener("keydown", onKey);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, side]);

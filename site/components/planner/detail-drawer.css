@@ -183,18 +183,6 @@
   flex: none;
 }
 
-/* primaria: "marcar aprobada" (sin marcar) — énfasis brass suave, clara pero
-   no estridente. Al marcarse (.on) hereda el relleno sage de .mini.on. */
-.planner .dd-actions .btn-ap:not(.on) {
-  color: var(--brass-2);
-  border-color: color-mix(in srgb, var(--brass) 46%, var(--line));
-  background: var(--brass-soft);
-}
-.planner .dd-actions .btn-ap:not(.on):hover {
-  color: var(--brass-2);
-  border-color: var(--brass);
-  background: color-mix(in srgb, var(--brass) 16%, var(--panel));
-}
 
 /* ghost: descargar — tercera en jerarquía, discreta */
 .planner .dd-actions .dd-dl {

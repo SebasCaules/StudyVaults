@@ -319,7 +319,7 @@ Estética visual derivada del template Neuform **"Premium Agency Portal — Tech
 | `--text-primary` | `#FFFFFF` | Texto principal (sobre surface o coral) |
 | `--text-secondary` | `#A1A1AA` | Texto secundario / metadata atenuada |
 | `--border` | `#27272A` | Bordes de cards, controls, divisores |
-| `--status-go` / `--status-promo` / `--status-warn` / `--status-caution` | `#46A86E` / `#2F9F8F` / `#D8B279` / `#D68F85` | Estados semánticos (éxito·verde / promociona·teal / aviso·ámbar / conflicto·rojo). Relleno/borde/ícono a baja opacidad, nunca texto sobre superficie |
+| `--status-go` / `--status-promo` / `--status-warn` / `--status-caution` | dark: `#46A86E` / `#2F9F8F` / `#D8B279` / `#D68F85` · light: `#2E7D52` / `#16745C` / `#8A591C` / `#B23A28` | Estados semánticos (éxito·verde / promociona·teal / aviso·ámbar / conflicto·rojo), **conmutados por tema** (los de dark no llegan a 3:1 sobre claro; los light están alineados a la paleta de hojas 12.10). Relleno/borde/ícono a baja opacidad, nunca texto sobre superficie |
 
 **Roles.** Los tokens de **rol de color se conmutan por tema** (ver 12.9). En **dark** las superficies son un **marrón cálido aclarado y parejo**: cards `--surface = #382519` (`--brown-soft`), canvas `--background ≈ #4C3A30` (`color-mix(in srgb, var(--brown-soft) 90%, #FFFFFF)`) y elevado `≈ #54463E` — la tinta profunda `#241208` se reserva para sombras / on-accent / texto en light. En **light**, un off-white cálido. Los paneles/cards se elevan sobre el canvas con un derivado `--surface-2` + borde 1px `--border`. El **coral `#F47C59` es acento** —CTA, palabra de realce del hero, objeto focal, dots de estado—; el azul `#92CFF2` es acento secundario y focos (oscurecido en light para contraste). **No se inventan colores nuevos**: los neutros de cada tema se derivan vía `color-mix` de las hex base (6 + `--brown-soft`); los `--status-*` y la paleta de hojas (12.10) son los únicos semánticos con hex propio.
 
@@ -419,7 +419,8 @@ Tokens como CSS copy-paste (capa web — permitido aquí, **nunca** en `.md`). E
   --border:         #27272A;
   --surface-2:      color-mix(in srgb, var(--brown-soft) 84%, #FFFFFF); /* panel elevado sobre el canvas oscuro */
 
-  /* Estados semánticos */
+  /* Estados semánticos (valores para canvas oscuro; [data-theme="light"] los
+     conmuta a variantes profundas: #2E7D52 / #16745C / #8A591C / #B23A28) */
   --status-go:      #46A86E; /* verde: éxito / final aprobado */
   --status-promo:   #2F9F8F; /* teal: promociona / sin final */
   --status-warn:    #D8B279; /* ámbar: aviso */
@@ -462,7 +463,7 @@ Archivos de referencia:
 La capa web tiene **dos temas** conmutables; el **dark es el default**. La firma (coral de acento, serif display, mono técnico) es idéntica en ambos: solo cambian los **neutros** (canvas, superficies, texto, bordes) y el azul de links/focos.
 
 - **Mecánica.** Atributo `data-theme="dark"|"light"` en `<html>`. La elección persiste en `localStorage` (clave `sv-theme`) y se aplica en un `<script>` al inicio del `<head>` **antes de pintar** (sin flash). Toggle sol/luna en navbar + menú mobile (`aria-label`, `aria-pressed`). Transición suave, guardada por `prefers-reduced-motion`. Primera visita sin elección → **dark**.
-- **Tokens por tema.** Las hex base (6 + `--brown-soft`) viven en `:root`; los tokens de **rol** (`--background`, `--surface`, `--surface-2/3`, `--text-*`, `--border`, hairlines, sombras, glows, ring de focus) se definen dentro de `[data-theme="dark"]` y `[data-theme="light"]`, **derivados 100%** por `color-mix`/alpha de esas bases. No se introduce ningún hex de color nuevo (salvo los `--status-*`, fijos en ambos temas, y la paleta de hojas de 12.10, con variante por tema).
+- **Tokens por tema.** Las hex base (6 + `--brown-soft`) viven en `:root`; los tokens de **rol** (`--background`, `--surface`, `--surface-2/3`, `--text-*`, `--border`, hairlines, sombras, glows, ring de focus) se definen dentro de `[data-theme="dark"]` y `[data-theme="light"]`, **derivados 100%** por `color-mix`/alpha de esas bases. No se introduce ningún hex de color nuevo (salvo los `--status-*` y la paleta de hojas de 12.10 — ambos con variante por tema).
 - **Dark (default).** Superficies de **marrón cálido aclarado y parejo** ancladas en `--brown-soft #382519`: cards `--surface = #382519`, canvas `--background = color-mix(in srgb, var(--brown-soft) 90%, #FFFFFF)` (≈ `#4C3A30`), elevado `--surface-2 ≈ #54463E` (heads/inputs `--surface-3` un paso más claro). La tinta profunda `#241208` queda para sombras / on-accent. Texto blanco; acentos coral/azul.
 - **Light.** Canvas off-white cálido (`color-mix(in srgb, #FFFFFF 96%, var(--surface) 4%)`); paneles blancos con borde claro derivado y sombras grises suaves. Texto `--text-primary = #241208`, secundario gris cálido derivado. El coral se mantiene; el **azul `#92CFF2` se oscurece** para links/focos/código (`color-mix` con `#241208`) por contraste sobre claro.
 - **Accesibilidad.** Contraste **AA** medido en ambos temas; el ring de focus tiene color por tema para que sea siempre visible. La capa ambient adapta su alpha por tema (sutil en light).

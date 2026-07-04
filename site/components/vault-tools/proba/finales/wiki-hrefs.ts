@@ -1,8 +1,9 @@
 /* ============================================================================
- * Mapa slug → href de las páginas del wiki de Proba (AUTO-GENERADO).
+ * Mapa slug → href de las páginas del wiki de Proba (curado a mano).
  * Resuelve los `wikiLinks` del banco (basename del wikilink → ruta real con
- * su carpeta). Generado a partir de los .md de Proba/wiki; envolver con withBase
- * al renderizar. No editar a mano: re-generar si cambian las páginas del vault.
+ * su carpeta). Derivado de los .md de Proba/wiki — no hay script generador:
+ * si cambian las páginas del vault, actualizar las entradas acá. Envolver
+ * con withBase al renderizar.
  * ========================================================================== */
 
 export const WIKI_HREF: Record<string, string> = {

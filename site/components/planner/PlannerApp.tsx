@@ -11,6 +11,7 @@ import {
   saveFinalesCombo,
   saveFixedCom,
   saveLocked,
+  saveLockPins,
   savePlanOpts,
   savePlanPool,
   saveSidebar,
@@ -163,6 +164,9 @@ function PlannerInner() {
   useEffect(() => {
     if (state.hydrated) saveLocked(state.plan.lockedIdx);
   }, [state.plan.lockedIdx, state.hydrated]);
+  useEffect(() => {
+    if (state.hydrated) saveLockPins(state.plan.lockPins);
+  }, [state.plan.lockPins, state.hydrated]);
   useEffect(() => {
     if (state.hydrated) saveFinalesCombo(state.finales);
   }, [state.finales, state.hydrated]);

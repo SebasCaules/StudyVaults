@@ -9,6 +9,9 @@ import {
   availableCount,
 } from "@/lib/planner/metrics";
 
+// créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
+const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
+
 /** Barra superior con las cuatro tarjetas de métricas (port de updateMetrics)
  *  y el botón "Compartir" (la URL ya refleja vista/filtros/drawer → deep-link). */
 export default function Topbar() {
@@ -25,7 +28,7 @@ export default function Topbar() {
 
   const statCreditos = useMemo(() => approvedCredits(approved), [approved]);
   const statElec = useMemo(
-    () => Math.min(electiveCredits(approved), 27),
+    () => Math.min(electiveCredits(approved), ELEC_REQ),
     [approved]
   );
   const statDisp = useMemo(() => availableCount(approved), [approved]);
@@ -60,7 +63,7 @@ export default function Topbar() {
         <div className="stat">
           <span className="stat__num">
             <span>{statElec}</span>
-            <i>&#8202;/&#8202;27</i>
+            <i>&#8202;/&#8202;{ELEC_REQ}</i>
           </span>
           <span className="stat__lbl">Créditos electivos</span>
         </div>

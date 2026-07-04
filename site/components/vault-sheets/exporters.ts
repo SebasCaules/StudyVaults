@@ -76,11 +76,18 @@ function texMath(s: string): string {
   return s.replace(UNI_RE, (c) => UNI[c] ?? c).replace(EMOJI_RE, "");
 }
 
+// Tipográficos: en modo TEXTO van como ligaduras/comillas de TeX, nunca por el
+// fallback math — pdflatex imprimiría p.ej. "—" ($---$) como tres signos menos.
+// El minus U+2212 también va acá (en texto plano es un guion simple).
+const TEX_TEXT: Record<string, string> = {
+  "−": "-", "–": "--", "—": "---", "‘": "`", "’": "'", "“": "``", "”": "''",
+};
+
 /** Escapa especiales de LaTeX en texto plano y envuelve símbolos Unicode en math. */
 function texEscape(s: string): string {
   return s
     .replace(/[\\&%$#_{}~^]/g, (c) => TEX_ESC[c] ?? c)
-    .replace(UNI_RE, (c) => (c === "−" ? "-" : `$${UNI[c]}$`))
+    .replace(UNI_RE, (c) => TEX_TEXT[c] ?? `$${UNI[c]}$`)
     .replace(EMOJI_RE, "");
 }
 
@@ -111,16 +118,15 @@ const TEX_COLOR: Record<EntryKind, string> = {
 };
 
 // Paleta "refinada" — hex de `light` (KIND_META.*.light): el .tex se imprime en
-// papel blanco, igual que el bloque @media print de sheets.css. SINCRONIZADA
-// BYTE-A-BYTE con KIND_META y sheets.css (ver nota en types.ts). `sheetCode`
-// es neutral y no forma parte de los 6.
-const TEX_COLOR_DEFS = `\\definecolor{sheetDef}{HTML}{275C8C}
-\\definecolor{sheetThm}{HTML}{5A3897}
-\\definecolor{sheetFml}{HTML}{16745C}
-\\definecolor{sheetMth}{HTML}{8A591C}
-\\definecolor{sheetCau}{HTML}{B23A28}
-\\definecolor{sheetEx}{HTML}{695D51}
-\\definecolor{sheetCode}{HTML}{5D5D65}`;
+// papel blanco, igual que el bloque @media print de sheets.css. Derivada de
+// KIND_META (types.ts) para tener UNA sola fuente de verdad; `sheetCode` es
+// neutral y no forma parte de los 6.
+const TEX_COLOR_DEFS = (Object.entries(TEX_COLOR) as [EntryKind, string][])
+  .map(
+    ([kind, name]) =>
+      `\\definecolor{${name}}{HTML}{${KIND_META[kind].light.replace(/^#/, "")}}`,
+  )
+  .join("\n");
 
 function texEntry(e: SheetEntry, sheetKind: Sheet["kind"]): string {
   const kind = e.kind ?? defaultKind(sheetKind);

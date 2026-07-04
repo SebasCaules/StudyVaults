@@ -159,6 +159,15 @@
   --particle-coral: color-mix(in srgb, var(--hex-coral) 34%, transparent);
   --particle-link: color-mix(in srgb, var(--hex-brown) 9%, transparent);
 
+  /* Estados semánticos, variante clara: los valores de :root están calibrados
+     para el canvas oscuro (p.ej. --status-warn #d8b279 rinde ~1.9:1 sobre
+     blanco, bajo el umbral 3:1 no-texto). Acá se oscurecen, alineados a la
+     paleta light de las hojas (formula/method/caution). */
+  --status-go: #2e7d52; /* verde profundo: final aprobado / éxito */
+  --status-promo: #16745c; /* teal profundo (= formula light) */
+  --status-warn: #8a591c; /* ámbar profundo (= method light) */
+  --status-caution: #b23a28; /* rojo profundo (= caution light) */
+
   color-scheme: light;
 }
 

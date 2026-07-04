@@ -1,12 +1,11 @@
-"use client";
-
 // UseWithClaude — panel "Descargá esta materia y estudiala con IA" que va al pie
 // de la landing de cada vault. Cada materia es una carpeta de notas .md (un vault
 // de Obsidian): este bloque le da al estudiante los comandos exactos para bajarse
 // SOLO esa carpeta (degit) o el repo entero (git) y abrirla con Claude Code (o
 // cualquier agente / Obsidian / Cursor) para estudiar CON este material.
-// Client component porque usa Tabs + CopyButton (clipboard con guards). El CSS
-// vive afuera; acá sólo se emiten las clases del contrato `.vl-claude` / `.vl-cmd`.
+// Server component: no usa hooks ni APIs de cliente — Tabs y CopyButton ya son
+// islas client por su cuenta. El CSS vive afuera; acá sólo se emiten las clases
+// del contrato `.vl-claude` / `.vl-cmd`.
 
 import { Tabs, CopyButton, Note } from "@studyvaults/ui";
 

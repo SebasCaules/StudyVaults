@@ -56,5 +56,5 @@
 .commission-select option {
   font-family: var(--font-mono);
   color: var(--text-primary);
-  background: var(--surface);
+  background: var(--surface-2);
 }

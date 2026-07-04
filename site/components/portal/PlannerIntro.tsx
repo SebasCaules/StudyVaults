@@ -92,28 +92,36 @@ const MODES = [
 function PlanVisual() {
   const [ref, inView] = useInView<HTMLDivElement>();
   const [mode, setMode] = useState(0);
+  // Una elección manual frena el autoplay: la demo no le pisa el modo al usuario.
+  const [manual, setManual] = useState(false);
 
   useEffect(() => {
-    if (!inView || prefersReduced()) return;
+    if (!inView || manual || prefersReduced()) return;
     const id = window.setInterval(() => {
       setMode((m) => (m + 1) % MODES.length);
     }, 3400);
     return () => window.clearInterval(id);
-  }, [inView]);
+  }, [inView, manual]);
+
+  const pick = (i: number) => {
+    setManual(true);
+    setMode(i);
+  };
 
   const m = MODES[mode];
   return (
     <div ref={ref} className={cx(s.visualCard, s.revealVisual, inView && s.isVisible)}>
       <span className={s.vTag}>vista previa</span>
-      <div className={s.modePills} role="tablist" aria-label="Modo de optimización">
+      {/* Botones toggle (aria-pressed), no tabs: cambian una misma vista previa,
+          no alternan paneles con contenido propio. */}
+      <div className={s.modePills} role="group" aria-label="Modo de optimización">
         {MODES.map((mm, i) => (
           <button
             key={mm.label}
             type="button"
-            role="tab"
-            aria-selected={i === mode}
+            aria-pressed={i === mode}
             className={cx(s.modePill, i === mode && s.modePillActive)}
-            onClick={() => setMode(i)}
+            onClick={() => pick(i)}
           >
             {mm.label}
           </button>

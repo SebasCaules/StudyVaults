@@ -75,7 +75,9 @@ Para que `/[vault]/hojas` exista y muestre la hoja, los tres tienen que coincidi
    `<vault>Formulas` y/o `<vault>Conceptos` (camelCase del id, ej. `probaFormulas`, `inge2Conceptos`).
 
 La ruta `app/[vault]/hojas/page.tsx` hace `generateStaticParams()` sobre `Object.keys(SHEETS)`, así que
-**si el vault no está en `SHEETS`, la página no se genera** (404). `SheetShell` recibe `formulas` y
+**si el vault no está en `SHEETS`, la página no se genera** (404). La página además define el modo de
+lectura **"Libro"** (paginado tipo formulario impreso): hoy es el default **solo en Proba** — decisión de
+producto, no lo actives por default en otros vaults sin pedido. `SheetShell` recibe `formulas` y
 `conceptos` y muestra el toggle solo si ambos existen.
 
 ### Reglas por materia (cuáles hojas corresponden)

@@ -11,6 +11,7 @@ import resumenesData from "./resumenes.json";
 import type {
   Comision,
   Ficha,
+  OptMethod,
   PlacedMateria,
   PlanResult,
   PlanStart,
@@ -780,7 +781,18 @@ export interface ExportArgs {
   includeCalendar?: boolean;
   /** índices de cuatrimestre a incluir; si se omite, se incluyen todos. */
   cuatris?: number[];
+  /** método de optimización usado (ajusta el objetivo que declara el meta-note
+   *  del documento multi-cuatrimestre). Default "cuatris" para no romper los
+   *  call-sites que todavía no lo pasan. */
+  method?: OptMethod;
 }
+
+/** Objetivo del meta-note según el método de optimización elegido. */
+const METHOD_NOTE: Record<OptMethod, string> = {
+  cuatris: "minimiza la cantidad de cuatrimestres",
+  dias: "concentra la cursada en la menor cantidad de días por semana",
+  balance: "reparte créditos y materias de forma pareja entre los cuatrimestres",
+};
 
 export function buildPlanHTML(a: ExportArgs): string {
   const { result: R, start, approvedCreditsNow } = a;
@@ -873,7 +885,7 @@ export function buildPlanHTML(a: ExportArgs): string {
     <div class="s"><b>${approvedCreditsNow}/${finalCred}</b><span>créditos · meta</span></div>
   </div>
   <p class="meta-note">
-    Optimización: minimiza la cantidad de cuatrimestres priorizando obligatorias, el camino crítico de
+    Optimización: ${METHOD_NOTE[a.method ?? "cuatris"]} priorizando obligatorias, el camino crítico de
     correlativas y los créditos; las comisiones se eligen para concentrar la cursada en menos días.
     Tope por cuatrimestre: ${a.maxCred} créditos y ${a.maxMat} materias${a.avoid ? " · evitando superposiciones (incluye traslados entre sedes)" : ""}.
   </p>

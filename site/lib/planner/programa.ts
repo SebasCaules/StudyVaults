@@ -9,8 +9,7 @@
 // infiere un dato ausente, y la UI siempre muestra el texto crudo de `evaluacion`.
 
 import { FICHAS } from "./fichas";
-import { byId } from "./model";
-import type { CharFilters, Ficha, FichaDerivado } from "./types";
+import type { Ficha, FichaDerivado } from "./types";
 
 /** Normaliza a minúsculas sin acentos para matchear robusto. */
 const norm = (s: string): string =>
@@ -95,56 +94,4 @@ export function charsOf(codigo: string): FichaDerivado | null {
     _cache.set(codigo, d);
   }
   return d;
-}
-
-/** Estado inicial de los filtros por características (sin filtrar). */
-export const DEFAULT_CHAR_FILTERS: CharFilters = {
-  regimen: "any",
-  sinAsistenciaObligatoria: false,
-  maxHsSemanales: null,
-  soloConPrograma: false,
-};
-
-/** ¿Hay algún filtro activo? (para UI: mostrar "limpiar", contar, etc.). */
-export function charFiltersActive(f: CharFilters): boolean {
-  return (
-    f.regimen !== "any" ||
-    f.sinAsistenciaObligatoria ||
-    f.maxHsSemanales != null ||
-    f.soloConPrograma
-  );
-}
-
-/** ¿La materia (por código) satisface los filtros de características?
- *  Regla honesta: si un filtro exige una característica del programa y la materia
- *  NO tiene programa (coming soon), sólo pasa cuando `soloConPrograma` está apagado
- *  y ese filtro no puede evaluarse — nunca se afirma algo que no se puede verificar. */
-export function matchesChars(codigo: string, f: CharFilters): boolean {
-  const d = charsOf(codigo);
-  const m = byId.get(codigo);
-
-  if (f.soloConPrograma && !d) return false;
-
-  if (f.maxHsSemanales != null) {
-    const hs = FICHAS[codigo]?.cargaHoraria.semanales;
-    if (hs != null && hs > f.maxHsSemanales) return false;
-  }
-
-  if (f.regimen !== "any") {
-    if (!d) {
-      // sin programa no se puede afirmar el régimen; sólo pasa si no exigimos programa
-      if (f.soloConPrograma) return false;
-    } else if (f.regimen === "sin-final") {
-      if (d.tieneFinal) return false;
-    } else if (f.regimen === "promocionable") {
-      if (d.promocionable !== true) return false;
-    }
-  }
-
-  if (f.sinAsistenciaObligatoria && d && d.asistenciaObligatoria === true) {
-    return false;
-  }
-
-  void m;
-  return true;
 }
