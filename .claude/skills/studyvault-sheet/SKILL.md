@@ -25,19 +25,24 @@ Todo vive en `site/components/vault-sheets/`. El schema es `types.ts` (leelo, es
   `title` · `hint?` (subtítulo breve, admite `$...$`) · `unit?` (string `"1"`.."9"; varias secciones
   comparten unidad y la hoja las agrupa bajo un encabezado de unidad + permite filtrar por unidad) ·
   `unitTitle?` (título humano de la unidad, coherente entre secciones del mismo `unit`) ·
-  `entries: SheetEntry[]`.
+  `unitDesc?` (descripción corta de la unidad) · `subunit?` (código de sub-unidad, p. ej. `"1.2"`;
+  `SheetShell` deriva los encabezados de sub-unidad automáticamente) · `entries: SheetEntry[]`.
+  Jerarquía completa post-overhaul: **Unidad → Sub-unidad → entradas** (ver `types.ts`).
 - **`SheetEntry`** — un ítem. Campos:
   - `label` (nombre corto; admite rich text).
   - `kind?: EntryKind` — categoría semántica → color. Valores:
     `def` (azul) · `theorem` (púrpura) · `formula` (verde) · `method` (ámbar) ·
-    `caution` (coral) · `example` (gris). Si se omite, `defaultKind()` lo deriva del tipo de hoja
-    (`formulas` → `formula`, `conceptos` → `def`).
+    `caution` (coral) · `example` (gris) · `code` (bloque de código). Si se omite, `defaultKind()`
+    lo deriva del tipo de hoja (`formulas` → `formula`, `conceptos` → `def`).
   - `tex?` — LaTeX **sin delimitadores `$`**. Se renderiza en display salvo que `inline: true`.
     Es el campo principal en hojas de **fórmulas**.
   - `inline?` — renderizar `tex` en línea con el `label` en vez de en bloque.
   - `body?` — texto breve (admite rich text, ver abajo). Campo principal en hojas de **conceptos**.
   - `cond?` — condición de validez / "cuándo aplica" (rich text).
   - `note?` — caveat / error común (rich text).
+  - `vars?` — tabla de variables/símbolos de la fórmula (post-overhaul, ver `types.ts`).
+  - `code?` — bloque de código (para `kind: "code"`).
+  - `figure?` — figura SVG embebida (ver las de MNA/Economía en `types.ts`).
 
 **Fórmulas vs conceptos.** Una hoja `formulas` se arma alrededor de `tex` (cada `entry` lleva su
 fórmula en display). Una hoja `conceptos` se arma alrededor de `body` (texto), normalmente sin `tex`.

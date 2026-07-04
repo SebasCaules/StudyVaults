@@ -4,13 +4,13 @@ Este es el punto de entrada del repo: un mapa que cruza los siete vaults de apun
 
 | Materia | Páginas | Índice |
 |---|---|---|
-| Métodos Numéricos Avanzados | 98 | [Índice MNA](MNA/wiki/index.md) |
-| Derecho para Ingenieros | 162 | [Índice Derecho](Derecho/wiki/index.md) |
-| Economía para Ingenieros | 180 | [Índice Economía](Economia/wiki/index.md) |
-| Probabilidad y Estadística | 161 | [Índice Proba](Proba/wiki/index.md) |
-| Programación de Aplicaciones Web | 47 | [Índice PAW](PAW/wiki/index.md) |
+| Métodos Numéricos Avanzados | 97 | [Índice MNA](MNA/wiki/index.md) |
+| Derecho para Ingenieros | 161 | [Índice Derecho](Derecho/wiki/index.md) |
+| Economía para Ingenieros | 179 | [Índice Economía](Economia/wiki/index.md) |
+| Probabilidad y Estadística | 160 | [Índice Proba](Proba/wiki/index.md) |
+| Programación de Aplicaciones Web | 46 | [Índice PAW](PAW/wiki/index.md) |
 | Simulación de Sistemas | 40 | [Índice SDS](SDS/index.md) |
-| Ingeniería del Software II | 92 | [Índice Inge2](Inge2/wiki/index.md) |
+| Ingeniería del Software II | 91 | [Índice Inge2](Inge2/wiki/index.md) |
 
 ---
 

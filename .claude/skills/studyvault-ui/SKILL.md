@@ -28,9 +28,11 @@ site/packages/ui/
     primitives/ layout/ navigation/ feedback/ forms/ data/   · un .tsx por componente
     styles/
       index.css       · entry: @import de tokens.css → base.css → … en orden
-      tokens.css      · los 6 hex base + tokens de rol conmutados por [data-theme] + tint [data-vault]
+      tokens.css      · los 7 hex base (6 + --hex-brown-soft) + tokens de rol conmutados por
+                        [data-theme] + tint [data-vault] + estados semánticos --status-*
       base.css layout.css button.css badge.css card.css nav.css footer.css
-      ambient.css breadcrumbs.css reveal.css overlay.css toolkit.css parcial.css sheets.css diagram.css
+      ambient.css breadcrumbs.css reveal.css overlay.css toolkit.css parcial.css sheets.css
+      diagram.css forms.css library.css
 ```
 
 Lo consume `site/app/globals.css` con `@import "@studyvaults/ui/styles.css";` (una sola vez).
@@ -46,11 +48,11 @@ Elegí la carpeta por el **rol** del componente, no por cómo se ve:
 | Categoría | Para qué | Ejemplos existentes |
 |---|---|---|
 | `primitives/` | átomos sin estructura: un botón, un ícono, una etiqueta, un número | `Button`, `Icon`, `Badge`, `Tag`, `Eyebrow`, `BigNum`, `Mono` |
-| `layout/` | estructura y superficies: contenedores, grillas, cards, paneles | `Container`, `Section`, `SectionHeading`, `Stack`, `Row`, `Card`, `CardGrid`, `CardIcon`, `ToolCard`, `Panel`, `SubPanel`, `PanelHeader`, `Note` |
+| `layout/` | estructura y superficies: contenedores, grillas, cards, paneles | `Container`, `Section`, `SectionHeading`, `Stack`, `Row`, `Card`, `CardGrid`, `CardIcon`, `ToolCard`, `Panel`, `SubPanel`, `PanelHeader`, `Note`, `Callout` |
 | `navigation/` | chrome de navegación y tema | `Navbar`, `NavLink`, `Brand`, `BrandMark`, `Breadcrumbs`, `Footer`, `ThemeToggle`, `ThemeScript` |
 | `feedback/` | motion y overlays: revelados, modales, drawers, pestañas | `Reveal`, `AmbientLayer`, `Modal`, `Drawer`, `Tabs` (+ hook `useDismissable`) |
-| `forms/` | controles de formulario | `Field`, `TextInput`, `TextArea`, `Select`, `Slider`, `Chip` |
-| `data/` | lectura/salida de datos | `KeyValue`, `Readout`, `DataTable`, `CopyButton`, `CodeBlock` |
+| `forms/` | controles de formulario | `Field`, `TextInput`, `TextArea`, `Select`, `Slider`, `Chip`, `CommissionSelect` |
+| `data/` | lectura/salida de datos | `KeyValue`, `Readout`, `DataTable`, `CopyButton`, `CodeBlock` (+ `CodeBlockChrome`), `CodeCopy` |
 
 Si dudás entre dos, mirá cuál import-path tiene el vecino más parecido y seguí esa convención.
 
@@ -76,8 +78,9 @@ Si dudás entre dos, mirá cuál import-path tiene el vecino más parecido y seg
    otros componentes los necesitan.
 6. **JSDoc en español** arriba de cada componente: una frase de qué es + la clase CSS que usa + un
    bloque `@example`. Comentarios en español rioplatense.
-7. **Nada de hex hardcodeado.** Los 6 hex base viven SOLO en `tokens.css` (`--hex-brown/zinc/blue/
-   gray/coral/white`); todo lo demás deriva por `color-mix()`. En el CSS del componente usá
+7. **Nada de hex hardcodeado.** Los 7 hex base viven SOLO en `tokens.css` (`--hex-brown/brown-soft/
+   zinc/blue/gray/coral/white`); todo lo demás deriva por `color-mix()`. Para estados semánticos
+   existen `--status-go/promo/warn/caution`. En el CSS del componente usá
    **tokens de rol**: `--background`, `--surface-2`, `--surface-3`, `--border`, `--hairline`,
    `--ink-strong`, `--text-secondary`, `--link`, `--accent`, `--primary`, `--accent-soft`,
    `--accent-line`, `--accent-text`, `--primary-soft`, `--primary-line`, `--ring`, `--ring-soft`,

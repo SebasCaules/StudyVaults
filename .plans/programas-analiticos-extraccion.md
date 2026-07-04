@@ -1,6 +1,9 @@
 # Plan — Extracción de Programas Analíticos (PA) → pseudo-DB → feature de plan de cursada
 
-> Fecha: 2026-07-01 · Estado: **plan aprobado, a la espera de los 614 PDFs y de cerrar 4 decisiones**
+> Fecha: 2026-07-01 · Estado: **EJECUTADO (con adaptaciones) 2026-07-02** — ver §8: 475 PDFs en
+> `Electivas/programas-pdf/`, 51 fichas servidas (`site/public/electivas-fichas/` + `lib/planner/fichas.ts`),
+> derivación en `lib/planner/programa.ts` y `ProgramaChips`. **Backlog restante:** 139 PDFs faltantes
+> + extender a las 614 materias (hoy solo electivas del planner).
 > Fuente de los PDFs: carpeta/hoja Google Drive **"PA (es)"** (spreadsheet `1sSf_oZNyTyuPZBF0TXYjGvSzSw-fNcGEYyG3-SZ8-eY`, gid `1336774520`).
 > Script de descarga ya generado: `~/Downloads/descargar-programas-itba.js` (614 file IDs embebidos).
 

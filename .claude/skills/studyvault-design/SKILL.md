@@ -60,12 +60,11 @@ md5 _estandar/DESIGN.md \
 Detalle completo del check (incluyendo `diff` cuando difieren y qué hacer si la master no existe):
 `assets/SYNC_CHECK.md`.
 
-> **Estado actual conocido (verificar siempre, no asumir):** la **master externa estaba
-> DESINCRONIZADA** tras la despersonalización del repo. Aún arrastra la convención `log.md`
-> (eliminada) y paths privados tipo `26-1C/MNA_Obsidian/...`. Las dos copias del repo (1 y 2) sí
-> coincidían entre sí. **Si vas a tocar el estándar, primero alineá la master a la versión del repo**
-> (la del repo es la buena), después aplicá tu cambio a las 3. No copies la master hacia el repo:
-> reintroducirías `log.md` y los paths privados.
+> **Estado actual conocido (verificar siempre, no asumir):** al **2026-07-04 las 3 copias están
+> en sync byte a byte** (verificado 2×). Regla permanente por si encontrás la master externa
+> desincronizada: **la versión del repo es la buena** — alineá la master al repo, después aplicá
+> tu cambio a las 3. Nunca copies la master hacia el repo (históricamente arrastró `log.md`
+> eliminado y paths privados).
 
 ## Constraints del estándar (no reintroducir)
 

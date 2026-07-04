@@ -22,6 +22,7 @@ Pilares (cada uno tiene su skill):
 | **Hojas** | formularios/conceptos imprimibles (`/[vault]/hojas`) | `studyvault-sheet` |
 | **Design system** | librería `@studyvaults/ui` | `studyvault-ui` |
 | **Datos** | pipelines `scripts/build-*-data.mjs` desde los vaults | `studyvault-data` |
+| **Ingesta** | material externo (PDFs/planillas/horarios) → repo + sitio | `studyvault-ingest` |
 | **Operación** | verificar + publicar el sitio | `studyvault-ship` |
 | **Estándar** | mantener `DESIGN.md` | `studyvault-design` |
 
@@ -79,19 +80,32 @@ Cada vault: `wiki/` con `index.md` (catálogo) + subcarpetas temáticas. **Excep
 - `math: boolean` — ¿`$...$` es LaTeX?
 - `toolkit?: boolean` — ¿tiene `/[vault]/herramientas`? → debe matchear `TOOLKITS` en `vault-tools/registry.tsx`.
 - `sheets?: boolean` — ¿tiene `/[vault]/hojas`? → debe matchear `SHEETS` en `vault-sheets/registry.ts`.
+- `library?: boolean` — ¿tiene `/[vault]/biblioteca`? → debe matchear `LIBRARIES` en `vault-library/registry.ts`.
+- `navByUnit?` / `unitLabels?` — sidebar del wiki agrupado por unidad (hoy lo usa Proba).
 - `apps?: VaultApp[]` — apps HTML estáticas servidas bajo `/apps/<vault>/`.
 
 VaultIds: `mna · derecho · economia · proba · paw · sds · inge2`.
 
 ### Rutas (`site/app/`)
 `[vault]/page.tsx` (índice de materia) · `[vault]/[...slug]/page.tsx` (nota; guard que filtra
-`herramientas`/`hojas`) · `[vault]/herramientas/page.tsx` (toolkit, `WikiLayout wide` sin TOC) ·
-`[vault]/hojas/page.tsx` (hojas) · `electivas/page.tsx` (planner nativo) · `interno/ui/page.tsx`
-(showcase del DS, `robots: noindex`) · `page.tsx` (home) · `not-found.tsx`.
+`herramientas` si `toolkit` y `biblioteca` si `library` — **ojo: NO filtra `hojas`**, gap conocido) ·
+`[vault]/herramientas/page.tsx` (toolkit, `WikiLayout wide` sin TOC) · `[vault]/hojas/page.tsx`
+(hojas) · `[vault]/biblioteca/page.tsx` (biblioteca de recursos, flag `library`) ·
+`electivas/page.tsx` (**pseudo-landing** explicativa con CTA) · `electivas/planificar/page.tsx`
+(la app real del planner) · `interno/ui/page.tsx` (showcase del DS, `robots: noindex`) ·
+`page.tsx` (home, con grafo 3D en el hero) · `graph.json/route.ts` (data del grafo, build-time) ·
+`robots.ts` · `sitemap.ts` · `not-found.tsx`.
+
+### Planner y grafo (arquitectura post-overhaul 2026-07, commit `25b93b4`)
+El planner vive en `components/planner/**` + `lib/planner/**`: estado de 2 niveles por materia
+(`estado: "regular" | "final"`), cuatris lockeables (`lockedIdx`, respetado por `optimize.ts`),
+combinador de finales con export `.ics`, DnD nativo HTML5, tabs Calendario→Roadmap→Minors.
+El hero de la home es un grafo 3D de notas/wikilinks (`react-force-graph-3d` + `three`, data
+build-time en `app/graph.json/route.ts`). Otras deps visuales: `d3-force`, `katex`, `mermaid`, `shiki`.
 
 ### Design system — `@studyvaults/ui` (`site/packages/ui/`)
 Package privado del workspace (`workspaces: ["packages/*"]`, `transpilePackages` en `next.config.ts`,
-se distribuye TS/TSX crudo). ~45 componentes en 6 categorías (`primitives/ layout/ navigation/
+se distribuye TS/TSX crudo). ~47 componentes en 6 categorías (`primitives/ layout/ navigation/
 feedback/ forms/ data/`). El CSS del DS vive en `packages/ui/src/styles/` (split por componente,
 orquestado por `index.css`); `app/globals.css` lo importa + define el `@theme inline` + CSS de
 páginas (wiki/prose/home/search). Tokens §12 con roles conmutados por `[data-theme]`. Doc completa:
@@ -149,7 +163,8 @@ quedar byte-idénticas** (mismo md5):
 2. repo `_estandar/DESIGN.md`,
 3. skill `.claude/skills/studyvault-page/assets/DESIGN.md`.
 
-Estado al 2026-06-20: **las 3 copias están en sync** (md5 `f3e6413…`). Toda edición futura del
+Estado al 2026-07-04: **las 3 copias están en sync** (byte-idénticas). No fijes el hash acá —
+envejece con cada edición; verificalo con `md5` en el momento. Toda edición futura del
 estándar debe replicarse a las 3 y re-verificar md5 idéntico. Procedimiento en `studyvault-design`.
 
 §12 (estética web) es capa de **presentación del sitio únicamente**: las notas `.md` la **ignoran**

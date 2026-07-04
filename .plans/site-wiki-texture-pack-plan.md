@@ -1,6 +1,10 @@
 # Plan — Wiki del site con la estética del texture pack + code block "buen blog"
 
-> Estado: **plan aprobado pendiente de arrancar**. Faltan 3 decisiones (§7).
+> Estado: **EJECUTADO** (commit `8674427` + overhaul `25b93b4`): `remarkCallout` + `rehypeCodeChrome`
+> en `lib/content/render.ts`, `.wiki-code` con chrome de terminal, `Callout`/`CodeBlockChrome`/`CodeCopy`
+> en `@studyvaults/ui`, documentado en DESIGN.md §12.4. Decisión §7.1 resuelta: terminal con dots +
+> `--code-bg` fijo (no dual-theme). Único anexo sin verificar: "nodos sueltos del grafo" (§ anexo),
+> probablemente superado por el grafo 3D nuevo.
 > Objetivo: que `/[vault]/[...slug]` renderice con los componentes y la estética
 > del texture pack (callouts, code blocks pulidos, figuras, headings con marcador),
 > estandarizado en `DESIGN.md §12`, con el **bloque de código estilo blog: barra con

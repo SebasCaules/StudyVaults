@@ -48,10 +48,13 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 - **Inputs del usuario** que bloquean partes: datos reales de syllabus de obligatorias,
   fechas de mesas de finales + correlativas de finales (en curso vía ingest), y las
   **7 ilustraciones raster** de materias (D6 — hoy placeholders SVG).
-- **Auditoría integral 2026-07-03**: 3 de 4 reportes integrados a los planes (v2) con los
-  hallazgos alto re-verificados por el overseer. Falta el consolidado de directivas
-  (alimentará P4 del plan de correcciones: claims stale de PROJECT.md/SKILL.md/READMEs).
-- **Directivas con claims stale conocidos** (corregir con evidencia): PROJECT.md §1/§3 dice
-  "NO hay lib 3D ni DnD" (ya falso: `react-force-graph-3d` + `three` + DnD nativo), conteo
-  de páginas y fecha de sync de DESIGN.md pueden haber cambiado post-overhaul; revisar
-  SKILL.md de sheet/ui/toolkit contra el schema/paleta/counts nuevos.
+- **Auditoría integral 2026-07-03/04: COMPLETA (4/4)** e integrada a los planes; hallazgos
+  alto re-verificados por el overseer. P4 (directivas stale) **aplicado el 2026-07-04**:
+  PROJECT.md, README raíz, HOME.md, SKILL.md (toolkit/sheet/ui/data/design), ui/README y
+  headers de .plans viejos corregidos contra el código real. Restante menor: sync DESIGN.md
+  §12 vía `studyvault-design` (ver P4 del plan de correcciones).
+- **Pendientes reales del overhaul** (verificado: TODO lo demás del BUILD_PLAN está
+  implementado, incl. footer en /electivas y de-stick del topbar): (1) las 7 ilustraciones
+  raster (hoy SVG placeholder), (2) syllabus real de obligatorias (placeholder "próximamente";
+  139 PDFs faltantes), (3) mesas de finales oficiales + correlativas de final reales
+  (finalesData.ts es MOCK declarado; la vía de ingesta ya existe — `FinalesIngesta`).

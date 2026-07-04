@@ -96,10 +96,32 @@
    consumidos); clase `hero-graph__canvas--3d` sin CSS; reglas `.nav__burger .ico-*`
    huérfanas en nav.css.
 
-## P4 — Directivas stale (se completa con el reporte del auditor de directivas, pendiente)
-- PROJECT.md: "NO hay lib 3D ni DnD" (falso post-overhaul), counts, fecha sync DESIGN.md.
-- packages/ui/README.md: catálogo sin ToolCard/Callout/CommissionSelect/CodeCopy/
-  CodeBlockChrome y árbol de styles incompleto — :67-75,100-106.
-- types.ts:171 y sheets.css:15 dicen que la paleta "vive en DESIGN.md §12" pero DESIGN.md
-  no tiene ningún hex de hojas — replicar vía `studyvault-design` o corregir el comentario.
-- SKILL.md de sheet/ui/toolkit: contrastar contra schema subunit/paleta/counts nuevos.
+## P4 — Directivas stale — ✅ CERRADO 2026-07-04 (auditoría de directivas integrada y aplicada)
+
+**Corregido y verificado** (commit de esta fecha):
+- PROJECT.md: guard `herramientas`/`biblioteca` (no `hojas`), inventario completo de rutas
+  (pseudo-landing + planificar + biblioteca + graph.json/robots/sitemap), flags `library`/
+  `navByUnit`/`unitLabels`, 8.º pilar ingesta, párrafo de arquitectura planner+grafo 3D,
+  ~47 componentes, sync DESIGN.md sin hash hardcodeado.
+- README raíz: HOME.md ya no figura "pendiente de crear", URL real de clone, sección
+  "El sitio web", diagrama con Electivas/site/run.sh, counts 774 (criterio wiki/), suite de
+  8 skills. HOME.md: counts alineados al mismo criterio.
+- SKILL.md: toolkit (guard corregido + campos `tone/blurb/poster` + `launcher` bespoke),
+  sheet (jerarquía Unidad→Sub-unidad, `unitDesc`, 7.º kind `code`, `vars/code/figure`),
+  ui (7 hex base, `--status-*`, Callout/CommissionSelect/CodeCopy/ToolCard, forms/library css),
+  data (build-fichas-data.mjs + fichas.ts tracked), design (estado de sync actualizado).
+- packages/ui/README.md: 7 hex + status tokens, catálogo completo (47), 19 css.
+- .plans viejos: headers actualizados a EJECUTADO con su backlog real (programas: 139 PDFs
+  faltantes + extensión 614-wide; texture-pack: anexo "nodos sueltos" probablemente superado).
+- .claude/skills/README.md: ya lo había actualizado otra sesión (8 skills). ✓
+
+**Restante de P4** (menor, con dueño claro):
+1. **DESIGN.md §12 vía `studyvault-design`** (3 copias sync): documentar tints `--vt-*`
+   (con la regla "solo fondo/borde/SVG, nunca texto"), alinear nombres/valores de motion
+   (`--ease`, `--dur` 240/420/680 vs lo escrito), limpiar la fila legacy `--background: coral`
+   de la tabla §12.1, y **replicar la paleta de hojas ganadora** (bloqueado por decisión D0.1
+   del plan de diseño; hoy DESIGN.md no tiene ningún hex de hojas pese a que types.ts:171 y
+   sheets.css:15 dicen lo contrario — corregir también esos comentarios).
+2. BAJAs no aplicadas: smoke-tests de ship sin `/electivas/planificar` ni `/[vault]/biblioteca`
+   (SKILL ship); patrón `launcher`/`poster` en TOOL_TEMPLATE.tsx; mencionar modo "Libro" en
+   SKILL sheet.

@@ -174,11 +174,11 @@ Reglas duras:
 - [ ] Modo B: salida **gitignored** + cableada en `predev` **y** `prebuild`.
 - [ ] `tsc` + `next build` limpios; la tool/hoja consumidora renderiza con el dato (browser).
 
-## Estado verificado del repo (jun-2026)
+## Estado verificado del repo (2026-07)
 
-- Builders existentes: **`build-derecho-data.mjs`** (modo A) y **`build-planner-data.mjs`** (modo B).
-  No hay otros `build-*-data.mjs`.
-- Outputs **tracked**: `components/vault-tools/derecho/data.ts` y
+- Builders existentes: **`build-derecho-data.mjs`** (modo A), **`build-fichas-data.mjs`** (modo A →
+  `lib/planner/fichas.ts`, fichas/programas de electivas) y **`build-planner-data.mjs`** (modo B).
+- Outputs **tracked**: `components/vault-tools/derecho/data.ts`, `lib/planner/fichas.ts` y
   `components/vault-tools/parcial/data.ts`.
 - Output **gitignored** (confirmado): `lib/planner/data.json` (línea final de `site/.gitignore`).
 - `parcial/data.ts` (toolkit de Inge2) **NO** tiene builder: se portó a mano *verbatim* desde la

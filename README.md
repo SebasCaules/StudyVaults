@@ -9,7 +9,7 @@ Bases de conocimiento de materias del [ITBA](https://www.itba.edu.ar/) en format
 ## Cómo bajarlo y usarlo
 
 ```bash
-git clone <URL-del-repo> StudyVaultsITBA
+git clone https://github.com/SebasCaules/StudyVaults.git StudyVaultsITBA
 cd StudyVaultsITBA
 ```
 
@@ -26,15 +26,26 @@ Empezá siempre por **`HOME.md`** (el índice central del repo), y dentro de cad
 
 | Materia | Carpeta | Páginas | Descripción |
 |---|---|---:|---|
-| Métodos Numéricos Avanzados | [`MNA/`](./MNA/) | 98 | Teoría, clases, pizarrones, guías, ejercicios resueltos y un banco grande de parciales. |
-| Derecho | [`Derecho/`](./Derecho/) | 162 | Las 9 unidades del programa, parciales, TPE, parcialitos y referencias jurídicas. |
-| Economía | [`Economia/`](./Economia/) | 180 | Micro y macro con gráficos vectoriales (SVG) embebidos y fuertes formulaciones en LaTeX. |
-| Probabilidad y Estadística | [`Proba/`](./Proba/) | 161 | Conceptos, distribuciones, teoremas, técnicas y formularios, con fuentes documentadas. |
-| Programación de Aplicaciones Web | [`PAW/`](./PAW/) | 47 | Entidades, conceptos y análisis del stack web; incluye imágenes de las teóricas. En inglés. |
+| Métodos Numéricos Avanzados | [`MNA/`](./MNA/) | 97 | Teoría, clases, pizarrones, guías, ejercicios resueltos y un banco grande de parciales. |
+| Derecho | [`Derecho/`](./Derecho/) | 161 | Las 9 unidades del programa, parciales, TPE, parcialitos y referencias jurídicas. |
+| Economía | [`Economia/`](./Economia/) | 179 | Micro y macro con gráficos vectoriales (SVG) embebidos y fuertes formulaciones en LaTeX. |
+| Probabilidad y Estadística | [`Proba/`](./Proba/) | 160 | Conceptos, distribuciones, teoremas, técnicas y formularios, con fuentes documentadas. |
+| Programación de Aplicaciones Web | [`PAW/`](./PAW/) | 46 | Entidades, conceptos y análisis del stack web; incluye imágenes de las teóricas. En inglés. |
 | Simulación de Sistemas | [`SDS/`](./SDS/) | 40 | Teoría de simulación, TPs y notas; naming en `snake_case` por convención histórica. |
-| Ingeniería del Software II | [`Inge2/`](./Inge2/) | 92 | Conceptos, clases, casos de estudio, ejercicios y fuentes de ISW II. En inglés. |
+| Ingeniería del Software II | [`Inge2/`](./Inge2/) | 91 | Conceptos, clases, casos de estudio, ejercicios y fuentes de ISW II. En inglés. |
 
-Total: **7 vaults**, ~780 páginas curadas.
+Total: **7 vaults**, ~774 páginas curadas (contando las `.md` de cada `wiki/`).
+
+---
+
+## El sitio web
+
+Todo el repo se publica además como **portal web**: **<https://sebascaules.github.io/StudyVaults/>**.
+Renderiza los 7 wikis (con LaTeX, wikilinks resueltos y búsqueda), e incluye el **planificador de
+electivas** (plan de cursada, combinador de horarios y de finales), **hojas imprimibles** de fórmulas
+y conceptos, y **toolkits interactivos** por materia. El código vive en [`site/`](./site/)
+(Next.js, export estático); se corre local con `./run.sh` y se deploya solo a GitHub Pages en cada
+push a `main`.
 
 ---
 
@@ -42,7 +53,7 @@ Total: **7 vaults**, ~780 páginas curadas.
 
 ```
 StudyVaultsITBA/
-├── HOME.md            ← mapa de navegación central a los 7 vaults (pendiente de crear)
+├── HOME.md            ← mapa de navegación central a los 7 vaults
 ├── _estandar/         ← el estándar de diseño de las páginas (no es una materia)
 ├── MNA/               ┐
 ├── Derecho/           │
@@ -50,10 +61,13 @@ StudyVaultsITBA/
 ├── Proba/             ├─ un directorio por materia
 ├── PAW/               │
 ├── SDS/               │
-└── Inge2/             ┘
+├── Inge2/             ┘
+├── Electivas/         ← datos del planificador (materias, horarios, programas)
+├── site/              ← el portal web Next.js (ver "El sitio web")
+└── run.sh             ← correr/verificar el sitio en local
 ```
 
-- **`HOME.md`** — índice central del repo: enlaza los 7 vaults y explica por dónde entrar. Es el punto de partida sugerido. *Aún por crear* — mientras tanto, usá la tabla de arriba o el `wiki/index.md` de cada materia.
+- **`HOME.md`** — índice central del repo: enlaza los 7 vaults y explica por dónde entrar. Es el punto de partida sugerido.
 - **`_estandar/`** — la fuente de verdad de **cómo se ve y estructura** una página del wiki. No es una materia, es el manual de estilo del repo:
   - `DESIGN.md` — estándar canónico (frontmatter, headings, definiciones, wikilinks, LaTeX, naming).
   - `FEATURES_*.md` — guías profundas por tema: `frontmatter`, `callouts-y-bloques`, `formulas-y-codigo`, `navegacion`, `indices-y-logs`.
@@ -81,7 +95,10 @@ Todas las páginas siguen [`_estandar/DESIGN.md`](./_estandar/DESIGN.md). En res
 
 ## Generar páginas nuevas
 
-Las páginas nuevas se generan con la **skill [`studyvault-page`](./.claude/skills/studyvault-page/)** (para [Claude Code](https://claude.com/claude-code)). La skill toma material de una materia y produce una página `.md` que cumple el estándar de punta a punta: frontmatter correcto, jerarquía de headings, definiciones en blockquote, wikilinks, LaTeX según la materia, y la sección `## Ver también` al pie — además de listarla en `wiki/index.md`. Así dos páginas generadas por separado, a partir del mismo material, salen idénticas en estructura.
+El repo trae una **suite de 8 skills** para [Claude Code](https://claude.com/claude-code) en
+[`.claude/skills/`](./.claude/skills/) (contenido, toolkits, hojas, UI, datos, ingesta, operación y
+estándar — ver su [README](./.claude/skills/README.md)). La de contenido es la
+**skill [`studyvault-page`](./.claude/skills/studyvault-page/)**. La skill toma material de una materia y produce una página `.md` que cumple el estándar de punta a punta: frontmatter correcto, jerarquía de headings, definiciones en blockquote, wikilinks, LaTeX según la materia, y la sección `## Ver también` al pie — además de listarla en `wiki/index.md`. Así dos páginas generadas por separado, a partir del mismo material, salen idénticas en estructura.
 
 La skill es **autocontenida** (trae su propia copia del estándar en `assets/`, así funciona aunque la saques del repo). Tenés tres formas de usarla:
 

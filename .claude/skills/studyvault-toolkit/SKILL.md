@@ -42,8 +42,9 @@ site/components/vault-tools/XxxTools.tsx  ──→  arma las tabs con <ToolkitS
   en `TOOLKITS[vault]` y lo monta dentro de `WikiLayout` con `wide` y `toc={[]}` (sin TOC).
   **No se toca** salvo que cambie el contrato de la ruta.
 - El catch-all de notas `site/app/[vault]/[...slug]/page.tsx` filtra el slug `herramientas`
-  (y `hojas`) para no intentar renderizarlo como `.md`. Si ya existía la ruta, ya está
-  filtrado; verificá que no se haya roto el guard.
+  (si `toolkit`) y `biblioteca` (si `library`) para no intentar renderizarlos como `.md`.
+  **Ojo: hoy NO filtra `hojas`** (gap conocido, ver `.plans/plan-mejoras-correcciones.md`).
+  Si ya existía la ruta, ya está filtrado; verificá que no se haya roto el guard.
 
 ### `ToolkitShell` — el contenedor de tabs
 
@@ -60,8 +61,16 @@ interface Tool {
   icon?: ToolIconName; // glifo de la card (ver components/vault-tools/ToolIcon.tsx)
   desc?: ReactNode;   // una línea en lenguaje llano: qué hace y para qué sirve
   verb?: string;      // verbo del CTA: "Calcular", "Practicar", "Repasar"…
+  tone?: string;      // tono de color de la card (rol semántico, post-overhaul)
+  blurb?: string;     // bajada corta del afiche
+  poster?: ...;       // afiche bespoke de la card (ver .tk__poster en ToolkitShell)
 }
 ```
+
+Además (overhaul 2026-07), `ToolkitShell` acepta `launcher?: LauncherIdentity` — la identidad
+bespoke del launcher de cada materia (`kicker`, `motif` SVG, `pattern`, `variant`; hero con
+código `SYS.0x`). Spec visual: `_design-review/module-a-toolkits.html`. Mirá un toolkit ya
+migrado (p. ej. `MnaTools.tsx`) antes de armar uno nuevo.
 
 `ToolIconName` es un union cerrado en `components/vault-tools/ToolIcon.tsx`
 (`calculator`, `sigma`, `shield`, `scale`, `cards`, `question`, `lock`, `checklist`,

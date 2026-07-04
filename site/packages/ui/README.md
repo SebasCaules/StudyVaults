@@ -47,9 +47,10 @@ import { Button, Card, CardGrid, SectionHeading, Reveal } from "@studyvaults/ui"
 
 ## Sistema de tokens
 
-La **única fuente de verdad de color** son 6 hex base
-(`tokens.css` → `--hex-brown / zinc / blue / gray / coral / white`). Todo lo
+La **única fuente de verdad de color** son 7 hex base
+(`tokens.css` → `--hex-brown / brown-soft / zinc / blue / gray / coral / white`). Todo lo
 demás —neutros, sombras, glows, tints por materia— deriva por `color-mix()`.
+Para estados semánticos existen `--status-go/promo/warn/caution`.
 Los **tokens de rol** (`--background`, `--surface-2`, `--ink-strong`, `--link`,
 `--accent`…) se conmutan por `[data-theme="dark"|"light"]`, así que cualquier
 componente que use roles soporta ambos temas sin recompilar. El espejo tipado
@@ -67,11 +68,11 @@ de las variantes vive en `tokens.ts`.
 | Categoría | Componentes |
 |---|---|
 | **primitives** | `Button`, `Icon`, `Badge`, `Tag`, `Eyebrow`, `BigNum`, `Mono` |
-| **layout** | `Container`, `Section`, `SectionHeading`, `Stack`, `Row`, `Card`, `CardGrid`, `CardIcon`, `Panel`, `SubPanel`, `PanelHeader`, `Note` |
+| **layout** | `Container`, `Section`, `SectionHeading`, `Stack`, `Row`, `Card`, `CardGrid`, `CardIcon`, `ToolCard`, `Panel`, `SubPanel`, `PanelHeader`, `Note`, `Callout` |
 | **navigation** | `Navbar`, `NavLink`, `Brand`, `BrandMark`, `Breadcrumbs`, `Footer`, `ThemeToggle`, `ThemeScript` |
 | **feedback** | `Reveal`, `AmbientLayer`, `Modal`, `Drawer`, `Tabs` |
-| **forms** | `Field`, `TextInput`, `TextArea`, `Select`, `Slider`, `Chip` |
-| **data** | `KeyValue`, `Readout`, `DataTable`, `CopyButton`, `CodeBlock` |
+| **forms** | `Field`, `TextInput`, `TextArea`, `Select`, `Slider`, `Chip`, `CommissionSelect` |
+| **data** | `KeyValue`, `Readout`, `DataTable`, `CopyButton`, `CodeBlock` (+ `CodeBlockChrome`), `CodeCopy` |
 
 > Catálogo interactivo (showcase): ruta privada **`/interno/ui`** del sitio.
 
@@ -102,5 +103,6 @@ src/
     index.css        · entry (@import del resto, en orden)
     tokens.css base.css layout.css button.css badge.css card.css
     nav.css footer.css ambient.css breadcrumbs.css reveal.css
-    overlay.css toolkit.css
+    overlay.css toolkit.css forms.css diagram.css library.css
+    parcial.css sheets.css
 ```
