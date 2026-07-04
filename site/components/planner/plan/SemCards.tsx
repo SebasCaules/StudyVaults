@@ -9,8 +9,9 @@
  * repetidos por card → un muro de ~6000px sin información.
  *
  * Ahora hay dos variantes de tarjeta:
- *  - RICA (hay bloques de grilla): igual que antes — CursadaCalendar compacto +
- *    leyenda de electivas + asincrónicas + barra de carga. Ocupa 2 columnas.
+ *  - RICA (hay bloques de grilla): CursadaCalendar compacto + asincrónicas +
+ *    barra de carga. Ocupa 2 columnas. (Las electivas ya se ven como bloques en
+ *    la grilla semanal, así que arriba NO se repiten como leyenda.)
  *  - COMPACTA (sin bloques): lista limpia de materias (dot de minor + abreviatura
  *    + nombre + créditos, clickeable y arrastrable) y UNA nota al pie. Fluye en
  *    la grilla densa junto a las demás compactas.
@@ -32,6 +33,7 @@ import {
   CuatriTools,
   IconWarnTri,
   LockCap,
+  LockToggle,
   MinorDots,
   computeCuatriBlocks,
   isRecTagged,
@@ -84,7 +86,6 @@ function SemCard({
   const hasPreview = it.some((x) => x.m.codigo === previewCode);
   const effCred = capCred ?? maxCred;
   const load = Math.min(100, Math.round((cred / Math.max(1, effCred)) * 100));
-  const electivas = it.filter((x) => x.m.tipo === "electiva");
 
   // menú abierto (para z-index de la card) + despliegue de observaciones.
   const [menuOpen, setMenuOpen] = useState(false);
@@ -148,6 +149,13 @@ function SemCard({
           <span className="pv-sem__title">{cuName}</span>
         </div>
         <div className="psc-head__tools">
+          <LockToggle
+            i={i}
+            cuName={cuName}
+            locked={locked}
+            onFinalize={onFinalize}
+            onUnlock={onUnlock}
+          />
           {warns.length > 0 && (
             <button
               type="button"
@@ -168,8 +176,6 @@ function SemCard({
             maxCred={maxCred}
             maxMat={maxMat}
             idPrefix="sem"
-            onFinalize={onFinalize}
-            onUnlock={onUnlock}
             onDownload={onDownload}
             onOpenChange={setMenuOpen}
           />
@@ -185,54 +191,15 @@ function SemCard({
       )}
 
       {rich ? (
-        <>
-          {electivas.length > 0 && (
-            <div className="pv-sem__els">
-              {electivas.map((x) => (
-                <div
-                  className={
-                    "pv-elrow" +
-                    (draggingCode === x.m.codigo ? " is-dragging" : "")
-                  }
-                  key={x.m.codigo}
-                  draggable={!locked}
-                  onDragStart={(e: React.DragEvent) => startDrag(e, x.m.codigo)}
-                  onDragEnd={() => setDraggingCode(null)}
-                  title={
-                    locked
-                      ? x.m.nombre
-                      : `${x.m.nombre} — arrastrá a otro cuatrimestre para fijarla`
-                  }
-                >
-                  {!locked && (
-                    <span className="pv-elrow__grip" aria-hidden="true">
-                      <IconGrip size={12} />
-                    </span>
-                  )}
-                  <MinorDots m={x.m} />
-                  <span className="pv-elrow__abbr">{x.m.abbr}</span>
-                  {isRecTagged(x.m, recOn) && x.m.codigo !== previewCode && (
-                    <span className="pv-rectag">recomendada</span>
-                  )}
-                  {x.m.codigo === previewCode && (
-                    <span className="psc-newtag">nueva</span>
-                  )}
-                  <span className="pv-elrow__cr">{x.m.creditos} cr</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="pv-sem__cal">
-            <CursadaCalendar
-              blocks={blocks}
-              days={DAYS}
-              compact
-              onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
-            />
-            <AsyncRow asyncs={asyncs} />
-          </div>
-        </>
+        <div className="pv-sem__cal">
+          <CursadaCalendar
+            blocks={blocks}
+            days={DAYS}
+            compact
+            onBlockClick={(code) => dispatch({ type: "OPEN_DRAWER", code })}
+          />
+          <AsyncRow asyncs={asyncs} />
+        </div>
       ) : (
         <>
           <ul className="psc-mats">

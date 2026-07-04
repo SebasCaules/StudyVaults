@@ -64,15 +64,16 @@
 /* ===================== TOP BAR (stats bar) ===================== */
 .planner .topbar{
   position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;
-  gap:24px;flex-wrap:wrap;padding:18px clamp(16px,3vw,44px);
+  /* barra compacta: las stats son lectura pasiva, no merecen ~90px de alto */
+  gap:24px;flex-wrap:wrap;padding:11px clamp(16px,3vw,44px);
   background:var(--topbar);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
 }
 
 .planner .stats{display:flex;gap:0;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
-.planner .stat{min-width:120px;padding:11px 18px;border-right:1px solid var(--line);background:rgba(255,255,255,.012)}
+.planner .stat{min-width:112px;padding:8px 16px;border-right:1px solid var(--line);background:rgba(255,255,255,.012)}
 .planner .stat:last-child{border-right:none}
-.planner .stat__num{font-family:var(--f-d);font-weight:500;font-size:25px;line-height:1;display:block}
+.planner .stat__num{font-family:var(--f-d);font-weight:500;font-size:22px;line-height:1;display:block}
 .planner .stat__num i{font-style:normal;color:var(--faint);font-size:15px;font-family:var(--f-m)}
 .planner .stat:nth-child(2) .stat__num{color:var(--brass-2)}
 .planner .stat__lbl{display:block;margin-top:7px;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
@@ -270,10 +271,16 @@
 /* ===================== REFERENCIAS ===================== */
 .planner .ref-search{margin-bottom:14px}
 .planner .ref-search input{width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:var(--r);padding:10px 13px;font-family:var(--f-b);font-size:14px}
-.planner .ref-table{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
-.planner .ref-row{display:grid;grid-template-columns:84px 56px 1fr 70px 1fr;gap:14px;padding:9px 16px;border-bottom:1px solid var(--line);font-size:13px;align-items:center}
-.planner .ref-row:last-child{border-bottom:none}
-.planner .ref-row.head{background:var(--panel-2);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+/* sin overflow:hidden (mataría el sticky del header en una tabla de ~95 filas);
+   los radios van en la primera/última fila */
+.planner .ref-table{border:1px solid var(--line);border-radius:var(--r-lg)}
+.planner .ref-row{display:grid;grid-template-columns:84px 56px 1fr 70px 1fr;gap:14px;padding:7px 16px;border-bottom:1px solid var(--line);font-size:13px;align-items:center}
+.planner .ref-row:last-child{border-bottom:none;border-radius:0 0 var(--r-lg) var(--r-lg)}
+.planner .ref-row.head{
+  position:sticky;top:var(--nav-h,0px);z-index:5;
+  background:var(--panel-2);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+}
 .planner .ref-row .rab{font-family:var(--f-m);color:var(--brass-2);font-weight:500}
 .planner .ref-row .rc{font-family:var(--f-m);color:var(--muted);font-size:12px}
 .planner .ref-row .rn{color:var(--ink)}
@@ -1233,7 +1240,9 @@
 .planner .side__gauge .gauge__done{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--sage)}
 .planner .side__gauge .bar{height:5px;border-radius:4px;margin-left:11px;width:calc(100% - 11px)}
 
-/* — Reset: texto fantasma discreto, anclado a la izquierda — */
+/* — Reset: región propia al pie (acción destructiva separada del nav,
+   que no se lea como un 8.º ítem de navegación) — */
+.planner .side__danger{margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
 .planner .side .reset{align-self:flex-start;padding:7px 0 7px 11px;border:none;background:transparent;color:var(--faint);font-size:12px}
 .planner .side .reset:hover{color:var(--oxblood);border:none}
 

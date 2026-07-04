@@ -46,11 +46,20 @@ export function EstadoControl({
   code,
   className,
   stopPropagation = true,
+  available,
+  withLabel = false,
 }: {
   code: string;
   className?: string;
   /** frena la propagación del click (útil dentro de cards clickeables). */
   stopPropagation?: boolean;
+  /** disponibilidad (correlativas cumplidas). Solo afecta al caso PENDIENTE:
+   *  con la etiqueta decide "cursable" (true) vs "requisitos" (false). Ausente
+   *  ⇒ comportamiento clásico ("Pendiente", glifo transparente). */
+  available?: boolean;
+  /** muestra la palabra canónica del estado dentro del control, convirtiéndolo en
+   *  un interruptor ancho y etiquetado (hit-area ≥30px) para el plan por cuatri. */
+  withLabel?: boolean;
 }) {
   const { state, dispatch } = usePlanner();
   const has2 = tieneFinal(code);
@@ -63,7 +72,33 @@ export function EstadoControl({
     return "pendiente";
   };
 
-  const stateCls =
+  // Variante etiquetada (withLabel): tonos y vocabulario CANÓNICOS, únicos entre la
+  // leyenda y las cards del plan por cuatrimestre. El caso pendiente se divide
+  // por disponibilidad (cursable / requisitos). Clases `ec-*` propias (no `st-*`)
+  // para no chocar con los estilos base del control en planner.css.
+  const toneKey =
+    estado === "final"
+      ? "final"
+      : estado === "regular"
+        ? has2
+          ? "cursada"
+          : "promo"
+        : available === false
+          ? "lock"
+          : "ok";
+  const word =
+    estado === "final"
+      ? "final"
+      : estado === "regular"
+        ? has2
+          ? "cursada"
+          : "promociona"
+        : available === false
+          ? "requisitos"
+          : "cursable";
+
+  // Variante clásica (sin etiqueta, cuadro 22px): mismas clases de siempre.
+  const legacyCls =
     estado === "pendiente"
       ? "st-pending"
       : estado === "final"
@@ -73,18 +108,27 @@ export function EstadoControl({
           : "st-promo";
 
   const label =
-    estado === "pendiente"
-      ? "Pendiente"
+    estado === "final"
+      ? "Final aprobado"
       : estado === "regular"
         ? has2
           ? "Cursada regular — falta el final"
           : "Promociona / terminada"
-        : "Final aprobado";
+        : available === false
+          ? "Requisitos pendientes — te faltan correlativas"
+          : available === true
+            ? "Cursable — cumplís las correlativas"
+            : "Pendiente";
+
+  const cls =
+    "estado-ctl " +
+    (withLabel ? "estado-ctl--labeled ec-" + toneKey : legacyCls) +
+    (className ? " " + className : "");
 
   return (
     <button
       type="button"
-      className={"estado-ctl " + stateCls + (className ? " " + className : "")}
+      className={cls}
       role="checkbox"
       aria-checked={estado !== "pendiente"}
       aria-label={label}
@@ -99,6 +143,7 @@ export function EstadoControl({
       ) : estado !== "pendiente" ? (
         <CheckSingle />
       ) : null}
+      {withLabel ? <span className="estado-ctl__w">{word}</span> : null}
     </button>
   );
 }

@@ -30,7 +30,7 @@ import { MINORS, minorsOf } from "@/lib/planner/minors";
 import { ELEC_REQ, MinorDots } from "@/components/planner/plan/shared";
 import { MAX_PLAN_CUATRIS } from "@/lib/planner/consts";
 import { CommissionSelect } from "@studyvaults/ui";
-import { IconClose, IconPlus } from "@/components/planner/icons";
+import { IconClose, IconPlus, IconSliders } from "@/components/planner/icons";
 import type { MateriaM, PlanStart } from "@/lib/planner/types";
 import type { Recommendation } from "@/lib/planner/recommend";
 import "./plan-rail.css";
@@ -114,6 +114,7 @@ export default function PlanRail({
   const toggleIn = <T,>(arr: T[], v: T) =>
     arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
   const anyFilter = fMinor.length > 0 || fParity.length > 0 || fHorario;
+  const activeCount = fMinor.length + fParity.length + (fHorario ? 1 : 0);
   const clearFilters = () => {
     setFMinor([]);
     setFParity([]);
@@ -448,66 +449,94 @@ export default function PlanRail({
       </p>
 
       <div className="prl-filt" role="group" aria-label="Filtrar electivas">
-        <div className="prl-filt__grp">
-          <span className="prl-filt__lbl">Minor</span>
-          {MINORS.map((mn) => {
-            const on = fMinor.includes(mn.id);
-            return (
-              <button
-                key={mn.id}
-                type="button"
-                className={"prl-fchip" + (on ? " is-on" : "")}
-                aria-pressed={on}
-                title={mn.name}
-                style={{ ["--fchip-color" as string]: mn.color }}
-                onClick={() => setFMinor((a) => toggleIn(a, mn.id))}
-              >
-                <span className="prl-fchip__dot" aria-hidden="true" />
-                {mn.short}
-              </button>
-            );
-          })}
+        <div className="prl-filt__head">
+          <IconSliders
+            size={13}
+            className="prl-filt__ic"
+            aria-hidden="true"
+          />
+          <span className="prl-filt__lbl">Filtrar</span>
+          {activeCount > 0 && (
+            <span className="prl-filt__badge" aria-hidden="true">
+              {activeCount}
+            </span>
+          )}
+          {anyFilter && (
+            <button
+              type="button"
+              className="prl-filt__clear"
+              aria-label="Limpiar todos los filtros"
+              onClick={clearFilters}
+            >
+              <IconClose size={11} /> Limpiar
+            </button>
+          )}
         </div>
-        <div className="prl-filt__grp">
-          <span className="prl-filt__lbl">Régimen</span>
-          {[
-            { v: 1, l: "1.º" },
-            { v: 2, l: "2.º" },
-          ].map((o) => {
-            const on = fParity.includes(o.v);
-            return (
-              <button
-                key={o.v}
-                type="button"
-                className={"prl-fchip" + (on ? " is-on" : "")}
-                aria-pressed={on}
-                onClick={() => setFParity((a) => toggleIn(a, o.v))}
-              >
-                {o.l}
-              </button>
-            );
-          })}
-        </div>
-        <div className="prl-filt__grp">
-          <span className="prl-filt__lbl">Disp.</span>
-          <button
-            type="button"
-            className={"prl-fchip" + (fHorario ? " is-on" : "")}
-            aria-pressed={fHorario}
-            onClick={() => setFHorario((v) => !v)}
+        <div className="prl-filt__chips">
+          <div
+            className="prl-filt__grp prl-filt__grp--minor"
+            role="group"
+            aria-label="Filtrar por minor"
           >
-            con horario
-          </button>
-        </div>
-        {anyFilter && (
-          <button
-            type="button"
-            className="prl-filt__clear"
-            onClick={clearFilters}
+            {MINORS.map((mn) => {
+              const on = fMinor.includes(mn.id);
+              return (
+                <button
+                  key={mn.id}
+                  type="button"
+                  className={"prl-fchip" + (on ? " is-on" : "")}
+                  aria-pressed={on}
+                  title={`Minor · ${mn.name}`}
+                  style={{ ["--fchip-color" as string]: mn.color }}
+                  onClick={() => setFMinor((a) => toggleIn(a, mn.id))}
+                >
+                  <span className="prl-fchip__dot" aria-hidden="true" />
+                  {mn.short}
+                </button>
+              );
+            })}
+          </div>
+          <div
+            className="prl-filt__grp"
+            role="group"
+            aria-label="Filtrar por régimen"
           >
-            <IconClose size={11} /> Limpiar
-          </button>
-        )}
+            {[
+              { v: 1, l: "1.º C" },
+              { v: 2, l: "2.º C" },
+            ].map((o) => {
+              const on = fParity.includes(o.v);
+              return (
+                <button
+                  key={o.v}
+                  type="button"
+                  className={"prl-fchip" + (on ? " is-on" : "")}
+                  aria-pressed={on}
+                  title={`Se dicta en ${o.v}.º cuatrimestre`}
+                  onClick={() => setFParity((a) => toggleIn(a, o.v))}
+                >
+                  {o.l}
+                </button>
+              );
+            })}
+          </div>
+          <span className="prl-filt__sep" aria-hidden="true" />
+          <div
+            className="prl-filt__grp"
+            role="group"
+            aria-label="Filtrar por disponibilidad"
+          >
+            <button
+              type="button"
+              className={"prl-fchip" + (fHorario ? " is-on" : "")}
+              aria-pressed={fHorario}
+              title="Solo electivas con horario publicado"
+              onClick={() => setFHorario((v) => !v)}
+            >
+              con horario
+            </button>
+          </div>
+        </div>
       </div>
 
       {group(

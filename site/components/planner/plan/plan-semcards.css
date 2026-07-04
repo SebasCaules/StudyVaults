@@ -2,11 +2,13 @@
    SemCards — tab "Calendario" del Plan de cursada (pieza C del rediseño).
 
    Prefijo propio: `psc-`. Reutiliza las clases del backbone estiladas en
-   planview.css (`pv-sem*`, `pv-elrow*`, `pv-rectag`, `pv-loadbar`,
-   `pv-load-meta`, `pv-lockcap`, `pv-sem__drophint`, el menú 3-puntos, …); acá
-   solo se agrega lo NUEVO (la grilla densa, la variante compacta, el badge de
-   observaciones y el tag "nueva") y se redefine puntualmente `.psc-card` cuando
-   hace falta variar el layout heredado. No se toca planview.css.
+   planview.css (`pv-sem*`, `pv-rectag`, `pv-loadbar`, `pv-load-meta`,
+   `pv-lockcap`, `pv-locktoggle`/`pv-lockbtn`, `pv-sem__drophint`, el menú
+   3-puntos, …); acá solo se agrega lo NUEVO (la grilla densa, la variante
+   compacta, el badge de observaciones y el tag "nueva") y se redefine
+   puntualmente `.psc-card` cuando hace falta variar el layout heredado. La card
+   rica arriba muestra SOLO cuatri + tools (sin leyenda de electivas). No se
+   toca planview.css.
    ========================================================================== */
 
 /* ---------- leyenda única (arriba de toda la grilla) ---------- */

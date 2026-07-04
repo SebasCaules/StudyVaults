@@ -80,7 +80,7 @@
   margin-left: 2px;
 }
 
-/* ---------- botones del cluster derecho (Electivas · Descargar · Guardar) ---------- */
+/* ---------- botones pill del header (Sugeridas, a la izq. · Descargar/Guardar, a la der.) ---------- */
 .planner .cmb9-hbtn {
   display: inline-flex;
   align-items: center;
@@ -113,7 +113,7 @@
   font-size: 10px;
   color: var(--muted);
 }
-/* estado "presionado" del toggle de Electivas */
+/* estado "presionado" del toggle de Sugeridas */
 .planner .cmb9-hbtn.is-on {
   color: var(--brass);
   border-color: var(--brass);
@@ -462,6 +462,39 @@
   opacity: 1;
   transform: translate(-50%, 0);
   pointer-events: auto;
+}
+
+/* ---------- overrides sobre planner.css (Fitts + densidad del picker/empty) ----------
+   Las reglas base de estas clases viven en planner.css; acá se pisan con mayor
+   especificidad (scope extra .cmbx-picker / .cmb9) sin depender del orden de carga. */
+
+/* Fitts: el control "+" de cada fila del picker sube de 24px a 32px de hit-area.
+   Los datos ya quedan pegados al nombre (se quitó el crédito suelto de la derecha
+   que duplicaba el «· N cr» del meta), así que la fila queda compacta y clickeable. */
+.planner .cmbx-picker .cmb-row__plus {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 17px;
+}
+
+/* Densidad: el placeholder del calendario vacío deja de ser una columna alta
+   (~250px) y pasa a una banda compacta (~80px) con el mismo mensaje. */
+.planner .cmb9 .cmb2-empty {
+  flex-direction: row;
+  justify-content: center;
+  gap: 13px;
+  text-align: left;
+  padding: 20px 18px;
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: var(--r);
+}
+.planner .cmb9 .cmb2-empty svg {
+  flex: none;
+}
+.planner .cmb9 .cmb2-empty p {
+  max-width: 52ch;
 }
 
 /* ---------- responsive: apila el recomendador debajo del calendario ---------- */

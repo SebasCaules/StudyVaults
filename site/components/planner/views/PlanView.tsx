@@ -557,7 +557,7 @@ export default function PlanView() {
 
       {used.length > 0 && (
         <div className="pv-banner">
-          <div className="pv-banner__top">
+          <div className="pv-banner__synth">
             <div className="pv-stat">
               <span className="pv-stat__num">{used.length}</span>
               <span className="pv-stat__txt">
@@ -567,22 +567,13 @@ export default function PlanView() {
                 <span className="sub">por delante</span>
               </span>
             </div>
-            <div className="pv-grad">
-              <IconGraduationCap size={22} />
-              <div>
-                <span className="pv-grad__lbl">Te recibís en</span>
-                <span className="pv-grad__val">{cuatriName(gradCu)}</span>
-              </div>
-            </div>
-          </div>
 
-          <div className="pv-banner__mid">
             <div className="pv-chips">
               <span className="pv-chip">
                 <b>{flat.length}</b> materias
               </span>
               <span className="pv-chip">
-                <b>{totalCred}</b> créditos a cursar
+                <b>{totalCred}</b> créditos
               </span>
               <span className="pv-chip">
                 <b>
@@ -591,27 +582,25 @@ export default function PlanView() {
                 electivos
               </span>
             </div>
-            <div className="pv-meter">
-              <div className="pv-meter__top">
-                <span className="pv-meter__lbl">Progreso de créditos</span>
-                <span className="pv-meter__pct">{pct}%</span>
+
+            <div className="pv-grad">
+              <IconGraduationCap size={20} />
+              <div>
+                <span className="pv-grad__lbl">Te recibís en</span>
+                <span className="pv-grad__val">{cuatriName(gradCu)}</span>
               </div>
+            </div>
+
+            <div
+              className="pv-meter"
+              title={`${accNow} créditos aprobados · faltan ${totalCred} · meta ${finalCred}`}
+              aria-label={`Progreso de créditos ${pct}%: ${accNow} aprobados, faltan ${totalCred}, meta ${finalCred}.`}
+            >
+              <span className="pv-meter__lbl">Créditos</span>
               <div className="pv-meter__bar">
                 <i style={{ width: `${pct}%` }} />
               </div>
-              <div className="pv-meter__foot">
-                <span>
-                  <b>{accNow}</b> aprobados
-                </span>
-                <span className="pv-meter__sep">·</span>
-                <span>
-                  faltan <b>{totalCred}</b>
-                </span>
-                <span className="pv-meter__sep">·</span>
-                <span>
-                  meta <b>{finalCred}</b>
-                </span>
-              </div>
+              <span className="pv-meter__pct">{pct}%</span>
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { PLAN, hasHorario } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
@@ -8,6 +8,42 @@ import { EstadoControl, estadoOf, tieneFinal } from "@/components/planner/Estado
 import { MinorBadges } from "@/components/planner/MinorBadge";
 import type { Materia } from "@/lib/planner/types";
 import "../cards.css";
+
+/* Glifos de estado, idénticos a los del EstadoControl, para la leyenda. */
+const CheckSingleMini = () => (
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 8.5 6.5 12 13 4.5" />
+  </svg>
+);
+const CheckDoubleMini = () => (
+  <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M2.5 8.5 6 12 11.5 4.5" />
+    <path d="M9.5 8.5 13 12 18.5 4.5" />
+  </svg>
+);
+
+/** Ítem de leyenda: mismo chip {glifo+palabra} que muestran las cards. */
+function LegendChip({
+  tone,
+  word,
+  glyph,
+  gloss,
+}: {
+  tone: string;
+  word: string;
+  glyph?: ReactNode;
+  gloss: string;
+}) {
+  return (
+    <span className="el-item">
+      <span className={"estado-ctl estado-ctl--labeled ec-" + tone} aria-hidden="true">
+        {glyph}
+        <span className="estado-ctl__w">{word}</span>
+      </span>
+      <span className="el-gloss">{gloss}</span>
+    </span>
+  );
+}
 
 export default function CuatriView() {
   const { state } = usePlanner();
@@ -41,34 +77,19 @@ export default function CuatriView() {
   return (
     <section className="view-panel">
       <div className="panel-head">
-        <h2>Plan por cuatrimestre</h2>
+        <h2>Mi avance</h2>
         <p>
-          Materias obligatorias del plan, ordenadas por año. Cliqueá el control
-          de cada materia para ir marcando tu avance; cada card dice en palabras
-          si tenés la cursada o también el final.
+          Materias obligatorias del plan, ordenadas por año. Tocá el interruptor
+          de cada materia para ir marcando tu avance; cada uno dice en palabras si
+          la tenés cursable, cursada o con el final aprobado.
         </p>
       </div>
-      <div className="estado-legend" role="note" aria-label="Cómo leer el estado de cada materia">
-        <span className="el-item">
-          <span className="estado-ctl st-regular" aria-hidden="true">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
-          </span>
-          <b>✓ cursada</b> — falta el final
-        </span>
-        <span className="el-sep" aria-hidden="true" />
-        <span className="el-item">
-          <span className="estado-ctl st-final" aria-hidden="true">
-            <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 8.5 6 12 11.5 4.5" /><path d="M9.5 8.5 13 12 18.5 4.5" /></svg>
-          </span>
-          <b>✓✓ final</b> — aprobado
-        </span>
-        <span className="el-sep" aria-hidden="true" />
-        <span className="el-item">
-          <span className="estado-ctl st-promo" aria-hidden="true">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
-          </span>
-          <b>promociona</b> — sin final
-        </span>
+      <div className="estado-legend" role="note" aria-label="Cómo se lee el estado de cada materia">
+        <LegendChip tone="ok" word="cursable" gloss="cumplís las correlativas" />
+        <LegendChip tone="lock" word="requisitos" gloss="faltan correlativas" />
+        <LegendChip tone="cursada" word="cursada" glyph={<CheckSingleMini />} gloss="falta el final" />
+        <LegendChip tone="final" word="final" glyph={<CheckDoubleMini />} gloss="aprobado" />
+        <LegendChip tone="promo" word="promociona" glyph={<CheckSingleMini />} gloss="sin final" />
       </div>
       <div className="cuatri-grid">
         {groups.length === 0 ? (
@@ -102,28 +123,26 @@ export default function CuatriView() {
 
 function QCard({ m }: { m: Materia }) {
   const { state, dispatch } = usePlanner();
-  const appr = state.approved.has(m.codigo);
-  const avail = isAvailable(m, state.approved);
-  const locked = !appr && !avail;
-  const hor = hasHorario(m.codigo);
   const estado = estadoOf(m.codigo, state.approved, state.finalDone);
   const has2 = tieneFinal(m.codigo);
+  const avail = isAvailable(m, state.approved);
+  const hor = hasHorario(m.codigo);
 
-  // Etiqueta de texto: hace explícito cursada vs final (no depende solo del ícono).
-  const status: { cls: string; label: string; title: string } =
-    estado === "final"
-      ? { cls: "tag--final", label: "✓✓ final", title: "Final aprobado" }
-      : estado === "regular"
-        ? has2
-          ? { cls: "tag--reg", label: "✓ cursada", title: "Cursada aprobada — falta el final" }
-          : { cls: "tag--promo", label: "promociona", title: "Aprobada por promoción (sin final)" }
-        : locked
-          ? { cls: "tag--lock", label: "requisitos", title: "Requisitos pendientes" }
-          : { cls: "tag--ok", label: "cursable", title: "Cursable — cumplís las correlativas" };
+  // Correspondencia estado↔estilo (fix tachado): el tachado se RESERVA para lo
+  // terminado (final aprobado o promoción, que no rinde final). "Cursada — falta
+  // el final" queda solo atenuada, sin tachar (todavía debés algo).
+  const terminal = estado === "final" || (estado === "regular" && !has2);
+  const cursadaFaltaFinal = estado === "regular" && has2;
+  const locked = estado === "pendiente" && !avail;
 
   return (
     <div
-      className={"qcard" + (appr ? " appr" : "") + (locked ? " locked" : "")}
+      className={
+        "qcard" +
+        (terminal ? " appr" : "") +
+        (cursadaFaltaFinal ? " is-cursada" : "") +
+        (locked ? " locked" : "")
+      }
       onClick={(e) => {
         if (!(e.target as HTMLElement).closest("button"))
           dispatch({ type: "OPEN_DRAWER", code: m.codigo });
@@ -140,8 +159,9 @@ function QCard({ m }: { m: Materia }) {
       </div>
       <p className="qcard__n">{m.nombre}</p>
       <div className="qcard__f">
-        <EstadoControl code={m.codigo} />
-        <span className={"tag " + status.cls} title={status.title}>{status.label}</span>
+        {/* control único y grande (hit-area ≥30px): estado en un solo interruptor
+            con la palabra canónica adentro (mismo vocabulario que la leyenda). */}
+        <EstadoControl code={m.codigo} withLabel available={avail} />
         <MinorBadges areas={m.areas} variant="logo" />
       </div>
     </div>
