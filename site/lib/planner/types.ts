@@ -156,7 +156,10 @@ export interface MesaFinal {
 }
 
 /** Dónde decidió rendir un final el usuario: período (Julio/Dic/Feb, con su año
- *  lectivo implícito en `FinalesState.anio`) + llamado (1.ª o 2.ª fecha). */
+ *  lectivo implícito en `FinalesState.anio`) + llamado (1.ª o 2.ª fecha).
+ *  Limitación conocida (heredada del diseño previo): NO lleva año — cambiar el
+ *  año del selector re-interpreta las asignaciones en ese año (se planifica un
+ *  ciclo lectivo por vez). */
 export interface FinalAsignacion {
   periodo: FinalPeriodo;
   llamado: FinalLlamado;

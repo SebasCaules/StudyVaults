@@ -173,8 +173,10 @@ export default function FinalesIngesta() {
   };
 
   const quitar = () => {
-    // limpia cada (período, año) que hayamos cargado; vuelve al mock de ejemplo.
-    for (const p of periodos) clearMesasOficiales(p.periodo, p.anio);
+    // limpia TODO el store, no solo los períodos de ESTA ingesta: el botón
+    // promete "volver a los datos de ejemplo", y una ingesta anterior de otro
+    // período (p. ej. Julio antes de Dic+Feb) no debe quedar huérfana cargada.
+    clearMesasOficiales();
     setRows(null);
     setPeriodos([]);
     setStatus("idle");

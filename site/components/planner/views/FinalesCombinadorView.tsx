@@ -144,10 +144,21 @@ function icsFold(line: string): string {
 const cvar = (name: string, value: string): CSSProperties =>
   ({ [name]: value } as CSSProperties);
 
-/** ¿La mesa cae dentro del mes/año del llamado mostrado? (mismo criterio que hoy) */
-const mesaEnPeriodo = (m: MesaFinal, month: number, year: number): boolean => {
+/** ¿La mesa cae dentro del período visible? Julio/Diciembre = su mes exacto.
+ *  Febrero ABARCA TAMBIÉN MARZO (del año siguiente al lectivo): el llamado real
+ *  se extiende de fin de febrero a principios de marzo, y `mesAPeriodo` del
+ *  parser clasifica igual — si acá se exigiera solo el mes 2, esas mesas se
+ *  cargarían pero quedarían invisibles y fuera del .ics. */
+const mesaEnPeriodo = (
+  m: MesaFinal,
+  periodo: FinalPeriodo,
+  anio: number,
+): boolean => {
   const d = parseISO(m.fecha);
-  return d.getMonth() === month - 1 && d.getFullYear() === year;
+  const { month, year } = periodoMesAnio(periodo, anio);
+  if (d.getFullYear() !== year) return false;
+  if (periodo === "febrero") return d.getMonth() === 1 || d.getMonth() === 2;
+  return d.getMonth() === month - 1;
 };
 
 /** Etiqueta corta del período para el chip «en <período>» del panel. */
@@ -300,19 +311,19 @@ export default function FinalesCombinadorView() {
         llamado = null;
       }
 
-      const inPeriod = mesa ? mesaEnPeriodo(mesa, month, year) : false;
+      const inPeriod = mesa ? mesaEnPeriodo(mesa, periodo, anio) : false;
 
       // Opciones de mesa del período visible, en orden (para «sugerir»): el
       // override manual anula a las oficiales (solo esa opción); si no, 1.º y
-      // después 2.º llamado. Solo las que caen en el mes/año del llamado.
+      // después 2.º llamado. Solo las que caen dentro del período.
       const opciones: Opcion[] = [];
       if (manual) {
-        if (mesaEnPeriodo(manual, month, year))
+        if (mesaEnPeriodo(manual, periodo, anio))
           opciones.push({ mesa: manual, llamado: "primer" });
       } else {
-        if (oficiales.primer && mesaEnPeriodo(oficiales.primer, month, year))
+        if (oficiales.primer && mesaEnPeriodo(oficiales.primer, periodo, anio))
           opciones.push({ mesa: oficiales.primer, llamado: "primer" });
-        if (oficiales.segundo && mesaEnPeriodo(oficiales.segundo, month, year))
+        if (oficiales.segundo && mesaEnPeriodo(oficiales.segundo, periodo, anio))
           opciones.push({ mesa: oficiales.segundo, llamado: "segundo" });
       }
 
@@ -422,7 +433,6 @@ export default function FinalesCombinadorView() {
     const daysInMonth = new Date(year, month, 0).getDate();
     // offset del día 1 respecto del lunes (Lu=0 … Do=6)
     const startOffset = (first.getDay() + 6) % 7;
-    const numWeeks = Math.ceil((startOffset + daysInMonth) / 7);
 
     // mesas ubicadas por fecha
     const byDate = new Map<string, FinalRow[]>();
@@ -432,6 +442,17 @@ export default function FinalesCombinadorView() {
       if (arr) arr.push(r);
       else byDate.set(k, [r]);
     }
+
+    // El llamado de Febrero se extiende a los primeros días de marzo: si hay
+    // mesas elegidas después de fin de mes, se agregan semanas para cubrirlas
+    // (los otros períodos nunca tienen mesas fuera de su mes).
+    let lastDay = daysInMonth;
+    for (const r of selectedInPeriod) {
+      const d = parseISO(r.mesa!.fecha);
+      if (d.getMonth() !== month - 1)
+        lastDay = Math.max(lastDay, daysInMonth + d.getDate());
+    }
+    const numWeeks = Math.ceil((startOffset + lastDay) / 7);
 
     const weeks = [];
     for (let w = 0; w < numWeeks; w++) {
@@ -443,7 +464,8 @@ export default function FinalesCombinadorView() {
         const d = new Date(year, month - 1, 1 + offset);
         const inMonth = d.getMonth() === month - 1;
         const iso = isoOf(d);
-        const exams = inMonth ? byDate.get(iso) ?? [] : [];
+        // las celdas fuera de mes también aceptan mesas (marzo en Febrero).
+        const exams = byDate.get(iso) ?? [];
         if (inMonth) inMonthNums.push(d.getDate());
         days.push({ iso, dayNum: d.getDate(), inMonth, exams });
       }
@@ -451,7 +473,8 @@ export default function FinalesCombinadorView() {
       const label =
         inMonthNums.length > 0
           ? `${inMonthNums[0]}–${inMonthNums[inMonthNums.length - 1]} ${MES_ABBR[month - 1]}`
-          : "";
+          : // semana enteramente del mes siguiente (cola de marzo en Febrero)
+            `${days[0].dayNum}–${days[days.length - 1].dayNum} ${MES_ABBR[month % 12]}`;
       weeks.push({ days, hasExams, label });
     }
     return weeks;
@@ -1271,7 +1294,9 @@ function FinalesWeek({
               (d.inMonth && !week.hasExams ? " is-dim" : "")
             }
           >
-            {d.inMonth && <span className="fin__ag-num">{d.dayNum}</span>}
+            {(d.inMonth || d.exams.length > 0) && (
+              <span className="fin__ag-num">{d.dayNum}</span>
+            )}
             {conflictDay && (
               <span className="fin__day-conflict">
                 <IconAlert /> se pisan

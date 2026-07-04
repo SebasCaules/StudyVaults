@@ -155,26 +155,6 @@ export function mesasOficialesVersion(): number {
 }
 
 /**
- * Carga (o reemplaza) las mesas oficiales de un período/año/llamado con datos
- * reales parseados de la planilla. Limpia primero las de ese mismo bloque, así
- * re-traer sobreescribe en vez de acumular.
- */
-export function setMesasOficiales(
-  periodo: FinalPeriodo,
-  anio: number,
-  llamado: FinalLlamado,
-  entries: Iterable<readonly [string, MesaFinal]>,
-): void {
-  const next = new Map(RUNTIME_MESAS ?? []);
-  const prefix = `${periodo}|${anio}|${llamado}|`;
-  for (const k of [...next.keys()]) if (k.startsWith(prefix)) next.delete(k);
-  for (const [code, mesa] of entries)
-    next.set(runtimeKey(periodo, anio, llamado, code), mesa);
-  RUNTIME_MESAS = next;
-  emitMesas();
-}
-
-/**
  * Aplica de una vez todos los buckets de una ingesta (una planilla puede traer
  * varios períodos, p. ej. Diciembre+Febrero juntos). Limpia primero cada
  * período/año presente en los buckets (ambos llamados) y emite UN solo cambio.
