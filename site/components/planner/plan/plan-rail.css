@@ -459,94 +459,29 @@
   text-decoration: underline;
 }
 
-/* ---------- filtros del recomendador ---------- */
-/* Una superficie compacta: encabezado mínimo (sliders + "Filtrar" + contador +
-   limpiar) sobre una fila de chips SIN labels de grupo — los minors se leen por
-   su dot de color, régimen como 1.º C / 2.º C, disponibilidad como "con horario".
-   Los minors ocupan su propia fila; régimen · disponibilidad debajo, separados
-   por un hairline vertical sutil. */
+/* ---------- filtros (calcados de plan2-recfilt) ---------- */
 .planner .prl-filt {
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-}
-
-/* encabezado de una línea */
-.planner .prl-filt__head {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 9px;
-}
-.planner .prl-filt__ic {
-  flex: none;
-  color: var(--faint);
-}
-.planner .prl-filt__lbl {
-  font-family: var(--f-m);
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.planner .prl-filt__badge {
-  flex: none;
-  font-family: var(--f-m);
-  font-size: 9px;
-  line-height: 1;
-  color: var(--block-ink);
-  background: var(--brass);
-  border-radius: 999px;
-  padding: 2px 5px;
-}
-.planner .prl-filt__clear {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  color: var(--muted);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 2px;
-  transition: color var(--dur-fast) var(--ease-out);
-}
-.planner .prl-filt__clear:hover {
-  color: var(--brass);
-}
-.planner .prl-filt__clear svg {
-  width: 11px;
-  height: 11px;
-}
-
-/* fila de chips agrupada por proximidad */
-.planner .prl-filt__chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 6px;
+  gap: 7px 10px;
+  padding: 2px 0 11px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
 }
 .planner .prl-filt__grp {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
 }
-.planner .prl-filt__grp--minor {
-  flex-basis: 100%;
+.planner .prl-filt__lbl {
+  font-family: var(--f-m);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-.planner .prl-filt__sep {
-  flex: none;
-  align-self: stretch;
-  width: 1px;
-  min-height: 18px;
-  margin: 0 3px;
-  background: var(--line-2);
-}
-
-/* chip individual (minor con dot de color · régimen · disponibilidad) */
 .planner .prl-fchip {
   display: inline-flex;
   align-items: center;
@@ -575,15 +510,34 @@
   flex: none;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--block-ink) 20%, transparent);
 }
-/* activo: relleno tenue + borde del color del minor (o brass si no tiene) */
 .planner .prl-fchip.is-on {
   color: var(--ink);
+  border-color: var(--brass);
+  background: color-mix(in srgb, var(--brass) 12%, var(--panel));
   font-weight: 600;
-  border-color: var(--fchip-color, var(--brass));
-  background: color-mix(in srgb, var(--fchip-color, var(--brass)) 13%, var(--panel));
 }
 .planner .prl-fchip.is-on .prl-fchip__dot {
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--fchip-color, var(--brass)) 42%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--brass) 42%, transparent);
+}
+.planner .prl-filt__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--brass);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 2px;
+  margin-left: auto;
+}
+.planner .prl-filt__clear:hover {
+  text-decoration: underline;
+}
+.planner .prl-filt__clear svg {
+  width: 11px;
+  height: 11px;
 }
 
 /* ---------- grupos <details> (ok / warn / bad) ---------- */

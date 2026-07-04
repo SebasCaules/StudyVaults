@@ -10,16 +10,13 @@ import type { ViewKey } from "@/lib/planner/types";
 // créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
 const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
 
-// Labels = título (H1) de cada vista, para que el usuario confirme que aterrizó
-// donde clickeó (consistencia nav↔página). "Mi avance" ≠ "Plan de cursada":
-// el primero es el estado actual, el segundo el roadmap a futuro.
 const VIEWS: { view: ViewKey; label: string }[] = [
-  { view: "cuatri", label: "Mi avance" },
+  { view: "cuatri", label: "Plan por cuatrimestre" },
   { view: "elect", label: "Electivas" },
   { view: "combo", label: "Combinador de horarios" },
   { view: "finales", label: "Combinador de finales" },
   { view: "plan", label: "Plan de cursada" },
-  { view: "grafo", label: "Mapa de correlativas" },
+  { view: "grafo", label: "Correlativas" },
   { view: "ref", label: "Referencias" },
 ];
 
@@ -75,13 +72,11 @@ export default function Sidebar() {
   const ec = useMemo(() => electiveCredits(approved), [approved]);
 
   // Sidebar modular: cada vista muestra solo los controles que consume.
-  //  · búsqueda + filtros → solo "Mi avance" (Electivas tiene su propia barra
-  //    de filtros en contexto, arriba de la grilla — no duplicar controles).
-  //  · áreas/minors + gauge de electivas → solo "Electivas" (aporta el
-  //    progreso de créditos por área, que la barra in-view no muestra).
+  //  · búsqueda + filtros → "Plan por cuatrimestre" y "Electivas".
+  //  · áreas/minors + gauge de electivas → solo "Electivas".
   //  · el resto de las vistas (combinador/plan/correlativas/referencias) tienen
   //    su propia búsqueda interna, así que el rail queda solo con la navegación.
-  const showFilters = view === "cuatri";
+  const showFilters = view === "cuatri" || view === "elect";
   const showElect = view === "elect";
 
   return (
@@ -233,24 +228,20 @@ export default function Sidebar() {
         </>
       )}
 
-      {/* región propia al pie: acción destructiva separada de la navegación
-          (que no se lea como un 8.º ítem del nav) */}
-      <div className="side__danger">
-        <button
-          className="reset"
-          onClick={() => {
-            if (
-              !window.confirm(
-                "¿Restablecer todas las materias a pendiente? Esta acción no se puede deshacer."
-              )
+      <button
+        className="reset"
+        onClick={() => {
+          if (
+            !window.confirm(
+              "¿Restablecer todas las materias a pendiente? Esta acción no se puede deshacer."
             )
-              return;
-            dispatch({ type: "RESET_APPROVED" });
-          }}
-        >
-          Restablecer materias aprobadas
-        </button>
-      </div>
+          )
+            return;
+          dispatch({ type: "RESET_APPROVED" });
+        }}
+      >
+        Restablecer materias aprobadas
+      </button>
 
       <p className="foot">
         Horarios del SGA, 2.<sup>do</sup> cuatrimestre 2026. El progreso se guarda

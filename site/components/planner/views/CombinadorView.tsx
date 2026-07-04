@@ -458,6 +458,7 @@ export default function CombinadorView() {
             <ComingSoonBadge short />
           )}
         </span>
+        <span className="cmb-row__cr">{m.creditos}</span>
       </button>
     );
   };
@@ -545,22 +546,6 @@ export default function CombinadorView() {
 
         {selected.length > 0 && (
           <>
-            {/* Segundo punto de entrada (input): toggle del recomendador de
-               materias, agrupado a la IZQUIERDA junto al alta de materias. */}
-            <button
-              type="button"
-              className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
-              aria-pressed={recOpen}
-              title={
-                recOpen
-                  ? "Ocultar el recomendador de materias"
-                  : "Mostrar el recomendador de materias"
-              }
-              onClick={() => setRecOpen((o) => !o)}
-            >
-              <IconLayers size={13} />
-              Sugeridas <span className="cmb9-hbtn__count">· {suggestions.length}</span>
-            </button>
             <span className="cmb9-div" aria-hidden="true" />
             <div className="cmb9-prefs">
               {/* Label + tooltip: qué hace "Auto" en los selectores de comisión */}
@@ -616,6 +601,21 @@ export default function CombinadorView() {
       </div>
 
       <div className="cmb9-header__right">
+        <button
+          type="button"
+          className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
+          aria-pressed={recOpen}
+          title={
+            recOpen
+              ? "Ocultar el recomendador de materias"
+              : "Mostrar el recomendador de materias"
+          }
+          onClick={() => setRecOpen((o) => !o)}
+        >
+          <IconLayers size={13} />
+          Sugeridas <span className="cmb9-hbtn__count">· {suggestions.length}</span>
+        </button>
+
         <div className="cmb9-dl" ref={dlRef}>
           <button
             type="button"
@@ -863,7 +863,7 @@ export default function CombinadorView() {
   const body =
     selected.length === 0 ? (
       <div className="cmb2-empty">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.3">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" strokeWidth="1.3">
           <rect x="3" y="4.5" width="18" height="16" rx="2.5" />
           <path d="M3 9h18M8 2.5v4M16 2.5v4" />
           <path d="M7 13h3M13.5 13h3.5M7 16.5h3" strokeWidth="1.5" />
@@ -1009,7 +1009,7 @@ export default function CombinadorView() {
   return (
     <section className="view-panel" id="panel-combo">
       <div className="panel-head">
-        <h2>Combinador de horarios</h2>
+        <h2>Armá tu cuatrimestre</h2>
         <p>
           Elegí materias, ajustá cómo querés cursar y mirá —en vivo— todas las
           cursadas que entran sin pisarse.

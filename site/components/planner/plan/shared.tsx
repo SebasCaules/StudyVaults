@@ -202,106 +202,10 @@ export function LockCap({ i, onUnlock }: { i: number; onUnlock: (idx: number) =>
   );
 }
 
-/* ---------- toggle de lock visible (candado en el header de card/stop) ----------
- * Acceso directo a "finalizar cuatrimestre" sin pasar por el menú ⋯ (pedido
- * explícito del usuario). Lockear pide confirmación (mismo popover y copy que
- * tenía el menú); desbloquear es directo (acción reversible). */
-export function LockToggle({
-  i,
-  cuName,
-  locked,
-  onFinalize,
-  onUnlock,
-}: {
-  i: number;
-  cuName: string;
-  locked: boolean;
-  onFinalize: (idx: number) => void;
-  onUnlock: (idx: number) => void;
-}) {
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const wrapRef = useRef<HTMLSpanElement | null>(null);
-
-  useEffect(() => {
-    if (!confirmOpen) return;
-    const onDoc = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node))
-        setConfirmOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setConfirmOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDoc);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [confirmOpen]);
-
-  return (
-    <span className="pv-locktoggle" ref={wrapRef}>
-      <button
-        type="button"
-        className={"pv-lockbtn" + (locked ? " is-locked" : "")}
-        aria-pressed={locked}
-        aria-label={
-          locked
-            ? `Desbloquear ${cuName} (el optimizador vuelve a tocarlo)`
-            : `Finalizar ${cuName} (el optimizador no lo toca)`
-        }
-        title={
-          locked
-            ? "Desbloquear cuatrimestre"
-            : "Finalizar cuatrimestre — el optimizador no lo toca"
-        }
-        onClick={() => {
-          if (locked) onUnlock(i);
-          else setConfirmOpen((v) => !v);
-        }}
-      >
-        {locked ? <IconLock size={14} /> : <IconUnlock size={14} />}
-      </button>
-      {confirmOpen && !locked && (
-        <div
-          className="pv-confirm-pop"
-          role="dialog"
-          aria-label="Finalizar cuatrimestre"
-        >
-          <p className="pv-confirm-pop__t">¿Finalizar {cuName}?</p>
-          <p className="pv-confirm-pop__b">
-            El optimizador dejará de tocar este cuatrimestre mientras iterás el
-            resto. Podés desbloquearlo cuando quieras.
-          </p>
-          <div className="pv-confirm-pop__acts">
-            <button
-              type="button"
-              className="btn btn--ghost btn--sm"
-              onClick={() => setConfirmOpen(false)}
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              className="btn btn--go btn--sm"
-              onClick={() => {
-                onFinalize(i);
-                setConfirmOpen(false);
-              }}
-            >
-              Finalizar
-            </button>
-          </div>
-        </div>
-      )}
-    </span>
-  );
-}
-
 /* ---------- menú 3-puntos de un cuatrimestre ----------
  * Compartido por SemCards (Calendario) y PlanTimeline (Roadmap): límites del
- * cuatri y descargas. El finalizar/desbloquear vive en LockToggle (candado
- * visible en el header) — ya no se duplica acá. */
+ * cuatri, finalizar/desbloquear y descargas. Incluye el popover de
+ * confirmación de "finalizar" y el cierre por click-afuera / Escape. */
 export function CuatriTools({
   i,
   cuName,
@@ -309,6 +213,8 @@ export function CuatriTools({
   maxCred,
   maxMat,
   idPrefix,
+  onFinalize,
+  onUnlock,
   onDownload,
   onOpenChange,
 }: {
@@ -318,6 +224,8 @@ export function CuatriTools({
   maxCred: number;
   maxMat: number;
   idPrefix: string;
+  onFinalize: (idx: number) => void;
+  onUnlock: (idx: number) => void;
   onDownload: (idx: number, scope: "cal" | "both" | "programa") => void;
   /** la card padre necesita saber si el menú está abierto (z-index: `is-menu-open`) */
   onOpenChange?: (open: boolean) => void;
@@ -328,22 +236,27 @@ export function CuatriTools({
   const isCapped = capCred !== undefined || capMat !== undefined;
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const toolsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    onOpenChange?.(menuOpen);
+    onOpenChange?.(menuOpen || confirmOpen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [menuOpen]);
+  }, [menuOpen, confirmOpen]);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen && !confirmOpen) return;
     const onDoc = (e: MouseEvent) => {
       if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
+        setConfirmOpen(false);
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        setConfirmOpen(false);
+      }
     };
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onKey);
@@ -351,20 +264,28 @@ export function CuatriTools({
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onKey);
     };
-  }, [menuOpen]);
+  }, [menuOpen, confirmOpen]);
 
   return (
     <div
-      className={"pv-sem__tools" + (menuOpen ? " is-open" : "")}
+      className={"pv-sem__tools" + (menuOpen || confirmOpen ? " is-open" : "")}
       ref={toolsRef}
     >
+      {locked && (
+        <span className="pv-lockbadge" title="Cuatrimestre finalizado">
+          <IconLock size={15} />
+        </span>
+      )}
       <button
         type="button"
         className="pv-dotbtn"
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         aria-label={`Opciones de ${cuName}`}
-        onClick={() => setMenuOpen((v) => !v)}
+        onClick={() => {
+          setConfirmOpen(false);
+          setMenuOpen((v) => !v);
+        }}
       >
         <IconDots size={16} />
       </button>
@@ -415,6 +336,26 @@ export function CuatriTools({
             </>
           )}
 
+          <button
+            type="button"
+            role="menuitem"
+            className="pv-menu__item"
+            onClick={() => {
+              if (locked) {
+                onUnlock(i);
+                setMenuOpen(false);
+              } else {
+                setMenuOpen(false);
+                setConfirmOpen(true);
+              }
+            }}
+          >
+            {locked ? <IconUnlock size={15} /> : <IconLock size={15} />}
+            {locked ? "Desbloquear cuatrimestre" : "Finalizar cuatrimestre"}
+          </button>
+
+          <hr className="pv-menu__sep" />
+
           <div className="pv-menu__dl">
             <span className="pv-menu__lbl">
               <IconDownload size={11} /> Descargar este calendario
@@ -451,6 +392,39 @@ export function CuatriTools({
               }}
             >
               <IconFileText size={15} /> Solo programa
+            </button>
+          </div>
+        </div>
+      )}
+
+      {confirmOpen && !locked && (
+        <div
+          className="pv-confirm-pop"
+          role="dialog"
+          aria-label="Finalizar cuatrimestre"
+        >
+          <p className="pv-confirm-pop__t">¿Finalizar {cuName}?</p>
+          <p className="pv-confirm-pop__b">
+            El optimizador dejará de tocar este cuatrimestre mientras iterás el
+            resto. Podés desbloquearlo cuando quieras.
+          </p>
+          <div className="pv-confirm-pop__acts">
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={() => setConfirmOpen(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="btn btn--go btn--sm"
+              onClick={() => {
+                onFinalize(i);
+                setConfirmOpen(false);
+              }}
+            >
+              Finalizar
             </button>
           </div>
         </div>

@@ -40,7 +40,6 @@ import type { FinalPeriodo } from "@/lib/planner/types";
 import {
   IconArrowUpRight,
   IconCheck,
-  IconChevronDown,
   IconDownload,
   IconInfo,
   IconTrash,
@@ -85,11 +84,6 @@ export default function FinalesIngesta() {
   const [error, setError] = useState<string>("");
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
-  // Colapso del panel: por defecto sigue `!loaded` (expandido si no hay datos
-  // reales, colapsado una vez que la planilla quedó cargada). Un click del
-  // usuario fija un override; `quitar`/una ingesta nueva lo resetean para volver
-  // al default automático.
-  const [openOverride, setOpenOverride] = useState<boolean | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // cuántos de tus finales pendientes quedaron con fecha oficial (en cualquier
@@ -134,8 +128,6 @@ export default function FinalesIngesta() {
     const nWarn = res.warnings.length + bWarn.length;
     setError(nWarn ? `${nWarn} aviso(s) al leer la planilla.` : "");
     setStatus("ok");
-    // vuelve al default automático: con datos cargados, colapsa.
-    setOpenOverride(null);
     return true;
   };
 
@@ -190,56 +182,26 @@ export default function FinalesIngesta() {
     setStatus("idle");
     setError("");
     setPasteText("");
-    // sin datos: vuelve al default (expandido).
-    setOpenOverride(null);
   };
 
-  const loaded = status === "ok" && !!rows && periodos.length > 0;
-  const open = openOverride ?? !loaded;
+  const loaded = status === "ok" && rows && periodos.length > 0;
 
   return (
-    <section
-      className={"fin__ing" + (open ? " is-open" : "")}
-      aria-label="Cargar fechas oficiales de mesas"
-    >
-      {/* summary de una línea: siempre visible, alterna el cuerpo */}
-      <button
-        type="button"
-        className="fin__ing-summary"
-        aria-expanded={open}
-        onClick={() => setOpenOverride(!open)}
-      >
+    <section className="fin__ing" aria-label="Cargar fechas oficiales de mesas">
+      <div className="fin__ing-head">
         <span className="fin__ing-ico" aria-hidden="true">
           <IconDownload size={15} />
         </span>
-        <span className="fin__ing-summary-txt">
-          <span className="fin__ing-title">Fechas oficiales de mesas</span>
-          {loaded ? (
-            <span className="fin__ing-summary-chips">
-              {periodos.map((p) => (
-                <span
-                  key={`${p.periodo}|${p.anio}`}
-                  className="fin__ing-summary-chip"
-                >
-                  {PERIODO_LABEL[p.periodo]} {periodoAnioReal(p.periodo, p.anio)}
-                </span>
-              ))}
-            </span>
-          ) : (
-            <span className="fin__ing-summary-hint">traé la planilla oficial</span>
-          )}
-        </span>
-        <IconChevronDown size={14} className="fin__ing-chevron" />
-      </button>
-
-      {open && (
-        <div className="fin__ing-body">
+        <div className="fin__ing-head-txt">
+          <h3 className="fin__ing-title">Fechas oficiales de mesas</h3>
           <p className="fin__ing-sub">
             Traé el calendario oficial de finales y autocompletá la fecha y hora
             de cada mesa. Todo se procesa en tu navegador — no se sube nada.
           </p>
+        </div>
+      </div>
 
-          {!loaded && (
+      {!loaded && (
         <>
           <div className="fin__ing-actions">
             <button
@@ -365,15 +327,13 @@ export default function FinalesIngesta() {
         </div>
       )}
 
-          <p className="fin__ing-disclaimer">
-            <IconInfo size={12} />
-            <span>
-              Las fechas salen de la planilla que cargues. Verificá siempre con
-              la cátedra: la fuente oficial es la planilla, no esta herramienta.
-            </span>
-          </p>
-        </div>
-      )}
+      <p className="fin__ing-disclaimer">
+        <IconInfo size={12} />
+        <span>
+          Las fechas salen de la planilla que cargues. Verificá siempre con la
+          cátedra: la fuente oficial es la planilla, no esta herramienta.
+        </span>
+      </p>
     </section>
   );
 }

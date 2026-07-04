@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { EstadoControl } from "@/components/planner/EstadoControl";
-import { estadoOf, tieneFinal } from "@/lib/planner/estado";
+import { estadoOf } from "@/lib/planner/estado";
 import { PLAN, hasHorario } from "@/lib/planner/model";
 import { isAvailable } from "@/lib/planner/metrics";
+import { FICHAS } from "@/lib/planner/fichas";
 import { charsOf } from "@/lib/planner/programa";
-import { MinorBadges } from "@/components/planner/MinorBadge";
-import { MinorIcon } from "@/components/planner/MinorIcon";
+import { MinorBadge, MinorBadges } from "@/components/planner/MinorBadge";
 import { MINORS } from "@/lib/planner/minors";
 import type { Materia } from "@/lib/planner/types";
 import "../cards.css";
@@ -24,22 +24,14 @@ function regimeOf(codigo: string): "promo" | "final" | null {
 }
 
 /** Disponibilidad como candado — silueta propia, distinta del minor y el régimen:
- *  abierto/verde = cursable (cumplís correlativas), cerrado/ámbar = requisitos.
- *  `decorative` lo vuelve un ícono mudo (cuando el texto vecino ya lo nombra). */
-function AvailLock({ ok, decorative }: { ok: boolean; decorative?: boolean }) {
+ *  abierto/verde = cursable (cumplís correlativas), cerrado/ámbar = requisitos. */
+function AvailLock({ ok }: { ok: boolean }) {
   return (
     <span
       className={"avail-lock " + (ok ? "avail-lock--go" : "avail-lock--wait")}
-      role={decorative ? undefined : "img"}
-      aria-hidden={decorative ? true : undefined}
-      aria-label={decorative ? undefined : ok ? "Cursable" : "Requisitos pendientes"}
-      title={
-        decorative
-          ? undefined
-          : ok
-            ? "Cursable — cumplís las correlativas"
-            : "Requisitos pendientes: te faltan correlativas"
-      }
+      role="img"
+      aria-label={ok ? "Cursable" : "Requisitos pendientes"}
+      title={ok ? "Cursable — cumplís las correlativas" : "Requisitos pendientes: te faltan correlativas"}
     >
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3.4" y="7.1" width="9.2" height="6.3" rx="1.5" strokeWidth={1.5} />
@@ -77,87 +69,32 @@ function RegimeIcon({ kind }: { kind: "promo" | "final" }) {
   );
 }
 
-/** Barra de filtros de electivas: control Y leyenda a la vez, en contexto sobre
- *  la grilla (antes los filtros vivían solo en el sidebar, a 800px).
- *   · buscador inline (debounce local, como el del Sidebar) → SET_SEARCH
- *   · pills de minor clickeables (con su glyph, que además hace de leyenda) → TOGGLE_AREA
- *   · chips "solo disponibles" / "con horario" → SET_FILTER
- *  La vista ya filtra por estos estados; acá solo se suman los controles. */
-function ElectFilterBar() {
-  const { state, dispatch } = usePlanner();
-  const { areasOn, search, fDisp, fHor } = state;
-
-  // Búsqueda con debounce ~140ms y timer local (mismo patrón que el Sidebar).
-  const [searchInput, setSearchInput] = useState(search);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => setSearchInput(search), [search]);
-  const onSearch = (value: string) => {
-    setSearchInput(value);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      dispatch({ type: "SET_SEARCH", value: value.trim().toLowerCase() });
-    }, 140);
-  };
-  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
-
+/** Leyenda compacta: decodifica de una vez las tres familias de señales de la
+ *  card (minor · disponibilidad · régimen) para que cada ícono se lea solo. */
+function CardLegend() {
   return (
-    <div className="efbar">
-      <div className="efbar__search">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.2-3.2" />
-        </svg>
-        <input
-          type="text"
-          placeholder="Buscar código o materia"
-          autoComplete="off"
-          aria-label="Buscar electiva por código o nombre"
-          value={searchInput}
-          onChange={(e) => onSearch(e.target.value)}
-        />
+    <div className="card-legend" role="note" aria-label="Cómo leer las señales de cada card">
+      <div className="cl-group">
+        <span className="cl-h">Minor que completa</span>
+        <span className="cl-items">
+          {MINORS.map((m) => (
+            <MinorBadge key={m.id} minor={m} variant="logo" />
+          ))}
+        </span>
       </div>
-
-      <div className="efbar__pills" role="group" aria-label="Filtrar por minor">
-        {MINORS.map((m) => {
-          const on = areasOn.has(m.id);
-          return (
-            <button
-              type="button"
-              key={m.id}
-              className="efb-pill"
-              aria-pressed={on}
-              title={on ? `Ocultar ${m.name}` : `Mostrar ${m.name}`}
-              style={{ ["--minor-color" as string]: m.color }}
-              onClick={() => dispatch({ type: "TOGGLE_AREA", area: m.id })}
-            >
-              <MinorIcon minor={m} className="efb-pill__glyph" />
-              <span>{m.short}</span>
-            </button>
-          );
-        })}
+      <div className="cl-group">
+        <span className="cl-h">Disponibilidad</span>
+        <span className="cl-items">
+          <span className="cl-row"><AvailLock ok /> cursable</span>
+          <span className="cl-row"><AvailLock ok={false} /> requisitos</span>
+        </span>
       </div>
-
-      <div className="efbar__chips" role="group" aria-label="Filtros de la grilla">
-        <button
-          type="button"
-          className="efb-chip"
-          aria-pressed={fDisp}
-          title="Mostrar solo materias cuyas correlativas ya cumplís"
-          onClick={() => dispatch({ type: "SET_FILTER", key: "fDisp", value: !fDisp })}
-        >
-          <AvailLock ok decorative />
-          solo disponibles
-        </button>
-        <button
-          type="button"
-          className="efb-chip"
-          aria-pressed={fHor}
-          title="Mostrar solo materias con horario publicado para 2C 2026"
-          onClick={() => dispatch({ type: "SET_FILTER", key: "fHor", value: !fHor })}
-        >
-          <span className="hor-dot" aria-hidden="true" />
-          con horario
-        </button>
+      <div className="cl-group">
+        <span className="cl-h">Régimen</span>
+        <span className="cl-items">
+          <span className="cl-row"><RegimeIcon kind="promo" /> promociona</span>
+          <span className="cl-row"><RegimeIcon kind="final" /> con final</span>
+        </span>
       </div>
     </div>
   );
@@ -185,15 +122,14 @@ export default function ElectivasView() {
   return (
     <section className="view-panel">
       <div className="panel-head">
-        <h2>Electivas</h2>
+        <h2>Materias electivas</h2>
         <p>
-          {PLAN.electivas.length} materias. Filtrá por minor, disponibilidad u
-          horario desde la barra de acá abajo. En cada card marcás tu avance con
-          el interruptor de estado, la sumás al combinador de horarios, y tocás
-          el título para ver horarios y correlativas.
+          {PLAN.electivas.length} materias. Filtrá por área para orientar un
+          minor. Cada card lleva tres señales, cada una con su propio ícono; el
+          detalle (horario, correlativas) queda a un click.
         </p>
       </div>
-      <ElectFilterBar />
+      <CardLegend />
       <div className="card-grid">
         {list.length === 0 ? (
           <div className="empty">Ninguna electiva cumple los filtros.</div>
@@ -207,77 +143,61 @@ export default function ElectivasView() {
   );
 
   function ElectCard({ m }: { m: Materia }) {
+    // "aprobada" visual de la card = cualquier avance real (cursada o final);
+    // el nivel exacto lo marca el EstadoControl de la fila de acciones.
     const estado = estadoOf(m.codigo, approved, finalDone);
-    const has2 = tieneFinal(m.codigo);
-    // Correspondencia estado↔estilo (misma regla que el plan por cuatrimestre):
-    // el tachado se reserva para lo TERMINADO (final aprobado o promoción);
-    // "cursada — falta el final" queda atenuada sin tachar.
-    const terminal = estado === "final" || (estado === "regular" && !has2);
-    const cursadaFaltaFinal = estado === "regular" && has2;
+    const appr = estado !== "pendiente";
     const avail = isAvailable(m, approved);
     const inCombo = combo.has(m.codigo);
     const hor = hasHorario(m.codigo);
+    // Solo las electivas con programa analítico tienen ficha completa.
+    const hasFicha = !!FICHAS[m.codigo];
     const reg = regimeOf(m.codigo);
-    const openDrawer = () => dispatch({ type: "OPEN_DRAWER", code: m.codigo });
     return (
       <article
-        className={
-          "card t-electiva" +
-          (terminal ? " appr" : "") +
-          (cursadaFaltaFinal ? " is-cursada" : "")
-        }
+        className={"card t-electiva" + (appr ? " appr" : "")}
         onClick={(e) => {
-          if (!(e.target as HTMLElement).closest("button")) openDrawer();
+          if (!(e.target as HTMLElement).closest("button"))
+            dispatch({ type: "OPEN_DRAWER", code: m.codigo });
         }}
       >
         <div className="card__top">
           <span className="code">{m.codigo}</span>
           <span className="card__cred">{m.creditos} cr</span>
         </div>
-        {/* zona principal = link al detalle (hit-area grande, sin botón fantasma) */}
-        <button
-          type="button"
-          className="card__title"
-          aria-label={`${m.nombre} — ver horarios y correlativas`}
-          onClick={openDrawer}
-        >
-          <span className="card__abbr">{m.abbr}</span>
-          <span className="card__name">{m.nombre}</span>
-        </button>
+        <span className="card__abbr">{m.abbr}</span>
+        <h3 className="card__name">{m.nombre}</h3>
         <div className="card__meta">
           <MinorBadges areas={m.areas} variant="logo" />
+          {!appr ? <AvailLock ok={avail} /> : null}
           {reg ? <RegimeIcon kind={reg} /> : null}
         </div>
         <div className="card__acts">
-          {/* dos controles DISTINTOS, mismos que el resto de la app:
-              · estado académico — interruptor canónico etiquetado (idéntico al
-                del plan por cuatrimestre); en pendiente nombra la disponibilidad
-                (cursable/requisitos), así que el candado del meta ya no hace falta.
-              · combinar — agregar/quitar del combinador de horarios (on/off). */}
-          <EstadoControl code={m.codigo} withLabel available={avail} />
+          {/* tri-estado canónico (pendiente → ✓ cursada → ✓✓ final); el span
+              sólo centra verticalmente el control frente al botón vecino. */}
+          <span style={{ display: "inline-flex", alignItems: "center" }}>
+            <EstadoControl code={m.codigo} />
+          </span>
           <button
-            type="button"
-            className="co-toggle"
-            aria-pressed={inCombo}
+            className={"mini btn-co" + (inCombo ? " on plan" : "")}
             disabled={!hor}
-            title={
-              !hor
-                ? "Sin horario publicado para 2C 2026"
-                : inCombo
-                  ? "Quitar del combinador de horarios"
-                  : "Agregar al combinador de horarios"
-            }
             onClick={(e) => {
               e.stopPropagation();
               if (hor) dispatch({ type: "TOGGLE_COMBO", code: m.codigo });
             }}
           >
-            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              {inCombo ? <path d="M3 8.5 6.5 12 13 4.5" /> : <path d="M8 3.5v9M3.5 8h9" />}
-            </svg>
-            Combinar
+            {inCombo ? "combinar ✓" : "combinar"}
           </button>
         </div>
+        {hasFicha ? (
+          <button
+            className="card__read"
+            onClick={(e) => { e.stopPropagation(); dispatch({ type: "OPEN_FICHA", code: m.codigo }); }}
+            aria-label={`Leer ficha de ${m.nombre}`}
+          >
+            Leer ficha ↗
+          </button>
+        ) : null}
       </article>
     );
   }

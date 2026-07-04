@@ -155,26 +155,22 @@
   color: var(--brass);
 }
 
-/* ---- card de resultado: resumen + combinación + export (fusionadas) ---- */
-.planner .fin__result {
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  background: color-mix(in srgb, var(--brass) 6%, var(--panel));
-  margin-bottom: 14px;
-  overflow: hidden;
-}
-/* línea 1 — resumen + margen */
-.planner .fin__result-summary {
+/* ---- resumen ---- */
+.planner .fin__resumen {
   display: flex;
   align-items: center;
   gap: 13px;
   flex-wrap: wrap;
-  padding: 13px 15px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: color-mix(in srgb, var(--brass) 6%, var(--panel));
+  margin-bottom: 14px;
 }
-.planner .fin__result-ico {
+.planner .fin__resumen-ico {
   flex: none;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 8px;
   background: color-mix(in srgb, var(--brass) 16%, transparent);
   color: var(--brass);
@@ -182,64 +178,21 @@
   align-items: center;
   justify-content: center;
 }
-.planner .fin__result-body {
+.planner .fin__resumen-body {
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
 }
-.planner .fin__result-main {
+.planner .fin__resumen-main {
   font-family: var(--f-d);
-  font-size: 15px;
+  font-size: 15.5px;
   line-height: 1.35;
   color: var(--ink);
 }
-.planner .fin__result-sub {
+.planner .fin__resumen-sub {
   font-family: var(--f-m);
   font-size: 10.5px;
   color: var(--muted);
   margin-top: 3px;
-}
-/* línea 2 — chips de la combinación (con badge de llamado) */
-.planner .fin__result-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  padding: 0 15px 13px;
-}
-.planner .fin__result-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--f-d);
-  font-size: 13px;
-  color: var(--ink);
-  background: var(--panel);
-  border: 1px solid color-mix(in srgb, var(--status-go) 30%, var(--line));
-  padding: 5px 9px;
-  border-radius: 999px;
-}
-.planner .fin__result-date {
-  font-family: var(--f-m);
-  font-size: 11px;
-  color: var(--muted);
-}
-/* línea 3 — acciones .ics */
-.planner .fin__result-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px 14px;
-  flex-wrap: wrap;
-  padding: 12px 15px;
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--link) 5%, transparent);
-}
-.planner .fin__result-ok {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--link);
 }
 .planner .fin__margen {
   display: inline-flex;
@@ -258,14 +211,14 @@
 .planner .fin__flags {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 14px;
 }
 .planner .fin__flag {
   display: flex;
   align-items: flex-start;
-  gap: 9px;
-  padding: 8px 11px;
+  gap: 10px;
+  padding: 10px 13px;
   border-radius: 6px;
   border-left: 3px solid var(--tone);
   background: color-mix(in srgb, var(--tone) 10%, var(--panel));
@@ -284,29 +237,125 @@
 }
 .planner .fin__flag-title {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink);
 }
 .planner .fin__flag-body {
   font-family: var(--f-m);
-  font-size: 10px;
+  font-size: 10.5px;
   color: var(--muted);
   margin-top: 2px;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
-/* dot categórico compartido (panel · editor de mesas · chips del resultado) */
+/* ---- combinación elegida ---- */
+.planner .fin__combo {
+  padding: 15px 16px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  border: 1.5px solid color-mix(in srgb, var(--status-go) 42%, var(--line));
+  background: color-mix(in srgb, var(--status-go) 9%, var(--panel));
+}
+.planner .fin__combo-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--status-go);
+  font-weight: 700;
+  margin-bottom: 9px;
+}
+.planner .fin__combo-line {
+  font-family: var(--f-d);
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+.planner .fin__combo-chips,
+.planner .fin__export-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.planner .fin__combo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-d);
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--status-go) 30%, var(--line));
+  padding: 5px 11px 5px 9px;
+  border-radius: 999px;
+}
+.planner .fin__cc-dot,
+.planner .fin__ec-dot,
 .planner .fin__fin-dot,
-.planner .fin__mesa-dot,
-.planner .fin__result-dot {
+.planner .fin__mesa-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
   background: var(--c-color);
   flex: none;
 }
+.planner .fin__cc-date,
+.planner .fin__ec-date {
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+}
+.planner .fin__combo-sub {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
 
-/* selector de recordatorio (línea 3 de la card de resultado) */
+/* ---- exportar (.ics) ---- */
+.planner .fin__export {
+  padding: 15px 16px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  border: 1px solid color-mix(in srgb, var(--link) 34%, var(--line));
+  background: color-mix(in srgb, var(--link) 6%, var(--panel));
+}
+.planner .fin__export-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--link);
+  font-weight: 700;
+  margin-bottom: 9px;
+}
+.planner .fin__export-line {
+  font-family: var(--f-d);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.planner .fin__export-line .mono,
+.planner .fin .mono {
+  font-family: var(--f-m);
+}
+.planner .fin__export-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
 .planner .fin__reminder {
   display: inline-flex;
   align-items: center;
@@ -318,6 +367,78 @@
   font-size: 10px;
   letter-spacing: 0.03em;
   color: var(--muted);
+}
+.planner .fin__reminder-hint {
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  flex: 1;
+  min-width: 200px;
+}
+.planner .fin__reminder-hint b {
+  color: var(--ink);
+}
+.planner .fin__export-chips {
+  margin-bottom: 13px;
+}
+.planner .fin__export-chips-lbl {
+  font-family: var(--f-m);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 2px;
+}
+.planner .fin__export-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.planner .fin__ec-dot {
+  width: 7px;
+  height: 7px;
+}
+.planner .fin__export-empty {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  margin: 0 0 13px;
+}
+.planner .fin__export-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.planner .fin__export-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--link);
+}
+.planner .fin__export-disclaimer {
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+.planner .fin__export-disclaimer b {
+  color: var(--ink);
 }
 
 /* ---- fila: calendario + panel de pendientes ---- */
@@ -348,57 +469,13 @@
   font-size: 15px;
   color: var(--ink);
 }
+.planner .fin__cal-hint {
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--muted);
+}
 .planner .fin__cal-scroll {
   overflow-x: auto;
-}
-
-/* empty-state compacto del calendario (sin finales elegidos con fecha):
-   reemplaza el mes entero vacío. Dashed = placeholder. */
-.planner .fin__cal-empty {
-  position: relative;
-  min-height: 128px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 16px;
-  border: 1px dashed var(--line-2);
-  border-radius: 6px;
-  background: var(--bg);
-  overflow: hidden;
-}
-.planner .fin__cal-empty-days {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  align-items: start;
-  padding-top: 12px;
-  opacity: 0.4;
-  pointer-events: none;
-}
-.planner .fin__cal-empty-days span {
-  text-align: center;
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-.planner .fin__cal-empty-msg {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--f-m);
-  font-size: 11.5px;
-  color: var(--muted);
-  background: color-mix(in srgb, var(--bg) 80%, transparent);
-  padding: 5px 9px;
-  border-radius: 6px;
-}
-.planner .fin__cal-empty-msg svg {
-  color: var(--brass);
-  flex: none;
 }
 
 /* agenda mensual */
@@ -532,26 +609,6 @@
   color: var(--brass);
   background: color-mix(in srgb, var(--brass) 14%, transparent);
   border: 1px solid color-mix(in srgb, var(--brass) 40%, transparent);
-}
-
-/* badge de llamado como BOTÓN: alterna 1.º⇄2.º desde el chip del calendario.
-   Hereda la píldora de .fin__badge.is-llamado; solo agrega interactividad. La
-   compuesta en :hover asegura prioridad sobre .is-llamado sin importar el orden. */
-.planner .fin__exam-llbtn {
-  cursor: pointer;
-  line-height: 1;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: all 0.16s var(--ease, ease);
-}
-.planner .fin__badge.is-llamado.fin__exam-llbtn:hover {
-  color: var(--block-ink);
-  background: var(--brass);
-  border-color: var(--brass);
-}
-.planner .fin__exam-llbtn:focus-visible {
-  outline: 2px solid var(--brass);
-  outline-offset: 1px;
 }
 
 /* editor de fechas de mesa */
@@ -932,25 +989,13 @@
   border: 1px solid var(--line);
   border-radius: var(--r);
   background: color-mix(in srgb, var(--brass) 5%, var(--panel));
+  padding: 14px 16px;
   margin-bottom: 16px;
-  overflow: hidden;
 }
-/* summary de una línea: siempre visible, alterna el cuerpo colapsable */
-.planner .fin__ing-summary {
+.planner .fin__ing-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 11px;
-  width: 100%;
-  text-align: left;
-  padding: 12px 15px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-}
-.planner .fin__ing-summary:hover .fin__ing-title {
-  color: var(--brass);
 }
 .planner .fin__ing-ico {
   flex: none;
@@ -963,54 +1008,15 @@
   background: color-mix(in srgb, var(--brass) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--brass) 26%, transparent);
 }
-.planner .fin__ing-summary-txt {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 5px 10px;
-  flex: 1;
+.planner .fin__ing-head-txt {
   min-width: 0;
 }
 .planner .fin__ing-title {
-  margin: 0;
+  margin: 1px 0 3px;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.01em;
-  transition: color 0.16s var(--ease, ease);
-}
-.planner .fin__ing-summary-chips {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.planner .fin__ing-summary-chip {
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  letter-spacing: 0.02em;
-  color: var(--brass);
-  background: color-mix(in srgb, var(--brass) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--brass) 28%, transparent);
-  padding: 2px 8px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-.planner .fin__ing-summary-hint {
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--muted);
-}
-.planner .fin__ing-chevron {
-  flex: none;
-  color: var(--muted);
-  transition: transform 0.18s var(--ease, ease);
-}
-.planner .fin__ing.is-open .fin__ing-chevron {
-  transform: rotate(180deg);
-}
-.planner .fin__ing-body {
-  padding: 12px 15px 14px;
-  border-top: 1px solid var(--line);
 }
 .planner .fin__ing-sub {
   margin: 0;
@@ -1141,6 +1147,20 @@
   font-weight: 700;
 }
 .planner .fin__ing-match {
+  color: var(--muted);
+}
+.planner .fin__ing-llamado {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.planner .fin__ing-llamado-lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
   color: var(--muted);
 }
 .planner .fin__ing-loaded-actions {

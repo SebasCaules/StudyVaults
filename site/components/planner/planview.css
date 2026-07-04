@@ -19,9 +19,9 @@
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-1);
-  /* header compacto (~mitad de altura): una fila de síntesis + una de controles,
-     para que el primer cuatri del timeline entre en el primer viewport */
-  padding: clamp(12px, 1.8vw, 18px) clamp(14px, 2.2vw, 22px);
+  /* apretado un escalón (antes 18–30px): que el primer cuatri del timeline
+     asome en el primer viewport */
+  padding: clamp(15px, 2.4vw, 24px);
 }
 .planner .pv-banner::before {
   content: "";
@@ -34,28 +34,25 @@
     transparent 55%
   );
 }
-
-/* fila de síntesis: número + chips + pill "te recibís" + medidor, todo en una
-   línea que wrapea con gracia en pantallas angostas */
-.planner .pv-banner__synth {
+.planner .pv-banner__top {
   position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 22px;
   flex-wrap: wrap;
 }
 .planner .pv-stat {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  flex: none;
+  gap: 16px;
 }
 .planner .pv-stat__num {
   font-family: var(--f-d);
   font-weight: 500;
   color: var(--ink);
-  font-size: clamp(2.1rem, 3vw + 0.8rem, 2.7rem);
-  line-height: 0.9;
+  font-size: clamp(3rem, 6vw + 1rem, 5rem);
+  line-height: 0.86;
   letter-spacing: -0.03em;
 }
 .planner .pv-stat__txt {
@@ -64,57 +61,33 @@
   line-height: 1.1;
 }
 .planner .pv-stat__txt .lead {
-  font-size: clamp(0.95rem, 0.5vw + 0.85rem, 1.15rem);
+  font-size: clamp(1.15rem, 1.4vw + 1rem, 1.7rem);
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 .planner .pv-stat__txt .sub {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
-
-/* chips de síntesis (materias · créditos · electivos) */
-.planner .pv-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  flex: none;
-}
-.planner .pv-chip {
-  font-family: var(--f-m);
-  font-size: 11px;
-  color: var(--muted);
-  background: var(--panel-2);
-  border: 1px solid var(--line);
-  padding: 4px 9px;
-  border-radius: var(--r);
-}
-.planner .pv-chip b {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-/* pill "Te recibís en" — lo más destacado después del número */
 .planner .pv-grad {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   border: 1px solid var(--line);
   background: var(--panel-2);
   border-radius: var(--r);
-  padding: 7px 12px;
-  flex: none;
+  padding: 11px 15px;
 }
 .planner .pv-grad > svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   color: var(--brass);
   flex: none;
 }
 .planner .pv-grad__lbl {
   display: block;
   font-family: var(--f-m);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
@@ -122,30 +95,65 @@
 .planner .pv-grad__val {
   display: block;
   font-weight: 600;
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 
-/* medidor compacto: label + barra + % en UNA línea. El detalle
-   (aprobados · faltan · meta) viaja en title/aria del contenedor. */
-.planner .pv-meter {
+/* fila media: chips + medidor de progreso */
+.planner .pv-banner__mid {
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.planner .pv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.planner .pv-chip {
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  border-radius: var(--r);
+}
+.planner .pv-chip b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.planner .pv-meter {
+  min-width: 220px;
+  flex: 1 1 240px;
+  max-width: 360px;
+}
+.planner .pv-meter__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 10px;
-  flex: 1 1 220px;
-  min-width: 190px;
+  margin-bottom: 6px;
 }
 .planner .pv-meter__lbl {
   font-family: var(--f-m);
-  font-size: 10px;
+  font-size: 10.5px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
-  flex: none;
+}
+.planner .pv-meter__pct {
+  font-family: var(--f-m);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brass);
 }
 .planner .pv-meter__bar {
-  flex: 1 1 auto;
   height: 6px;
   border-radius: 999px;
   background: var(--panel-3);
@@ -158,20 +166,27 @@
   background: color-mix(in srgb, var(--brass) 68%, var(--line-2));
   transition: width var(--dur-base) var(--ease-out);
 }
-.planner .pv-meter__pct {
+.planner .pv-meter__foot {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
   font-family: var(--f-m);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--brass);
-  flex: none;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.planner .pv-meter__foot b {
+  color: var(--ink);
+}
+.planner .pv-meter__sep {
+  opacity: 0.5;
 }
 
-/* divider apretado entre síntesis y controles */
 .planner .pv-banner__divider {
   position: relative;
   border: none;
   border-top: 1px solid var(--line);
-  margin: 12px 0;
+  margin: 20px 0;
 }
 
 /* controles integrados (empiezo / máx mat / máx cr / optimizar / horario) */
@@ -179,13 +194,13 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 18px;
+  gap: 18px 24px;
   align-items: flex-end;
 }
 .planner .pv-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   min-width: 0;
 }
 .planner .pv-field__lbl {
@@ -204,17 +219,17 @@
    (@studyvaults/ui) pero en tamaño banner: padding-derecho holgado y la flecha
    separada del borde para que NUNCA pise el texto (fix B13). */
 .planner .pv-field .commission-select {
-  min-width: 168px;
+  min-width: 176px;
   max-width: none;
   font-size: 12px;
-  padding: 8px 36px 8px 12px;
-  background-position: right 13px center;
+  padding: 9px 38px 9px 13px;
+  background-position: right 14px center;
   background-size: 12px;
 }
 /* NumField (máx cr / máx mat) llega con su propio .plan2-field; lo dejamos fluir
    y solo alineamos el ancho */
 .planner .pv-field--num .plan2-field {
-  gap: 6px;
+  gap: 7px;
 }
 .planner .pv-field--seg {
   flex: 1 1 300px;
@@ -237,7 +252,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 7px 13px;
   border-radius: 999px;
   white-space: nowrap;
   transition: color var(--dur-fast) var(--ease-out),
@@ -252,18 +267,7 @@
   font-weight: 700;
 }
 .planner .pv-field--sw {
-  gap: 8px;
-}
-
-/* responsive del banner: <720px la síntesis apila y el medidor va full-width */
-@media (max-width: 720px) {
-  .planner .pv-banner__synth {
-    gap: 10px 16px;
-  }
-  .planner .pv-meter {
-    flex-basis: 100%;
-    min-width: 0;
-  }
+  gap: 9px;
 }
 
 /* ============================ TAB STRIP ==================================== */
@@ -504,40 +508,18 @@
   position: relative;
 }
 
-/* toggle de lock visible en el header (candado abierto = finalizar; cerrado =
-   finalizado, click desbloquea). El popover de confirmación reusa pv-confirm-pop. */
-.planner .pv-locktoggle {
-  position: relative;
-  display: inline-flex;
-}
-.planner .pv-lockbtn {
+/* badge de finalizado en el header */
+.planner .pv-lockbadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 30px;
-  border-radius: 6px;
-  background: transparent;
-  border: 1px solid transparent;
+  width: 26px;
+  height: 26px;
   color: var(--muted);
-  cursor: pointer;
-  transition: color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
 }
-.planner .pv-lockbtn:hover {
-  color: var(--ink);
-  background: var(--panel-2);
-  border-color: var(--line);
-}
-.planner .pv-lockbtn.is-locked {
-  color: var(--brass);
-  background: color-mix(in srgb, var(--brass) 10%, transparent);
-  border-color: color-mix(in srgb, var(--brass) 35%, var(--line));
-}
-.planner .pv-lockbtn:focus-visible {
-  outline: 2px solid var(--brass);
-  outline-offset: 2px;
+.planner .pv-lockbadge svg {
+  width: 15px;
+  height: 15px;
 }
 
 /* botón 3-puntos (área de click generosa: es el único overflow por cuatri) */
@@ -1026,7 +1008,18 @@
   flex-wrap: wrap;
 }
 
+/* ============================ FILTROS DEL RECOMENDADOR ==================== */
+
 /* ============================ RESPONSIVE ================================== */
+@media (max-width: 640px) {
+  .planner .pv-banner__mid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .planner .pv-meter {
+    max-width: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .planner .pv-seg__opt,
   .planner .pv-meter__bar > i,

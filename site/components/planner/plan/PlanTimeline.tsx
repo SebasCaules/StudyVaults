@@ -23,7 +23,6 @@ import {
 import {
   CuatriTools,
   LockCap,
-  LockToggle,
   MinorDots,
   isRecTagged,
   computeCuatriBlocks,
@@ -210,13 +209,6 @@ function PlanStop({
             </button>
           )}
 
-          <LockToggle
-            i={i}
-            cuName={cuatriName(cu)}
-            locked={locked}
-            onFinalize={onFinalize}
-            onUnlock={onUnlock}
-          />
           <CuatriTools
             i={i}
             cuName={cuatriName(cu)}
@@ -224,6 +216,8 @@ function PlanStop({
             maxCred={maxCred}
             maxMat={maxMat}
             idPrefix="ptl"
+            onFinalize={onFinalize}
+            onUnlock={onUnlock}
             onDownload={onDownload}
             onOpenChange={setMenuOpen}
           />
@@ -315,25 +309,11 @@ function PlanStop({
           <div className="ptl-loadbar" aria-hidden="true">
             <i style={{ width: `${load}%` }} />
           </div>
-          {/* el tope pertenece a la barra (carga del cuatri); el acumulado es
-              otra escala (créditos de carrera) — etiquetado para no leerse
-              como "acc/tope" */}
           <div className="ptl-foot__meta">
-            {!locked ? (
-              <span className="ptl-tope">
-                carga <b>{cred}</b>/{effCred} cr
-              </span>
-            ) : (
-              <span className="ptl-tope">
-                carga <b>{cred}</b> cr
-              </span>
-            )}
-            <span
-              className="ptl-acc"
-              title="Créditos de carrera acumulados al cierre de este cuatrimestre"
-            >
-              carrera <b>{acc}</b> cr
+            <span className="ptl-acc">
+              acumulado <b>{acc}</b> cr
             </span>
+            {!locked && <span className="ptl-tope">tope {effCred} cr</span>}
           </div>
         </div>
 

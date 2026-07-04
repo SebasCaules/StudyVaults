@@ -12,7 +12,6 @@ import {
 } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { computeGraphLayout } from "@/lib/planner/layoutGraph";
-import { byId } from "@/lib/planner/model";
 
 /**
  * Mapa de correlativas. Reemplaza vis-network (planner.js renderGraph) por un
@@ -352,32 +351,27 @@ export default function GrafoView() {
     <section className="view-panel grafo-view" id="panel-grafo">
       <div className="panel-head">
         <h2>Mapa de correlativas</h2>
+        <p>
+          Cada columna es un cuatrimestre de la carrera (1º·1c &rarr; 5º·2c): las
+          correlativas fluyen de izquierda a derecha. Tono pizarra: obligatorias.
+          Tono latón: electivas. Arrastrá para moverte, usá la rueda o los botones
+          +/− para el zoom, y &laquo;Ajustar&raquo; encuadra todo el mapa. Pasá el
+          mouse por una materia para iluminar su cadena; hacé click para ver el
+          detalle.
+        </p>
       </div>
 
       <div className="grafo-toolbar">
-        <div className="grafo-toolbar-lead">
-          <div className="grafo-legend" aria-label="Referencia de colores">
-            <span className="lg">
-              <span className="sw ob" /> Obligatoria
-            </span>
-            <span className="lg">
-              <span className="sw el" /> Electiva
-            </span>
-            <span className="lg">
-              <span className="sw ap" /> Aprobada
-            </span>
-          </div>
-          <details className="grafo-help">
-            <summary>¿Cómo se usa?</summary>
-            <div className="grafo-help__body">
-              Cada columna es un cuatrimestre de la carrera (1º·1c &rarr; 5º·2c):
-              las correlativas fluyen de izquierda a derecha. Tono pizarra,
-              obligatorias; tono latón, electivas. Arrastrá para moverte, usá la
-              rueda o los botones +/&minus; para el zoom, y &laquo;Ajustar&raquo;
-              encuadra todo el mapa. Pasá el mouse por una materia para iluminar
-              su cadena; hacé click para ver el detalle.
-            </div>
-          </details>
+        <div className="grafo-legend" aria-label="Referencia de colores">
+          <span className="lg">
+            <span className="sw ob" /> Obligatoria
+          </span>
+          <span className="lg">
+            <span className="sw el" /> Electiva
+          </span>
+          <span className="lg">
+            <span className="sw ap" /> Aprobada
+          </span>
         </div>
         <div className="grafo-count">
           <b>{nodes.length}</b> materias &middot; <b>{edges.length}</b>{" "}
@@ -479,10 +473,6 @@ export default function GrafoView() {
                 const ap = approved.has(n.id);
                 const dim = chain ? !chain.has(n.id) : false;
                 const sel = n.id === selectedId;
-                // nombre completo para el tooltip nativo en hover (el nodo sólo
-                // muestra abreviatura + código): mejora el reconocimiento sin
-                // abrir el drawer. `title` de SVG = tooltip del navegador.
-                const fullName = byId.get(n.id)?.nombre ?? n.abbr;
                 const cls =
                   "grafo-node " +
                   (n.ob ? "ob" : "el") +
@@ -510,7 +500,6 @@ export default function GrafoView() {
                     }
                     onKeyDown={(e) => onNodeKeyDown(e, n.id)}
                   >
-                    <title>{fullName}</title>
                     <rect
                       className="gn-rect"
                       width={nodeW}
