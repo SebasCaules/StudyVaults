@@ -21,16 +21,6 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
-- **Rediseño UX del Plan de cursada** — `96b2912` + `0a69943` (2026-07-04, orquestado:
-  3 builders + review adversarial + auditoría UX, todo verificado en build estático):
-  workbench acoplado board+rail (pool y recomendador slim unificados en un rail sticky
-  con tabs Materias/Recomendadas — muere el pool del fondo), Roadmap como timeline real
-  (espina + nodos + separadores de año + nodo de egreso, **tab default**), cadena de
-  correlativas al hover, Calendario sin grillas vacías (cards compactas para cuatris sin
-  horarios SGA), método en chips + detalle, observaciones ancladas al cuatri, purga de
-  ~230 reglas CSS muertas. Componentes en `site/components/planner/plan/` (backbone
-  `shared.tsx`). Nota: los tags "rec" del board ahora aparecen solo con el rail en
-  "Recomendadas" (decisión; los dots de minor se ven siempre).
 - **Overhaul UI/UX implementado y commiteado** — `25b93b4` (77 archivos, +13.953): landing
   recortada + grafo 3D hero, pseudo-landing `/electivas` vs app `/electivas/planificar`,
   planner (estado 2 niveles cursada/final, combinador de finales + .ics, lock de cuatris,

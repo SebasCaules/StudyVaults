@@ -301,11 +301,8 @@
 .planner .dr-slot .au{color:var(--muted);font-size:11px}
 .planner .dr-slotmod{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;padding:1px 5px;border-radius:2px;border:1px solid var(--line)}
 
-/* ---- Detalle de materia como MODAL centrado (antes: drawer lateral) ----
-   z-index > 1000: el navbar del portal es fixed con z:1000; por debajo de él
-   el panel (hasta 90vh) asoma por detrás de la barra en pantallas bajas.
-   Capa de overlays del planner = 1100 (misma que .fr-overlay; search usa 2000). */
-.planner .dr-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:24px}
+/* ---- Detalle de materia como MODAL centrado (antes: drawer lateral) ---- */
+.planner .dr-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px}
 .planner .dr-modal__bg{position:absolute;inset:0;background:var(--scrim);backdrop-filter:blur(2px);animation:planner-fade .22s}
 .planner .dr-modal__panel{
   position:relative;z-index:1;width:min(560px,100%);max-height:88vh;overflow:auto;
@@ -350,7 +347,7 @@
 
 /* ===================== PRINT ===================== */
 @media print{
-  .planner .topbar,.planner .side,.planner .views,.planner .drawer,.planner .dr-modal{display:none !important}
+  .planner .topbar,.planner .side,.planner .views,.planner .plan2-pool,.planner .drawer,.planner .dr-modal{display:none !important}
   .planner .shell{grid-template-columns:1fr;padding:0}
   .planner .panel{border-color:#bbb}
 }
@@ -372,6 +369,7 @@
   .planner .stat{border-bottom:1px solid var(--line)}
   .planner .stat:nth-child(odd){border-right:1px solid var(--line)}
   .planner .panelshow{width:100%;justify-content:center}
+  .planner .pool-cols{grid-template-columns:1fr}.planner .pool-col:first-child{border-right:none;border-bottom:1px solid var(--line)}
   /* F06: en angosto el grid fijo de 5 columnas clipea texto (ref-table tenía
      overflow:hidden sin @media) — se habilita scroll horizontal en vez de
      achicar columnas, así ninguna celda corta su contenido. */
@@ -841,6 +839,21 @@
 /* nota de optimización: selector de MÉTODO + explicación de lo que hace, bajo
    un mismo acento brass. El método vive acá (no en el toolbar): elegís y leés
    qué hace, juntos. */
+.planner .plan2-optnote{
+  border-left:2px solid var(--brass);padding:2px 0 2px 16px;margin:22px 0 0;max-width:96ch;
+}
+.planner .plan2-optnote__pick{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:11px;
+}
+.planner .plan2-optnote__lbl{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--f-m);font-size:9px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);
+}
+.planner .plan2-method{
+  font-family:var(--f-m);font-size:11.5px;line-height:1.6;color:var(--muted);margin:0;
+}
+.planner .plan2-method b{color:var(--ink-soft);font-family:var(--f-d);font-weight:500}
 
 /* modal Exportar / importar: hub con dos cards (Documento · Preferencias).
    Reusa el chrome .mnr-modal*; esto es solo el cuerpo. */
@@ -886,57 +899,388 @@
 /* =========================================================================
    ROADMAP — panorama de cuatrimestres lado a lado (vista general)
    ========================================================================= */
+.planner .plan2-board{margin-top:4px}
 
 /* board a la izquierda + recomendaciones en sidebar derecha sticky: así los
    calendarios/roadmap se ven actualizarse en vivo al pasar el cursor por una
    recomendación. container-type → los calendarios se adaptan al ancho real de
    esta columna (no del viewport) y no se aprietan al ceder espacio al sidebar. */
+.planner .plan2-split{
+  display:grid;grid-template-columns:minmax(0,1fr) clamp(228px,23%,312px);
+  gap:16px;align-items:start;margin-top:4px;
+}
+.planner .plan2-split--solo{grid-template-columns:1fr}
+.planner .plan2-split__main{min-width:0;container-type:inline-size}
+.planner .plan2-split__side{
+  position:sticky;top:calc(var(--nav-h) + 88px);
+  max-height:calc(100vh - var(--nav-h) - 100px);overflow:auto;
+  min-width:0;padding-right:4px;
+}
+.planner .plan2-split__side::-webkit-scrollbar{width:8px}
+.planner .plan2-split__side::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:20px}
+.planner .plan2-split__side .plan2-recs{margin-top:0}
 /* mismo umbral que el sidebar principal (.shell/.side, 1080px): así todo el
    layout pasa a una columna a la vez y no queda el board apretado en la franja
    981–1080 con el panel principal ya apilado arriba */
+@media (max-width:1080px){
+  .planner .plan2-split{grid-template-columns:1fr}
+  .planner .plan2-split__side{
+    position:static;max-height:none;overflow:visible;padding-right:0;
+  }
+}
 /* grilla que mete la mayor cantidad de cuatrimestres por fila y envuelve.
    El height de cada tarjeta no importa: priorizamos ver todos de un vistazo. */
+.planner .rmap{
+  list-style:none;margin:0;padding:0;
+  display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+}
+.planner .rmap-stop{margin:0;min-width:0}
 
 /* tarjeta de cuatrimestre — compacta, con las materias siempre desplegadas */
+.planner .rmap-stop__card{
+  height:100%;display:flex;flex-direction:column;gap:9px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:12px 13px;animation:cmb-grid-in .3s var(--ease,ease) both;transition:border-color .18s,box-shadow .18s;
+}
+.planner .rmap-stop__card:hover{border-color:var(--line-2);box-shadow:0 6px 20px color-mix(in srgb,var(--ink) 6%,transparent)}
+.planner .rmap-stop__head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.planner .rmap-stop__when{display:flex;flex-direction:column;gap:4px;min-width:0}
+.planner .rmap-stop__when h3{
+  font-family:var(--f-d);font-weight:600;font-size:16px;color:var(--ink);margin:0;letter-spacing:-.015em;
+}
+.planner .rmap-stop__tag{
+  align-self:flex-start;font-family:var(--f-m);font-size:9px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--brass);background:var(--brass-soft);
+  border-radius:5px;padding:2px 7px;
+}
 /* numerito de orden del cuatrimestre */
+.planner .rmap-stop__step{
+  flex:none;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--slate);
+  font-family:var(--f-d);font-weight:600;font-size:12px;
+}
+.planner .rmap-stop__ledger{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.planner .rmap-stop__metric{font-family:var(--f-m);font-size:10.5px;color:var(--muted)}
+.planner .rmap-stop__metric b{font-family:var(--f-d);font-weight:600;font-size:15px;color:var(--ink);margin-right:2px}
+.planner .rmap-stop__metric--soft b{font-size:13px;color:var(--ink-soft)}
 
 /* barra de carga del cuatrimestre */
+.planner .rmap-stop__load{
+  height:4px;border-radius:999px;background:var(--panel-3);overflow:hidden;
+}
+.planner .rmap-stop__load i{
+  display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--brass),var(--brass-2));transition:width .5s var(--ease,ease);
+}
+
+.planner .rmap-stop__mats{display:flex;flex-wrap:wrap;gap:6px}
+.planner .rmap-mat{
+  position:relative;display:inline-flex;align-items:center;
+  background:color-mix(in srgb,var(--blk,var(--brass)) 12%,var(--panel-2));
+  border:1px solid color-mix(in srgb,var(--blk,var(--brass)) 28%,transparent);
+  border-left:3px solid var(--blk,var(--brass));border-radius:8px;
+  transition:transform .14s var(--ease,ease),box-shadow .14s;
+}
+.planner .rmap-mat:hover{transform:translateY(-2px);box-shadow:0 6px 16px color-mix(in srgb,var(--blk) 28%,transparent);z-index:5}
 /* handle: identidad clickeable (abre el detalle) + zona de arrastre */
+.planner .rmap-mat__main{
+  display:inline-flex;align-items:center;gap:7px;padding:5px 9px 5px 8px;
+  background:none;border:none;font:inherit;color:inherit;cursor:pointer;border-radius:8px;
+}
+.planner .rmap-mat__main:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.planner .rmap-mat__abbr{font-family:var(--f-d);font-weight:600;font-size:12.5px;color:var(--ink)}
+.planner .rmap-mat__cr{font-family:var(--f-m);font-size:10px;color:var(--muted)}
 /* popover al hover: cambiar cuatrimestre / comisión / quitar del plan */
+.planner .rmap-mat__tools{
+  position:absolute;top:100%;left:0;z-index:20;margin-top:3px;
+  display:flex;align-items:center;gap:5px;padding:6px;white-space:nowrap;
+  background:var(--panel);border:1px solid var(--line-2);border-radius:8px;
+  box-shadow:0 10px 26px color-mix(in srgb,#000 24%,transparent);
+  opacity:0;visibility:hidden;transform:translateY(-4px);pointer-events:none;
+  transition:opacity .14s var(--ease,ease),transform .14s var(--ease,ease),visibility .14s;
+}
 /* puente invisible chip↔popover para que el hover no se corte */
+.planner .rmap-mat__tools::before{content:"";position:absolute;left:0;right:0;top:-5px;height:5px}
+.planner .rmap-mat:hover .rmap-mat__tools,
+.planner .rmap-mat:focus-within .rmap-mat__tools{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.planner .rmap-mat__sel{
+  max-width:160px;background:var(--panel-3);border:1px solid var(--line-2);color:var(--ink-soft);
+  border-radius:6px;padding:4px 6px;font-family:var(--f-m);font-size:10.5px;cursor:pointer;transition:border-color .15s;
+}
+.planner .rmap-mat__sel:hover{border-color:var(--brass)}
+.planner .rmap-mat__sel:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.planner .rmap-mat__rm{
+  width:22px;height:22px;flex:none;border-radius:6px;border:1px solid transparent;background:none;
+  color:var(--faint);font-size:15px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.15s;
+}
+.planner .rmap-mat__rm:hover{color:#fff;background:var(--oxblood);border-color:var(--oxblood)}
 
 /* pie: créditos acumulados, anclado al fondo para alinear entre tarjetas */
+.planner .rmap-stop__foot{
+  display:flex;align-items:center;gap:13px;margin-top:auto;padding-top:9px;
+  border-top:1px solid var(--line);
+}
+.planner .rmap-stop__acc{font-family:var(--f-m);font-size:10.5px;color:var(--muted)}
+.planner .rmap-stop__acc b{font-family:var(--f-d);font-weight:600;color:var(--ink-soft);font-size:13px}
 
 /* empty */
+.planner .plan2-empty{
+  display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center;
+  padding:46px 18px;color:var(--faint);border:1px dashed var(--line);border-radius:var(--r-lg);
+}
+.planner .plan2-empty svg{color:var(--line-2)}
+.planner .plan2-empty p{margin:0;color:var(--muted);font-size:14px}
 
 /* warnings */
+.planner .plan2-warns{
+  margin-top:18px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;
+  border:1px solid color-mix(in srgb,var(--oxblood) 30%,var(--line));border-radius:var(--r);
+  background:color-mix(in srgb,var(--oxblood) 5%,transparent);
+  border-left:3px solid var(--oxblood);
+}
+.planner .plan2-warns__h{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--f-m);font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--oxblood);
+}
+.planner .plan2-warns__h i{
+  font-style:normal;background:color-mix(in srgb,var(--oxblood) 16%,transparent);
+  border-radius:999px;min-width:16px;text-align:center;padding:1px 6px;font-size:9.5px;
+}
+.planner .plan2-warn{font-size:12.5px;color:var(--ink-soft);line-height:1.45;padding-left:2px}
 
 /* =========================================================================
    POOL — editor del plan (agregar electivas · fijar cuatrimestres)
    ========================================================================= */
+.planner .plan2-pool{
+  margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;
+}
+.planner .plan2-pool>summary{
+  cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+}
+.planner .plan2-pool>summary::-webkit-details-marker{display:none}
+.planner .plan2-pool>summary::before{
+  content:"▸";color:var(--brass);font-size:11px;align-self:center;transition:transform .2s;
+}
+.planner .plan2-pool[open]>summary::before{content:"▾"}
+.planner .plan2-pool[open]>summary{border-bottom:1px solid var(--line)}
+.planner .plan2-pool__title{font-family:var(--f-d);font-weight:600;font-size:15px;color:var(--ink)}
+.planner .plan2-pool__hint{font-family:var(--f-m);font-size:11px;color:var(--muted);letter-spacing:.02em}
+
+.planner .plan2-pool .pool-cols{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.planner .plan2-pool .pool-col{padding:16px 18px}
+.planner .plan2-pool .pool-col:first-child{border-right:1px solid var(--line)}
+.planner .pool-h{
+  display:flex;align-items:center;gap:8px;margin-bottom:13px;
+  font-family:var(--f-m);font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+}
+.planner .pool-h__dot{width:8px;height:8px;border-radius:50%;flex:none}
+.planner .pool-h__dot--ob{background:var(--slate)}
+.planner .pool-h__dot--el{background:var(--brass)}
+.planner .pool-h i{font-style:normal;font-family:var(--f-m);color:var(--ink);margin-left:auto;
+  background:var(--panel-3);border:1px solid var(--line);border-radius:999px;min-width:18px;text-align:center;padding:1px 7px;font-size:10.5px}
+.planner .pool-list{display:flex;flex-direction:column;max-height:330px;overflow:auto;margin:0 -4px;padding:0 4px}
+.planner .pool-none{margin:4px 0;color:var(--faint);font-size:12.5px}
+
+.planner .pool-item{
+  display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:var(--r);
+  border:1px solid transparent;transition:background .14s,border-color .14s;
+}
+.planner .pool-item:hover{background:var(--panel-2);border-color:var(--line)}
+.planner .pool-item.is-fixed{background:var(--brass-soft);border-color:color-mix(in srgb,var(--brass) 22%,transparent)}
+.planner .pool-item .pab{
+  font-family:var(--f-d);font-weight:600;font-size:13px;color:var(--ink);width:58px;flex:none;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.planner .pool-item .pn{
+  flex:1;min-width:0;font-size:13px;color:var(--ink-soft);line-height:1.25;
+  display:flex;flex-direction:column;gap:1px;overflow:hidden;
+}
+.planner .pool-item .pn>:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.planner .pool-item .pc{font-family:var(--f-m);font-size:10px;color:var(--faint);letter-spacing:.02em}
+.planner .pool-item .pno-hor{font-family:var(--f-m);font-size:9.5px;color:var(--muted)}
+.planner .pool-item select{
+  background:var(--panel-3);border:1px solid var(--line-2);color:var(--ink-soft);border-radius:6px;
+  padding:5px 7px;font-family:var(--f-m);font-size:11px;flex:none;cursor:pointer;transition:border-color .15s;
+}
+.planner .pool-item select:hover{border-color:var(--brass)}
+.planner .pool-item select:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.planner .pool-item.is-fixed select{border-color:var(--brass);color:var(--ink)}
+.planner .pool-item .rm{
+  width:24px;height:24px;flex:none;border-radius:6px;border:1px solid transparent;background:none;
+  color:var(--faint);font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:.15s;
+}
+.planner .pool-item .rm:hover{color:#fff;background:var(--oxblood);border-color:var(--oxblood)}
+
+.planner .pool-add{display:flex;align-items:center;gap:9px;position:relative;margin-bottom:11px;
+  background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--r);padding:0 11px;transition:border-color .15s,box-shadow .15s}
+.planner .pool-add:focus-within{border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.planner .pool-add__ic{color:var(--faint);flex:none}
+.planner .pool-add input{
+  flex:1;min-width:0;background:none;border:none;color:var(--ink);
+  border-radius:0;padding:9px 0;font-family:var(--f-b);font-size:13px;
+}
+.planner .pool-add input:focus{outline:none}
+.planner .pool-add input::placeholder{color:var(--faint)}
+.planner .pool-sugg{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--panel-2);
+  border:1px solid var(--line-2);border-radius:var(--r);max-height:240px;overflow:auto;z-index:5;
+  box-shadow:0 12px 30px color-mix(in srgb,var(--ink) 14%,transparent);
+}
+.planner .pool-sugg>div{padding:9px 12px;font-size:12.5px;cursor:pointer;color:var(--ink-soft);display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line)}
+.planner .pool-sugg>div:last-child{border-bottom:none}
+.planner .pool-sugg>div:hover{background:var(--brass-soft)}
+.planner .pool-sugg .sc{font-family:var(--f-m);font-size:10.5px;color:var(--brass);flex:none;width:42px}
+.planner .pool-sugg .sn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* =========================================================================
    RESPONSIVE — Plan de cursada
    ========================================================================= */
+@media (max-width:680px){
+  .planner .rmap{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+  .planner .plan2-pool .pool-cols{grid-template-columns:1fr}
+  .planner .plan2-pool .pool-col:first-child{border-right:none;border-bottom:1px solid var(--line)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .planner .rmap-stop__card{animation:none}
+  .planner .rmap-mat:hover{transform:none}
+  .planner .rmap-stop__load i{transition:none}
+}
 
 /* =========================================================================
    RECOMENDACIONES DE ELECTIVAS + PREVIEW
    ========================================================================= */
+.planner .plan2-recs{margin-top:20px}
+.planner .plan2-recs__h{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.planner .plan2-recs__title{font-family:var(--f-d);font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.01em}
+.planner .plan2-recs__sub{font-family:var(--f-m);font-size:11px;color:var(--muted);line-height:1.5}
 /* fila de encabezado: título a la izquierda + chevron de ocultar a la derecha,
    mismo patrón (y estilo) que `.side__head`/`.side__collapse` del rail principal */
+.planner .plan2-recs__hrow{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.planner .plan2-recs__collapse{
+  width:24px;height:24px;flex:none;display:inline-grid;place-items:center;
+  border:none;background:var(--panel-2);color:var(--ink-soft);border-radius:6px;cursor:pointer;
+  opacity:1;transition:opacity .15s,color .15s,background .15s;
+}
+.planner .plan2-recs__collapse:hover{color:var(--brass);background:var(--brass-soft)}
 /* pestañita para reabrir el panel colapsado: espejo de `.side__reveal`, pero en
    el borde DERECHO de la pantalla (el panel de electivas vive a la derecha).
    Fixed → no la mueve el scroll; discreta, se aviva en hover con acento brass. */
+.planner .plan2-recs-reveal{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:30;
+  width:26px;height:48px;display:grid;place-items:center;
+  border:1px solid var(--line-2);border-right:none;border-radius:10px 0 0 10px;
+  background:var(--panel);color:var(--brass);cursor:pointer;opacity:1;
+  box-shadow:0 2px 8px color-mix(in srgb,var(--brass) 12%,transparent);
+  transition:opacity .16s,color .16s,width .16s,border-color .16s,box-shadow .16s;
+}
+.planner .plan2-recs-reveal:hover{color:var(--brass);border-color:var(--brass);width:31px;box-shadow:0 3px 12px color-mix(in srgb,var(--brass) 22%,transparent)}
 
 /* Flechas de ambos sidebars más gruesas y un pelín más grandes → más visibles
    (se sube el stroke por CSS para no tocar los 4 SVG del markup). */
-.planner .side__collapse svg,.planner .side__reveal svg{width:16px;height:16px}
-.planner .side__collapse svg path,.planner .side__reveal svg path{stroke-width:2.2}
+.planner .side__collapse svg,.planner .side__reveal svg,
+.planner .plan2-recs__collapse svg,.planner .plan2-recs-reveal svg{width:16px;height:16px}
+.planner .side__collapse svg path,.planner .side__reveal svg path,
+.planner .plan2-recs__collapse svg path,.planner .plan2-recs-reveal svg path{stroke-width:2.2}
+.planner .plan2-recs__grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:9px;
+}
 
 /* grupos desplegables: por si alargan o no la carrera */
+.planner .plan2-recgrp{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;margin-top:11px;
+}
+.planner .plan2-recgrp>summary{
+  cursor:pointer;list-style:none;padding:10px 13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.planner .plan2-recgrp>summary::-webkit-details-marker{display:none}
+.planner .plan2-recgrp>summary::after{
+  content:"▸";color:var(--brass);font-size:11px;margin-left:auto;transition:transform .2s;
+}
+.planner .plan2-recgrp[open]>summary::after{content:"▾"}
+.planner .plan2-recgrp[open]>summary{border-bottom:1px solid var(--line)}
+.planner .plan2-recgrp__dot{width:8px;height:8px;border-radius:50%;flex:none}
+.planner .plan2-recgrp__dot--ok{background:var(--sage)}
+.planner .plan2-recgrp__dot--warn{background:var(--brass-2)}
+.planner .plan2-recgrp__dot--bad{background:var(--oxblood)}
+.planner .plan2-recgrp__title{font-family:var(--f-d);font-weight:600;font-size:13px;color:var(--ink)}
+.planner .plan2-recgrp__count{
+  font-family:var(--f-m);font-size:10.5px;font-weight:600;color:var(--muted);
+  background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:1px 8px;
+}
+.planner .plan2-recgrp__hint{font-family:var(--f-m);font-size:11px;color:var(--muted);letter-spacing:.02em}
+.planner .plan2-recgrp .plan2-recs__grid{padding:11px 12px}
 
 /* "ver más": el resto del grupo detrás de un desplegable, sin estado */
+.planner .plan2-recmore>summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:0 16px 14px;padding:8px 12px;border:1px dashed var(--line-2);border-radius:var(--r);
+  font-family:var(--f-m);font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-soft);
+  transition:.15s;
+}
+.planner .plan2-recmore>summary::-webkit-details-marker{display:none}
+.planner .plan2-recmore>summary::after{content:"▸";color:var(--brass);font-size:10px}
+.planner .plan2-recmore[open]>summary::after{content:"▾"}
+.planner .plan2-recmore>summary:hover{border-color:color-mix(in srgb,var(--brass) 50%,var(--line));color:var(--ink)}
+.planner .plan2-recmore .plan2-recs__grid{padding-top:0}
+
+.planner .rec-card{
+  display:flex;flex-direction:column;gap:7px;padding:11px 12px;min-width:0;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  transition:border-color .16s var(--ease,ease),box-shadow .16s,transform .16s;
+}
+.planner .rec-card:hover,.planner .rec-card.is-active{
+  border-color:color-mix(in srgb,var(--brass) 55%,var(--line));
+  box-shadow:0 7px 20px color-mix(in srgb,var(--brass) 16%,transparent);
+  transform:translateY(-2px);
+}
+.planner .rec-card.is-conf{opacity:.7}
+.planner .rec-card.is-conf:hover{transform:none;box-shadow:none}
+.planner .rec-card__top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.planner .rec-card__abbr{font-family:var(--f-d);font-weight:600;font-size:14px;color:var(--ink)}
+.planner .rec-card__cr{font-family:var(--f-m);font-size:11px;color:var(--muted);flex:none}
+.planner .rec-card__name{
+  margin:0;font-size:12.5px;line-height:1.32;color:var(--ink-soft);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em;
+}
+.planner .rec-card__fit{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.planner .rec-fit{
+  font-family:var(--f-m);font-size:10px;letter-spacing:.02em;
+  padding:3px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted);
+}
+.planner .rec-fit--when{color:var(--slate);border-color:color-mix(in srgb,var(--slate) 38%,transparent)}
+.planner .rec-fit--ok{color:var(--sage);border-color:color-mix(in srgb,var(--sage) 38%,transparent);background:color-mix(in srgb,var(--sage) 12%,transparent)}
+.planner .rec-fit--warn{color:var(--brass-2);border-color:color-mix(in srgb,var(--brass) 40%,transparent);background:var(--brass-soft)}
+.planner .rec-fit--bad{color:var(--oxblood);border-color:color-mix(in srgb,var(--oxblood) 40%,transparent);background:color-mix(in srgb,var(--oxblood) 8%,transparent)}
+.planner .rec-fit--soft{color:var(--faint);border-style:solid}
+.planner .rec-fit--nohor{
+  color:var(--muted);border-color:color-mix(in srgb,var(--muted) 38%,transparent);
+  border-style:solid;
+}
 /* sin horario → mínima prioridad: atenuada hasta que la mirás de cerca */
+.planner .rec-card.is-nohor{opacity:.66}
+.planner .rec-card.is-nohor:hover,.planner .rec-card.is-nohor.is-active{opacity:1}
+.planner .rec-card__area{font-family:var(--f-m);font-size:10px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.planner .rec-card__acts{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
+.planner .rec-card__add{
+  flex:1;border:1px solid color-mix(in srgb,var(--brass) 40%,transparent);background:var(--brass-soft);
+  color:var(--ink);border-radius:6px;font-family:var(--f-m);font-size:11px;font-weight:600;
+  padding:7px 10px;cursor:pointer;transition:.15s;white-space:nowrap;
+}
+.planner .rec-card__add:hover{background:var(--brass);color:var(--block-ink);border-color:var(--brass)}
+.planner .rec-card.is-conf .rec-card__add{opacity:.5}
+.planner .rec-card__info{
+  border:none;background:none;color:var(--muted);font-family:var(--f-m);font-size:11px;
+  cursor:pointer;padding:6px 4px;transition:.15s;
+}
+.planner .rec-card__info:hover{color:var(--ink)}
 
 /* preview en el roadmap */
 /* Slot de vista previa: espacio RESERVADO y persistente encima del board.
@@ -944,17 +1288,84 @@
    queda fija (min-height) y solo cambia el CONTENIDO. `hint` y `msg` se
    apilan en la MISMA celda de grid → crossfade sin reflow. La animación
    del pill es solo opacity (sin transform) para no mover nada. */
+.planner .plan2-preview-slot{
+  display:grid;min-height:36px;align-items:center;margin:2px 0 12px;
+}
+.planner .plan2-preview-slot>*{grid-area:1/1;min-width:0}
+.planner .plan2-preview-slot__hint{
+  font-family:var(--f-m);font-size:11.5px;line-height:1.4;color:var(--faint);
+  letter-spacing:.01em;padding:0 4px;
+  opacity:1;transition:opacity .16s var(--ease,ease);
+}
+.planner .plan2-preview-slot.is-on .plan2-preview-slot__hint{opacity:0}
+.planner .plan2-preview-slot__msg{
+  justify-self:start;display:inline-flex;align-items:center;gap:9px;
+  padding:8px 14px;border-radius:var(--r);
+  border:1px dashed color-mix(in srgb,var(--brass) 50%,var(--line));background:var(--brass-soft);
+  color:var(--ink-soft);font-family:var(--f-m);font-size:12px;line-height:1.2;
+  animation:preview-slot-in .16s var(--ease,ease) both;
+}
+.planner .plan2-preview-slot__msg b{color:var(--ink);font-weight:600}
 @keyframes preview-slot-in{from{opacity:0}to{opacity:1}}
+.planner .plan2-preview-banner__dot{
+  width:8px;height:8px;border-radius:50%;background:var(--brass);flex:none;
+  box-shadow:0 0 0 3px var(--brass-soft);
+}
+.planner .rmap-stop.has-preview .rmap-stop__card{
+  border-color:color-mix(in srgb,var(--brass) 45%,var(--line));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--brass) 30%,transparent);
+}
+.planner .rmap-mat.is-preview{
+  border-color:var(--brass);
+  background:color-mix(in srgb,var(--brass) 24%,var(--panel-2));
+  box-shadow:0 0 0 1px var(--brass);
+}
+.planner .rmap-mat__new{
+  font-family:var(--f-m);font-size:8px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--block-ink);background:var(--brass);border-radius:4px;padding:1px 4px;margin-left:1px;
+}
+@media (prefers-reduced-motion:reduce){
+  .planner .rec-card:hover,.planner .rec-card.is-active{transform:none}
+  .planner .plan2-preview-slot__msg{animation:none}
+  .planner .plan2-preview-slot__hint{transition:none}
+}
 
 /* =========================================================================
    BOARD SWITCH (Roadmap / Calendarios) + PANORAMA DE CALENDARIOS
    ========================================================================= */
+.planner .plan2-minors-btn{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  padding:5px 13px 5px 9px;font-family:var(--f-m);font-size:11.5px;font-weight:600;
+  letter-spacing:.02em;color:var(--ink-soft);transition:.16s var(--ease,ease);
+}
+.planner .plan2-minors-btn:hover{
+  border-color:color-mix(in srgb,var(--brass) 45%,var(--line));
+  color:var(--ink);box-shadow:0 1px 0 color-mix(in srgb,var(--brass) 18%,transparent);
+}
+.planner .plan2-minors-btn__dots{display:inline-flex;gap:2px}
+.planner .plan2-minors-btn__dots i{width:7px;height:7px;border-radius:999px}
+
+/* grilla compacta: 3 por fila si entran, si no 2, y 1 en pantallas chicas.
+   Reacciona al ancho real de la columna (.plan2-split__main), no del viewport. */
+.planner .plan2-cals{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;
+  padding:2px;animation:cmb-grid-in .3s var(--ease,ease) both;
+}
+/* la grilla reacciona al ancho real de la columna del board
+   (.plan2-split__main, container-type:inline-size): 3 por fila cuando entra,
+   2 cuando se angosta y 1 en pantallas muy chicas. */
+@container (max-width:650px){
+  .planner .plan2-cals{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container (max-width:410px){
+  .planner .plan2-cals{grid-template-columns:1fr}
+}
 
 /* =========================================================================
    MODAL — créditos de minors acumulados por cuatrimestre
    ========================================================================= */
-/* z-index 1100: sobre el navbar fijo del portal (z:1000) — ver .dr-modal */
-.planner .mnr-modal{position:fixed;inset:0;z-index:1100;display:flex;
+.planner .mnr-modal{position:fixed;inset:0;z-index:60;display:flex;
   align-items:center;justify-content:center;padding:24px}
 .planner .mnr-modal__bg{position:absolute;inset:0;background:var(--scrim);
   backdrop-filter:blur(2px);animation:planner-fade .22s}
@@ -1038,21 +1449,33 @@
   outline:none;box-shadow:var(--ring);border-radius:var(--r)}
 
 /* presión sutil en botones (sin pisar estados existentes) */
-.planner .btn,.planner .mini{
+.planner .btn,.planner .mini,.planner .rec-card__add,.planner .rec-card__info,
+.planner .plan2-recs__collapse,.planner .plan2-minors-btn{
   transition:transform var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
-.planner .btn:active,.planner .mini:active{transform:translateY(1px) scale(.985)}
+.planner .btn:active,.planner .mini:active,.planner .rec-card__add:active,
+.planner .rec-card__info:active{transform:translateY(1px) scale(.985)}
 
 /* tarjetas (electivas / recomendaciones): elevación al hover */
 .planner .card{transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
 .planner .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color:var(--line-2)}
+.planner .rec-card{transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
+.planner .rec-card:hover,.planner .rec-card.is-active{transform:translateY(-2px);box-shadow:var(--shadow-1)}
 
 /* scrollbar afinada dentro del planner */
-.planner .dr-modal__panel,.planner .fr-panel{scrollbar-width:thin;scrollbar-color:var(--scroll) transparent}
+.planner .dr-modal__panel,.planner .fr-panel,.planner .pool-list,.planner .plan2-recs__grid{scrollbar-width:thin;scrollbar-color:var(--scroll) transparent}
 .planner .dr-modal__panel::-webkit-scrollbar,.planner .fr-panel::-webkit-scrollbar{width:9px}
 .planner .dr-modal__panel::-webkit-scrollbar-thumb,.planner .fr-panel::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:9px;border:3px solid transparent;background-clip:content-box}
 
 /* ---- afordances de DRAG en el roadmap del plan ---- */
+.planner .rmap-mat__main[draggable="true"]{cursor:grab}
+.planner .rmap-mat.is-dragging{opacity:.35}
+.planner .rmap-mat.is-dragging .rmap-mat__main{cursor:grabbing}
+.planner .rmap-stop__card{transition:box-shadow var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.planner .rmap-stop.drop-over .rmap-stop__card{border-color:var(--brass);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft)}
+.planner .rmap-stop.drop-over .rmap-stop__mats::after{content:"soltar acá";display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-m);font-size:10.5px;color:var(--brass);border:1px dashed var(--brass);border-radius:var(--r);padding:8px;margin-top:4px}
+.planner .rmap-drophint{font-family:var(--f-m);font-size:10px;color:var(--faint);letter-spacing:.03em}
 
 /* ---- bloques de calendario clickeables (→ drawer de specs) ---- */
 .planner .cmbcal-blk.is-clickable{cursor:pointer;transition:filter var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
@@ -1264,16 +1687,46 @@
 
 /* ---- iconos dentro de controles: alineación + no interceptan el drag ---- */
 .planner .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.planner .rec-card__add{display:inline-flex;align-items:center;justify-content:center;gap:5px}
 .planner button svg,.planner a svg,.planner summary svg{flex:none}
-.planner button svg{pointer-events:none}
+.planner .rmap-mat__grip svg,.planner button svg{pointer-events:none}
 /* botones-glyph que ahora llevan icono: garantizar centrado */
-.planner .rm{display:inline-flex;align-items:center;justify-content:center}
+.planner .rm,.planner .pool-item .rm{display:inline-flex;align-items:center;justify-content:center}
 .planner .mnr-cell__chk{display:inline-flex;align-items:center;vertical-align:middle}
 
 /* ---- caps por cuatrimestre (CuatriCaps: <details> discreto en cada tarjeta) ---- */
+.planner .rmap-caps{margin:0}
+.planner .rmap-caps>summary{
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;list-style:none;user-select:none;
+  font-family:var(--f-m);font-size:10px;letter-spacing:.03em;color:var(--faint);
+  padding:2px 0;transition:color .15s;
+}
+.planner .rmap-caps>summary::-webkit-details-marker{display:none}
+.planner .rmap-caps>summary:hover{color:var(--muted)}
+.planner .rmap-caps.is-capped>summary{color:var(--brass)}
+.planner .rmap-caps__dot{width:6px;height:6px;border-radius:999px;background:var(--brass);flex:none}
+.planner .rmap-caps__body{
+  display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;padding:9px 0 3px;
+}
+.planner .rmap-caps__body .plan2-field label{font-size:9px}
+.planner .rmap-caps__body .plan2-field input{width:62px}
+.planner .rmap-caps__auto{
+  height:34px;padding:0 11px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--panel-2);color:var(--muted);font-family:var(--f-m);font-size:10px;
+  cursor:pointer;transition:.15s;
+}
+.planner .rmap-caps__auto:hover:not(:disabled){border-color:var(--brass);color:var(--ink)}
+.planner .rmap-caps__auto:disabled{opacity:.4;cursor:not-allowed}
 /* la tarjeta entera marca el override activo con un borde tenue de acento */
+.planner .rmap-stop.is-capped .rmap-stop__card{border-color:color-mix(in srgb,var(--brass) 38%,var(--line))}
 
 /* ---- grip de drag & drop (afordancia visual dentro de .rmap-mat__main) ---- */
+.planner .rmap-mat__grip{
+  display:inline-flex;align-items:center;color:var(--faint);flex:none;cursor:grab;
+  opacity:0;margin-left:-2px;transition:opacity .15s;
+}
+.planner .rmap-mat:hover .rmap-mat__grip,
+.planner .rmap-mat:focus-within .rmap-mat__grip{opacity:.6}
 
 /* ---- modal de detalle: panel ancho + cuerpo a dos columnas ---- */
 .planner .dr-modal__panel--wide{width:min(940px,100%)}
@@ -1283,6 +1736,10 @@
 
 /* ---- centrado de iconos en los botones de cierre de los otros modales ---- */
 .planner .mnr-close{display:inline-flex;align-items:center;justify-content:center}
+
+@media (prefers-reduced-motion:reduce){
+  .planner .rmap-mat__grip{transition:none}
+}
 
 /* ============================================================
    Contratos compartidos (overseer, Fase 0 del overhaul):
