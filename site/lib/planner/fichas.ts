@@ -779,6 +779,74 @@ export const FICHAS: Record<string, Ficha> = {
     "bibliografiaComplementaria": [],
     "pdf": "/electivas-fichas/61.13.pdf"
   },
+  "61.23": {
+    "codigo": "61.23",
+    "materia": "Economía para Ingenieros",
+    "creditos": 3,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería en Informática / Ingeniería en\n Petróleo / Ingeniería Mecánica / Ingeniería Naval / Ingeniería Química",
+    "actualizado": "21/12/2022 12:23:03",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 30,
+      "practicas": 21,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Oferta y Demanda de Mercado. Mercados en acción. Elasticidad – Precio de la Demanda.Producción. Costos de Producción. Competencia Perfecta.Monopolio. Competencia Monopolística. Oligopolio.Nociones de Mercados Laborales y Distribución.Introducción. PBI. Ciclos de Negocio y Empleo. Inflación.Oferta y Demanda Agregadas. Política Fiscal. Sector Público. Déficit, Superávit Fiscal,. Deuda Pública.El Dinero y el Sistema del Banco central. Creación de Dinero. Política monetaria Nociones de Comercio Internacional. La información Contable.Los Costos desde la perspectiva de la ingeniería.Cálculo Financiero e Introducción a la Evaluación de Proyectos. Evaluación de Proyectos o Planes de Inversión.Evaluación de Proyectos o Planes de Inversión.",
+    "presentacion": "La materia Economía para Ingenieros se dicta como obligatoria en cuarto año de las carreras de Ingeniería (excepto Ingeniería Industrial y Bioingeniería), tiene como correlativa la materia Probabilidad y Estadística(93.24) y pertenece al Departamento de Economía y Negocios. Esta asignatura persigue la capacitación conceptual, teórica y práctica de los estudiantes tendiente a desarrollar sus aptitudes para la toma de decisiones analíticas sólidamente fundamentadas en problemas prácticos reales que afronta el profesional, vinculados con la Economía.",
+    "objetivos": "Interpretar información y estudios económicos a partir del conocimiento de los conceptos básicos de Economía y ver facilitado su desempeño en equipos multidisciplinarios abocados al estudio de problemas técnico – económicos. Comprender los conceptos básicos sobre contabilidad y finanzas con sus correspondientes aplicaciones prácticas. Aprender las nociones básicas de cálculo financiero y su utilidad para la evaluación de proyectos de inversión.",
+    "programa": [
+      {
+        "titulo": "1. Introducción a la Economía.",
+        "descripcion": "Concepto de Economía., Microeconomía y Macroeconomía. Bienes y Servicios. La Empresa como unidad microeconómica. Actividad Económica.El Proceso Económico."
+      },
+      {
+        "titulo": "2. Microeconomía: Demanda, Oferta y Mercado",
+        "descripcion": "Determinantes de la Oferta y de la Demanda. Bienes sustitutivos y complementarios. Controles de precios y carestías.. El excedente del consumidor. Elasticidad. Elasticidades de oferta y de demanda, elasticidad ingreso, y elasticidad cruzada."
+      },
+      {
+        "titulo": "3. Microeconomía: Producción y Costos",
+        "descripcion": "Funciones de Producción: Productividad Marginal. Relación de sustitución técnica. Rendimientos a escala. Costos de la Producción: Costo de oportunidad. Costos económicos y costos contables. Costos fijos y variables.Costo total, medio y marginal, análisis en el corto y en el largo plazo. Maximización de Beneficio y Oferta: La naturaleza y el comportamiento de las empresas. Maximización del Beneficio: Ingreso Marginal. Excedente del productor a corto plazo. Maximización de ingresos."
+      },
+      {
+        "titulo": "4. Microeconomía: Mercados",
+        "descripcion": "Estructura de los Mercados de Bienes y Servicios. Tipos de Mercado. Mercado de Competencia Perfecta. Equilibrio en el corto y largo plazo. Análisis Competitivo Aplicado: Eficiencia Económica y Análisis de Bienestar. Análisis de incidencia de impuestos. Mercados de Competencia Imperfecta. Modelos de Monopolio: Barreras a la entrada. Maximización de beneficio y elección del nivel de producción. Discriminación de precios. Regulación. Modelos de Oligopolio y Competencia monopólica. Características principales."
+      },
+      {
+        "titulo": "5. Macroeconomía",
+        "descripcion": "Variables macroeconómicas. Concepto de valor agregado. Producto. Teoría y política fiscal. El papel del estado. Ingresos y gastos. Deuda. Déficit y superávit. El sector monetario y financiero. Oferta y demanda monetarias. Banco Central."
+      },
+      {
+        "titulo": "6. La información Contable y Análisis de Costos",
+        "descripcion": "Objetivos de la contabilidad. Tipos de contabilidad La ecuación contable. El estado de resultados y el estado patrimonial. Criterio de lo devengado versus el criterio de lo percibido. Relación entre el estado de resultados y el estado patrimonial. Registros contables. La cuenta. Plan de cuentas. La depreciación. Valuación de inventarios. Confección del cash flow. Análisis por medio de los ratios. Rentabilidad. Definición e interpretación de índices. Los costos desde la perspectiva de la Ingeniería y su uso para la toma de decisiones."
+      },
+      {
+        "titulo": "7. Cálculo financiero",
+        "descripcion": "Valor tiempo del dinero. Capital e interés. Tasa nominal , proporcional , efectiva y equivalente. Interés vencido y adelantado. Capitalización y descuento. Rentas. Perpetuidad. Sistemas de amortización de préstamos, financiamiento."
+      },
+      {
+        "titulo": "8. Presupuesto de Capital_ Formulación y Evaluación de Proyectos",
+        "descripcion": "Etapas para la evaluación de una inversión o desinversión . Valor actual neto, Valor anual equivalente, Tasa interna de retorno. Período de recupero. Período de recupero descontado Ventajas y desventajas de cada método. Comparación y análisis de alternativas."
+      }
+    ],
+    "estrategias": "La materia se organiza en tres módulos divididos en ocho unidades didácticas. Por cada unidad, se desarrollarán encuentros semanales virtuales sincrónicos de aproximadamente dos horas de duración, bajo la modalidad de exposición dialogada y resolución de casos prácticos. En dichos encuentros se llevarán a cabo también distintas dinámicas para favorecer la participación de los estudiantes, entre ellas: kahoots y otros. De forma previa, se pondrán a disposición en el curso, materiales didácticos (videos, material electrónico, etc) sobre los contenidos a abordar.",
+    "evaluacion": "Modalidad de evaluación: La materia se evaluará a partir de dos exámenes parciales y un examen final. En todos los exámenes se evaluarán conceptos teóricos y prácticos utilizando ejercicios prácticos, verdaderos/falsos, preguntas de opción múltiple y el examen final podrá ser oral y/o escrito.\n\nRequisitos de aprobación: El régimen de asistencia corresponde al reglamento general del ITBA. Todos los Exámenes Parciales y el examen recuperatorio se califican utilizando una escala del 0(cero) al 10(diez). La nota mínima para aprobarlos es de 4(cuatro) puntos. Se deben rendir y aprobar obligatoriamente los dos Exámenes Parciales. Sólo se podrá recuperar uno sólo de ellos, una sola vez a través de un Recuperatorio. Los temas que cada uno de ellos involucra, se estipulan en el Cronograma de Actividades de la materia. Calificación y requisitos de aprobación de la Cursada: La nota de Cursada se obtiene en un 100% promediando linealmente las notas de los dos Parciales. Si uno cualquiera de los dos Parciales debió ser recuperado, automáticamente la nota del examen Recuperatorio correspondiente reemplazará a la del Parcial aplazado. Para poder rendir el Examen Final, obligatoriamente se debe tener previamente aprobada la Cursada de la materia. El Examen Final se califica utilizando una escala del1(uno) al10(diez). La nota mínima para aprobar el Examen Final\n\nes 4 (cuatro) puntos.",
+    "bibliografiaObligatoria": [
+      "FUNDAMENTOS DE ECONOMÍA. Irvin B. Tucker. Thomson (Cengage). 3a Edición.",
+      "INGENIERÍA ECONÓMICA E. Paul Degarmo, William G. Sullivan, James T. Luxhoj, Elin M. Wicks Edición",
+      "Editorial Pearson Educación"
+    ],
+    "bibliografiaComplementaria": [
+      "CONTABILIDAD BÁSICA Enrique Fowler Newton. Ediciones Macchi.",
+      "DIAGNOSTICO FINANCIERO. Manuel Sbdar. Editorial Temas",
+      "LECCIONES DE INGENIERÍA ECONÓMICA Y FINANZAS Lelic, 2008. Editorial Nueva Librería"
+    ],
+    "pdf": "/electivas-fichas/61.23.pdf"
+  },
   "61.32": {
     "codigo": "61.32",
     "materia": "Derecho para Ingenieros",
@@ -1283,6 +1351,738 @@ export const FICHAS: Record<string, Ficha> = {
     "bibliografiaComplementaria": [],
     "pdf": "/electivas-fichas/72.20.pdf"
   },
+  "72.25": {
+    "codigo": "72.25",
+    "materia": "Simulación de Sistemas",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "21/12/2022 12:45:07",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 21,
+      "practicas": 81,
+      "laboratorio": null,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Teoría General de Sistemas. Modelos discretos y continuos. Modelos determinísticos y probabilísticos. Determinación de datos de entrada al modelo. Análisis de resultados. Taller de aplicaciones con herramientas de simulación.",
+    "presentacion": "Esta materia es una materia correspondiente al ciclo profesional de la carrera. En ella se brindan las herramientas para implementar simulaciones de sistemas en general y físicos en particular. Estas simulaciones permiten estudiar sistemas complejos formados por muchas partículas inertes o autopropulsadas brindando posibilidades para entender, modelar y optimizar el funcionamiento de dichos sistemas. Por otro lado, las técnicas presentadas permiten generar animaciones visualmente atractivas. Conocimientos previos requeridos: programar en cualquier lenguaje, estadísitca, manejo de datos, física.",
+    "objetivos": "Incorporar y diferenciar los siguientes conceptos relacionados: Sistema -> Modelo Matematico -> Modelo Computacional -> Simulación.\n\nUtilizar herramientas de procesamiento estadístico como datos de entrada y estudio de resultados de simulaciones.\n\nDiseñar experimentos de simulación e interpretar los resultados obtenidos.\n\nRealizar presentaciones orales e informes técnicos de calidad profesional.",
+    "programa": [
+      {
+        "titulo": "1) Sistemas y Modelos",
+        "descripcion": "Teoría General de Sistemas. Sistemas en tiempo continuo. Sistemas en tiempo discreto. Sistemas de eventos discretos. Estado de un sistema. Modelos discretos y continuos. Modelos determinísticos y probabilísticos. Propósito de la simulación."
+      },
+      {
+        "titulo": "2) Sistemas Físicos",
+        "descripcion": "Introducción a los sistemas de muchas partículas. Definición de materia activa. Ejemplos. Métodos y Enfoques de Simulación. Herramientas estadísticas para análisis y presentación de resultados."
+      },
+      {
+        "titulo": "3) Autómatas Celulares",
+        "descripcion": "Autómatas 1-D, 2-D y 3-D. Sobre grilla fija: Juego de la vida, Fluidos - Lattice Boltzman. Sin grilla espacial: Bandadas de Visecks."
+      },
+      {
+        "titulo": "4) Simulaciones de partículas dirigidas por eventos (Event Driven MD)",
+        "descripcion": "Dinámica molecular dirigida por eventos. Esferas rígidas. Operador de Colisión. Sistemas con y sin fuerza gravitatoria. Simulación de Gas Ideal y Movimiento Browniano."
+      },
+      {
+        "titulo": "5) Simulaciones de partículas dirigidas por el paso temporal (Time-Step Driven MD)",
+        "descripcion": "Dinámica Molecular. Métodos Numéricos de Integración: Euler, Verlet, Corrector Predictor. Gas de Lennard- Jones. Sistemas planetarios."
+      },
+      {
+        "titulo": "6) Simulación de Sistemas de Medios Granulares",
+        "descripcion": "Medios Granulares Densos Gravitatorios 2D. Partículas cilíndricas. Partículas de formas arbitrarias: Esferopolígonos."
+      },
+      {
+        "titulo": "7) Simulación de Multitudes",
+        "descripcion": "Social Force Model. Contractile Particle Model. Modelado del comportamiento de humanos y animales. Egreso de agentes biológicos a través de una puerta angosta. Navegación de Peatones Virtuales."
+      }
+    ],
+    "estrategias": "• Se dictarán 2 clases semanales, distribuidas entre teóricas y trabajos de laboratorios o prácticos (T.P.) según se establece en el cronograma. • En las clases teóricas se explicarán los conceptos básicos, los cuales deberán ser complementados y profundizados con la bibliografía. • Las clases prácticas se realizarán en el laboratorio y el objetivo será implementar computacionalmente los sistemas y modelos introducidos en las teóricas. Para ello se deberá escribir nuevo código. El lenguaje de programación será elección de los alumnos. La modalidad de los trabajos prácticos será individual o grupal, dependiendo del número de alumnos. Todos los T.P deberán ser expuestos frente a la clase mediante una presentación tipo PowerPoint o similar en las fechas estipuladas en el cronograma como \"Presentación de TP\".",
+    "evaluacion": "Modalidad de evaluación: Las evaluaciones se harán de dos modos.\n\n1) En forma continua durante los desarrollos de los T.P. en clase, donde de la interacción entre alumnos y docentes se verá el grado de avance en las tareas en tiempo real.\n\n- Todas las clases teóricas y las presentaciones de T.P. serán de asistencia obligatoria. La falta de puntualidad (o retirarse anticipadamente) tendrá penalizaciones en reducción de puntaje de la calificación del T.P correspondiente, a razón de 0.5 puntos por cada miembro del grupo y por cada media hora, mas allá de 10 minutos de tolerancia al inicio. Las ausencias sin justificación durante las clases teóricas serán penalizadas con 1.5 puntos por cada miembro del grupo que no asista. La ausencia sin justificación de alguno de los miembros del grupo a las presentaciones de los T.P producirán que el mismo sea desaprobado. Se considerarán justificaciones válidas las que sean definidas como tales en el Boletín General del ITBA, o en otras disposiciones emanadas de las autoridades de la universidad. La aplicación de las penalizaciones mencionadas con anterioridad cesa al llegar la nota resultante a 3 (tres).\n\n2) Las presentaciones de las actividades se calificarán según el porcentaje de cumplimiento de los puntos pedidos en el T.P. correspondiente. Cada T.P. consiste en implementar el código correspondiente, entregar dicho código a la cátedra en la fecha estipulada, hacer (y entregar, solo en caso en que se requiera) animaciones (en formato *.avi) del sistema simulado. Los fundamentos, implementación y resultados serán presentados oralmente y/o mediante informe escrito al finalizar cada T.P. Durante la presentación oral se podrá solicitar una demostración del funcionamiento del código variando inputs y parámetros de los modelos simulados. FÓRMULA DE APROBACIÓN DE CURSADA: Sean:\n\nNTP: promedio de las notas de los TPs (sin considerar el TP final).\n\nConc: Nota de concepto\n\nNC: nota de la cursada\n\nF: Nota del TP Final o del examen final (según corresponda)\n\nNA: Nota final de actas\n\nLas fórmulas son:\n\nNC = (NTP 5/6+ Conc 1/6)\n\nNA = (NC + F) / 2\n\nRequisitos de aprobación: - Para aprobar la materia será necesario aprobar todos los T.P. y la Evaluación Final.\n\n- Se podrá recuperar un único T.P. En caso de no aprobar dos T.P. (o uno y su recuperatorio) se perderá la condición de alumno regular. El T.P. a recuperar, se presentará en la fecha indicada en el cronograma de la materia.\n\n- El formato de la Evaluación Final podrá ser un examen (oral o escrito) o la entrega y presentación de un T.P. Final, dependiendo del desempeño durante la cursada.\n\n- El Trabajo Final consistirá en la entrega de una monografía, el código fuente, animaciones del sistema simulado y una presentación oral asistida por diapositivas (estilo Powerpoint o similar). El tema de este trabajo final podrá ser la profundización y/o extensión de alguno de los temas vistos durante la cursada u otro propuesto por los alumnos y aceptado por la cátedra. El plazo para la definición del tema del TP final y las consultas sobre el mismo se limitan a lo establecido en el cronograma de la materia.\n\n- El objetivo del T.P. Final es integrar los conocimientos y herramientas brindadas durante toda la cursada. Por ello, las preguntas que se realicen durante la presentación del T.P. podrán ser sobre el T.P Final y también sobre cualquier otro tema visto en clase.\n\n- La nota de la cursada será el promedio de todos los T.P. (NTP), sin considerar el trabajo final, promediada con una nota de concepto de cada alumno. La calificación final de la materia (Nm) será\n\nel promedio entre NTP y la del trabajo final (NTF).",
+    "bibliografiaObligatoria": [
+      "Allen, Mike P., and Dominic J. Tildesley, eds. \"Computer simulation of liquids\". Oxford university press, 1989.",
+      "Cassandras, C., Lafortune, S., Introduction to Discrete Event Systems, Springer, 1999.",
+      "Varios artículos de revistas científicas que facilitará la cátedra para cada tema en particular."
+    ],
+    "bibliografiaComplementaria": [
+      "Simulation Modeling and Analysis - A. Law & W Kelton, 2nd. ed., McGraw-Hill, 1991.",
+      "Stochastic Modelling: Analisis & Simulation - Nelson, McGraw Hill, 1995..",
+      "Computer Simulation Techniques - T. Naylor, John Wiley and Sons, 1966.",
+      "Simulación. Métodos y aplicaciones. - D. Ríos Insua y S. Ríos Insua, RA-MA, 1997.",
+      "J. Banks, J. S. Carson, B. Nelson & D. Nicol. Discrete-Event System Simulation, 3th.ed. Prentice-Hall, 2000"
+    ],
+    "pdf": "/electivas-fichas/72.25.pdf"
+  },
+  "72.27": {
+    "codigo": "72.27",
+    "materia": "Sistemas de Inteligencia Artificial",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "22/8/2025 9:53:20",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 40,
+      "practicas": 10,
+      "laboratorio": 52,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": null
+    },
+    "contenidosMinimos": "Enfoque simbólico de la Inteligencia Artificial. Resolución de problemas. Problemas específicos de IA. Sistemas basados en reglas. Búsqueda heurística. Sistemas Expertos. Características del Paradigma Lógico. Enfoque no simbólico de la Inteligencia Artificial. Redes neuronales. Aprendizaje supervisado y no supervisado. Algoritmos Genéticos",
+    "presentacion": "Es una materia obligatoria del ciclo profesional para estudiantes de Ingeniería Informática. La Inteligencia Artificial (IA) puede considerarse uno de los temas esenciales de la informática en la actualidad. Los sistemas de IA utilizan algoritmos que aprenden automáticamente a partir de conjuntos de datos conocidos. \"Aprender\", en este contexto, significa identificar patrones en dichos conjuntos de datos para poder predecir comportamientos futuros; que lo hagan automáticamente, implica que los sistemas de IA mejoran de forma autónoma con el uso, sin intervención humana. En esta materia se enseñan paradigmas y algoritmos de uso frecuente en IA. La materia ofrece una introducción al tema conectando conceptos fundamentales, algoritmos y las matemáticas subyacentes con aplicaciones prácticas. Todo esto permite que los alumnos entiendan en profundidad estos temas y puedan en un futuro desarrollar sistemas de IA.",
+    "objetivos": "• Familiarizarse con los conceptos de inteligencia artificial. • Analizar e implementar algoritmos de búsqueda, evolutivos y de redes neuronales supervisadas y no supervisadas. • Comparar técnicas simbólicas y numéricas para el tratamiento de problemas basados en datos. • Analizar Redes Profundas como CNN, GANs y Transformers.\n\nQue adquieran conocimientos y sepan implementar técnicas de redes neuronales y de optimización para resolver problemas reales. Que comprendan la contextualidad de esta tecnología. Que manejen conceptos de redes neuronales profundas para el desarrollo profesional.",
+    "programa": [
+      {
+        "titulo": "Unidad 1: Introducción a la Inteligencia Artificial",
+        "descripcion": "Diferentes enfoques. Fundamentos. Historia. Estado del Arte. Últimos avances. Agentes Inteligentes Estructura. Ambientes."
+      },
+      {
+        "titulo": "Unidad 2: Métodos de Búsqueda",
+        "descripcion": "Búsqueda el major primero. Funciones heurísticas. Algoritmo A*. Algoritmos de mejoramiento iterative. Hill Climbing, Simulated Annealing. Juegos, Teoría de Juegos."
+      },
+      {
+        "titulo": "Unidad 3: Algoritmos evolutivos",
+        "descripcion": "Algoritmos genéticos. Reproducción. Crossover. Mutación. Generaciones. Población. Métricas de fitness."
+      },
+      {
+        "titulo": "Unidad 4: Perceptron Simple",
+        "descripcion": "Unidades Escalón. Unidades Lineales. Unidades estocásticas. Capacidad de los perceptrones simples. Gradiente descendente."
+      },
+      {
+        "titulo": "Unidad 5: Redes Multicapa",
+        "descripcion": "Backpropagation. Teorema de representación Universal. Ejemplos y aplicaciones. Performance de las redes multicapa."
+      },
+      {
+        "titulo": "Unidad 6: Aprendizaje No Supervisado",
+        "descripcion": "Unidad lineal. Análisis de componentes principales. Aprendizaje competitivo simple. Mapeo competitivo simple. Modelo de Kohonen."
+      },
+      {
+        "titulo": "Unidad 7: Deep Learning",
+        "descripcion": "Introducción a DL. Problema Fundamental de Deep Learning. Historia de los desafíos de IA. Aprendizaje de la Representación. GPU. Autoencoders, CNN, GAN, Transfomers."
+      },
+      {
+        "titulo": "Unidad 8: Ensayo",
+        "descripcion": "Trabajo sobre papers y artículos públicos para la elaboración de un ensayo y un posterior debate, con aplicaciones practices de los métodos estudiados en la vida real."
+      }
+    ],
+    "estrategias": "Aprendizaje por proyectos - Clases interactivas - Clases prácticas. La materia se focaliza en el desarrollo de proyectos en los que se implementan los conceptos expuestos de las clases. En esos proyectos los alumnos programan e implementan algoritmos de IA.",
+    "evaluacion": "Modalidad de evaluación: Los alumnos deben presentar los 5 trabajos prácticos de la materia en forma grupal, y además deberán hacer una defensa individual de cada uno de esos trabajos. La calificación de cada TP surge del promedio entre la nota de la presentación y la de la defensa del TP.\n\nRequisitos de aprobación: Para aprobar la cursada se requiere obtener un mínimo de 6 (seis) puntos en cada uno de los 5 TPs. La nota de cursada es igual al promedio de las notas de los TPs.\n\nPara aprobar la materia, los alumnos que hayan aprobado previamente la cursada deberán aprobar el examen final con una calificacion mínima de 4 (cuatro) puntos. El final es escrito e incluye preguntas sobre conceptos teóricos de la materia y ejercicios de aplicación de dichos conceptos.",
+    "bibliografiaObligatoria": [
+      "Prince, Simon (2024). Understanding Deep Learning. MIT Press",
+      "Courville, Aaron et al. (2019). Deep Learning. MIT Press",
+      "Russell S. & Norvig P. (2009). Inteligencia Artificial: un enfoque moderno. Prentice Hall",
+      "Aggarwal C., (2018). Neural Networks and Deep Learning. Springer 5 6"
+    ],
+    "bibliografiaComplementaria": [
+      "Haykin S. (2008). Neural Networks and learning machines. Prentice Hall",
+      "Hertz J., Introduction to the theory of neural computation. Westview Press. 1991 Hertz J., Introduction to the theory of neural computation. Westview Press. 1991 Hertz J., Introduction to the theory of neural computation. Westview Press. 1991 Hertz J. (1991). Introduction to the theory of neural computation. Westview Press",
+      "Mitchell M. (1999). An Introduction to Genetic Algorithms. MIT Press 4 Deisenroth M. (2019). Mathematics for Machine Learning. Cambridge University Press",
+      "Zhang A. et al. (2020). Dive into Deep Learning. Cambridge University Press 6"
+    ],
+    "pdf": "/electivas-fichas/72.27.pdf"
+  },
+  "72.31": {
+    "codigo": "72.31",
+    "materia": "Programación Imperativa",
+    "creditos": 9,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática / Ingeniería Mecánica /",
+    "actualizado": "2/5/2023 14:44:31",
+    "cargaHoraria": {
+      "total": 153,
+      "teoricas": 85,
+      "practicas": 34,
+      "laboratorio": 34,
+      "semanales": 9,
+      "presencial": 9,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Características del Paradigma Imperativo. El algoritmo como modelo de proceso computacional. Prueba y depuración del software. Sintaxis y semántica básica de lenguajes de alto nivel. Tipos de datos simples, operadores y expresiones. Variables y asignación. Entrada y salida de datos. Estructuras de control. Concepto de función. Uso y construcción de bibliotecas. Recursividad. Concepto de punteros y referencias. Tipos de datos estructurados: arreglos, cadena de caracteres y registros. Manejo de archivos. Taller de aplicación con un lenguaje imperativo tipo lenguaje ANSI C bajo Linux.",
+    "presentacion": "Esta materia se dicta en el segundo cuatrimestre de primer año, y es la primer materia de programación de la carrera. Los alumnos deben contar con los conocimientos básicos de Algebra y de sistemas de numeración. Si bien usaremos del lenguaje C, no debe verse como un curso de programación en C sino como un curso de programación, de forma tal que al finalizar el mismo los alumnos no solo serán capaces de escribir bibliotecas y programas en C correctos y con buen estilo sino también poder adaptarlos a otros lenguajes similares.",
+    "objetivos": "Los objetivos a lograr son 3:\n\n⮚ Aplicar las técnicas de diseño modularizado para descomponer problemas. ⮚ Explicar el funcionamiento de algoritmos y analizar su correctitud diseñando pruebas efectivas para su evaluación. ⮚ Escribir algoritmos correctos, eficientes y con buen estilo de programación para entornos multiplataforma.",
+    "programa": [
+      {
+        "titulo": "Introducción a la Programación",
+        "descripcion": "Programación modularizada y estructurada. Buen estilo de programación. Concepto de Algoritmo. Pseudocódigo y refinamiento. Lenguajes de alto nivel. Compiladores y preprocesadores. Testeo de Software: caja negra, caja blanca y caja de Pandora."
+      },
+      {
+        "titulo": "Tipos, Operadores y Expresiones",
+        "descripcion": "Tipos y tamaño de datos. Constantes. Declaraciones. Operadores: aritméticos, relacionales, lógicos, de incremento y decremento, para manejo de bits y de conversión. Operadores de asignación y expresiones. Precedencia de operadores. Instrucciones básicas de E/S: printf y getchar. Redireccionamiento de la entrada y de la salida."
+      },
+      {
+        "titulo": "Estructuras de Control",
+        "descripcion": "Preposiciones y bloques. Almacenamiento y alcance de variables. Variables externas y estáticas. Estructuras de decisión: if-else y switch. Estructuras de repetición: while, for y do-while. Uso de break y continue."
+      },
+      {
+        "titulo": "Funciones.",
+        "descripcion": "Concepto de Función. Prototipación. Parámetros de entrada. Biblioteca estándar de C (funciones básicas). Archivos header. El Preprocesador de C. Parámetros de entrada y salida. Entrada formateada: scanf y sscanf. Construcción de Bibliotecas. Funciones con argumentos variables. Recursividad"
+      },
+      {
+        "titulo": "Arreglos",
+        "descripcion": "Arreglos unidimensionales. Arreglos de caracteres. Ordenamiento de arreglos. Búsqueda en arreglos unidimensionales. Arreglos multidimensionales"
+      },
+      {
+        "titulo": "Archivos",
+        "descripcion": "Concepto de flujo de datos: stream. Acceso a archivo. Archivos binarios y de texto. Manejo de errores. Procesamiento de archivos en Lenguaje C"
+      },
+      {
+        "titulo": "Conceptos avanzados del lenguaje C",
+        "descripcion": "Punteros. Aritmética de punteros. Punteros a caracteres. Estructuras. Uniones. Uso del Heap. Punteros a función. Punteros genéricos. Implementación de TADs (Tipo Abstracto de Datos): pilas, colas, listas."
+      }
+    ],
+    "estrategias": "En las clases teóricas, que se dictan en modalidad virtual sincrónica, se presentan los temas y se realizan ejercicios cortos para verificar que los alumnos hayan comprendido y asimilado los conceptos. Al ser online se aprovecha también el uso de \"polls\" que provee Campus para realizar preguntas conceptuales, no sólo a fin de reemplazar el \"¿se entendió?\" sino también para captar la atención del alumno. En las clases prácticas, presenciales, se presentan problemas que permitan que los alumnos apliquen los temas vistos en las teóricas, y se discuten junto con los alumnos las distintas formas de resolverlos, asegurando que cumplan con los 4 requisitos planteados por la Cátedra: cada código debe ser correcto, eficiente, claro y general.",
+    "evaluacion": "Modalidad de evaluación: La evaluación de la materia se realiza a través de: • Autoevaluaciones (publicadas en Campus). Todos los alumnos deben completar las autoevaluaciones antes de su fecha de vencimiento. • Dos exámenes parciales obligatorios e individuales, con preguntas teóricas y ejercicios prácticos. Estos parciales se aprueban con un mínimo de 5 (cinco) puntos.\n\nEn el caso de que el alumno desapruebe un parcial, contara con una instancia de recuperatorio. Ambos parciaes son recuperables. En el caso de aprobar el recuperatorio de un parcial la nota del mismo se obtiene como: 0.25 * Nota del parcial desaprobado + 0.75 * Nota del recuperatorio aprobado.\n\nLa nota de cursada es igual a 0.9 * Nota de Parciales + 0.1 * Notas de autoevaluaciones\n\nRequisitos de aprobación: Para aprobar la cursada los alumnos deben: • Aprobar ambos parciales (o sus recuperatorios correspondientes). • Completar las autoevaluaciones online.\n\nPara aprobar la materia, los alumnos que ya hayan aprobado la cursada deben rendir el examen final de la materia que, como se explicó más arriba, consiste en la presentación escrita y oral del Trabajo Final Especial de la materia.",
+    "bibliografiaObligatoria": [
+      "Kernighan, B. y Ritchie, D., \"El Lenguaje de Programación C\", Prentice Hall"
+    ],
+    "bibliografiaComplementaria": [
+      "B. Kernighan & R.Pike , \"The Practice of Programming\", Addison Wesley",
+      "Roberts, E., \"The Art and Science of C\", Addison Wesley",
+      "Deitel, H. & Deitel, P., \"Cómo Programar en C/C++\", Prentice Hall",
+      "Samuel P. Harbison y Guy Steel Jr., \"C: a reference manual\", Prentice Hall"
+    ],
+    "pdf": "/electivas-fichas/72.31.pdf"
+  },
+  "72.32": {
+    "codigo": "72.32",
+    "materia": "Diseño y Procesamiento de Documentos XML",
+    "creditos": 3,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "3/4/2023 10:31:03",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 22,
+      "practicas": 14,
+      "laboratorio": 15,
+      "semanales": 3,
+      "presencial": 45047,
+      "distancia": 45047
+    },
+    "contenidosMinimos": "Documentos semiestructurados: XML. Validación y verificación de documentos. Hojas de estilo (XSL). Lenguajes de Consulta: XPath y XQuery.",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico común de la carrera de Ingeniería Informática. A través de la misma, se abordan temas técnicos para modelar, diseñar y consultar documentos XML. Atendiendo a lo expuesto, esta materia busca brindar conocimientos teóricos y prácticos propios del campo de la informática necesarios para el diseño, desarrollo e implementación de sistemas de información.",
+    "objetivos": "Validar documentos semi-estructurados con diferentes esquemas. Identificar las limitaciones en la validación de documentos. Diseñar documentos XML siguiendo formas normales. Utilizar correctamente lenguajes de consulta y de transformación. Conocer las diferencias respecto de otros formatos tales como json.",
+    "programa": [
+      {
+        "titulo": "Unidad 1: Modelo de Datos",
+        "descripcion": "Documentos Semiestructurados: SGML, XML. Capa de estructura, datos y presentación de un documento. Concepto de Modelo de Datos, Schema e Instancia. Comparación de Bases de Datos relacionales vs. Documentos XML. Verificación de que un documento XML está bien formado."
+      },
+      {
+        "titulo": "Unidad 2: Validación",
+        "descripcion": "DTD como gramática extendida libre de contexto. Expresiones regulares para escribir reglas de validación. Definición de elementos y atributos. Construcción de DTDs. Tipos de Parsers: Document Object Model (DOM) y SAX (Simple API for XML). Comparación de ambos. Uso de ambos parsers para validar documentos XML con schema dado por DTD. Limitaciones de DTDs."
+      },
+      {
+        "titulo": "Unidad 3: Diseño",
+        "descripcion": "Diseño de documentos XML. Análisis desde el punto de vista de formas normales para documentos XML."
+      },
+      {
+        "titulo": "Unidad 4: Lenguajes de Consulta",
+        "descripcion": "Lenguajes de consulta para documentos XML: XPath y XQuery. Transformación de un XML a otro XML o a otro tipo de documentos (HTML entro otros). XSLT (lenguaje embebido)."
+      },
+      {
+        "titulo": "Unidad 5: Usos y Aplicaciones",
+        "descripcion": "Casos concretos de uso. Web services - API REST. Documentos JSON: comparación."
+      }
+    ],
+    "estrategias": "Clases teóricas presenciales. Clases teóricas virtuales sincrónicas. Laboratorio. Aprendizaje por proyecto. Clase invertida",
+    "evaluacion": "Modalidad de evaluación: Se evaluará con un parcial y un Trabajo Práctico Especial. El parcial es escrito, en principio utilizando la plataforma Campus o en papel como alternativa. Consta tanto de preguntas tipo multiple choice como así también de desarrollo/redacción. Los temas a evaluar en esta instancia son los visto en las unidades 1 a 3 y además un lenguaje de consulta de la unidad 4. Los ejercicios evaluados son\n\nprácticos. El objetivo de esta evaluación es consolidar los conocimientos vistos hasta ese punto ya que serán aplicados en la segunda instancia de evaluación. La segunda instancia de evaluación es un trabajo práctico especial. Este trabajo se realiza en grupos y se entrega a través de la plataforma. Se evalúan aquí el resto de los temas de la Unidad 4 y 5 pero también este trabajo permite integrar los conocimientos adquiridos a lo largo de la materia. Para aprobar esta instancia, los alumnos no solamente deben entregar los ejercicios que respondan a las consignas en el tiempo solicitado sino también defenderlo ante los docentes. En esta defensa, cada uno de los alumnos debe ser capaz de explicar y mostrar funcionando cada una de las resoluciones enviadas. Ambas instancias tienen su recuperación.\n\nRequisitos de aprobación: El alumno deberá aprobar el parcial y el Trabajo Práctico Especial con 4 o más puntos cada uno. Ambos son recuperables. En caso de recuperar, la nota de la instancia de evaluación corresponderá a dicho recuperatorio. El TPE debe ser defendido por los alumnos. Cada uno de ellos debe estar en condiciones de ejecutar el proyecto. La nota de cursada corresponde al promedio de ambas instancias",
+    "bibliografiaObligatoria": [
+      "Hector Garcia-Molina, Jeffrey D. Ullman and Jennifer Widom. Database Systems: The Complete Book. Prentice Hall, 2009",
+      "Marcelo Arenas y Leonid Libkin. A Normal Form for XML Documents. ACM Transactions Database Systems (TODS), 2004"
+    ],
+    "bibliografiaComplementaria": [
+      "David Hunter, Jeff Rafter, Joe Fawcett, Eric van der Vlist, Danny Ayers, Jon Duckett, Andrew Watt, Linda McKinnon. Beginning XML, 4th Edition. Wrox, 2007"
+    ],
+    "pdf": "/electivas-fichas/72.32.pdf"
+  },
+  "72.33": {
+    "codigo": "72.33",
+    "materia": "Programación Orientada a Objetos",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática / Ingeniería Mecánica",
+    "actualizado": "21/12/2022 12:45:40",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 34,
+      "laboratorio": 17,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Tipo Abstracto de Datos: ocultamiento de la información y encapsulamiento. Características del Paradigma Objetos: encapsulamiento, ocultamiento, herencia y polimorfismo. Mensajes y métodos. Clases, subclases e instancias. Representación interna de objetos y clases. Chequeo de tipos. Binding estático y dinámico. Uso y construcción de bibliotecas. Colecciones (arreglos) e iteradores. Manejo de excepciones. Persistencia de objetos. Introducción a UML para el diseño de clases e interfaces. Comparación de paradigmas de programación. Taller de aplicación con un lenguaje orientado a objeto tipo Smalltalk o Java.",
+    "presentacion": "Esta materia del departamento de Sistemas Digitales y Datos se dicta en el segundo año de la carrera de Ingeniería Informática del ITBA. Es un curso de programación enfocado en el paradigma de la programación orientada a objetos aplicado a dos lenguajes: Java y Ruby. El propósito central es resaltar las ventajas del paradigma orientado a objetos respecto al paradigma imperativo que los alumnos ya conocen. Los conocimientos del paradigma y del lenguaje Java son fundamentales para materias posteriores de la carrera donde también se abordan conceptos de programación. La materia está pensada para alumnos con conocimientos del paradigma de la programación imperativa y los mismos son tomados como base para los conceptos del paradigma orientado a objetos de forma que el alumno pueda resolver problemas del mundo real utilizando jerarquías de objetos.",
+    "objetivos": "- Distinguir las ventajas de la utilización del paradigma de la programación orientada a objetos frente a otros paradigmas. - Diseñar e implementar jerarquías de objetos que sean una abstracción del mundo real y permitan resolver problemas. - Generar código de calidad, haciendo foco en la reutilización del mismo, siguiendo las guías estilo recomendadas. - Incorporar los aspectos principales de Java para aplicarlo como lenguaje de programación orientado a objetos, a partir de la utilización de clases, interfaces y enumerativos. - Incorporar los aspectos principales de Ruby para aplicarlo como lenguaje de programación orientado a objetos, a partir de la utilización de clases y módulos.",
+    "programa": [
+      {
+        "titulo": "Introducción a la programación orientada a objetos (OOP: Object Oriented Programming)",
+        "descripcion": "Antecedentes: Tipo abstracto de datos (TAD) Ocultamiento de la información, encapsulamiento, polimorfismo y herencia Terminología: Clases (moldes), objetos (instancias), métodos (mensajes entre objetos). Variables de instancia y de clase. Métodos de instancia y de clase (binding dinámico y estático). Clases abstractas. Clases inmutables. Composición y herencia. Subclases y superclases. Sobrecarga y redefinición de métodos. Tipos de polimorfismo. Método constructor. Conceptos básicos de UML (Unified Modeling Language)."
+      },
+      {
+        "titulo": "Introducción a Java",
+        "descripcion": "Características generales de Java como lenguaje orientado a objetos. Bytecode. Máquina Virtual. Package. Garbage Collection. Tipado estático. Modificadores de visibilidad de las variables y los métodos. Clase Object. Operador instanceof. Igualdad y equivalencia (método equals). Método toString. Autoboxing y unboxing. Control de flujo. Loops. Arreglos. String y StringBuilder. Manejo de errores. Excepciones verificadas y no verificadas. Requerimiento catch or specify."
+      },
+      {
+        "titulo": "Enumerativos en Java",
+        "descripcion": "Enums con variables de instancia y métodos abstractos. Métodos comunes a todos los enums."
+      },
+      {
+        "titulo": "Interfaces y tipos de datos genéricos en Java",
+        "descripcion": "Comparación entre interfaz y clase abstracta. Métodos default en interfaces. Interfaces funcionales. Expresiones lambda. Tipo genérico (unbounded, upper bounded y lower bounded). Orden natural y orden particular (interfaces Comparable y Comparator). Wildcards."
+      },
+      {
+        "titulo": "Clases anidadas en Java",
+        "descripcion": "Inner class, static nested class y clases anónimas."
+      },
+      {
+        "titulo": "Iteradores en Java",
+        "descripcion": "Interfaces Iterable e Iterator."
+      },
+      {
+        "titulo": "Anotaciones en Java",
+        "descripcion": "Diseño de Annotations. Target y retention."
+      },
+      {
+        "titulo": "Pruebas de unidad en Java",
+        "descripcion": "Unit Testing. Test Coverage. JUnit 5."
+      },
+      {
+        "titulo": "Colecciones en Java",
+        "descripcion": "Java Collections Framework: Interfaces Collection, List, Set, Map, Queue, Deque y sus implementaciones. Hashing y resolución de colisiones."
+      },
+      {
+        "titulo": "Introducción a Ruby",
+        "descripcion": "Características generales de Ruby como lenguaje orientado a objetos. Tipado dinámico. Modificadores de visibilidad de los métodos. Igualdad y equivalencia. Método to_s. Control de flujo. String. Rangos. Bloques. Loops. Manejo de errores. Excepciones. Módulos."
+      },
+      {
+        "titulo": "Colecciones en Ruby",
+        "descripcion": "Clases Array, Set y Hash. Módulos Enumerable y Comparable. Iteradores."
+      },
+      {
+        "titulo": "Interfaz gráfica en Java",
+        "descripcion": "Introducción a JavaFX. Concepto de eventos y handlers."
+      },
+      {
+        "titulo": "Streams en Java",
+        "descripcion": "Introducción al paradigma funcional. Method References. Interfaces funcionales de la librería de Java. Interfaz Stream. Clase Optional. Manejo de archivos. Persistencia de objetos. Alternativas a la serialización por defecto."
+      }
+    ],
+    "estrategias": "- Resolución de problemas: aplicada a los ejercicios prácticos cubiertos durante las clases, los trabajos prácticos y los exámenes parciales - Aprendizaje basado en proyectos: aplicado en el proyecto final de la materia",
+    "evaluacion": "Modalidad de evaluación: La evaluación está centrada en dos exámenes parciales (P1, P2) individuales con desarrollo escrito. Los parciales se aprueban con una nota de 5 o más puntos (en una escala de 1 al 10). Los exámenes consisten en ejercicios de implementación donde se cuenta con un programa de prueba y una salida esperada. Los estudiantes deben implementar todo lo necesario para que, de ejecutarse el programa utilizando la implementación del alumno, se obtenga la salida esperada. Se puede solicitar también a los alumnos que completen partes del programa de prueba para que se logre la salida indicada. Los alumnos deben además completar durante la cursada las autoevaluaciones individuales con consignas de opción múltiple con el propósito de realizar un diagnóstico de los contenidos aprendidos en cada unidad. Las mismas pueden ser realizadas en múltiples intentos, quedando como calificación definitiva la del intento con la calificación más alta antes de la fecha de vencimiento. Al final de la cursada los alumnos son evaluados con la realización de un proyecto grupal de implementación. Este proyecto consiste en la implementación de una aplicación Java con interfaz gráfica donde el grupo ya cuenta con una implementación inicial provista por la cátedra. El objetivo es incorporarle mayor funcionalidad siempre siguiendo los principios del paradigma, sobre todo aprovechando la reutilización del código y respetando una correcta separación entre el front-end y el back-end.\n\nRequisitos de aprobación: Son requisitos de aprobación de la cursada: - Aprobar los dos exámenes parciales (P1, P2), o sus recuperatorios. - Haber completado todas las autoevaluaciones antes de la fecha de vencimiento (sin calificación mínima) ¿Cómo se calcula la nota de cursada? - Nota de cursada = 0.9 * Nota de Parciales + 0.1 * Notas de autoevaluaciones - En caso de aprobar el recuperatorio de un parcial la nota del mismo se obtiene como: 0.25 * Nota del parcial + 0.75 * Nota del recuperatorio",
+    "bibliografiaObligatoria": [
+      "Oracle, \"Learn Java\", dev.java. https://dev.java/learn/ (accessed Sep. 18, 2022).",
+      "Techotopia, “Ruby Essentials”, techotopia.com https://www.techotopia.com/index.php/Ruby_Essentials (accessed Sep. 18, 2022)."
+    ],
+    "bibliografiaComplementaria": [
+      "Bloch, Joshua. Effective Java. Third edition, Addison-Wesley, 2018.",
+      "Metz, Sandi. Practical object-oriented design in Ruby: an agile primer. Addison-Wesley, 2013."
+    ],
+    "pdf": "/electivas-fichas/72.33.pdf"
+  },
+  "72.34": {
+    "codigo": "72.34",
+    "materia": "Estructura de Datos y Algoritmos",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática /",
+    "actualizado": "12/6/2023 11:52:10",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 34,
+      "practicas": 34,
+      "laboratorio": 34,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Técnicas para el diseño y análisis de algoritmos. Cálculo de complejidad y análisis de eficiencia. Estrategias algorítmicas (fuerza bruta, divide & conquer, backtracking, greedy, programación dinámica). Uso de heurísticas. Métodos para la ordenación de arreglos. Estructuras de datos: lista, pila, cola, árbol binario, árboles de expresiones y de búsqueda, árboles balanceados AVL, familias de árboles B de orden N, grafos. Técnica de hashing con manejo de colisiones. Iteradores. Taller de aplicación.",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico de la carrera de Ingeniería en Informática. Las organizaciones precisan manejar su información y accederla en forma rápida y eficiente. En esta materia se busca brindar conocimientos sobre distintas problemáticas presentes en un mundo digital y cómo pueden resolverse con algoritmos y estructuras de datos debidamente seleccionadas. Asimismo, se pone foco en el análisis de diferentes formas de solución y la selección de la más apropiada en base al objetivo propuesto. Algunas de las estructuras de datos estudiadas en el curso, se profundizarán por ejemplo en cursos de bases de datos.",
+    "objetivos": "1) Analizar las potencialidades de distintas estructuras de datos para representar la información\n\n2) Elegir el modelo de representación y algoritmo adecuado para la resolución de un problema. 3) Caracterizar las estrategias algorítmicas que permiten solucionar problemas complejos.",
+    "programa": [
+      {
+        "titulo": "Algoritmos",
+        "descripcion": "Técnicas para el diseño y análisis de algoritmos. Cálculo de la complejidad temporal y espacial. Análisis de eficiencia."
+      },
+      {
+        "titulo": "Algoritmos para búsqueda en texto",
+        "descripcion": "Métodos de búsqueda exacta (Knuth-Morris-Pratt) y aproximada (algoritmos fonéticos: soundex, metaphone y sus variantes; de edición: Levenshtein y sus variantes; de tokens: Q-grams). Estrategias algorítmicas para sus implementaciones (fuerza bruta, divide & conquer, greedy, programación dinámica). Aplicaciones: creación de índices para mejorar la búsqueda (archivo invertido)."
+      },
+      {
+        "titulo": "Estructuras Lineales",
+        "descripcion": "Arreglos. Métodos para la ordenación y búsqueda en arreglos. Listas (simple y doblemente encadenada, circulares). Ventajas y desventajas de arreglos y listas para implementar índices. Manejo de Iteradores actualizables. Colecciones de datos ordenada por llegada: Pila y Cola. Aplicaciones: evaluador de expresiones"
+      },
+      {
+        "titulo": "Hashing (dispersión)",
+        "descripcion": "Tabla de hashing. Técnica de hashing con manejo de colisiones (hashing abierto y cerrado). Implementaciones. Aplicaciones: ventajas y desventajas de tablas de hashing para implementar índices."
+      },
+      {
+        "titulo": "Árboles",
+        "descripcion": "Árbol binario, árboles de expresiones y de búsqueda. Árboles balanceados AVL,y árboles rojos-negros. Árboles multicaminos: árbol B de orden N. Aplicaciones: ventajas y desventajas de árboles de búsqueda para implementar índices."
+      },
+      {
+        "titulo": "Grafos",
+        "descripcion": "Implementaciones con matriz y lista de adyacencia e incidencia. Ventajas y desventajas de cada una en la solución de problemas. Recorridos: DSF (backtracking), BFS (uso de cola). Iteradores. Algoritmo para camino mínimo. Aplicaciones."
+      },
+      {
+        "titulo": "Estrategias Algorítmicas",
+        "descripcion": "Estrategias algorítmicas (fuerza bruta, divide & conquer, backtracking, greedy, programación dinámica). Análisis de problemas explorando el espacio de búsqueda. Búsqueda heurísticas. Aplicaciones."
+      }
+    ],
+    "estrategias": "Se presentarán problemáticas existentes en el mundo digital y se discutirán formas posibles de solución. Los alumnos desarrollarán las implementaciones y se discutirán las estrategias usadas y posibles mejoras.",
+    "evaluacion": "Modalidad de evaluación: Se evaluará mediante 2 parciales que desarrollarán en forma individual. Ambos parciales son recuperables.\n\nRequisitos de aprobación: Para aprobar la cursada de la materia se deberán aprobar los 2 parciales (o sus recuperatorios correspondientes) con una nota mayor o igual a 4 (cuatro) cada uno.\n\nAsí como cualquier profesional que desea presentarse a cierta licitación debe arbitrar los medios para cumplir en tiempo y forma, análogamente los alumnos deben asistir a las instancias pre-establecidas de evaluación (la ausencia, aunque sea justificada, se considera como cero).\n\nDe haber aprobado los 2 parciales (o sus recuperatorios correspondientes), la nota de cursada se calcula con la fórmula P1 * 0.5 + P2 * 0.5 donde: P1 y P2 son la nota del primer y segundo parcial aprobados en primera instancia o en recuperatorio.",
+    "bibliografiaObligatoria": [
+      "Cormen, T. H., Leiserson, C. E., Rivest, R. L.,, Stein, C. (2009). Introduction to Algorithms (3. ed.). MIT Press"
+    ],
+    "bibliografiaComplementaria": [
+      "Weiss, M. A. (2007). Data Structures and Algorithms in Java. Pearson Education.",
+      "Sedgewick, R., Wayne, K. (2011). Algorithms, 4th Edition. Addison-Wesley."
+    ],
+    "pdf": "/electivas-fichas/72.34.pdf"
+  },
+  "72.35": {
+    "codigo": "72.35",
+    "materia": "Ingenieria de Software I",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "",
+    "actualizado": "5/8/2025 12:43:37",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 48,
+      "practicas": 15,
+      "laboratorio": 39,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Introducción a la Ingeniería de Software. Proceso del desarrollo del software. Ciclo de vida del software. Ingeniería de Requerimientos. Especificación de Casos de Uso. Patrones de Casos de Uso. Diseño y representación con UML. Diseño con Patrones. Antipatrones. TDD (Test Driven Development). El Proceso de instalación y documentación. Taller de aplicación con uso de herramientas CASE.",
+    "presentacion": "La Ingeniería de Software es fundamental en la formación de un ingeniero informático, ya que proporciona los principios, metodologías y herramientas necesarias para el desarrollo eficiente, estructurado y de calidad de sistemas informáticos. A través de esta materia, los estudiantes adquieren habilidades para planificar, diseñar, implementar y mantener proyectos complejos, promoviendo el trabajo en equipo, la gestión de recursos y la toma de decisiones fundamentadas. Su estudio es esencial para enfrentar los retos tecnológicos actuales y construir soluciones que respondan a las necesidades reales del entorno profesional.",
+    "objetivos": "- Conocer el proceso de desarrollo de un software desde la concepción inicial hasta el testing final. - Utilizar UML como modelo de comunicación formal gráfico del análisis y diseño de un software.\n\n- Aplicar patrones al análisis y el diseño de un software. - Aplicar herramientas y frameworks orientados al testing de software.",
+    "programa": [
+      {
+        "titulo": "Introducción a la Ingeniería de Software",
+        "descripcion": "Ciclos de Vida Enfoque Estructurado: Cascada (convencional o tradicional), Espiral, Prototipado, Evolutivo, Incremental, Basado en Transformaciones y Proceso Unificado. Introducción a Ciclos de Vida Agiles (SCRUM, UP)"
+      },
+      {
+        "titulo": "Modelado del Negocio",
+        "descripcion": "Criterios. Técnicas. Documentación. Diagramas."
+      },
+      {
+        "titulo": "Ingeniería de Requerimientos",
+        "descripcion": "Técnicas de Especificación. Tipos de Requerimientos. Proceso de determinación de Requerimientos. Extracción de Requerimientos. Técnicas de Extracción: muestreo de datos, entrevistas, cuestionarios"
+      },
+      {
+        "titulo": "Introducción a UML",
+        "descripcion": "Historia y Evolución. Modelado del Negocio con UML. Especificación de Casos de Uso. Patrones de Análisis. Diseño estático y dinámico. C4Model"
+      },
+      {
+        "titulo": "Diseño con Patrones",
+        "descripcion": "Introducción a Patrones. GOF. GRASP. Antipatrones."
+      },
+      {
+        "titulo": "TDD (Test Driven Development)",
+        "descripcion": "Introducción al Testing (Enfoque Funcional). Tipos de defectos. La falla en el software. El proceso de testeo. Tipos de Tests. Pasaje de casos de uso a casos de testeo."
+      },
+      {
+        "titulo": "El Proceso de Instalación y Documentación",
+        "descripcion": "Plan de Instalación: El Roll-Out como un proyecto dentro del proyecto. Componentes de un plan de Roll-Out. La documentación en cada etapa del desarrollo. Documentación técnica: documentar el diseño del software; documentación de programas; especificaciones técnicas del software. Documentación operativa: manuales de procedimientos, manuales de usuarios y otros."
+      }
+    ],
+    "estrategias": "Aprendizaje basado en proyectos: trabajando en equipo, se acerca a la produccion de un producto de software, costeado y con estimacion de posible renta Role-Play: incentivando al alumno a que exponga el avance de su proyecto se fomenta que pierda su timidez al momento de realizar presentaciones orales, que en su futuro profesional es muy importante a la hora de \"vender\" su idea/producto",
+    "evaluacion": "Modalidad de evaluación: Se tomarán dos parciales y se asignará además un tema de investigación que cada alumno deberá presentar ante la clase. También se evaluarán los trabajos prácticos que se realizan a lo largo del curso. El examen final consistirá en la presentación del proyecto de desarrollo realizado durante la cursada.\n\nRequisitos de aprobación: Para aprobar la cursada se debe obtener una calificación mínima de 5 (cinco) puntos. La calificación de la cursada surge de la fórmula siguiente: (0.7 * promedio de parciales y orales + 0.3 * promedio TPs).\n\nPara aprobar la materia, los alumnos que hayan aprobado previamente la cursada deberán presentar el proyecto desarrollado durante la cursada en alguna de las fechas de finales definidas por Secretaría Académica y obtener una calificación mínima de 4 (cuatro) puntos en esa presentación.",
+    "bibliografiaObligatoria": [
+      "Pressman Roger (2010), Ingenieria de Software: Un enfoque práctico 7ma edición, Mc.Graw Hill"
+    ],
+    "bibliografiaComplementaria": [
+      "Gamma Erich, et al. (1994), Design Patterns: Elements of Reusable Object-Oriented Software, Addison-Wesley Professional"
+    ],
+    "pdf": "/electivas-fichas/72.35.pdf"
+  },
+  "72.36": {
+    "codigo": "72.36",
+    "materia": "Interacción Hombre-Computadora (HCI)",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "22/8/2025 9:55:25",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 60,
+      "practicas": 42,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Factores humanos: sistema perceptual-motor humano y capacidad cognitiva. El usuario y las tareas: modelos mentales, tareas y stress. La computadora: dispositivos para la interacción. Ley de Fitts y su aplicación para la medición de índices de rendimiento de interfaces. Usabilidad. Modelos predictivos y descriptivos. Componentes GUI. Diseño centrado en el usuario: paper prototyping, card sorting. Programación de interfaces: eventos. MVC (Model View Controller). Accesibilidad.",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico de la carrera de Ingeniería en Informática, siendo (72.32) Diseño y Procesamiento de Documentos XML y (72.33) Programación Orientada a Objetos sus materias correlativas. A lo largo de su cursada se abordan temas relacionados a la interacción entre las personas y los distintos sistemas de software. Atendiendo a lo expuesto, esta materia busca ofrecer conocimientos necesarios para poder aplicar procedimientos efectivos y una vasta variedad de técnicas a fin de generar una interfaz interactiva que satisfaga atributos de calidad para determinado grupo de usuarios.",
+    "objetivos": "▪ Evaluar la calidad de interfaces existentes Hombre-Computadora e introducir mejoras de usabilidad\n\n▪ Diseñar e implementar interfaces Hombre-Computadora utilizando técnicas avanzadas ▪ Aplicar el paradigma de Programación Orientado a Eventos y compararlo con el paradigma de Programación Imperativa",
+    "programa": [
+      {
+        "titulo": "Unidad I - HCI y sus metodologías",
+        "descripcion": "HCI. Usabilidad. Principios según Shneiderman. ISO 9241-11. Percepción humana. UX. Patrones de diseño y de interacción. Personas. UCD. Modelo mental. Observación participativa. Entrevistas. Cuestionarios. Prototipos. Card Sorting. Errores. Evaluación de usabilidad. Accesibilidad. Interfaces multimodales"
+      },
+      {
+        "titulo": "Unidad II - Introducción al desarrollo de interfaces Web",
+        "descripcion": "Arquitectura de un sitio Web. Buenas prácticas. HTML, CSS, JavaScript y AJAX. Vuetify, Vue.js, Vue Router y Pinia."
+      },
+      {
+        "titulo": "Unidad III - Introducción al desarrollo de interfaces móviles",
+        "descripcion": "Arquitectura de una aplicación Android. Buenas prácticas. Android y Android Jetpack."
+      }
+    ],
+    "estrategias": "▪ Clase expositiva o magistral ▪ Clase interactiva ▪ Clase práctica ▪ Enseñanza personalizada ▪ Aprendizaje por proyectos ▪ Gamificación",
+    "evaluacion": "Modalidad de evaluación: El desempeño de los alumnos en la cursada de la materia se evaluará mediante el Trabajo Práctico Especial que, como se dijo más arriba, consta de tres entregas. Si una de las partes de ese TPE no fuese entregada, la calificación correspondiente será igual a 0 (CERO). Sólo se permite recuperar hasta dos de las tres partes que componen el trabajo práctico. El recuperatorio consistirá\n\nen un examen individual sobre los temas involucrados en esa parte del TPE. La nota del recuperatorio se promedia con la nota de la parte del trabajo práctico que fue necesario recuperar y la calificación resultante será la de esa parte del TPE para el cálculo de la nota de cursada.\n\nRequisitos de aprobación: Haber aprobado con un mínimo de 4 (cuatro) puntos las 3 entregas del trabajo práctico (o sus respectivos recuperatorios cuando fuera necesario) y tener una nota de cursada mayor o igual 4 (cuatro) puntos. Para el cálculo de la nota de cursada se hará un promedio ponderado de las calificaciones de las tres entregas del TPE, considerando los siguientes pesos relativos: • 30% de la nota de la primera entrega del trabajo práctico • 35% de la nota de la segunda entrega del trabajo práctico • 35% de la nota de la tercera entrega del trabajo práctico\n\nPara aprobar la materia, los alumnos que tengan previamente la cursada aprobada deberán obtener una calificación mínima de 4 (cuatro) puntos en el examen final. Éste será un examen escrito sobre temas teóricos vistos en la materia y su aplicación práctica.",
+    "bibliografiaObligatoria": [],
+    "bibliografiaComplementaria": [
+      "Norman D. A. (2002). The Design of Everyday Things. Basic Books",
+      "Krug, S. (2014). Don'T Make Me Think, Revisited: A Common Sense Approach to Web Usability. New Riders Publishing, Third Ed",
+      "Sears, A. & Jacko, J. A. (2009). Human-Computer Interaction Fundamentals. CRC Press, Inc",
+      "MacKenzie, I. S., Kauppinen, T. & Silfverberg, M. (2001). Accuracy Measures for Evaluating Computer Pointing Devices. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems. Seattle, USA",
+      "Grossman, T. & Balakrishnan, R. (2005). The Bubble Cursor: Enhancing Target Acquisition by Dynamic Resizing of the Cursor's Activation Area. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems. Portland, USA"
+    ],
+    "pdf": "/electivas-fichas/72.36.pdf"
+  },
+  "72.37": {
+    "codigo": "72.37",
+    "materia": "Base de Datos I",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Bioingeniería / / Ingeniería en Informática",
+    "actualizado": "5/8/2025 12:50:39",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 34,
+      "practicas": 34,
+      "laboratorio": 34,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Arquitecturas típicas para un DBMS: Cliente/Servidor centralizada y distribuidas. Modelos de Bases de Datos. Modelo Conceptual: Entidad-Relación. Modelo de Representación: Relacional. Lenguajes de consulta: Álgebra y Cálculo Relacional, SQL. Teoría de Normalización. SQL avanzado: vistas, triggers y PSM. Programación embebida. Taller de aplicación con arquitectura cliente/servidor de dos niveles.",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico de la carrera de Ingeniería en Informática. Las organizaciones precisan manejar su información y accederla en forma rápida y eficiente. En ese marco, esta materia se centra, específicamente, en las bases de datos relacionales para sistemas transaccionales (OLTP), las cuales son una parte fundamental de los sistemas de información. En esta materia se busca brindar conocimientos sobre cómo diseñar bases de datos relacionales que darán soporte a los sistemas transaccionales de las organizaciones, apoyándose en la teoría de normalización. Asimismo, busca capacitar no sólo en lenguajes que permiten acceder a la información almacenada, sino también implementar restricciones avanzadas que garanticen la consistencia de la misma ante cualquier operación (base de datos activa), fundamental para cualquier organización.",
+    "objetivos": "1) Diseñar e implementar bases de datos relacionales para arquitecturas cliente/servidor de 2 capas, a partir del modelo de entidad-relación extendido, aplicando los conceptos de la Teoría de la Normalización para evitar la aparición de anomalías en esquemas de base de datos 2) Comparar lenguajes de consulta declarativos y procedurales según su poder expresivo. 3) Programar consultas complejas y expresar restricciones avanzadas en el lenguaje ANSI-SQL para bases de datos relacionales. 4) Embeber en lenguajes procedurales u orientados a objeto la capa de acceso a bases de datos relacionales y establecer analogías con la programación de PSMs respecto del manejo de cursores y errores.",
+    "programa": [
+      {
+        "titulo": "Características de un DBMS",
+        "descripcion": "Bases de Datos y Sistema de Manejo de Base de Datos (DBMS). Diferencias entre una DBMS y un Sistema de Procesamiento de Archivos. Modelos de Bases de Datos: modelo conceptual, de representación/implementación y físico. Diferencia entre Meta-Data y Datos. Arquitectura de tres niveles propuesta por ANSI/SPARC Study Group in Database Management Systems. Perfiles de las personas que interactúan con un DBMS. Lenguajes para una base de Datos: Data Definition Language y Data Manipulation Language. DML embebido: host language, data language y rol de precompiler. DML compiler y run-time database processor. Formas de programación con acceso a base de datos: embebido, ODBC y 4GL. Arquitecturas típicas para un DBMS: Cliente/Servidor Centralizada y Distribuidas. Rol que juegan las bases de datos en los Sistemas de Información."
+      },
+      {
+        "titulo": "Modelo Conceptual: Modelo de Entidad-Relación",
+        "descripcion": "Conjunto de Entidades: débil y fuerte. Conjunto de Relaciones: grado, rol, recursivas. Restricciones de cardinalidad. Participación (total o parcial). Atributos: Dominio, identificatorios (clave)/descriptivos, atómicos/compuestos, univaluados/multivaluados, almacenados/derivados. Extensiones: representación de jerarquías (generalización y es-un). Diagrama de entidad/relación extendido."
+      },
+      {
+        "titulo": "Modelo de Representación/Im plementación: Modelo Relacional",
+        "descripcion": "Concepto de relación. Atributos y Dominios. Restricciones: de dominio, de claves, de integridad de entidad, de integridad referencial. Mapeo del diagrama de entidad/relacional al esquema del modelo relacional. Operaciones con lenguaje para DDL y DML."
+      },
+      {
+        "titulo": "Lenguajes de Consulta Álgebra y Cálculo Relacional",
+        "descripcion": "Lenguaje de consulta procedural: Álgebra Relacional. Operaciones fundamentales: selección, proyección, unión, diferencia, producto cartesiano. Operaciones derivadas: intersección, junta natural, semi-junta natural, theta-join, división. Lenguaje de consulta no procedural: Cálculo Relacional de tuplas y de dominios. Fórmulas seguras. Comparación del poder expresivo de los lenguajes."
+      },
+      {
+        "titulo": "Lenguaje de Consulta SQL",
+        "descripcion": "SQL como lenguaje de consulta híbrido. Sentencias para definición de tablas persistentes. Sentencias para manipulación de datos. Consultas anidadas y uso de funciones de agregación. Manejo del valor null. Vistas. Tablas temporarias. Restricciones de Integridad en SQL2. Concepto de completitud en los lenguajes. Consultas recursivas: punto fijo y SQL Recursivo."
+      },
+      {
+        "titulo": "Introducción a la administración de una base de datos",
+        "descripcion": "Representación del almacenamiento de los datos para una base de datos. Estructura de índice para la clave primaria: Árbol B+. Índice B+ para atributos no clave. Uso de utilitarios: extracción del esquema, exportación e importación masiva de datos. Migración de bases de datos entre distintos DBMS"
+      },
+      {
+        "titulo": "Teoría de Normalización",
+        "descripcion": "Análisis de redundancia y anomalías. Dependencias funcionales. Proceso de normalización: descomposición sin pérdida y preservación de dependencias. Formas normales: Primera, Segunda, Tercera y Boyce-Codd. Dependencias multivaluadas y cuarta forma normal. Dependencia por junta y quinta forma normal. Axiomas de Armstrong y reglas de inferencia. Algoritmos. Uso del tableau"
+      },
+      {
+        "titulo": "SQL Avanzado (vistas, triggers, PSM)",
+        "descripcion": "Claves ficticias y atributos autonuméricos. Restricciones de Integridad en SQL3: programación de aserciones (assertions) y programación de disparadores (triggers). Triggers a nivel tupla y a nivel sentencia. Triggers y esquema de autorización y seguridad. Manejo de vistas con triggers. Programación de procedimientos almacenados (PSM). Concepto y programación de cursores explícitos e implícitos. Manejo de condiciones y excepciones. Manejo de transacciones y elección del nivel adecuado de aislamiento para facilitar la concurrencia. Manejo de permisos y concepto de roles."
+      },
+      {
+        "titulo": "Programación Embebida",
+        "descripcion": "Programación de aplicaciones cliente con acceso a base de datos. Procesamiento de datos obtenidos en el cliente: comunicación de errores entre el DBMS y el lenguaje host, detección de null como valor, detección de truncamiento de datos. Programación embebida en lenguaje C/C++. Programación con Java Database Connectivity (JDBC). Distintos tipos de Drivers. Taller de aplicación con arquitectura cliente/servidor de dos niveles."
+      }
+    ],
+    "estrategias": "Se desarrollan los temas que integran la materia de manera expositiva y los alumnos participan en la resolución de ejercicios. En el laboratorio resuelven ejercicios con diferente nivel de complejidad y discuten soluciones. En algunos temas se realizan retos de evaluación online (gamification).",
+    "evaluacion": "Modalidad de evaluación: Se evaluará mediante 2 parciales individuales y un trabajo especial grupal. Cada instancia de evaluación tiene su correspondiente recuperatorio. Hay retos (gamification) para resolver en forma online.\n\nRequisitos de aprobación: Para aprobar la cursada de la materia se deberán aprobar los dos parciales y un trabajo práctico especial (o sus recuperatorios correspondientes) con una nota mayor o igual a 4 (cuatro) cada uno. Así como cualquier profesional que desea presentarse a cierta licitación debe arbitrar los medios para cumplir en\n\ntiempo y forma, análogamente los alumnos deben asistir a las instancias pre-establecidas de evaluación (la ausencia, aunque sea justificada, se considera como cero).\n\nDe haber aprobado los 2 parciales y el trabajo práctico especial (o sus recuperatorios correspondientes), la nota de cursada se calcula con la fórmula\n\nP1 * 0.5 + P2 * 0.25 + TP * 0.25 donde P1 y P2 son las notas de los parciales y TP la nota del trabajo práctico especial, aprobados en primera instancia o en recuperatorio",
+    "bibliografiaObligatoria": [
+      "Garcia-Molina, H., Ullman, J. D.,, Widom, J. (2009). Database Systems: The Complete Book. Prentice Hall."
+    ],
+    "bibliografiaComplementaria": [
+      "Teorey, T. J., Lightstone, S., Nadeau, T. (2005). Database Modeling and Design: Logical Design (4. ed.). Morgan Kaufmann,",
+      "Codd, E. F. (1970). A Relational Model of Data for Large Shared Data Banks. Communications of the ACM, 13, 377--387.",
+      "Chen, P. P.-S. (1976). The entity-relationship model---toward a unified view of data. ACM Trans. Database Syst., 1, 9--36",
+      "Teorey, T. J., Yang, D., Fry, J. P. (1986). A Logical Design Methodology for Relational Databases Using the Extended Entity-Relationship Model. Journal: ACM Comput. Surv.",
+      "Yang, D., Teorey, T. J. & Fry, J. P. (1987). A practical approach to transforming extended ER diagrams into the relational model.. Inf. Sci., 42, 167-186."
+    ],
+    "pdf": "/electivas-fichas/72.37.pdf"
+  },
+  "72.38": {
+    "codigo": "72.38",
+    "materia": "Proyecto de Aplicaciones Web",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "22/8/2025 9:56:35",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 51,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": null
+    },
+    "contenidosMinimos": "Arquitectura Cliente/Servidor de dos niveles. Protocolo HTTP. Análisis de Headers. Manejo de sesiones. Instalación y configuración de Web Servers. Programación de aplicaciones Web. Desarrollo de proyectos de software en arquitectura de dos niveles",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico de la carrera de Ingeniería en Informática. Las aplicaciones web son utilizadas por todo tipo de industria (banca, medicina, educación, comercio, etc.), sea desde sitios web públicos hasta sistemas internos; desde aplicaciones ricas en HTML a simples servicios REST. Su uso lejos de disminuir está en constante aumento, de la mano del desarrollo de nuevas tecnologías, arquitecturas y plataformas (IoT, Microservicios, dispositivos móviles, etc.); siendo así parte fundamental de toda organización. La materia busca estudiar los desafios que estas aplicaciones presentan, y capacitar en las técnicas de diseño y desarrollo para superarlos. Comprender los patrones más frecuentemente utilizados en la industria, así como familiarizarse con implementaciones de referencia.",
+    "objetivos": "Dominar el desarrollo de aplicaciones web utilizando herramientas Open Source.\n\nComprender el protocolo HTTP y el procesamiento de sus headers. Aplicar diferentes tecnologías para el diseño y la implementación de aplicaciones web. Aplicar metodologías de desarrollo ágiles. Comprender cómo se desarrollan APIs RESTful y cómo se consumen desde una Single Page Application.",
+    "programa": [
+      {
+        "titulo": "1. METODOLOGÍA ÁGIL",
+        "descripcion": "Metodología Scrum. Taller de simulación. Uso de herramientas de apoyo al desarrollo: versionador de código y gestión de requerimientos"
+      },
+      {
+        "titulo": "2. APLICACIONES WEB EN JAVA",
+        "descripcion": "Servlets. Administración de sesiones en Java. Cookies. Filtros. Java Server Pages (JSP). Aplicación del patrón Model-View-Controller. JSP Expression Language , JSTL y Tag Library."
+      },
+      {
+        "titulo": "3. ARQUITECTURA DE UNA APLICACIÓN WEB",
+        "descripcion": "Aplicaciones OO en capas. Capa de Datos. Aplicación de los patrones: Data Access Object, Facade, Front Controller. Capa de Servicios. Capa de Presentación. Domain Driven Design. Concepto de repositorios."
+      },
+      {
+        "titulo": "4. FRAMEWORK DE ARQUITECTURA",
+        "descripcion": "Búsqueda de servicios vs Inversión del control e inyección de dependencias. El framework Spring. Inyección de dependencias en Spring. Configuración. Spring MVC. Controllers. Uso del Patrón FrontController. Converters y Formatters. Internacionalización en Spring."
+      },
+      {
+        "titulo": "5. FRAMEWORK DE PERSISTENCIA",
+        "descripcion": "Mapeo Relacion vs Mapeo OO. ORMs. Hibernate. Concepto de sesión. Concepto de transacción. Estados de un objeto. Transiciones. Mapeos en Hibernate. Configuración por anotaciones. Asociaciones. Multiplicidad y dirección. Operaciones en cascada. Mapeo de herencia. Integración con Spring."
+      },
+      {
+        "titulo": "6. HTTP",
+        "descripcion": "Estructura. Headers. Negociación de contenido. Introducción a REST."
+      },
+      {
+        "titulo": "7. FRAMEWORK RESTful",
+        "descripcion": "Introducción a Jersey. Mapeo de entidades. Negociación de contenido"
+      },
+      {
+        "titulo": "8. SINGLE PAGE APPLICATIONS",
+        "descripcion": "Introducción a Grunt, npm y bower. AngularJS. Técnicas de optimización web: minification, uglification, filerevving, CSS sprites."
+      },
+      {
+        "titulo": "9. INSTALACIÓN Y",
+        "descripcion": "Diferencias entre Application Servers y Application Containers. Introducción a Apache Tomcat."
+      },
+      {
+        "titulo": "CONFIGURACIÓN DE WEB SERVERS",
+        "descripcion": "Setup y configuración. Introducción de Jetty. Configuración de Jetty en forma embebida."
+      }
+    ],
+    "estrategias": "- Clases prácticas - Clases interactivas - Clases expositivas o magistrales - Aprendizaje por proyectos - Aprendizaje colaborativo - Clases de Laboratorio",
+    "evaluacion": "Modalidad de evaluación: Para aprobar la cursada se evaluarán los dos trabajos prácticos. El primero se presentará promediando el curso, y el segundo, al final del mismo. Los trabajos prácticos se presentarán en forma grupal pero cada uno de los alumnos que integran los grupos deben poder explicarlos. La calificación es individual. Ninguno de los dos TPs es recuperable. Si un alumno no aprobase alguno de los dos TPs deberá por lo tanto recursar la materia.\n\nRequisitos de aprobación: Para aprobar la cursada de la materia los alumnos deberán obtener una calificación mínima de 4 (cuatro) puntos en cada uno de los dos TPs. La nota de la cursada surge de la fórmula siguiente: (TP1 + TP2) / 2\n\nPara aprobar la materia, los alumnos que hayan aprobado previamente la cursada deberán entregar y presentar en una fecha de examen final su TP Final y obtener en esta entrega y presentación una calificación mínima de 4 (cuatro) puntos.",
+    "bibliografiaObligatoria": [
+      "Evans Eric (2003), Domain Driven Design, Addison-Wesley. 2 3 4 5 6"
+    ],
+    "bibliografiaComplementaria": [
+      "Gourley David & Totty Brian & Sayer & Reddy Marjorie & Aggarwal Anshu (2002), HTTP: The Definitive Guide, O'Reilly",
+      "Hall Marty (2004), Core Servlets and Javaserver Pages: Core Technologies Vol. 1, Prentice Hall 3 4 5 6"
+    ],
+    "pdf": "/electivas-fichas/72.38.pdf"
+  },
+  "72.39": {
+    "codigo": "72.39",
+    "materia": "Autómatas, Teoría de Lenguajes y Compiladores",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "21/12/2022 12:46:15",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 45,
+      "practicas": 57,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Lenguajes formales. Clasificación de Chomsky para los lenguajes formales. Autómata finito determinístico y no determinístico. Equivalencia entre ambos. Máquinas secuenciales. Lenguajes y expresiones regulares. Equivalencia entre expresiones regulares y autómatas finitos. Lemma de Pumping y aplicaciones. Gramáticas y lenguajes libres de contexto. Gramáticas y lenguajes sensibles al contexto. Máquina de Turing: su lenguaje y programación. Concepto básico de un compilador. Fases en la construcción de un compilador. Análisis léxico. Análisis sintáctico. Tabla de símbolos. Gramáticas con atributos. Generación de código intermedio. Uso de utilitarios tipo Lex & Yacc.",
+    "presentacion": "Autómatas, Teoría de Lenguajes y Compiladores trata del estudio de máquinas abstractas que permiten modelar el funcionamiento de una computadora y de las gramáticas formales que permiten diseñar los lenguajes. El estudio de las máquinas abstractas permite determinar qué problemas se pueden resolver de forma eficiente mediante una computadora y cuáles son insolubles. El diseño de lenguajes y la construcción de compiladores permite implementar el desarrollo de software. Se ubica en 3er año de la carrera y requiere como correlativa tener aprobada Estructura de Datos y Algoritmos (72.34), por lo que se asume que los alumnos al iniciar la cursada cuentan con conocimientos de programación en distintos paradigmas, de Matemática Discreta y de Álgebra. La materia ofrece los conceptos necesarios para abordar luego temas de Ciencias de la Computación. Se dicta en modalidad presencial, con 6 horas semanales. La materia ofrece un abordaje dividido en tres aspectos: fundamentaciones teóricas, aplicaciones prácticas, y desarrollo de un proyecto de implementación. El objetivo final es que los alumnos puedan modelar lenguajes y las máquinas que los reconozcan según su tipo e implementar un analizador y compilador para alguno de esos\n\nlenguajes.",
+    "objetivos": "- Clasificar lenguajes según su tipo. - Diseñar máquinas abstractas y gramáticas para un lenguaje. - Analizar, evaluar e implementar un analizador y un compilador. - Fundamentar con rigor matemático propiedades de los lenguajes y autómatas. - Comprender y justificar formalmente las limitaciones que puede tener el software a la hora de resolver problemas.",
+    "programa": [
+      {
+        "titulo": "I. Introducción",
+        "descripcion": "De qué se trata la materia. Conceptos fundamentales: Alfabeto y Cadena. Longitud de una cadena. La cadena vacía. Clausura + y clausura de Kleene. Concatenación de cadenas. Propiedades de la concatenación. Reverso de una cadena. Lenguajes. Operaciones con lenguajes. Definiciones recursivas. Demostraciones por inducción estructural."
+      },
+      {
+        "titulo": "II. Gramáticas",
+        "descripcion": "Definición de gramática. Derivaciones. Lenguaje generado por una gramática. Jerarquía de Chomsky. Gramáticas tipo 3, 2, 1 y 0. Lenguajes asociados a cada tipo de gramática: regulares, libres de contexto, dependientes del contexto y lenguajes tipo 0. Máquinas asociadas a cada tipo de gramática: autómatas finitos, autómatas de pila, máquinas de Turing."
+      },
+      {
+        "titulo": "III. Autómatas Finitos",
+        "descripcion": "Definición general. Función de transición y función de transición extendida. Configuración instantánea. Configuración inicial. Secuencia de configuraciones. Autómatas Finitos Deterministas (AFD). Lenguaje aceptado por un AFD. Equivalencia entre dos AFD. Relación de indistinguibilidad. Conjunto cociente. Minimización de un AFD. Autómatas Finitos No Deterministas (AFN). Lenguaje aceptado por un AFND. Equivalencia entre AFD y AFND. Autómatas Finitos No Deterministas Lambda(AFN-lambda). Lenguaje aceptado por un AFND-lambda. Clausuras lambda. Equivalencia entre AFD y AFND-lambda."
+      },
+      {
+        "titulo": "IV. Expresiones Regulares",
+        "descripcion": "Definición recursiva de una Expresión Regular. Lenguaje descripto por una Expresión Regular. Propiedades de las Expresiones Regulares. Equivalencia entre AFD y Expresiones Regulares. Las Expresiones Regulares en el desarrollo de un analizador-compilador. Análisis Léxico."
+      },
+      {
+        "titulo": "V. Lenguajes Regulares",
+        "descripcion": "Equivalencia entre los lenguajes generados por las Gramáticas Regulares, reconocidos por los Autómatas Finitos y descriptos por las Expresiones Regulares. Lema de Bombeo para Lenguajes Regulares. Uso del lema para demostrar que un Lenguaje no es Regular. Propiedades de los Lenguajes Regulares. Problemas decidibles de los Lenguajes Regulares."
+      },
+      {
+        "titulo": "VI. Autómatas de Pila",
+        "descripcion": "Definición. Configuración instantánea. Configuración inicial. Secuencia de configuraciones. Lenguaje aceptado por un Autómata de Pila. Equivalencia entre autómatas que aceptan por pila vacía y autómatas que aceptan por estado final. Autómatas de Pila Deterministas (APD). Lenguajes aceptados por un APD."
+      },
+      {
+        "titulo": "VII. Gramáticas Libres de Contexto",
+        "descripcion": "Derivaciones más a izquierda y más a derecha. Lenguaje generado por una gramática. Lenguajes Libres de Contexto. Árboles de Derivación. Ambigüedad. Lenguajes inherentemente ambiguos."
+      },
+      {
+        "titulo": "VIII. Lenguajes Libres de Contexto",
+        "descripcion": "Equivalencia entre los lenguajes aceptados por los Autómatas de Pila y las Gramáticas Libres de Contexto. Uso de los Lenguajes Libres de Contexto en el desarrollo de lenguajes de programación. Formas Normales de Chomsky y de Greibach. Gramáticas Ambiguas y Autómatas de Pila Deterministas. Lema de Bombeo para Lenguajes Libres de Contexto. Uso del lema para demostrar que un Lenguaje no es Libre de Contexto. Propiedades de los Lenguajes Libres de Contexto. Problemas decidibles de los Lenguajes Libres de Contexto."
+      },
+      {
+        "titulo": "IX. Análisis Sintáctico",
+        "descripcion": "Métodos Descendentes de Análisis Sintáctico. Cálculo de los conjuntos de Primeros y Siguientes. Gramáticas LL(1). Análisis descendente recursivo. Análisis predictivo no recursivo. Métodos Ascendentes de Análisis Sintáctico. Reducciones. Análisis Sintáctico por Desplazamiento – Reducción. Analizadores sintácticos LR. Tablas de análisis. Prefijos viables. Conflictos. Analizadores sintácticos ascendentes más poderosos: LR(1) y LALR. Generadores de analizadores sintácticos: Yacc."
+      },
+      {
+        "titulo": "X. Gramáticas con Atributos",
+        "descripcion": "Atributos. Reglas semánticas. Atributos sintetizados y heredados. Definición Dirigida por la Sintaxis (DDS). Gramáticas L-atribuidas y S-atribuidas. Grafo de dependencias. Esquema de traducción. Esquema de un compilador. Chequeo de tipos con DDS. Generación de código intermedio con DDS."
+      },
+      {
+        "titulo": "XI. Máquinas de Turing",
+        "descripcion": "Definición. Descripciones instantáneas. Lenguaje de una Máquina de Turing. Máquina de Turing de varias cintas. Equivalencias entre Máquinas de Turing. Máquinas de Turing y computadoras. Problemas indecidibles para las máquinas de Turing."
+      }
+    ],
+    "estrategias": "• Exposición y demostración de conceptos y propiedades. • Desarrollo de ejercicios que sirvan de ejemplo de los temas vistos. • Planteo de situaciones problemáticas, exponiendo ejemplos sobre los cuales el alumno pueda empezar a desarrollar ideas propias. • Corrección y orientación hacia el desarrollo de conceptos formales a partir de las soluciones planteadas por los alumnos. Se procura un intercambio fluido con los docentes a través de la presencialidad y de los canales virtuales como campus y mail.",
+    "evaluacion": "Modalidad de evaluación: • Parcial 1: Se realiza a mitad de cuatrimestre y es escrito (se encuentra detallado en la sección Actividades). • Parcial 2: Se realiza a final de cuatrimestre y es escrito (se encuentra detallado en la sección Actividades). • Proyecto de implementación: Se realiza en tres etapas durante el cuatrimestre, siendo la última hacia el final del custrimestre (se encuentra detallado en la sección Actividades). • Recuperatorios: Si es necesario, se pueden recuperar los dos parciales y el Proyecto (en una única instancia cada uno).\n\nRequisitos de aprobación:\n\n• Parcial 1:(y recuperatorio) para aprobar debe sumar 6 puntos de 10. • Parcial 2:(y recuperatorio) para aprobar debe sumar 6 puntos de 10. • La aprobación del proyecto requiere de cumplir con las 3 entregas obligatorias. - Se emplea una puntuación de 1 a 10 y para aprobar deb sumar 6 puntos de 10. - Los criterios de evaluación son: * Cumplimiento de todas las consignas de cada entrega. * Implementación del compilador en cuanto a calidad técnica y creatividad. * Calidad del informe y presentación del proyecto. • La aprobación final de la cursada de la materia se da cuando se han aprobado los dos parciales y el proyecto ( y sus recuperatorios si fuera necesario). La nota de cursada se calcula como el promedio de los parciales y el proyecto. En caso de aprobar en recuperatorio alguna instancia, se calcula la nota de esa instancia como 0.25 nota original+0.75 nota recuperatorio. • La aprobación final de la materia se da con examen final, escrito, de contenido principalmente teórico. Para aprobar el examen, se exige una puntuación de 5 sobre 10.",
+    "bibliografiaObligatoria": [
+      "J. E. Hopcroft, R. Motwani y J.D. Ullman. Introduction to Automata Theory, Languages and Computation (3ª ed.). USA. Addison—Wesley. 2006.",
+      "J. E. Hopcroft, R. Motwani y J.D. Ullman. Introducción a la teoría de autómatas, lenguajes y computación (3ª ed). España. Addison – Wesley. 2008.",
+      "J. E. Hopcroft y J.D. Ullman. Formal Languages and their Relation to Automata (1ª ed.) USA. Addison – Wesley. 1969.",
+      "A. V. Aho, M.S. Lam, R. Sethi y J.D. Ullman. Compilers: Principles, Techniques, and Tools (2ª ed). USA. Addison – Wesley. 2006.",
+      "A. V. Aho, The Theory of Parsing, Translation, and Compiling (Volume I: Parsing). USA. Prentice – Hall, 1972."
+    ],
+    "bibliografiaComplementaria": [
+      "K.D. Cooper y L. Torczon. Engineering a Compiler (2ª ed.) USA. Elsevier. 2011.",
+      "J.R. Levine. Flex y Bison (1ª ed). USA. O’Reilly Media Inc. 2009.",
+      "M. Sipser. Introduction to the Theory of Computation (3ª ed). USA. CENGAGE Learning. 2012."
+    ],
+    "pdf": "/electivas-fichas/72.39.pdf"
+  },
   "72.41": {
     "codigo": "72.41",
     "materia": "Base de Datos II",
@@ -1497,6 +2297,55 @@ export const FICHAS: Record<string, Ficha> = {
       "Charles P. Pfleeger, Shari Lawrence Pfleeger. (2006). Security in Computing, (4th Ed.). Prentice Hall."
     ],
     "pdf": "/electivas-fichas/72.44.pdf"
+  },
+  "72.45": {
+    "codigo": "72.45",
+    "materia": "Proyecto Final (Anual)",
+    "creditos": 12,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2025",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "30/10/2025 11:52:53",
+    "cargaHoraria": {
+      "total": 204,
+      "teoricas": 14,
+      "practicas": 95,
+      "laboratorio": 95,
+      "semanales": 12,
+      "presencial": 1,
+      "distancia": 11
+    },
+    "contenidosMinimos": "Objetivos del proyecto final como proyecto profesional integrador de los contenidos y competencias adquiridos durante la carrera. Definición de metodología a utilizar. Fases y documentación. Oportunidades e impacto del proyecto",
+    "presentacion": "Esta materia se encuentra ubicada en el último año de la carrera de Ingeniería Informática. A través de la misma se pretenden utilizar los conceptos adquiridos a lo largo de la carrera para realizar un proyecto que integre las competencias y conocimientos adquiridos a lo largo del cursado de las materias del plan.",
+    "objetivos": "-Utilizar los conceptos adquiridos a lo largo de la carrera para realizar un proyecto que integre todas las competencias y conocimientos adquiridos a lo largo del cursado de las materias del plan. El proyecto podrá consistir en el desarrollo de un sistema informático (incluyendo todas las etapas acordes a la metodología aplicada) o en un plan de investigación en el área del software (cuyo resultado final sea la presentación de una publicación científica acompañada de una implementación). -Aplicar estándares de calidad para todas las etapas del proyecto, incluyendo la formulación de la documentación\n\ncorrespondiente a cada una de ellas, -Resolver en tiempo y forma dificultades de situaciones reales, típicas de un equipo de desarrollo de software.",
+    "programa": [
+      {
+        "titulo": "Fase inicial",
+        "descripcion": "Proceso de selección del tema y el tutor. Determinación de oportunidades e impacto del proyecto. Definición de objetivos, alcance e investigación sobre el estado del arte. Definición de metodología a utilizar Generación de documentos de diseño."
+      },
+      {
+        "titulo": "Desarrollo del proyecto",
+        "descripcion": "Puesta en marcha del proyecto concretando los objetivos planteados. Desarrollo de conclusiones y trabajo futuro."
+      },
+      {
+        "titulo": "Presentación",
+        "descripcion": "Entrega de la documentación y defensa ante un jurado del trabajo realizado."
+      }
+    ],
+    "estrategias": "Aprendizaje por proyectos: el trabajo en equipo se orienta a la producción de un producto de software que aplique las buenas prácticas adquiridas a lo largo de la carrera. Aprendizaje colaborativo: se fomenta que el proyecto se realice en grupo de 2 o más estudiantes. De este modo, podrán aplicar las metodologías estudiadas en materias tales como Ingeniería de software. Los grupos son elegidos por afinidad entre los miembros. Enseñanza personalizada: cada grupo cuenta con uno o más tutores que dan seguimiento al trabajo e indican correcciones y evalúa el avance. El tutor define con su grupo, la modalidad y frecuencia de los encuentros. Al finalizar el año, el tutor define si el proyecto está terminado y listo para ser enviado a la cátedra.\n\nDada la orientación a proyecto, no hay clases en la cursada sino que la dinámica que se aplica es la de acompañamiento personalizado con tutores, donde se realiza seguimiento y en diferentes momentos de la cursada se organizan reuniones virtuales. Los tutores aportan materiales o recursos de referencia para los estudiantes (mediante el mail o el campus). Además, existen dos momentos presenciales fijos: al inicio del primer cuatrimestre para intercambiar ideas y que los alumnos formen grupos, y al final, en la evaluación, donde el grupo debe exponer frente a evaluadores, su trabajo. La cátedra, realiza una revisión de los avances durante el transcurso del proyecto. Se realizan entregas de documentación intermedia y presentaciones de avance al finalizar cada uno de los cuatrimestres. Para organizar y explicar estas entregas, se definen clases informativas.",
+    "evaluacion": "Modalidad de evaluación: Como se trata de una materia de proyecto, no tiene nota de cursada sino que directamente se define una única nota que abarca la cursada y el final. La nota se define en una presentación oral en la que estarán presentes el tutor y un jurado de dos integrantes (elegido por el tutor y la cátedra). Dicha nota será conformada por: nota del Tutor y nota del Jurado en la presentación pública. El tutor evalúa la completitud de los objetivos planteados al inicio del proyecto, la calidad de ejecución y el compromiso de todos los integrantes del grupo. El jurado evalúa la aplicabilidad del tema a las temáticas de Ingeniería Informática, la calidad y presentación de los temas tanto en el informe como el la presentación oral. Todos estos criterios se consolidan en una nota final, definida a través del promedio ponderado: 0.7 * Nota Tutor + 0.3 * Nota Jurado.\n\nRequisitos de aprobación: Aprobar la cursada. Esto se constituye con la información provista por el tutor sobre el avance del proyecto y el cumplimiento de las tres entregas de documentación intermedias. A los efectos de elaborar el Acta de Examen, la nota definitiva del proyecto será el promedio ponderado: 0.7 * Nota Tutor + 0.3 * Nota Jurado",
+    "bibliografiaObligatoria": [
+      "Davis, A., Alexander,L.. Criteria for Selecting Software Process Models. COMPSAC, SEI. Carnegie Mellon University, 2004",
+      "Pressman, R.. Ingeniería del Software, Un enfoque práctico. McGraw-Hill, 6ta ed., 2006",
+      "Software Engineering Institute. Capability Maturity Model Integration for Development (CMMI-DEV), Version 1.2.. Carnegie Mellon University, 2006",
+      "Pfleeger, S.L.. Ingeniería de Software. Teoría y práctica.. Prentice Hall, 2002"
+    ],
+    "bibliografiaComplementaria": [
+      "Sommerville,I.. Ingeniería del Software. Addison Wesley, 2005",
+      "Larman C.. Agile & Iterative Development. A Manager’s Guide. Addison Wesley, 2004",
+      "Jackobson, Rumbough, Booch. El proceso UML de desarrollo. Addison Wesley, 2001"
+    ],
+    "pdf": "/electivas-fichas/72.45.pdf"
   },
   "72.58": {
     "codigo": "72.58",
@@ -2633,6 +3482,82 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "pdf": "/electivas-fichas/81.74.pdf"
   },
+  "81.76": {
+    "codigo": "81.76",
+    "materia": "Tecnologías para las Finanzas",
+    "creditos": 3,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2026",
+    "carrera": "",
+    "actualizado": "14/4/2026 11:21:37",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 26,
+      "practicas": 25,
+      "laboratorio": null,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": null
+    },
+    "contenidosMinimos": "1. Contexto y tendencias Fintech 2. Infraestructura tecnológica de las finanzas 3. Herramientas digitales para análisis financiero 4. Blockchain y activos digitales 5. Innovación y casos de uso 6. Compliance & Riesgo Financiero",
+    "presentacion": "La materia Tecnología para las Finanzas introduce a los estudiantes en el ecosistema de innovación que está transformando la industria financiera a nivel global y regional. Su propósito es brindar una comprensión integrada de las tecnologías, herramientas y modelos que permiten el desarrollo de soluciones financieras digitales, combinando fundamentos técnicos con análisis conceptual y casos reales.",
+    "objetivos": "• Comprender el contexto, la evolución y las principales tendencias del ecosistema Fintech, evaluando cómo transforman los servicios y mercados financieros.\n\n• Comprender el funcionamiento de las diferentes verticales que componen al sistema financiero\n\n• Identificar y explicar los componentes clave de la infraestructura tecnológica que soporta las operaciones financieras\n\nmodernas, incluyendo APIs, arquitecturas, integraciones y sistemas de información.\n\n• Utilizar herramientas prácticas para el análisis financiero, aplicando técnicas cuantitativas, inteligencia artificial y plataformas tecnológicas para la toma de decisiones basadas en datos.\n\n• Analizar el funcionamiento de tecnologías recientes como blockchain y los activos digitales, evaluando sus beneficios, limitaciones y aplicaciones en productos financieros emergentes. Compararlas con el funcionamiento tradicional del sistema financiero.\n\n• Reconocer y evaluar innovaciones relevantes en tecnología financiera a través de casos de uso reales, comprendiendo sus impactos estratégicos, operativos y regulatorios.\n\n• Comprender los principios de compliance y gestión del riesgo financiero asociados a la adopción de tecnologías digitales, incluyendo ciberseguridad, privacidad, normativa y gobernanza de datos.",
+    "programa": [
+      {
+        "titulo": "Contexto y tendencias fintech",
+        "descripcion": "Modelos tradicionales (pagos, créditos, inversiones). Disrupción por parte de fintechs. Evolución del ecosistema fintech: bancos digitales, open banking, finanzas embebidas. Ecosistema de pagos: adquirentes, emisores, gateways, QR, billeteras, pagos instantáneos. Cross-border payments. Nuevos jugadores: superapps, embedded finance, plataformas de consumo. Ejercicio: mapeo del ecosistema argentino/Latam."
+      },
+      {
+        "titulo": "Infraestructura Tecnológica",
+        "descripcion": "Arquitectura de plataformas financieras: microservicios, APIs abiertas, core banking digital. API Economy. Ejercicio: consumo de algún API financiera (Python). Cloud computing (AWS, Azure, GCP). Aplicación a servicios financieros. Ciberseguridad, PCI DSS, KYC/AML, ISO 27001. Banking-as-a-Service (BaaS) y modelos modulares. Observabilidad, resiliencia y diseño de arquitecturas escalables."
+      },
+      {
+        "titulo": "Pagos digitales",
+        "descripcion": "Ecosistema de pagos con tarjetas. Cadena de valor e intermediarios. Liquidación de transacciones. Sistemas de transferencias en el mundo. Pagos instantáneos; Real time gross settlement vs net settlement. Funcionamiento en Argentina (BCRA, MEP, Coelsa). Ejemplos en el mundo: ACH, Swift, SEPA, Pix."
+      },
+      {
+        "titulo": "Créditos/Lending",
+        "descripcion": "Scoring crediticio, underwriting. Modelos clásicos y alternativos. Caso Nubank. Funcionamiento de préstamos. Conceptos básicos de macro (base monetaria, oferta de dinero, agregados, sistema de encajes fraccionarios). Bancarios vs no bancarios. Shadow banking. Modelos fintech: buy now, pay later, crédito colateralizado (crypto) Ejercicio: análisis de datasets BCRA."
+      },
+      {
+        "titulo": "InvestTech / WealthTech, mercado de capitales",
+        "descripcion": "Mercado de capitales. Tipos de instrumentos financieros y su utilidad. Riesgo y retorno. Ejercicio: Análisis de diversificación de portfolios con minimum spanning trees. Cadena de valor: Bolsas, exchanges, cajas de valores. Securitización y globalización. Fondos de Inversión. Matemática financiera, renta fija. Ejercicio con Google Sheets para seguir precios de mercado y análisis de bonos y letras. Caso Mercadolibre (FCIs)."
+      },
+      {
+        "titulo": "Herramientas Low Code",
+        "descripcion": "Low code / No code: ventajas y desventajas. FlutterFlow, Bubble, Glide, Retool y AppSmith. APIs + diseño de interfaz. Ejercicios: Crear una app simple (ej. cotizador de dólar o tasas) en FlutterFlow conectada a una API pública. Automatización de workflows con Retool."
+      },
+      {
+        "titulo": "Inteligencia artificial + web scraping",
+        "descripcion": "Conceptos básicos de inteligencia artificial, redes neuronales y Large Language Models (LLMs). Aplicaciones prácticas con APIs de ChatGPT. Web scraping avanzado. Obtención de datos de documentos no estructurados. Ejercicio: Armado de un chatbot. Automatización de respuestas y consultas. Integración en herramientas low code."
+      },
+      {
+        "titulo": "Versionado de código",
+        "descripcion": "Introducción básica a herramientas utilizadas en un entorno de desarrollo moderno: repositorios de código, editores de código, plugins, terminales, pipelines de CI/CD. Versionado de proyectos y workflows automatizados. Ejercicio: despliegue de un API en la nube (AWS) a partir de un repositorio en Github"
+      },
+      {
+        "titulo": "Compliance y Regulación",
+        "descripcion": "Regulaciones fintech en Argentina y el mundo. Tipos de licencias. Reguladores en Argentina: BCRA, CNV, UIF. Casos concretos de operatoria fintech en Argentina, Mexico y EE.UU. KYC y AML. RegTech y automatización de cumplimiento. Open Finance. Ética y privacidad. GDPR"
+      },
+      {
+        "titulo": "Diseño de una aplicación real",
+        "descripcion": "Desarrollo de una aplicación real. Diseño de base de datos propia (Supabase). Arquitectura del modelo de datos. Creación de interfaz de usuario con herramientas low-code. Visualización y análisis de datos integrando lo construido en clases anteriores Temas a elección según interés de los alumnos. Por ejemplo: manejo de datos personales, arquitectura de productos fintech, streaming de datos en tiempo real, visualización de información. Profundización en alguno de los temas anteriores para el armado de TPs"
+      }
+    ],
+    "estrategias": "• Clases teóricas breves para introducir conceptos clave del ecosistema fintech, infraestructura financiera, pagos, crédito, blockchain, IA y compliance. • Clases prácticas orientadas a la resolución de problemas, uso de APIs, análisis de datasets reales, construcción de modelos simples y desarrollo de interfaces low-code. • Aprendizaje basado en casos reales del mercado argentino y global (Nubank, MercadoLibre, Pomelo, Mastercard, etc.). • Trabajo incremental y guiado: los alumnos van construyendo soluciones tecnológicas que se integran en el Proyecto Final. • Participación de invitados de la industria (expertos fintech, bancos digitales, proveedores de pagos, compliance officers). • Enfoque hands-on: ejercicios de análisis de datos, simulaciones de scoring crediticio, desarrollo de apps básicas, web scraping, automatización de procesos. • Uso de herramientas digitales contemporáneas: Python, Gemini, Google Sheets, FlutterFlow, Retool, APIs abiertas, AWS, GitHub, entre otras",
+    "evaluacion": "Modalidad de evaluación: • Entregas breves (individuales y grupales), parcialitos o cuestionarios vinculados a las actividades de clase • Trabajo práctico integrador\n\nRequisitos de aprobación: Para aprobar la cursada, el estudiante debe:\n\nHaber asistido al 80% o más de las clases\n\nTener aprobados todos los parciales (o sus recuperatorios), si los hubiera.\n\nPresentar la totalidad de los trabajos prácticos obligatorios.\n\nAprobar el Proyecto Integrador.\n\nObtener un promedio igual o superior a 4.\n\nCumplir las normas del Código de Conducta e Integridad Académica del ITBA.\n\n• Promedio ponderado igual o superior a 4 • Ambos parciales aprobados sin recuperatorio. • Proyecto integrador aprobado.",
+    "bibliografiaObligatoria": [
+      "Arner, D., Barberis, J., & Buckley, R. (2020). The RegTech Book. Wiley.",
+      "Casey, M. & Vigna, P. (2018). The Truth Machine: The Blockchain and the Future of Everything. St. Martin’s Press.",
+      "McKinsey Global Institute (2023). The State of AI and the Future of Financial Services.",
+      "Davenport, T. (2023). All-in on AI: How Smart Companies Win Big with Artificial Intelligence. Harvard Business Review Press. 5 6"
+    ],
+    "bibliografiaComplementaria": [
+      "Accenture (2023). The Future of Fintech Report.",
+      "BIS – Bank for International Settlements (2022–2024). Working Papers on CBDCs and payment innovation. 3 4 5 6"
+    ],
+    "pdf": "/electivas-fichas/81.76.pdf"
+  },
   "82.08": {
     "codigo": "82.08",
     "materia": "Cloud Computing",
@@ -2838,6 +3763,751 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "pdf": "/electivas-fichas/82.21.pdf"
   },
+  "93.07": {
+    "codigo": "93.07",
+    "materia": "Métodos Numéricos",
+    "creditos": 3,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Ingeniería Electricista / Ingeniería Industrial / Ingeniería Electrónica / Ingeniería Mecánica / Ingeniería\n Naval / Ingeniería en Petróleo / Ingeniería Química / Ingeniería en Informática / Ingeniería Civil",
+    "actualizado": "30/6/2024 10:37:50",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 30,
+      "practicas": 21,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 3,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Errores. Estabilidad y convergencia de algoritmos. Resolución de Ecuaciones No Lineales. Sistemas de ecuaciones no-lineales. Problemas de valor inicial. Interpolación. Ajuste de Curvas. Ajuste no-lineal. Diferenciación e Integración Numérica. Álgebra Lineal Numérica.",
+    "presentacion": "Esta materia está ubicada en el ciclo básico para las carreras de ingeniería industrial, informática, en petróleo y química. Es de carácter introductorio y sirve de apoyo para posteriores cursos de diseño, proyecto, cálculo y simulación en ingeniería. Muchos problemas del ámbito de estas carreras tienen la característica de que la solución sólo puede ser aproximada, con alguna precisión requerida. Esta es la cuestión central de este curso introductorio: presentar algunos problemas matemáticos de los cuáles pueda asegurarse la existencia de solución pero que solo pueda aproximarse especificando una cota del error. En la implementación de esa solución aproximada en general se utilizan rutinas que se ejecutan en una computadora. En este curso se realizan implementaciones en un entorno de cálculo y visualización gráfica de código abierto. Casi con seguridad cuando estos futuros profesionales se vean en la necesidad de plantear problemas de alguna escala importante recurrirán a entornos de cálculo de envergadura. La operación de esos entornos será factible si tienen una formación básica como la que se provee en este curso de métodos numéricos.",
+    "objetivos": "Al finalizar el cursado de esta materia se espera que el alumno sea capaz de a) Explicar los métodos numéricos presentados. b) Aplicar los métodos presentados para resolver situaciones problemáticas. c) Presentar los resultados de la aproximación de la solución de un problema con adecuada cota del error. d) Manejar la presentación de resultados en la forma de tablas y gráficos. e) Interpretar la implementación de algunos de los métodos presentados en un entorno de programación numérico-gráfico.",
+    "programa": [
+      {
+        "titulo": "Errores",
+        "descripcion": "Error de aproximación y redondeo. Representación de números en una computadora. Algoritmos, estabilidad y convergencia."
+      },
+      {
+        "titulo": "Resolución de ecuaciones no lineales",
+        "descripcion": "Método de la bisección, Método de Newton-Raphson. Método de Punto Fijo. Sistemas de ecuaciones no-lineales: Método de Newton."
+      },
+      {
+        "titulo": "Problemas de valor inicial para ecuaciones diferenciales ordinarias",
+        "descripcion": "Métodos de Euler: hacia adelante y modificado. Error y estabilidad. Métodos de Taylor. Métodos de Runge-Kutta."
+      },
+      {
+        "titulo": "Interpolación",
+        "descripcion": "Polinomio de interpolación. Interpolación de Lagrange. Diferencias divididas. Interpolación de Newton. Interpolación segmentaria lineal y por splines."
+      },
+      {
+        "titulo": "Ajuste de curvas",
+        "descripcion": "Métodos de mínimos cuadrados. Ajuste lineal, polinómico, exponencial y potencial. Ajuste no-lineal: método de Gauss-Newton."
+      },
+      {
+        "titulo": "Diferenciación e integración numérica",
+        "descripcion": "Aproximación de la derivada en diferencias centrales, hacia atrás y hacia delante. Reglas de integración numérica simples y compuestas de trapecios y Simpson. Cuadratura gaussiana."
+      },
+      {
+        "titulo": "Algebra lineal numérica.",
+        "descripcion": "Eliminación de Gauss. Factorización LU. Resolución iterativa: métodos de Jacoby y Gauss-Seidel."
+      }
+    ],
+    "estrategias": "Las clases semanales se realizan en un bloque de 3 horas con un intervalo. En general la mitad de la clase se utiliza para presentar algún tipo de problema y uno o dos métodos de aproximación de la solución. Se muestra la implementación usando calculadora, planilla de cálculo o con programas desarrollados en Octave. En la segunda mitad se desarrollan en forma guiada la resolución de problemas de la guía desarrollada a tal fin.",
+    "evaluacion": "Modalidad de evaluación: Los alumnos son evaluados en forma individual por su participación en las clases en actividades de corta duración y un examen parcial individual de 2 horas. También entregan trabajos grupales que denominamos Promen (Proyectos de Métodos Numéricos) que consisten en la entrega de hasta dos problemas cuya solución se presenta en la forma de un reporte y que además requiere implementar la solución usando un software utilitario de código abierto (se promueve que sea Octave). Se promueve que los grupos tengan entre 3 y 5 estudiantes.\n\nRequisitos de aprobación: Para poder aprobar la cursada el alumno deberá aprobar el examen parcial individual con 4 ó mas puntos y el ó los trabajos grupales también con 4 ó mas puntos.\n\nLa nota de cursado vendrá dada por nota_de_cursado = RED (0.7 nota_de_parcial + 0.3 nota_trabajo_ grupal)\n\ndonde RED es la siguiente operación de redondeo: la nota_de_cursado es el número del conjunto { 4 + 0.5 k / k en {0, 1,2 , ..., 12} } más cercano a 0.7 nota_de_parcial + 0.3 nota_trabajo_grupal. En el caso de equidistancia se redondea para arriba.\n\nLa nota de trabajo grupal es el promedio de las notas de aprobación de los trabajos grupales.\n\nLos alumnos que desaprueben el examen parcial podrán recuperarlo en fecha a fijar en el último mes de cursado. La nota del recuperatorio sustituye al parcial no aprobado. Los que no aprueban el recuperatorio deberán recursar la materia.",
+    "bibliografiaObligatoria": [
+      "Steven Chapra y Raymond Canale (2021) Numerical Methods for engineers, 8th Edition, McGraw Hill"
+    ],
+    "bibliografiaComplementaria": [
+      "James F. Epperson. (2021), An Introduction to Numerical Methods and Analysis, Wiley, ISBN: 978-1-119-60469-3",
+      "Mathews J. , Fink, K. (2000). Métodos Numéricos con Matlab. Madrid, España: Prentice Hall."
+    ],
+    "pdf": "/electivas-fichas/93.07.pdf"
+  },
+  "93.24": {
+    "codigo": "93.24",
+    "materia": "Probabilidad y Estadística",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería Mecánica / Ingeniería Naval /\n Ingeniería en Petróleo / Ingeniería Química / Ingeniería en Informática /",
+    "actualizado": "19/8/2024 13:22:28",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 56,
+      "practicas": 46,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 4,
+      "distancia": 2
+    },
+    "contenidosMinimos": "Introducción y estadística descriptiva Concepto de probabilidad Variable aleatoria Análisis conjunto de variables aleatorias. Procesos estocásticos. Procesos de conteo. Procesos de Poisson. Cadenas de Markov. Sumas de variables aleatorias. Muestras y distribuciones muestrales. Prueba de hipótesis estadísticas.",
+    "presentacion": "La incertidumbre tiene un carácter fundamental en las ciencias exactas y naturales. En esta materia, se ven los fundamentos de la probabilidad, que es el área matemática dedicada al trabajo de la cuantificación de la incertidumbre. Para mencionar sólo algunos aspectos donde se la encuentra en áreas ligadas al ámbito específico de los estudiantes de este curso: interpretación de mecánica cuántica (Física Electrónica 23.09); física estadística aplicada a semiconductores (Electrónica I 22.11). En la materia Probabilidad y Estadística (93.24) también se les presenta a los alumnos una introducción a los procesos estocásticos, que encuentran aplicación en muchas ramas de la ingeniería. Los alumnos de la carrera de Ingeniería Electrónica profundizarán dicho conocimiento en la materia Señales Aleatorias (22.67). Los procesos estocásticos son fundamentales en el área de comunicaciones y, por tanto, la introducción en 93.24 será de utilidad, por ejemplo, para que los alumnos de Ingeniería Informática comprendan los\n\nprincipios de teoría de la información y la comunicación en la materia Protocolos de Comunicacion (72.07), y que los alumnos de Ingeniería Electrónica puedan encarar los elementos de teoría de la información y codificación vistos en la materia Transmision de la Información (22.61). Las diversas manifestaciones de lo que comúnmente se denomina ruido sólo pueden ser descriptas apropiadamente como procesos estocásticos. Los estudiantes de Bioingeniería estudian formas de cancelación de ruido, por ejemplo, en el curso Procesamiento de Señales Biomédicas (16.15). El curso Probabilidad y Estadística se completa con la introducción a otros tres temas de importancia en todas las áreas de la ingeniería y de la gestión. Uno es la estadística descriptiva, que permite la descripción, parametrización y visualización ordenada de grandes cantidades de datos. El segundo tema es la estimación que permite dar valores a las probabilidades a partir de observaciones. Y el tercer tema es la prueba de hipótesis, una herramienta fundamental en la toma de decisiones.",
+    "objetivos": "Al finalizar el cursado de esta materia se espera que el alumno sea capaz de: a) Aplicar el cálculo de probabilidades al análisis de situaciones con contenido aleatorio. b) Organizar datos en tablas y gráficos en forma conducente a la interpretación de la información proveniente de una muestra aleatoria. c) Analizar y modelizar fenómenos aleatorios con la introducción de las variables aleatorias y su distribución de probabilidades. d) Estimar parámetros de una distribución de probabilidades en base a información muestral. e) Plantear y concretar pruebas de hipótesis sobre poblaciones sobre la base de información muestral.",
+    "programa": [
+      {
+        "titulo": "Concepto de probabilidad",
+        "descripcion": "Los fenómenos aleatorios. Estadística descriptiva. La definición clásica de probabilidad. Modelo matemático para los experimentos aleatorios. Espacio muestral. Definición axiomática de probabilidad. Probabilidad condicional. Sucesos independientes. Teorema de Bayes."
+      },
+      {
+        "titulo": "Variable aleatoria",
+        "descripcion": "Noción general de variable aleatoria. Variables aleatorias discretas y continuas. Valor esperado de una variable aleatoria. Medidas de tendencia central y dispersión. Variables aleatorias discretas: binomial y Poisson. Variables aleatorias continuas: uniforme, exponencial y normal."
+      },
+      {
+        "titulo": "Análisis conjunto de variables aleatorias",
+        "descripcion": "Distribuciones conjuntas de probabilidades y marginales. Variables aleatorias independientes. Covarianza. Correlación. Mezcla de variables aleatorias discretas y continuas."
+      },
+      {
+        "titulo": "Introducción a los procesos estocásticos.",
+        "descripcion": "Conceptos generales de procesos estocásticos. Procesos de conteo. Procesos de Poisson: deducción, ejemplos y aplicaciones. Cadenas de Markov: estudio asintótico y aplicaciones."
+      },
+      {
+        "titulo": "Sumas de variables aleatorias.",
+        "descripcion": "Introducción. Ley de grandes números. Aproximación normal a la binomial. El teorema del límite central (sin demostración). Desigualdades de Markov y Tchebycheff."
+      },
+      {
+        "titulo": "Muestras y distribuciones muestrales.",
+        "descripcion": "Introducción. Muestras aleatorias. Concepto de estimador. Propiedades. Distribución de la media y la varianza muestral. Distribución t de Student. Estimación puntual y por intervalos. Intervalos de confianza: distintos casos."
+      },
+      {
+        "titulo": "Prueba de hipótesis estadísticas.",
+        "descripcion": "Conceptos básicos. Tipos de regiones críticas. Tests uni y bilaterales. Pruebas de hipótesis, distintos casos relativos a medias, varianzas y proporciones."
+      }
+    ],
+    "estrategias": "El dictado de la materia tiene un formato híbrido, con 2 horas de clases virtuales asincrónicas y 4 horas, divididas en dos módulos de 2 horas cada uno, de clases presenciales. Las clases virtuales son, básicamente, expositivas y teóricas, aunque ocasionalmente incluyen ejercicios para facilitar la explicación de los conceptos. Las clases presencialmente incluyen un espacio para clarificar y repasar conceptos teóricos, pero están basadas en la resolución de problemas que, no sólo permiten una mayor elaboración del contenido del curso, sino también dan herramientas para enfrentar ejercicios de las guías. Los objetivos de esta modalidad son los siguientes: 1) Que los alumnos puedan organizar mejor sus tiempos, ya que las clases virtuales son asincrónicas. Más aún, varias de ellas están separadas en módulos de corta o mediana duración (< 20 minutos). 2) Que los alumnos consoliden los conceptos a través de un esquema basado en problemas durante las clases presenciales, permitiendo la consulta personal de dudas. Más allá de estos objetivos relacionados con el curso en sí, también se procura un objetivo de meta-aprendizaje: que los alumnos adquieran los elementos de estudio autodirigido gracias a enfrentarse con las clases virtuales asincrónicas. Debe destacarse que dichas clases son acompañadas con sugerencias de lecturas del libro de texto o apuntes, y apoyadas por clases teóricas extra que desarrollan el contenido con mayor detalle. Existen otras formas de interacción entre los alumnos y los docentes que permiten fortalecer el aprendizaje: 1) El uso de los foros o debates en los sitios de la materia. Allí los alumnos pueden realizar consultas que son respondidas en detalle por los docentes. La conveniencia de este medio es que todos los alumnos de la misma comisión pueden ver preguntas y respuestas. 2) El acceso a los docentes vía email para consultas personalizadas, en caso que los alumnos no deseen hacer públicas sus dudas o lo crean inconveniente. 3) Consultas personales con algunos docentes fuera de horario de clase, sea en Hackmate o mediante el arreglo de una cita.",
+    "evaluacion": "Modalidad de evaluación: Durante el desarrollo del curso se tomarán dos evaluaciones parciales. En estas evaluaciones individuales se enfatiza la medida de la adquisición de la habilidades para resolver los problemas presentados en la materia.\n\nRequisitos de aprobación: Dos evaluaciones parciales que tendrán que ser aprobadas (4 o más puntos) para poder aprobar la cursada. Se podrá recuperar un solo examen parcial. En el caso de recuperación de un parcial: a) Si el recuperatorio es aprobado con al menos 4 (cuatro) puntos, la nota del parcial se sustituye con una calificación de 4 (cuatro). b) Si el recuperatorio es reprobado con una nota menor a 4, la nota del parcial se sustituye con la nota del recuperatorio.\n\nPara calcular la nota de cursada, se toma el promedio de los parciales P. Si ambos parciales fueron aprobados, entonces la nota de cursada será RED(P), donde RED(x) es la operación de redondeo que busca el número del conjunto { 1 + 0.5 k / k en {0,1,2 ,...,18} } más cercano a x. En el caso de equidistancia se redondea “para arriba”.\n\nEn el caso en que al menos un parcial (y su recuperatorio) no fuese aprobado, la nota de cursada será RED(mín{P,3}), donde mín(x,y) devuelve el valor mínimo entre x e y.",
+    "bibliografiaObligatoria": [
+      "Devore, J. (2016). Probabilidad y Estadística para Ingeniería y Ciencias 9a. Ed. México D.F., Mexico : Cengage Learning Editores"
+    ],
+    "bibliografiaComplementaria": [
+      "Bertsekas, D., Tsitsiklis, J. (2008). Introduction to probability, 2nd ed. E.U.A.: Athena Scientific.",
+      "Papoulis A. (1990). Probabilidad y estadística. Englewood Cliffs, NJ, E.U.A.: Prentice Hall.",
+      "Mendenhall, W., Sincich, T. (1997).Probabilidad y estadística para ingeniería y ciencias. México: Prentice Hall.",
+      "Allen,A.O.(1990). Probability, Statistics and Queueing Theory With Computer Science Applications. E.U.A.: Academic Press Inc."
+    ],
+    "pdf": "/electivas-fichas/93.24.pdf"
+  },
+  "93.26": {
+    "codigo": "93.26",
+    "materia": "Análisis Matemático I",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "7/11/2022 11:06:57",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 68,
+      "practicas": 34,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Límite y Continuidad. Derivada. Teoremas sobre Funciones Derivables. Análisis de Funciones. Extremos relativos y Absolutos. Polinomios de Taylor. Primitivas. Integral Definida. Aplicaciones del Cálculo Integral.",
+    "presentacion": "Esta materia se encuentra ubicada en el ciclo básico de la carrera. En ella se estudian temas de cálculo diferencial e integral en una variable que son esenciales tanto para las materias de matemática, que la tienen como correlativa, como para prácticamente todas las materias de la carrera que tengan relación con las ciencias que emplean modelos matemáticos contínuos (por ejemplo ecuaciones diferenciales o integrales) o requieran de herramientas de optimización de funcionales cuyas variables son contínuas, por ejemplo la física, la químicala o la estadística, etc. La materia también sirve para que el alumno aprenda a expresarse correctamente en el lenguaje matemático y para que desarrolle el razonamiento lógico y el pensamiento analítico. Esas capacidades se juzgan indispensables para un ingeniero informático. El objetivo general de la materia es el de dotar al alumno de conocimientos básicos del cálculo diferencial e integral en una variable, que sean de aplicación en la ingeniería informática.",
+    "objetivos": "Al finalizar el curso se espera las siguientes capacidades de los alumnos: 1. Modelar en el lenguaje del cálculo diferencial e integral situaciones simples. 2. Leer y escribir correctamente en el lenguaje matemático. 3. Resolver problemas específicos de la materia combinando adecuadamente razonamientos teóricos con métodos de cálculo. 4. Plantear problemas y resolverlos utilizando las herramientas del cálculo diferencial e integral más adecuada. 5. Reconocer y juzgar las características principales de la bibliografía básica.",
+    "programa": [
+      {
+        "titulo": "Límite y continuidad",
+        "descripcion": "Límite de una función de una variable. Límites laterales. Límite infinito y al infinito. Propiedades de los límites. Límites notables. Continuidad de una función. Propiedades. Teoremas sobre continuidad: Bolzano y valor intermedio. Aplicaciones: ceros y conjuntos de positividad de una función; imagen de una función."
+      },
+      {
+        "titulo": "Derivada",
+        "descripcion": "Motivación geométrica y física de la derivada: rectas tangentes y velocidad instantánea. Definición de derivada. Ecuación de la recta tangente y normal a una curva. Derivada de las funciones elementales. Reglas de derivación. Derivada de una función compuesta. Derivación implícita. Función inversa y su derivación. Derivadas de diferentes órdenes. Diferencial de una función, aplicación al cálculo aproximado de funciones."
+      },
+      {
+        "titulo": "Teoremas sobre funciones derivables",
+        "descripcion": "Teorema de Rolle. Aplicación a la determinación de la cantidad de ceros de una función. Teorema de Lagrange. Desigualdades y aplicación a la comparación de funciones. Teorema de Cauchy. Regla de L'Hopital."
+      },
+      {
+        "titulo": "Aplicaciones de la derivada",
+        "descripcion": "Análisis de funciones: crecimiento, concavidad, extremos relativos, puntos de inflexión, asíntotas, gráfico cualitativo de una función. Optimización: extremos absolutos."
+      },
+      {
+        "titulo": "Polinomios de Taylor",
+        "descripcion": "Polinomios de Taylor y Mc Laurin. Propiedades básicas. Polinomios de Mc Laurin de algunas funciones notables: seno, coseno, exponencial, etc. Fórmula de Taylor. Fórmula del error de Lagrange. Aplicación al cálculo aproximado de funciones con garantía sobre el error."
+      },
+      {
+        "titulo": "Integral indefinida",
+        "descripcion": "Función primitiva. Propiedades. Métodos básicos de integración: cambio de variable e integración por partes. Descomposición en fracciones simples. Algunas sustituciones trigonométricas. Integrales de funciones trigonométricas."
+      },
+      {
+        "titulo": "Integral definida",
+        "descripcion": "Motivación: cálculo de áreas. Definición de la integral de Riemann. Propiedades. Teorema fundamental del cálculo. Regla de Barrow. Derivación de funciones definidas por integrales."
+      },
+      {
+        "titulo": "Aplicaciones del",
+        "descripcion": "Cálculo de áreas. Trabajo de una fuerza. Longitud de arco de una curva. Cálculo de volumen de"
+      },
+      {
+        "titulo": "cálculo integral",
+        "descripcion": "cuerpos de revolución."
+      }
+    ],
+    "estrategias": "Las clases son expositivas y de índole teórico-prácticas. El profesor introduce la teoría a medida que la va necesitando para la resolución de los problemas y preguntas que naturalmente se presentan en el desarrollo de la materia, de modo que el alumno vea la necesidad de un nuevo concepto o resultado teórico. También se resuelven en clase problemas típicos de la disciplina con el objetivo de ilustrar el uso correcto de la teoría y de los conceptos involucrados, fomentando al máximo la participación de los estudiantes a través de preguntas o de la solicitud de posibles estrategias de resolución.",
+    "evaluacion": "Modalidad de evaluación: La materia se evalúa a través de exámenes parciales y finales. Para aprobar la cursada el alumno debe aprobar dos exámenes parciales. En el primer examen parcial se evalúan las tres primeras unidades del programa analítico y el resto se lo hace en la segunda evaluación parcial. Los exámenes parciales constan de cinco problemas para desarrollar y entregar en forma escrita. El propósito de la evaluación es:\n\n• Determinar el grado de conocimiento del tema evaluado en cada problema. • Comprobar que el alumno: 1) usa en forma correcta la teoría aprendida y tiene en cuenta las hipótesis necesarias para su aplicación; 2) maneja el lenguaje matemático; 3) combina en forma adecuada razonamientos con cálculos precisos y 4) es capaz de sostener con argumentos sólidos los pasos que emplea en la resolución del problema\n\nRespecto del examen final, la modalidad es la misma que la de los exámenes parciales, con la diferencia que los problemas propuestos en esta instancia integran conceptos de las distintas unidades de la materia.\n\nRequisitos de aprobación: Para aprobar la cursada se deben aprobar los dos exámenes parciales, cuya modalidad fue descripta antes. La nota mínima de aprobación es 4(cuatro) y esta nota se obtiene resolviendo correctamente dos de los cinco problemas propuestos, donde en la corrección se tiene en cuenta los aspectos que se mencionaron en la modalidad de evaluación. Cada parcial tiene una instancia de recuperación con las mismas características y condición de aprobación que el parcial.\n\nEl criterio de aprobación para el examen final es el mismo que para los parciales.",
+    "bibliografiaObligatoria": [
+      "Thomas, G., Cálculo:una variable, 12ed., Addison-Wesley, 2010."
+    ],
+    "bibliografiaComplementaria": [
+      "Sadosky, Manuel y Guber, Rebeca, Elementos de cálculo diferencial e integral, Alsina, 2004",
+      "Apostol, T. , Calculus, Volumen 1, 2da edición, Reverté, 1990.",
+      "Stewart, J., Cálculo, 6ta. ed., Cengage Learning, 2008.",
+      "Spivak, M., Cálculo infinitesimal, 2da. ed., Reverté, 1998.",
+      "Noriega, R., Cálculo diferencial e integral, Docencia, 1979."
+    ],
+    "pdf": "/electivas-fichas/93.26.pdf"
+  },
+  "93.28": {
+    "codigo": "93.28",
+    "materia": "Análisis Matemático II",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "8/11/2022 10:05:32",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 51,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Funciones de varias variables. Extremo de funciones de varias variables. Integración. Teoremas de la función implícita. Funciones definidas por integrales. Funciones vectoriales. Teorema de Green. Teorema de Stokes. Teorema de la divergencia. Ecuaciones diferenciales ordinarias de segundo orden.",
+    "presentacion": "Esta materia del Área Matemática del Departamento de Ciencias Exactas y Naturales se dicta en el Primer Año de la carrera de Ingeniería Informática. Es un curso de introducción al análisis matemático en varias variables, el cálculo vectorial y las ecuaciones diferenciales ordinarias. La materia generaliza los conceptos fundamentales del cálculo diferencial e integral en una variable, tales como límite, diferenciabilidad, polinomios de taylor e integración definida, al caso de funciones de varias variables. Introduce además conceptos como el de campo vectorial y ecuación diferencial, que serán extremadamente útiles en su aplicación a materias de física, química y otras áreas. Los conceptos adquiridos en esta materia resultan de aplicación directa en las materias correlativas de física (función potencial y campos conservativos, trabajo y flujo de campos) y química (derivación parcial, integración en caminos, formas diferenciales) y además se vinculan con materias de matemática como Probabilidad y Estadística (integrales múltiples) y Métodos Numéricos (ecuaciones diferenciales). Los requisitos previos para cursar la materia son conocimientos de cálculo diferencial e integral univariado, obtenidos por el estudiante en el curso de Análisis Matemático I y algunos conceptos básicos de álgebra lineal, obtenidos en el curso de Álgebra. Se espera que al finalizar el curso el estudiante cuente con las herramientas básicas trabajar con funciones vectoriales y ecuaciones diferenciales en aplicaciones prácticas tales como el electromagnetismo, la óptica, la\n\nmecánica, los fluidos y la termodinámica entre otras. Además, se espera que hayan incorporado métodos fundamentales para la resolución de problemas de optimización y aproximación, que le resultarán de utilidad en diversas materias a lo largo de su formación.",
+    "objetivos": "A lo largo del curso se espera que el estudiante logre:\n\n• Incorporar herramientas operacionales básicas para el estudio de funciones multivariadas, como las derivadas parciales y direccionales, el gradiente, la divergencia y el rotacional, comprendiendo la motivación en la definición de los mismos, así como su alcance y utilidad práctica en diversas áreas y problemas. • Sumar experiencia en la resolución de problemas de optimización en varias variables, cuya aplicación es clave en problemas de diseño y logística. • Familiarizarse con conceptos de integración multivariada, tales como integración en curvas y superficies, que resultan necesarios en la formalización de conceptos físicos fundamentales, como son el trabajo y el flujo de campos vectoriales. • Ampliar su formación con resultados matemáticos clásicos, tales como los Teoremas del Cálculo vectorial, que forman la base de trabajo formal de diversas disciplinas cuantitativas. • Adquirir entrenamiento en la resolución exacta de ecuaciones diferenciales ordinarias de primer y segundo orden, que forman la base del modelado de sistemas dinámicos. • Afianzar su relación con el herramental matemático, generando confianza en sus habilidades de modelado y formalización matemática, siendo éste un punto fundamental para el resto de su formación académica y profesional. • Fortalecer su relación de trabajo con libros de texto especializados y otros recursos bibliográficos.",
+    "programa": [
+      {
+        "titulo": "Unidad 1: Funciones de Varias Variables",
+        "descripcion": "Espacio de n-dimensiones. Bolas abiertas y conjuntos abiertos y cerrados. Conjuntos compactos, conexos y convexos. Puntos interiores, aislados, de acumulación y frontera. Repaso de curvas y superficies conocidas: rectas, planos, cónicas cuádricas. Funciones escalares de 2 variables y sus gráficas. Conjuntos de nivel de campos escalares. Campos y funciones vectoriales. Representación de campos vectoriales en 2 y 3 dimensiones. Parametrización local de curvas por un punto."
+      },
+      {
+        "titulo": "Unidad 2: Límite y Continuidad",
+        "descripcion": "Límite multiple de campos escalares y vectoriales: definición y propiedades. Límites radiales y paramétricos. Continuidad: definición y propiedades. Teoremas básicos para funciones continuas sobre conjuntos compactos y conexos."
+      },
+      {
+        "titulo": "Unidad 3: Diferenciación",
+        "descripcion": "Derivadas parciales y direccionales. Diferenciabilidad de funciones escalares y vectoriales. Gradiente de funciones escalares y matriz de Jacobi.Funciones suaves. Derivadas direccionales y diferenciación. Derivadas de orden superior y Teorema de Schwarz. Relaciones entre continuidad, derivación y diferenciabilidad. Plano tangente a gráficas y superficies implícitas."
+      },
+      {
+        "titulo": "Unidad 4:",
+        "descripcion": "Función compuesta y Regla de la Cadena para derivadas de campos escalares y vectoriales."
+      },
+      {
+        "titulo": "Aplicaciones de la Diferenciabilidad",
+        "descripcion": "Derivación de funciones definidas implícitamente y Teorema de la Función Inversa. Polinomios de Taylor, aproximación y resto. Extremos locales de campos escalares: máximos, mínimos y puntos de ensilladura. Punto estacionario. Matriz hessiana. Extremos condicionados: método de los multiplicadores de Lagrange."
+      },
+      {
+        "titulo": "Unidad 5: Integración Múltiple",
+        "descripcion": "Integral doble, triple y múltiple de campos escalares. Propiedades de la integral múltiple. Integrales iteradas, Principio de Cavalieri, Teorema de Fubini e integración en recintos cartesianos elementales. Aplicaciones de la integral múltiple: volúmenes, áreas, valores medios. Teorema del Cambio de Variables. Cambios de variable clásicos: coordenadas polares, cilíndricas y esféricas. Cambios de variable específicos y uso del Jacobiano inverso."
+      },
+      {
+        "titulo": "Unidad 6: Integración en Variedades",
+        "descripcion": "Concepto de orientación en la teoría de integración. Formas diferenciales y densidades. Curvas parametrizadas. Integrales de línea de campos escalares y vectoriales. Circulación de un campo vactorial. Teoremas fundamentales del cálculo para integrales de línea. Campos conservativos y función potencial, condiciones equivalentes para campos conservativos. Superficies orientables y sus parametrizaciones. Área de superficies. Integrales de superficie de campos escalares y flujo de campos vectoriales."
+      },
+      {
+        "titulo": "Unidad 7: Teoremas Clásicos del Cálculo Vectorial y Aplicaciones",
+        "descripcion": "Variedades n-dimensionales, con y sin borde. Idea general del Teorema de Stokes en Variedades y su relación con la Regla de Barrow. Teorema de Green y de la divergencia en el plano. Cálculo de áreas usando el Teorema de Green. Teorema de Stokes y aplicaciones físicas. Teorema de la divergencia de Gauss. Definición de los operadores vectoriales en diversas coordenadas. Funciones definidas con integrales y derivación bajo el signo integral, con sus aplicaciones."
+      },
+      {
+        "titulo": "Unidad 8: Ecuaciones Diferenciales Ordinarias",
+        "descripcion": "Ecuaciones diferenciales ordinarias de primer orden: problemas bien formulados, Teorema de Existencia de Peano y Teorema de Existencia y Unicidad de Picard-Lindelöf. Ecuaciones de integración directa, de variables separables, homogéneas y otras reducibles a variables separables. Ecuaciones exactas y su relación con los campos conservativos. Ecuación diferencial lineal de primer orden con coeficientes variables, solución homogénea y particular, método de variación de parámetros. Ecuaciones lineales de orden superior, operadores lineales, propiedades de los conjuntos de soluciones. Resolución de ecuaciones diferenciales lineales de segundo orden con coeficientes constantes, método de coeficientes indeterminados y variación de parámetros. Sistemas de ecuaciones diferenciales lineales de segundo orden."
+      }
+    ],
+    "estrategias": "La materia se dicta en clases expositivas teóricas y de resolución de problemas. En la teoría se trabaja partiendo de ejemplos motivadores para comprender los conceptos y en las clases prácticas se fomenta la participación activa del alumno en la resolución de los problemas planteados. La motivación de los conceptos del cálculo vectorial surge normalmente de dos fuentes: conocimientos previos y aplicaciones. Por un lado, la generalización de conceptos del análisis univariado, que los alumnos ya poseen, al caso más general de variables, permite partir de una base ya incorporada por el estudiante. Esto resulta ventajoso por partida doble: permite afirmar conocimientos previamente adquiridos y brinda facilidad de incorporación de los nuevos. Por otro lado, al trabajar con aplicaciones, el alumno adquiere familiaridad con conceptos que son fundamentales en la física (campos, fuerzas, trabajo, flujo), la química (potenciales, ciclos) o la investigación operativa (optimización). Esto permite dejar atrás el modelo de \"compartimientos estancos\" y ayuda a encaminar la formación del ingeniero informático como un todo armónico y fundamentalmente interactivo. De esta forma se motiva al estudiante a comprender la necesidad de incorporar un formalismo que unifica los fundamentos de su formación y sienta la base de desarrollo para el herramental matemático y computacional que usará a lo largo de su formación académica y desempeño profesional. Un aspecto clave en este enfoque de la enseñaza será entonces la práctica continua en la resolución de problemas, de manera interactiva en las clases prácticas, con el objetivo de generar confianza y fluidez en el trabajo. Esta capacidad de enfrentar con confianza los problemas de modelado y formalización es algo que el alumno debe llevarse del curso, más allá de cualquier contenido programático específico.",
+    "evaluacion": "Modalidad de evaluación: La evaluación constará de dos Exámenes Parciales y un Examen Final obligatorio. Todos los exámenes serán\n\npresenciales y en formato escrito. Cada examen parcial se podrá recuperar una vez, no admitiéndose la recuperación por falta injustificada a la instancia de Examen Parcial. El Primer Parcial se tomará a mediados del cuatrimestre, el Segundo Parcial al final del mismo. Ambas instancias recuperatorias serán posteriores al Segundo Parcial. Los examenes constan de 5 ejercicios con un puntaje de 2 (dos) puntos cada uno. Los ejercicios combinan modalidades de respuesta corta (e.g. opción múltiple, respuesta numérica y respuesta breve) con la modalidad de desarrollo completo, pudiendo las combinaciones variar según la instancia de examen. El objetivo de los exámenes parciales es verificar la incorporación de los conceptos matemáticos adquiridos hasta el momento del examen, priorizándose la evaluación de la capacidad de resolución de problemas prácticos como los entrenados a lo largo del curso. El Examen Final busca evaluar comprensivamente los contenidos aprendidos en el curso, haciéndose hincapié en la comprensión cabal de los fundamentos conceptuales y la capacidad de resolución de problemas concretos.\n\nRequisitos de aprobación: La aprobación de la materia requiere tanto la aprobación de la Cursada como del Examen Final obligatorio. Para aprobar la cursada se requiere tener aprobados ambos Exámenes Parciales, con una nota de 4 (cuatro) o superior, ya sea en la instancia inicial o en recuperatorio. Para aprobar el Examen Final se requiere una nota de 4 (cuatro) o superior en el mismo. El Examen Final no admite instancia recuperatoria.",
+    "bibliografiaObligatoria": [
+      "Marsden, J. & Tromba, A. (1998): Cálculo Vectorial, 4ta Ed., Addison Wesley Longman, Pearson.",
+      "Apostol, T. M. (1999), Calculus. Volumen 2, Reverté.",
+      "Spivak, M. (1972), Cálculo en Variedades, Reverté."
+    ],
+    "bibliografiaComplementaria": [
+      "Rey Pastor, J., Pi Calleja, P. & Trejo, C. (1961): Análisis Matemático. Volumen II, Editorial Kapelusz",
+      "Lages Lima, E. (1981), Curso de Análise, Volume 2, IMPA."
+    ],
+    "pdf": "/electivas-fichas/93.28.pdf"
+  },
+  "93.35": {
+    "codigo": "93.35",
+    "materia": "Lógica Computacional",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2025",
+    "carrera": "Ingeniería Industrial / Ingeniería en Informática /",
+    "actualizado": "26/2/2025 12:38:15",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 68,
+      "practicas": 34,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Lógica simbólica. Algebra de Boole. Lenguajes de primer orden. Términos y fórmulas. Lenguajes con igualdad. Interpretaciones de los lenguajes de primer orden. Valuaciones. Interpretación de términos y fórmulas. Variables libres y ligadas. Enunciados. Un sistema de axiomas para el cálculo de predicados. Noción de prueba. Computabilidad: “Halting Problem”",
+    "presentacion": "Esta materia del departamento de Matemática, se dicta en el 2do año de Ingeniería Informática. Se trata de un curso introductorio a Lógica Proposicional, Lógica de Primer Orden y Teoría de Computabilidad con el enfoque de Church. Los propósitos principales son: afianzar y profundizar el manejo del lenguaje simbólico adquirido en Algebra y adquirir esquemas de razonamientos válidos para aplicar en diferentes áreas de la carrera y la vida profesional. Dado el gran nivel de abstracción que se requiere en esta materia, se encuadran los temas anticipando en que materias de los últimos años van a aplicar estos temas, contando muchas de las aplicaciones que tienen. La materia consta de 6 horas de cursada presencial.",
+    "objetivos": "- Adquirir nociones básicas de cardinalidad - Resolver problemas de Lógica Proposicional y Lógica de Primer orden. - Resolver problemas de computabilidad. - Realizar las demostraciones de forma clara, mencionando todas las argumentaciones necesarias. - Adquirir soltura en la utilización del lenguaje simbólico",
+    "programa": [
+      {
+        "titulo": "Cardinalidad",
+        "descripcion": "Definición de conjuntos coordinables. Definición de cardinales, operaciones entre cardinales y relaciones entre los cardinales."
+      },
+      {
+        "titulo": "Lógica Proposicional",
+        "descripcion": "El lenguaje del cálculo proposicional. Fórmulas y cadenas de formación. Subfórmulas. Complejidad de una fórmula. Valuaciones. Tautologías, contingencias y contradicciones. Satisfacibilidad. Consecuencia lógica. Teorema de Compacidad. Un sistema de axiomas. Noción de prueba. Fórmulas demostrables. Teorema de la deducción. Teorema de Completitud. Algebras de Boole y relación con el Lenguaje Proposicional."
+      },
+      {
+        "titulo": "Lógica de Primer Orden",
+        "descripcion": "Lenguajes de primer orden. Términos y fórmulas. Lenguajes con igualdad. Interpretaciones de los lenguajes de primer orden. Valuaciones. Conjuntos expresables y elementos distinguibles. Isomorfismos de estructuras."
+      },
+      {
+        "titulo": "Computabilidad",
+        "descripcion": "El lenguaje S. Programas. Función computable por un programa. Funciones Recursivas Primitivas. Tesis De Church. Codificación De Programas. El problema de la parada: un ejemplo de función no computable. Programas Universales."
+      }
+    ],
+    "estrategias": "La estrategia más utilizada es la de resolución de problemas, pues es la más adecuada para afianzar los conceptos teóricos y los métodos de resolución, como así también aprender a plasmar de forma escrita un razonamiento lógico. En algunos temas, se realiza una aproximación al aula invertida, incentivando la intuición de los alumnos para que surja de ellos ideas para la resolución de problemas. Se espera que los estudiantes aborden por su cuenta Algebra de Boole, para evaluar la autonomía a la hora de aprender un tema sin una explicación previa. Dado que este tema lo estudian solos, ponemos luego espacios de consulta para que puedan validar si lo comprendieron correctamente.",
+    "evaluacion": "Modalidad de evaluación: Se toman dos parciales. Para aprobar la cursada hay que aprobar ambos parciales. Se pueden recuperar ambos parciales una única vez . Hay una sola fecha de recuperatorio, en el caso de tener que recuperar ambos parciales, lo harán en la misma fecha y en el mismo tiempo que si tuvieran que recuperar uno solo. Las fechas de los exámenes figuran en el Calendario y Cronograma de la materia. Dichas fechas fueron acordadas con todo el Departamento de Ciencias Exactas y Naturales .\n\nCada examen consta de 5 ejercicios donde se evalúa si el alumno alcanzó los objetivos planteados en la materia.\n\nPara aprobar la materia además de aprobar la cursada hay que aprobar un examen final. El mismo consta de 5 ejercicios a desarrollar. Se evalúa si el alumno alcanzó los objetivos de la materia, profundizando en los conceptos teóricos de la materia y en la forma de plasmar los razonamientos válidos. Uno de los temas que se priorizan en la evaluación final es Algebra de Boole, ya que los estudiantes los abordan solos durante la cursada.\n\nRequisitos de aprobación:\n\nLa condición suficiente para aprobar cualquiera de los exámenes es tener dos ejercicios bien de los cinco propuestos. La nota máxima de un recuperatorio es 4. La nota de cursada es el promedio de los parciales. En el caso de recuperar un parcial, se reemplaza la nota del parcial por la del recuperatorio, si es te último lo aprobó y sino por el promedio entre el parcial y el recuperatorio.",
+    "bibliografiaObligatoria": [
+      "Elliot Mendelson. Introduction to Mathematical Logic. Chapman & Hall, cuarta edición, 1997",
+      "M. Davis, R. Sigal and E. Weyuker. Computability, Complexity and Languages: Fundamentals of Theoretical Computer Science. Academic Press, segunda edición, 1994"
+    ],
+    "bibliografiaComplementaria": [
+      "N. Fava. Medida e Integral de Lebesgue, Red Olimipica, 2013",
+      "Carlos Ivorra Castillo. Lógica y Teoría de Conjuntos. No impreso, disponible en http://www.uv.es/ivorra/, 2008",
+      "R. Smullian. First Order Logic. Dover, 1995"
+    ],
+    "pdf": "/electivas-fichas/93.35.pdf"
+  },
+  "93.41": {
+    "codigo": "93.41",
+    "materia": "Física I",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Industrial / Ingeniería Electrónica / Ingeniería Mecánica /\n Ingeniería Naval / Ingeniería en Petróleo / Ingeniería Química / Ingeniería en Informática / Ingeniería Civil /",
+    "actualizado": "11/7/2024 13:45:01",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 34,
+      "practicas": 51,
+      "laboratorio": 17,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Cinemática de la partícula unidimensional y plana. Dinámica de la partícula. Trabajo y energía. Sistemas de partículas. Momento lineal. Cinemática, dinámica y energía en la rotación planar. Roto-traslación planar. Momento angular. Hidrostática e hidrodinámica.",
+    "presentacion": "Física I es una materia obligatoria correspondiente al segundo cuatrimestre del primer año de todas las carreras de ingeniería de la universidad y pertenece al Departamento de Ciencias Exactas y Naturales. Pertenece al bloque de las Ciencias Básicas, las cuales están orientadas a contribuir a la formación lógico-deductiva de los/las estudiantes; a proporcionar el conocimiento fundamental de los fenómenos de la naturaleza incluyendo sus expresiones cuantitativas y desarrollar la capacidad de su empleo en la ingeniería; y a brindar una sólida formación conceptual para el aprendizaje posterior de disciplinas específicas. En la materia los/las estudiantes abordarán los conocimientos básicos y fundamentales vinculados con la mecánica clásica, tanto de partículas como de sistemas y cuerpos rígidos, así como también las nociones fundamentales de la mecánica de fluidos. El diseño de la materia está pensado para estudiantes con conocimientos básicos de un curso inicial de cálculo y álgebra vectorial, por lo cual los temas son desarrollados en base a estos requerimientos matemáticos, como pueden ser el cálculo de derivadas e integrales elementales, operaciones con vectores, producto escalar y producto vectorial. Al ser una materia del ciclo básico de las distintas carreras, se toman especialmente en cuenta los aspectos didácticos, de tal manera de reforzar gradualmente en el alumno la habilidad para la modelización y conceptualización de fenómenos complejos, situación que se necesita cada vez más en el desarrollo de la actividad profesional de un\n\ningeniero.",
+    "objetivos": "En Física I se espera que los/las estudiantes logren: • Conocer las ideas y conceptos involucrados en los principios de la mecánica Newtoniana. • Interpretar las situaciones problemáticas propuestas y traducir esas situaciones en un conjunto de ecuaciones matemáticas que las representen adecuadamente. • Aplicar métodos de cálculo diferencial e integral en la resolución de ecuaciones que representen situaciones físicas. • Analizar los resultados obtenidos e identificar aquél que es compatible con el planteo físico del problema. • Diseñar experiencias de laboratorio que permitan determinar magnitudes y/o analizar el comportamiento de sistemas mecánicos sencillos. • Evaluar los resultados obtenidos tanto en problemas teóricos como en situaciones experimentales y obtener conclusiones a partir de los mismos. • Incorporar hábitos de trabajo en equipo y presentación de informes y adquirir habilidades de lectura, búsqueda de información y exposición pública de temas.",
+    "programa": [
+      {
+        "titulo": "Cinemática de la partícula",
+        "descripcion": "Cinemática unidimensional. Sistema de coordenadas, partícula, vector posición, vector desplazamiento. Trayectoria. Ecuaciones horarias. Velocidad media, velocidad instantánea, aceleración media, aceleración instantánea.Interpretaciones geométricas. Cinemática bi y tridimensional. Vectores posición y desplazamiento.Vectores velocidad media e instantánea. Vectores aceleración media e instantánea. Tiro oblicuo. Aceleraciones media y tangencial."
+      },
+      {
+        "titulo": "Dinámica de la partícula",
+        "descripcion": "Leyes de Newton del movimiento. Tipos de fuerzas. Ligaduras. Fricción; fuerza de roce estática y cinética. Movimiento de sólidos en fluidos."
+      },
+      {
+        "titulo": "Trabajo y energía",
+        "descripcion": "Definición de trabajo. Trabajo de la fuerza peso. Trabajo de la fuerza ejercida por un resorte. Potencia. Energía cinética. Teorema del trabajo - energía cinética. Fuerzas conservativas. Energía potencial. Energía mecánica. Teorema de conservación de la energía mecánica. Sistemas conservativos unidimensionales."
+      },
+      {
+        "titulo": "Momento lineal y colisiones",
+        "descripcion": "Definición. Segunda ley de Newton para una partícula. Sistemas de partículas. Centro de masa. Cálculo del centro de masa. Segunda ley de Newton para un sistema de partículas. Teorema de conservación del momento lineal. Definición de colisión. Clasificación de las colisiones. Colisiones unidimensionales elásticas. Colisiones unidimensionales inelásticas. Coeficiente de restitución. Colisiones bidimensionales."
+      },
+      {
+        "titulo": "Cuerpo rígido",
+        "descripcion": "Definición de cuerpo rígido. Traslación pura, rotación pura, roto - traslación. Cinemática de la rotación pura planar. Dinámica de la rotación pura planar. Momento de inercia rotacional. Cálculo de momentos de inercia. Teorema de los ejes paralelos. Momento de una fuerza. Relación entre el momento de una fuerza y la aceleración angular. Roto - traslación. Energía cinética de roto - traslación. Roto - traslación sin deslizamiento (rodadura). Momento angular de una partícula; definición. Momento angular de un sistema de partículas. Teorema de conservación del momento angular."
+      },
+      {
+        "titulo": "Introducción a la mecánica de fluidos",
+        "descripcion": "Definición de fluido. Teorema fundamental de la Hidrostática. Teorema de Pascal. Principio de Arquímedes. Definición de línea de corriente. Concepto de régimen estacionario. Caudal o gasto. Ecuación de continuidad. Teorema de Bernouilli. Teorema de Torricelli."
+      }
+    ],
+    "estrategias": "Clases teóricas y teórico-prácticas expositivas, donde se trabaja relevando los conocimientos previos de los/las estudiantes para que luego puedan construir una nueva manera de interpretar la realidad, a la luz de las diferentes teorías. La participación activa de los/las estudiantes involucrándose en la temática a tratar e interpretando la información que se brinda busca la modificación de la estructura cognitiva de los mismos. Clases prácticas donde se trabaja en la resolución de problemas y se promueve el trabajo grupal colaborativo, favoreciendo la reelaboración de conceptos y la metacognición. Puesta en común en el pizarrón de lo producido por los alumnos de manera grupal, para analizar, comparar y si fuera necesario corregir estrategias y procedimientos en la resolución de problemas. Clases experimentales de laboratorio, tanto demostrativas como de ejecución grupal de diferentes experiencias, tanto predeterminadas como de diseño. Aula invertida para fomentar el trabajo autónomo de los estudiantes en temas específicos.",
+    "evaluacion": "Modalidad de evaluación: Durante la cursada de la materia se tomarán 4 parcialitos y se realizarán cinco trabajos de laboratorio. Cada parcialito consistirá de un solo problema y se tomará en cada comisión en el día indicado en el respectivo cronograma. Los parcialitos sólo se corregirán como bien o mal, asignando un puntaje de medio punto al parcialito bien resuelto y cero puntos al parcialito mal resuelto. Únicamente se considerará bien cuando el planteo y la respuesta sean correctas. Los parcialitos no se pueden recuperar o diferir. En caso de ausencia (por el motivo que fuere) no habrá una fecha adicional. Si bien llevan calificación numérica, la función central de los parcialitos es formativa: identificar dificultades de manera temprana y trabajar sobre las mismas.\n\nLos parcialitos 1 y 2 sumarán nota al primer parcial, siempre que la calificación del primer parcial sea mayor o igual a 4.\n\nLos parcialitos 3 y 4 sumarán nota al segundo parcial, siempre que la calificación del segundo parcial sea mayor o igual a 4. Los parcialitos no sumarán nota en los recuperatorios.\n\nEn cuanto a los trabajos de laboratorio es requisito indispensable la aprobación de los informes y/o de las memorias de cálculo para aprobar la cursada. El profesor a cargo de la corrección de los trabajos prácticos en cada comisión informará una calificación final para cada grupo, dentro de las siguientes posibilidades: • Mal. En este caso debe recursar la materia. • Regular. En este caso se lo considera aprobado, pero con falencias y resta 0,5 puntos a la nota final de cursada (solo si la nota de cursada es mayor o igual a 4,5). • Bien. En este caso se considera que aprobó de manera correcta. No suma ni resta a la nota de cursada. • Sobresaliente. En este caso se distingue la labor del grupo sumando 0,5 puntos a la nota de cursada (solo si la nota de cursada es mayor o igual a 4 y menor a 10).\n\nLas evaluaciones de recapitulación (sumativas) serán los parciales y los finales. Dichas evaluaciones se tomarán de manera unificada para los alumnos de todas las comisiones. En todos los casos consistirán de 4 problemas y se dispondrá de 2 horas y 30 minutos para resolverlos.\n\nExisten cuatro categorías para calificar cada problema: bien, bien-, regular o mal.\n\nPara aprobar un examen parcial o final es condición necesaria tener al menos dos problemas bien o bien-\n\nSe considera un problema bien resuelto cuando tanto el planteo como la resolución y la respuesta de este son correctas y todo está claramente escrito en la hoja. La respuesta debe tener las unidades correspondientes.\n\nSe considera bien- un problema que tiene el planteo correcto y alguna falla menor en la resolución o en la respuesta. Típicamente se considera falla menor un error de cuentas o la falta de unidades en una respuesta. A modo de ejemplo, no se consideran fallas menores a aquellas que llevan a un resultado absurdo, ya sea porque la falla lleva a sumar magnitudes con diferentes unidades o porque el resultado no es compatible con el enunciado del problema.\n\nSe considera regular aquel problema que tiene alguna falla en parte de su planteo, pero que no implique un resultado físicamente absurdo. Para ser considerado regular debe tener una única respuesta con sus correspondientes unidades.\n\nSe considera mal a aquel problema que tiene una falla en su planteo físico, así como también a aquel problema que tiene un resultado físicamente imposible o bien que directamente no tiene resultado.\n\nRequisitos de aprobación: Para aprobar la cursada de la materia se deberá tener una calificación mayor o igual a 4 puntos en cada uno de los exámenes parciales y tener los trabajos de laboratorio aprobados.\n\nEn caso de tener sólo uno de los parciales con una nota menor a 4 se podrá acceder al recuperatorio de dicho parcial. Para ello es requisito indispensable que el otro parcial y los trabajos de laboratorio se encuentren aprobados. El formato de dicho examen y la metodología de corrección será idéntica a la de los parciales.\n\nLa nota final de cursada se obtendrá de promediar todas las calificaciones obtenidas durante el cuatrimestre (que pueden ser 2 o 3, según haya rendido recuperatorio o no).\n\nEn caso de cumplir con la condición de aprobación y que dicho promedio arroje un número menor a 4, la nota de cursada será 4.\n\nEn caso de no cumplir con la condición de aprobación, independientemente del número que surja del promedio mencionado anteriormente, la calificación máxima será de 3 puntos.\n\nLa nota final de cursada puede verse modificada, según se explicó anteriormente, por la calificación obtenida en los\n\ntrabajos de laboratorio.",
+    "bibliografiaObligatoria": [
+      "Raymond A. Serway, John W. Jewett. Física para ciencias e ingeniería. 10a ed. Volumen 1. México, D.F.: Cengage Learning, 2018."
+    ],
+    "bibliografiaComplementaria": [
+      "Paul Tipler,Gene Mosca. Física para la Ciencia y la Tecnología. - 6º ed., Volumen 1. Barcelona, España: Reverté, 2010. Phillip J. Cornwell , Ferdinand P. Beer , E. Russell Johnston y Brian P. Self: Mecánica Vectorial para Ingenieros. Dinámica. 12a ed. México, D.F.: McGraw-Hill, 2021."
+    ],
+    "pdf": "/electivas-fichas/93.41.pdf"
+  },
+  "93.42": {
+    "codigo": "93.42",
+    "materia": "Física II",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Industrial / Ingeniería Electrónica / Ingeniería Mecánica /\n Ingeniería Naval / Ingeniería en Petróleo / Ingeniería Química / Ingeniería en Informática / Ingeniería Civil /",
+    "actualizado": "14/8/2024 16:42:21",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 34,
+      "practicas": 48,
+      "laboratorio": 20,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Oscilaciones armónicas, amortiguadas y forzadas. Ondas propagantes y estacionarias. Propagación de la luz y leyes de reflexión y refracción. Lentes y espejos. Interferencia y difracción. Calorimetría y transmisión de calor. Primer y segundo principio de la Termodinámica. Máquinas térmicas.",
+    "presentacion": "Esta materia del departamento de Física se dicta en el segundo año del ciclo básico de todas las carreras de ingeniería del ITBA. Este es un curso de física elemental en el que se desarrollan contenidos referidos a oscilaciones, ondas y a la óptica, en el que se manejan esquemas conceptuales básicos de la física, como son los de partícula, onda, energía, entre otros. Además de que entender la naturaleza de la luz ha sido uno de los ejes del desarrollo de la ciencia desde la época de la Grecia clásica hasta nuestros días El propósito central es presentar un curso que subraye vigorosamente los fundamentos físicos y fenómenos ópticos principales y cómo se formulan los diversos modelos físicos que los explican, sus hipótesis subyacentes y los límites para su aplicación, que sirvan de base para cursos posteriores de esta disciplina, así como de otras que se relacionen con estas. El mismo está pensado para alumnos con conocimientos básicos de un curso inicial de cálculo y álgebra vectorial, por lo cual los temas son desarrollados en base a estos requerimientos matemáticos, como pueden el cálculo de derivadas e integrales elementales, operaciones con vectores, producto escalar y producto vectorial. Al ser una materia del ciclo básico de las distintas carrera, se toman especialmente en cuenta los aspectos didácticos, de tal manera de reforzar gradualmente en el alumno la habilidad para la modelización y conceptualización de fenómenos complejos, situación que se necesita cada vez más en el desarrollo de la actividad profesional de un\n\ningeniero. En esta misma línea, la bibliografía proporcionada brinda la posibilidad de acceso a muchos ejemplares en la biblioteca de la universidad, así como también de material adicional a través de internet. Entendemos que este tipo de cursos es fundamental para la comprensión de conceptos que se trabajarán y profundizarán en instancias futuras de la formación, junto con las herramientas matemáticas correspondientes.",
+    "objetivos": "Al finalizar la materia, se espera que los alumnos sean capaces de: a) aplicar las habilidades adquiridas en cursos de matemática al estudio de situaciones problemáticas; b) reflexionar en forma crítica sobre observaciones y resultados obtenidos; c) entender el doble carácter corpuscular y ondulatorio atribuido a la luz a lo largo de la historia; d) identificar los principios físicos esenciales que intervienen en un fenómeno óptico, conocer su soporte experimental y aplicar un modelo matemático del mismo, así como conocer brevemente las características de su desarrollo; e) hacer estimaciones de órdenes de magnitud y, en consecuencia, hacer aproximaciones razonables que permitan simplificar el modelo hasta niveles manejables, sin perder los aspectos esenciales del mismo.",
+    "programa": [
+      {
+        "titulo": "Oscilaciones",
+        "descripcion": "Oscilaciones mecánicas y no mecánicas. Movimiento armónico simple; resorte y péndulo simple. Oscilador libre amortiguado. Factor de calidad. El oscilador forzado. Resonancias."
+      },
+      {
+        "titulo": "Ondas",
+        "descripcion": "Tipos de ondas. Onda propagante no dispersiva. Ondas sinusoidales. Velocidades. La ecuación de la onda. Energía y potencia. Principio de superposición. Ondas estacionarias. Ondas en cuerdas con extremos fijos y/o libres; nodos y antinodos, espectro de frecuencias, modos normales de oscilación."
+      },
+      {
+        "titulo": "Óptica geométrica",
+        "descripcion": "Rayo de luz. Propagación rectilínea y dispersión de la luz. Aproximación de la óptica geométrica. Índice de refracción. Leyes básicas de la óptica geométrica. Reflexión total interna. Fibras ópticas."
+      },
+      {
+        "titulo": "Dispositivos ópticos",
+        "descripcion": "Definiciones. Convenciones. Aproximación paraxial. Dioptras esféricas y planas. Lentes delgadas. Espejos esféricos y planos. Focos y potencia. Construcciones gráficas. Planos focales. Tipos de objetos e imágenes. Aumento transversal. Aplicaciones."
+      },
+      {
+        "titulo": "Interferencia",
+        "descripcion": "Cálculo del campo luminoso en un punto. Cálculo de la diferencia de camino geométrico, óptico y diferencia de fase. Fuentes luminosas coherentes e incoherentes. Interferómetro de Young. Láminas delgadas de caras paralelas. Franjas de igual espesor. descripción. Anillos de Newton. Aplicaciones."
+      },
+      {
+        "titulo": "Difracción",
+        "descripcion": "Difracción en una rendija: planteo, aproximaciones iniciales, distancia ranura - pantalla de observación, campo luminoso en un punto del plano de observación, intensidad luminosa detectada, ubicación de los mínimos de intensidad y semi-ancho angular del máximo principal. Difracción por dos rendijas: planteo, campo luminoso en un punto del plano de observación, intensidad luminosa detectada, localización de máximos y mínimos, número de máximos de interferencia dentro de la campana principal de difracción y órdenes faltantes de interferencia."
+      },
+      {
+        "titulo": "Redes de difracción",
+        "descripcion": "Definición. Tipos de redes. Campo eléctrico en el punto de observación. Intensidad luminosa. Características de la intensidad luminosa: máximos principales y secundarios. Espectroscopía con red: órdenes de la red, dispersión angular y poder de resolución cromático. Criterio de resolución."
+      },
+      {
+        "titulo": "Termodinámica",
+        "descripcion": "Termometría, calorimetría, dilatación, transferencia de calor, 1er y 2do principios de la termodinámica, máquinas térmicas y refrigeradoras, eficiencia y rendimiento."
+      }
+    ],
+    "estrategias": "La enseñanza de la materia se desarrolla a través de tres actividades formativas. 1) Clases teóricas en las que se desarrollan los temas correspondientes a cada unidad, haciendo hincapié en el modelo físico de aplicación, sus restricciones y aproximaciones, así como en su soporte experimental, aplicaciones tecnológicas y nociones históricas de su desarrollo. Se llevan a cabo clases expositivas, con presentación de imágenes y simulaciones pertinentes, y ocasionalmente se desarrollarán instancias de aprendizaje cooperativo, ya sea en una discusión general o en pequeños grupos de algún tema en particular de la clase. 2) Clases de problemas en las que se explican algunos problemas modelo, resaltando las técnicas matemáticas y/o aproximaciones utilizadas. Luego se proponen otros a resolver por los alumnos, ya sea individualmente o en pequeños grupos, como una forma de fomentar aun más el aprendizaje cooperativo y mejorar habilidades de argumentación y reflexión crítica acerca de los resultados obtenidos. 3) Clases de laboratorio en las se aplican los conocimientos teóricos a situaciones concretas y se desarrollan habilidades básicas de adquisición de datos y presentación de resultados, y en las que se introduce a los alumnos en el uso de diversos instrumentos de medición.",
+    "evaluacion": "Modalidad de evaluación: A lo largo de la materia se evaluará el proceso de aprendizaje de los alumnos a partir de su participación en clase, en la que se espera que lo hagan en forma activa y comprometida, en especial en las actividades de discusión y en los trabajos de laboratorio, así como en las consultas realizadas, en forma personal o virtual, sobre guías de ejercicios y trabajos prácticos. de esta manera se tiene puede evaluar cualitativamente el grado de avance en la apropiación de los contenidos y el desarrollo de habilidades requeridas. Para evaluar el producto del aprendizaje, los alumnos también deberán: 1) rendir dos exámenes parciales de carácter individual, en los que se evalúa su capacidad para resolver ejercicios similares a los de las guías de problemas, el correcto planteo de las ecuaciones fundamentales y empleo de técnicas matemáticas para resolverlas, la coherencia lógica de los resultados; 2) rendir un examen final también individual, en el que se evalúa el grado de comprensión de los principios físicos presentados en la materia y los modelos físicos desarrollados, su correcto uso respecto de los límites de aplicación y aproximaciones realizadas; 3) realizar cuatro trabajos prácticos de laboratorio, de carácter grupal, en los que se evalúa la participación activa y comprometida de los alumnos durante el desarrollo de la práctica, su capacidad para el trabajo en grupo, el uso adecuado de los instrumentos de medición y de las herramientas informáticas para la presentación de resultados y del informe correspondiente, del que se analizan la claridad y prolijidad de su diagramación y redacción, el cálculo correcto de incertezas, la comprensión y correcta identificación de los fenómenos físicos involucrados, según se interpreta de las discusiones y conclusiones presentadas en el informe, así como la puntualidad en la entrega del mismo. Los alumnos reciben una devolución a continuación de cada instancia acerca de su desempeño.\n\nRequisitos de aprobación: a) Para aprobar la materia, se deben cumplir los siguientes requisitos: · aprobar los dos exámenes parciales, · tener aprobados todos los trabajos prácticos de laboratorio, · una vez cumplidos los dos requisitos anteriores, aprobar un examen final. En el caso no aprobar exámenes parciales, se puede recuperar uno solo de ellos en la fecha indicada por la cátedra para tal fin. Todos los exámenes y recuperatorios y trabajos de laboratorio se aprueban con un mínimo de 4 (cuatro) puntos sobre un total de 10 (diez). b) La nota de cursada (C) resultará de un promedio ponderado entre la calificación correspondiente a los exámenes parciales (P1 y P2) y la correspondiente al laboratorio (L). En símbolos: C = 0.75 (P1+P2)/2 + 0.25 L En el caso de recuperar un examen parcial, la nota del examen recuperatorio reemplaza a la del parcial correspondiente (P1 o P2) en el cálculo de C c) Si figuran como ausente en ambos parciales o en alguna de las prácticas de laboratorio, tendrá ausente como nota de cursada. d) En el caso de que no se haya aprobado algún parcial ni su respectivo recuperatorio, pero el cálculo de la nota de cursada (C) sea un número mayor o igual a 4, la misma será fijada en 3. e) La nota correspondiente al laboratorio (L) será un número entero que refleje el desempeño del alumno en el laboratorio. f) La nota correspondiente a la cursada (C) será redondeada según el siguiente criterio: · si la parte decimal es menor o igual que 0,25, se pasará al entero inmediatamente inferior; · si está comprendida entre 0,26 y 0,74, la parte decimal quedará en 0,50; · si es mayor o igual a 0,75, la nota se llevará al entero superior más cercano. g) La nota del examen final (F) debe ser un número entero entre 1 (uno) y 10 (diez), para lo cual se aplicará el siguiente criterio de redondeo: · si la nota del final es menor que 3, se redondeará al entero inmediato superior; · si la nota está entre 3 y 4, se redondeará a 3;\n\n· si la nota es menor que 8,5 y la nota de cursada es menor que la nota del final, se redondeará al entero inferior más cercano, mientras que si la nota de cursada es mayor a la nota del final, se redondeará al entero inmediato superior; · si la nota es mayor o igual que 8,5, se redondeará al entero inmediato superior.",
+    "bibliografiaObligatoria": [
+      "Apuntes de cátedra"
+    ],
+    "bibliografiaComplementaria": [
+      "Serway R, Jewett Jr. J. \"Física para ciencias e ingeniería\", 10ma ed., Cengage Learning, 2018.",
+      "Young HD, Freedman RA, Sears FW, Zemansky MW. \"Física universitaria\", 14ta ed., Pearson, 2014.",
+      "Tipler P, Mosca G. \"Física para la ciencia y la tecnología\", 6ta ed., Reverté, 2010.",
+      "Knight R. \"Physics for scientist and engineers\", 4ta ed., Pearson, 2017.",
+      "Hecht E. \"Óptica\", 5ta ed., Pearson, 2017.",
+      "Çengel Y, Boles M. \"Termodinámica\", 8va ed., McGraw-Hill, 2015",
+      "Crawford F. \"Ondas\" (curso de física de Berkeley, vol.3), Reverté, 1994.",
+      "Fermi E. \"Termodinámica\", 2da ed, Eudeba, 1968."
+    ],
+    "pdf": "/electivas-fichas/93.42.pdf"
+  },
+  "93.43": {
+    "codigo": "93.43",
+    "materia": "Física III",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Industrial / Ingeniería Electrónica / Ingeniería Mecánica /\n Ingeniería Naval / Ingeniería en Petróleo / Ingeniería Química / Ingeniería en Informática / Ingeniería Civil",
+    "actualizado": "30/6/2024 10:40:07",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 34,
+      "practicas": 34,
+      "laboratorio": 34,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Campo eléctrico y potencial. Capacitores. Conductores metálicos. Circuitos de Corriente continua. Campo magnético. Inducción electromagnética. Movimientos de partículas cargadas en campos eléctricos y magnéticos. Materiales eléctricos y magnéticos. Corriente alterna. Ecuaciones de Maxwell. Ondas electromagnéticas en el vacío. Introducción a la Relatividad Especial de Einstein.",
+    "presentacion": "Física III es una materia cuatrimestral obligatoria que forma parte del programa del segundo año de todas las carreras de Ingeniería dictadas en el ITBA. Se trata de un curso introductorio de Electricidad y Magnetismo que presenta a los alumnos el desarrollo de las ideas fundamentales de la física de los fenómenos involucrados. La descripción matemática de las teorías abordadas durante el curso requiere de conocimientos básicos de Cálculo Diferencial e Integral en varias variables, Álgebra Lineal y métodos de resolución de Ecuaciones Diferenciales Ordinarias. También se requiere el cursado previo de Física I. Uno de los propósitos centrales de la materia es contribuir a la formación básica de los estudiantes a través de la comprensión profunda de los fenómenos físicos estudiados. Las herramientas adquiridas durante el curso permitirán a los alumnos enfrentar desde la perspectiva del Método Científico de las Ciencias Naturales los problemas nuevos que con seguridad encontrarán durante el ejercicio de sus profesiones. El enfoque sigue el devenir histórico de las ideas físicas vinculadas a los fenómenos eléctricos y magnéticos, desde la fuerza electrostática, el concepto de campo eléctrico introducido por Faraday, la relación entre campo eléctrico y magnético evidenciada en la Ley de Inducción, las aplicaciones en teoría de circuitos de Corriente Continua y Alterna, hasta la síntesis plasmada por Maxwell en sus célebres ecuaciones. Por último, se plantea el conflicto entre la\n\nMecánica Clásica y el Electromagnetismo, que desencadena la gran revolución introducida por la Relatividad Especial de Einstein.",
+    "objetivos": "• Adquirir los conceptos de Campo Eléctrico y Magnético, sus propiedades, diferencias y las técnicas matemáticas involucradas en su obtención para distintas configuraciones de fuentes. • Emplear las simetrías propias de un problema físico para simplificar su resolución (Leyes de Gauss y Ampère). • Incorporar los conceptos físicos de resistencia eléctrica, capacitancia e inductancia y la conservación de la carga eléctrica y la energía (Leyes de Kirchhoff) para el análisis de circuitos simples tanto de Corriente Continua como Alterna. • Desarrollar habilidades experimentales y de búsqueda de relaciones cuantitativas al analizar fenómenos físicos. • Comprender los alcances del aporte introducido por Maxwell a través de su síntesis del electromagnetismo y su íntima relación con la revolución introducida por la Relatividad Especial de Einstein.",
+    "programa": [
+      {
+        "titulo": "Unidad I: Electrostática",
+        "descripcion": "Propiedades de las cargas eléctricas. Triboelectricidad. Inducción electrostática. Ley de Coulomb. Campo eléctrico. Cálculo de campo eléctrico producido por una carga puntual, por un conjunto de cargas puntuales y por una distribución continua de carga. Flujo del campo eléctrico. Ley de Gauss. Aplicaciones de la Ley de Gauss. Potencial eléctrico. Energía potencial eléctrica. Conductores en equilibrio electrostático."
+      },
+      {
+        "titulo": "Unidad II: Condensadores y dieléctricos",
+        "descripcion": "Capacidad de un conductor. Condensador de placas paralelas, cilíndrico y esférico. Energía almacenada en un condensador cargado. Densidad de energía. Comportamiento de un dipolo eléctrico puntual en un campo eléctrico exterior. Condensadores con dieléctrico."
+      },
+      {
+        "titulo": "Unidad III: Circuitos de corriente continua.",
+        "descripcion": "Corriente eléctrica. Intensidad de corriente eléctrica. Densidad de corriente. Ley de Ohm puntual y macroscópica. Resistencia eléctrica. Modelo clásico de la conducción eléctrica. Potencia eléctrica. Fuerza electromotriz. Circuitos de corriente continua. Resistencias en serie y en paralelo. Instrumentos de medición: amperímetro, voltímetro y óhmetro. Leyes de Kirchhoff. Carga y descarga de un condensador."
+      },
+      {
+        "titulo": "Unidad IV: Campo magnético",
+        "descripcion": "Fuentes de campo magnético. Vector inducción magnética. Movimiento de una partícula cargada en campos eléctricos y magnético. Selector de velocidades. Fuerza magnética sobre un conductor con corriente eléctrica. Momento de una espira con corriente en un campo magnético. El efecto Hall. Ley de Biot-Savart. Aplicaciones. Fuerza entre circuitos con corriente eléctrica. Ley de Ampere. Aplicaciones. Flujo del vector inducción magnética. Magnetismo en la materia. Campo magnético de la Tierra."
+      },
+      {
+        "titulo": "Unidad V: Ley de Faraday-Lenz",
+        "descripcion": "Ley de inducción de Faraday-Lenz. Aplicaciones. FEM en movimiento. FEM inducida y campos eléctricos. Generadores. Corrientes de Foucault. Autoinducción. Circuito RL. Energía en un campo magnético. Densidad de energía magnética. Mutuainducción. Transformador."
+      },
+      {
+        "titulo": "Unidad VI: Circuitos de corriente alterna",
+        "descripcion": "Circuito RLC serie. Solución compleja. Circuito paralelo. Asociación de impedancias. Condición de resonancia en un circuito serie RLC. Potencia. Triángulo de potencias."
+      },
+      {
+        "titulo": "Unidad VII: Ecuaciones de Maxwell y la Relatividad Especial.",
+        "descripcion": "Ecuaciones de Maxwell. Ondas Electromagnéticas. Conflicto con la Mecánica Clásica. Experimento de Michelson y Morley. Postulados de la relatividad especial. Transformaciones de Lorentz. Contracción de longitudes y dilatación del tiempo. Dinámica relativista. Equivalencia masa-energía."
+      }
+    ],
+    "estrategias": "Los contenidos de la materia se introducen con un enfoque multidimensional que procura recrear el método científico de las Ciencias Naturales: la observación y descripción del fenómeno físico, la formulación de un modelo matemático y, finalmente, la realización de experimentos controlados para poner a prueba las conclusiones extraídas del modelo. Con ello en mente, la estrategia didáctica sigue los siguientes lineamientos: • se presentan a los estudiantes las evidencias observacionales que llevaron a la formulación de un modelo matemático del fenómeno a través de clases expositivas junto con la realización de experimentos demostrativos en Laboratorio, • se proponen instancias asistidas de Resolución de Problemas donde los estudiantes ejercitan con ayuda de sus pares y docentes diversas consecuencias del modelo en problemas concretos, • se plantean experimentos realizados en el Laboratorio con asistencia de docentes, donde los estudiantes comprueban el poder predictivo del modelo, extraen conclusiones y comprenden sus límites de aplicación.\n\nLa materia se dicta con duración cuatrimestral y una carga horaria total de 102 horas, repartidas en: • 34 horas de clases teóricas expositivas en modalidad Virtual Sincrónica, • 34 horas de clases prácticas Presenciales con resolución de problemas pautados en las guías de la materia (una por cada unidad) y trabajo grupal de los alumnos, • 34 horas de clases de Laboratorio Presencial, con experiencias demostrativas y la realización de 4 (cuatro) Trabajos Prácticos grupales. Durante las clases de Laboratorio se presentan a los estudiantes experiencias demostrativas que ilustran los fenómenos físicos estudiados. Para la realización de los Trabajos Prácticos pautados se propone una dinámica grupal en la que los distintos grupos de estudiantes deben realizar las actividades propuestas con los componentes e instrumentos facilitados por la cátedra, tomar mediciones, efectuar el análisis de sus resultados y, finalmente, presentarlos en un informe escrito a ser evaluado por sus docentes.",
+    "evaluacion": "Modalidad de evaluación:\n\nLa evaluación se realizará del siguiente modo: 1.- Se tomarán dos Exámenes Parciales escritos, uno promediando la cursada de la materia y el otro al final de la misma. La finalidad de los exámenes parciales es evaluar la adquisición progresiva de los contenidos de la materia por parte de los alumnos. La Aprobación de la materia se acreditará con un Examen Final también escrito. 2.- Los Trabajos Prácticos de Laboratorio se evaluarán a través de los informes escritos que grupalmente deben entregar los alumnos después de su realización. 3.- En los Exámenes Parciales y Finales sólo se permitirá el uso de elementos para escribir, calculadora y, si fuera necesario, Tabla de Integrales. No se corregirán los exámenes desarrollados en lápiz. 4.- Se podrá recuperar sólo uno de los Exámenes Parciales. El Parcial no aprobado deberá recuperarse a la finalización del curso en la Fecha de Recuperación. 5.- El temario de cada Examen Parcial (y Recuperatorio) contendrá los temas desarrollados hasta la fecha del parcial en clases de teoría-problemas y laboratorio. Podrán contener problemas a resolver, preguntas conceptuales, temas teóricos a desarrollar y preguntas sobre las actividades del laboratorio. 6.- El temario del Examen Final contendrá todos los temas dados durante el cuatrimestre en clases de teoría-problemas y los contenidos vinculados con las actividades del laboratorio. Podrán contener problemas a resolver, preguntas conceptuales, temas teóricos a desarrollar y problemas/preguntas relacionados con las actividades del laboratorio.\n\nRequisitos de aprobación: 1.- Para la Aprobación de la cursada de la materia se deberá: a) Tener realizados y aprobados la totalidad de los Trabajos Prácticos de Laboratorio. b) Aprobados los dos Exámenes Parciales con calificaciones de 4 (cuatro) o superiores. El último requisito se considera junto con la posible recuperación de alguno de los parciales.\n\n• 1.1.- La nota de Cursada Final, para los alumnos que hayan aprobado los Exámenes Parciales sin recuperación, se obtendrá de la siguiente manera: (P1+ P2)/2 • 1.2.- La nota de Cursada Final, para los alumnos que hayan aprobado uno de los Exámenes Parciales con recuperación, se obtendrá de la siguiente manera: a) Si debe recuperar el primero de los parciales: ((P1+ R)/2+ P2)/2 b) Si debe recuperar el segundo de los parciales: (P1+(P2+R)/2)/2 • 1.3.- La nota de Cursada Final, para los alumnos que no hayan aprobado ninguno de los dos parciales se obtendrá con la fórmula primera. • 1.4.- La nota de Cursada Final, para los alumnos que no hayan aprobado un parcial y su respectiva recuperación, se obtendrá con una de las fórmulas indicadas en el punto 1.2. En caso de que la fórmula de como resultado un número mayor o igual a 4 (cuatro), la nota de Cursada Final será 3 (tres). • 1.5.- En el caso que en la fecha del recuperatorio se recupere un examen en el cual el alumno estuvo ausente (justificado o no) y el examen se aprueba, la nota obtenida reemplazará al ausente y se aplicará para la nota de Cursada Final la fórmula primera. • 1.6.- Cuando la nota definitiva del Segundo de los Exámenes Parciales sea Ausente, la nota final de la cursada será Ausente. • 1.7.- Redondeo final de la nota de Cursada Final La nota correspondiente a la Cursada será redondeada según el siguiente criterio: • Si la parte decimal es menor o igual que 0,25 se pasa al entero inmediatamente inferior. • Si la parte decimal está comprendida entre 0,26 y 0,75, esta se deja como 0,50. • Si es mayor a 0,75, la nota se lleva al entero superior más cercano. En el caso de haber aprobada la cursada y la nota de cursado final sea menor que cuatro, se aproximará a cuatro.\n\n2.- Para la aprobación del Examen Final se debe obtener una calificación igual o superior a 4 (cuatro). • 2.1.- Dado que la nota del Examen Final debe ser un número entero, el criterio de redondeo en este caso será: a) Si la nota del Examen Final es igual o mayor a la Nota de Cursada, la misma se redondea al entero inmediatamente superior. b) Si la nota del Examen Final es menor a la nota de cursada, la misma se redondea al entero inmediatamente inferior.",
+    "bibliografiaObligatoria": [
+      "Raymond Serway y John W. Jewett Jr, Física: Electricidad y Magnetismo-10a Edición. Cengage Learning, México, 2019.",
+      "Juan G. Roederer, Electromagnetismo Elemental, 2ª Edición. Editorial Eudeba, Argentina, 2018.",
+      "R. A. Serway, C. J. Moses y C. A. Moyer, Física Moderna, 3ª Edición. Cengage Learning, México, 2010."
+    ],
+    "bibliografiaComplementaria": [
+      "Richard Feynman, Robert Leighton y Matthew Sands, Física Volumen II Electromagnetismo y materia. Addison Wesley Iberoamericana, USA, 1984.",
+      "Francis Sears, Mark Zemansky, Hugh Young y R. Freedman, Física Universitaria II -12va. Edición. Addison Wesley Iberoamericana, USA, 2012.",
+      "Rafael Ferraro, El espacio-tiempo de Einstein, 2da. Edición, Ediciones Cooperativas, Buenos Aires, 2008."
+    ],
+    "pdf": "/electivas-fichas/93.43.pdf"
+  },
+  "93.58": {
+    "codigo": "93.58",
+    "materia": "Álgebra",
+    "creditos": 9,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2025",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "26/2/2025 12:39:15",
+    "cargaHoraria": {
+      "total": 153,
+      "teoricas": 68,
+      "practicas": 85,
+      "laboratorio": 0,
+      "semanales": 9,
+      "presencial": 9,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Teoría de Conjuntos. Combinatoria. Números enteros. Polinomios. Relaciones de recurrencia. Geometría analítica. Algebra Lineal: matrices, sistemas de ecuaciones lineales, eliminación Gaussiana, Rango de una matriz, espacios vectoriales, subespacios, independencia lineal, bases y dimensión.",
+    "presentacion": "Esta materia del departamento de Ciencias Exactas y Naturales, se dicta en el 1er año de Ingeniería Informática. Se trata de un curso introductorio a diversos temas de Matemáticas Discretas (relaciones, teoría de enteros, combinatoria, relaciones de recurrencia) y de Algebra Lineal. Los propósitos principales son: iniciarse en el lenguaje simbólico y empezar a plasmar en papel razonamientos válidos. Dado que los temas de esta materia se utilizarán en muchas otras de la carrera, se encuadran los temas anticipando en que otras materias van a aplicar estos temas, contando muchas de las aplicaciones que tienen. La materia consta de 9 horas de cursada presencial.",
+    "objetivos": "- Clasificar relaciones y funciones. - Resolver problemas de conteo - Resolver problemas de teoría de enteros - Resolver relaciones de recurrencias - Adquirir manejo de sumatorias - Resolver problemas con polinomios y matrices - Resolver problemas básicos de Algebra Lineal - Realizar demostraciones sencillas de forma clara, aclarando las argumentaciones necesarias. - Adquirir manejo del lenguaje simbólico",
+    "programa": [
+      {
+        "titulo": "Conjuntos, Relaciones y Funciones",
+        "descripcion": "Operaciones con conjuntos. Propiedades. Relaciones. Clasificación. Clases de equivalencia. Funciones. Clasificación"
+      },
+      {
+        "titulo": "Combinatoria",
+        "descripcion": "Principios de conteo. Variaciones y combinaciones. Permutaciones con repetición. Números combinatorios."
+      },
+      {
+        "titulo": "Enteros",
+        "descripcion": "Estructura de anillo. Divisibilidad. Números primos y compuestos. Máximo común divisor. Algoritmo de Euclídes. Mínimo común múltiplo. Teorema fundamental de la aritmética. Ecuaciones diofánticas. Congruencias. Pequeño teorema de Fermat"
+      },
+      {
+        "titulo": "Polinomios",
+        "descripcion": "Funciones polinómicas. Operaciones con polinomios. Divisibilidad. Algoritmo de división. Polinomios irreducibles. Teorema fundamental de la aritmética. Derivada formal y raíces múltiples."
+      },
+      {
+        "titulo": "Relaciones de Recurrencia",
+        "descripcion": "Problemas que conducen a relaciones de recurrencia. Resolución de relaciones de recurrencia de primer orden. Relaciones de recurrencia lineales homogéneas e inhomogéneas de orden superior."
+      },
+      {
+        "titulo": "Sistemas de Ecuaciones Lineales",
+        "descripcion": "Sistemas de ecuaciones lineales. Matrices asociadas. Eliminación Gaussiana. Rango de una matriz. Operaciones matriciales. Inversa de una matriz."
+      },
+      {
+        "titulo": "Espacios Vectoriales",
+        "descripcion": "Espacios vectoriales. Subespacios. Independencia lineal. Bases y dimensión."
+      }
+    ],
+    "estrategias": "La estrategia utilizada es la de resolución de problemas. Es la que consideramos más adecuada para afianzar los conceptos teóricos y los métodos de resolución, como así también aprender a plasmar de forma escrita un razonamiento lógico. Teniendo en cuenta que la materia se dicta en el primer cuatrimestre de primer año de la carrera de Ingeniería en Informática, se realizan clases participativas. Dichas clases constan de algunos ejercicios que se plantean en el pizarrón y se les pregunta a los alumnos cómo lo resolverían, dando lugar a varias respuestas y analizando cada una de ellas. De la misma manera trabajamos con algunas demostraciones (razonamientos lógicos).",
+    "evaluacion": "Modalidad de evaluación: Se toman dos parciales. Para aprobar la cursada hay que aprobar ambos parciales. Se pueden recuperar ambos parciales una única vez . Hay una sola fecha de recuperatorio, en el caso de tener que recuperar ambos parciales, lo harán en la misma fecha y en el mismo tiempo que si tuvieran que recuperar uno solo. Las fechas de los exámenes figuran en el Calendario y Cronograma de la materia. Los exámenes son en horario de clase . Cada examen consta de 5 ejercicios donde se evalúa si el alumno alcanzó los objetivos planteados en la materia. En estos exámenes se evalúa principalmente si el alumno puede resolver un problema de manera correcta y argumentar de manera precisa\n\nla forma en que llegó al resultado.\n\nPara aprobar la materia además de aprobar la cursada hay que aprobar un examen final. El mismo cuenta de 5 ejercicios a desarrollar. Se evalúa si el alumno alcanzó los objetivos de la materia, evaluando ejercicios que relacionan los diferentes temas vistos en la materia.\n\nRequisitos de aprobación: La condición suficiente para aprobar cualquiera de los exámenes es tener dos ejercicios bien de los cinco propuestos. La nota de cursada es el promedio de los parciales. En el caso de recuperar un parcial, se promedia la nota del parcial con la del recuperatorio, teniendo en cuenta que si aprobó el recuperatorio la nota mínima es 4.",
+    "bibliografiaObligatoria": [
+      "Krick, Teresa. Algebra I. Universidad de Buenos Aires. Facultad de Ciencias Exactas y Naturales. Departamento de Matemática. 2017",
+      "Grossman, Stanley. Algebra lineal, 6ta edición. McGraw-Hill, 2010"
+    ],
+    "bibliografiaComplementaria": [
+      "Gentile, Enzo. Notas de Algebra I. EUDEBA, 1988",
+      "Johnsonbaugh, Richard. Matemáticas Discretas, 6ta edición. Pearson Addison-Wesley, 2005"
+    ],
+    "pdf": "/electivas-fichas/93.58.pdf"
+  },
+  "93.59": {
+    "codigo": "93.59",
+    "materia": "Matemática Discreta",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2023",
+    "carrera": "Ingeniería en Informática",
+    "actualizado": "24/11/2022 15:26:58",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 51,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Estructuras discretas. Grafos: clasificación y representación, conexidad, recorridos, planaridad, coloreo. Árboles: clasificación y recorridos, algoritmos de complejidad polinomial y no polinomial. Complejidad temporal y orden. Teoría de complejidad computacional. Aplicaciones: Redes de flujo con capacidad. Grafos PERT.",
+    "presentacion": "La materia Matemática Discreta se dicta en el segundo cuatrimestre de Primer año de la Carrera Ingeniería en Informática. La relevancia de la asignatura reside en brindar los conceptos clave para que el estudiante emplee estructuras discretas en la resolución de problemas. Mucho del desarrollo de la informática moderna tiene sus bases en los conceptos que se estudian en esta rama de la ciencia de la matemática. Este espacio académico busca brindar al estudiante los criterios y métodos para que modele, analice y desarrolle una base de conocimiento de estructuras matemáticas que le permita enfrentar los retos planteados por la ciencia computacional.",
+    "objetivos": "Al terminar este curso el alumno deberá:\n\n•Comprender la aplicación de los distintos tipos de grafos en problemas de la ingeniería. •Poder seguir y comprender algoritmos en pseudocódigo. •Aplicar conceptos fundamentales de la teoría de grafos, modelando y resolviendo problemas no triviales en distintos campos de estudio. • Desarrollar algoritmos eficientes en la solución de problemas de situaciones teórico-práctico.",
+    "programa": [
+      {
+        "titulo": "Unidad 1",
+        "descripcion": "Grafos simples. Multigrafos. Grafos dirigidos. Representación matricial de grafos. Grado de un vértice. Subgrafos. Grafo complemento. Isomorfismo de grafos. Clases de grafos. Bipartitos, completos, regulares."
+      },
+      {
+        "titulo": "Unidad 2",
+        "descripcion": "Grafos conexos. Componentes conexas. Conjuntos de corte. Conexidad de orden k. Teorema de Menger y Whitney. Recorridos y circuitos eulerianos. Caminos y Ciclos Hamiltonianos. Camino mínimo: Algoritmos de Dijkstra y Floyd."
+      },
+      {
+        "titulo": "Unidad 3",
+        "descripcion": "Grafos planos. Región, grado de una región. Teorema de Euler. Pruebas algebraicas de no planaridad. Homeomorfismos de grafos. Teorema de Kuratowski. Grafos duales. Coloreo. Polinomios cromáticos"
+      },
+      {
+        "titulo": "Unidad 4",
+        "descripcion": "Algoritmos y complejidad. Pseudocódigo. Algoritmos iterativos y recursivos. Algoritmos de ordenación. Complejidad temporal y espacial. Orden de la complejidad. Algoritmos de complejidad polinomial y no polinomial."
+      },
+      {
+        "titulo": "Unidad 5",
+        "descripcion": "Árboles, árboles con raíz, árboles m-arios, árboles balanceados. Isomorfismos de árboles. Recorridos. Estrategias DFS Y BFS. Árboles de expresión. Notación polaca y polaca inversa. Árbol mínimo generador. Algoritmos de Prim y Kruskal."
+      },
+      {
+        "titulo": "Unidad 6",
+        "descripcion": "Redes de Flujo con capacidad. Teorema del máximo flujo y mínimo corte. Algoritmo de Ford y Fulkerson. Algoritmo de Edmond y Karp. Grafos PERT y CPM."
+      },
+      {
+        "titulo": "Unidad 7",
+        "descripcion": "Grafos PERT."
+      }
+    ],
+    "estrategias": "Las clases se desarrollan en modalidad combinada. Las teóricas se dictan en el aula y las prácticas se realizan a través de Blackboard Collaborate de manera sincrónica. En las clases teóricas, se desarrollan las siguientes actividades: • Exposición del docente. • Discusión entre los alumnos de los problemas dados. • Debate entre el docente y el alumno. • Resolución y trabajo posterior con los problemas dados. • Discusión y análisis de diferentes errores. • Puesta en común y auto corrección de ejercicios. • Corrección y ejercitación en el pizarrón. En las clases prácticas, se desarrollaran las siguientes actividades: • Consultas de los ejercicios propuestas en las guías prácticas de la materia. • Corrección de ejercicios propuestos durante la clase. • En caso de ser necesario, estas clases se complementarán con clases de consulta presenciales, a los fines de asegurar la consecución de los objetivos fijados.",
+    "evaluacion": "Modalidad de evaluación: Se deberán aprobar 2 parciales escritos teórico-prácticos de manera presencial cuyas fechas se anunciarán con suficiente antelación. Cada parcial constará de una instancia de recuperación y se asignará una fecha para la revisión del mismo. Al finalizar la cursada, y, habiendo aprobado los parciales o sus recuperatorios, se deberá rendir un examen final. Las evaluaciones parciales, sus respectivos recuperatorios y el final, serán objeto de calificación numérica de 1 (uno) a 10 (diez).\n\nRequisitos de aprobación: Para aprobar la materia el alumno deberá aprobar ambos parciales. Cada uno de ellos constará de 4 o 5 problemas basados en las guías de ejercicios de la materia. Se le solicitará también la entrega de un Trabajo Práctico (Basado en la última unidad de la materia: PERT) que formará parte de la nota de cursada. Cada examen se considerará aprobado si la calificación obtenida por el alumno es mayor o igual que cuatro. En caso de ser aplazado en uno o ambos parciales, podrá ser recuperado cada parcial, una sola vez.\n\nSISTEMA DE CALIFICACIÓN: En caso de aprobar ambos parciales, la nota asignada al cursado de la materia será el promedio entre ambos parciales y la nota obtenida en el Trabajo Práctico. (Se redondea la nota hacia arriba). En caso de recuperar un parcial, si la nota del recuperatorio es aprobado, la nota del parcial es 4. Si el recuperatorio fuera desaprobado, el alumno debe recursar la materia. En el caso de recuperar ambos parciales y aprobarlos, la nota asignada al cursado será cuatro.\n\nEVALUACIÓN FINAL: será oral presencial, de carácter teórico-práctico y se evaluarán todos los temas vistos durante el cuatrimestre. La condición principal para poder rendir el Examen Final es haber aprobado los parciales o los recuperatorios y los trabajos prácticos establecidos por la cátedra. En esta instancia el alumno deberá resolver correctamente un problema, desarrollar un teorema o proposición y enunciar alguna de las definiciones vistas en clase. Se le dará dos oportunidades para el problema, el teorema y la definición.",
+    "bibliografiaObligatoria": [
+      "• J. YELLEN & J.L.GROSS. GRAPH THEORY & ITS APPLICATIONS. KENNETH H. ROSEN, 1999",
+      "• DIETER JUNGNICKEL. GRAPH, NETWORKS AND ALGORITHMS. SPRINGER, 1994",
+      "• RALPH P GRIMALDI. MATEMÁTICAS DISCRETAS Y COMBINATORIA. ADDISON WESLEY LONGMAN-3ra. EDICIÓN, 1997",
+      "• J. GLENN BROOKSHEAR. TEORÍA DE LA COMPUTACIÓN. ADISSON WESLEY IBEROAMERICANA, 1993"
+    ],
+    "bibliografiaComplementaria": [
+      "• Richard Johnsonbaugh. Matemáticas discretas, 6ta Edición – Pearson Prentice Hall, 2005"
+    ],
+    "pdf": "/electivas-fichas/93.59.pdf"
+  },
+  "93.75": {
+    "codigo": "93.75",
+    "materia": "Métodos Numéricos Avanzados",
+    "creditos": 6,
+    "departamento": "Ciencias Exactas y Naturales",
+    "anio": "2024",
+    "carrera": "Bioingeniería / Ingeniería Mecánica / Ingeniería en Informática / Ingeniería Civil /",
+    "actualizado": "1/11/2024 11:46:07",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 86,
+      "practicas": 16,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Consolidación de conocimientos de Algebra Lineal. Ortogonalidad y descomposición QR. Descomposición en valores singulares. Problemas de la matriz de autovalores y autovectores. Análisis de componente principales (PCA). Resolución de ecuaciones en derivadas parciales. Diferencias Finitas. Ecuaciones Elípticas. La ecuación de Laplace. Técnicas de solución y condiciones de borde. Métodos de multigrilla. Ajuste de curvas con funciones sinusoidales. Aproximación de Fourier. Integral y transformada de Fourier. Transformada Discreta de Fourier (DFT). Transformada Rápida de Fourier (FFT).",
+    "presentacion": "La materia se dicta en cuarto año de la carrera Ingeniería Informática y pertenece al Departamento de Matemática. Esta materia es, en cierta medida, la continuación de la materia Métodos Numéricos (93.07). Entre ambos cursos, se intenta dar una base sólida sobre diferentes algoritmos de cálculo numérico de utilidad para los futuros ingenieros informáticos. También se abordan conceptos matemáticos, como series y transformada de Fourier o autovalores y descomposición en valores singulares, que no son vistos en otras materias. 93.75 es una materia correlativa de Análisis y Tratamiento de Imágenes (72.52). Los conceptos matemáticos antes mencionados encuentran aplicación en el área de tratamiento de imágenes. Métodos Numéricos Avanzados también es correlativa de Aprendizaje Automático (72.75) e Introducción a la Neurociencia Computacional (72.88). En estas materias pueden encontrar aplicación algunos de los conceptos de álgebra lineal, autovalores y descomposición de valores singulares (con aplicación a análisis de componentes principales, por ej.) vistos en 93.75. Finalmente, los conceptos básicos de generación de números pseudo-aleatorias pueden relacionarse con problemas\n\nfundamentales de la criptografía y la seguridad informática.",
+    "objetivos": "1. Identificar los conceptos básicos de los contenidos de la materia. 2. Conocer algunas aplicaciones de los contenidos al área de ingeniería informática. 3. Articular los contenidos de la asignatura con diversas aplicaciones de la ingeniería.",
+    "programa": [
+      {
+        "titulo": "Conceptos de álgebra Lineal",
+        "descripcion": "Espacio vectorial normado y con producto interno. Ortogonalidad. Método de Gram-Schmidt."
+      },
+      {
+        "titulo": "Autovalores y autovectores",
+        "descripcion": "Diagonalización. Aplicación a la resolución de sistemas de ecuaciones en diferencias lineales. Métodos numéricos para encontrar autovalores: Potencias, QR. Descomposición en valores singulares; aplicación al problema de cuadrados mínimos. Análisis de componentes principales (PCA)"
+      },
+      {
+        "titulo": "Análisis Armónico",
+        "descripcion": "Funciones periódicas. Series de Fourier. Transformada de Fourier (TF). Aplicación de la TF a ecuaciones diferenciales ordinarias. Muestreo de señales continuas. Transformada de Fourier de Tiempo Discreto (TFTD). Aplicaciones de TFTD a ecuaciones en diferencias. Transformada discreta de Fourier (TDF). Transformada rápida de Fourier (FFT)."
+      },
+      {
+        "titulo": "Ecuaciones a derivadas parciales",
+        "descripcion": "Métodos de diferencias finitas. Métodos multigrilla"
+      },
+      {
+        "titulo": "Generación de números pseudo-aleatorios",
+        "descripcion": "Características. Ejemplos"
+      }
+    ],
+    "estrategias": "La propuesta metodológica se centra en clases teóricas, complementadas con la realización de ejercicios que sirvan como ejemplo de aplicación de los conceptos explicados.",
+    "evaluacion": "Modalidad de evaluación: A lo largo de la materia se evaluará el proceso de aprendizaje de los alumnos a partir de su participación en clase y de las consultas realizadas, en forma personal o virtual, sobre guías de ejercicios y trabajos prácticos. Las guías de ejercicios no tienen calificación, pero pueden servir a los alumnos para una mejor comprensión de los conceptos explicados en clase. Los alumnos tendrán dos exámenes parciales y un examen final. En estos exámenes se evaluará la adquisición y comprensión de los contenidos básicos de la materia. Los exámenes serán del tipo opción múltiple o con preguntas de verdadero/falso. Estas modalidades permiten evaluar la adquisición de los conceptos básicos (véase el primer objetivo de aprendizaje). También se evaluarán dos trabajos prácticos grupales. En dichos trabajos, los alumnos deberán aplicar algunos de los conceptos estudiados en la materia a problemas del área. Esta aplicación requerirá la programación de algoritmos, utilizando un software o lenguaje de programación a elección de los alumnos. Asimismo, deberán presentar un informe impreso por cada trabajo práctico que demuestre claramente el trabajo realizado y una comprensión de los contenidos aplicados. Se evaluará la claridad del informe, ya que este es un elemento indicativo indirecto del nivel de comprensión. También se evaluará la prolijidad y la calidad general del informe. La presentación de cada trabajo práctico también será acompañada por una breve (15 minutos) presentación oral, con demostración\n\ndel funcionamiento de los programas. También se evaluará la calidad de esta presentación oral. En los trabajos prácticos, los alumnos lidiarán con aplicaciones concretas a problemas de ingeniería (véase el segundo objetivo de aprendizaje). Asimismo, deberán profundizar sobre el uso de algunos de los conceptos vistos en clase (véase el tercer objetivo de aprendizaje).\n\nRequisitos de aprobación: Son requisitos de aprobación del curso: 1) Es condición necesaria aprobar con al menos 4 puntos las dos evaluaciones parciales. Por ello, existe la posibilidad de recuperar un solo examen parcial. En adelante, llamamos EPi (con i = 1,2) a la calificación (entre 0 y 10) del alumno en la i-ésima evaluación parcial. EPi se calcula de la siguiente manera: a) si aprueba el parcial (con 4 o más), EPi es igual a la calificación del mismo (siempre un real no-negativo, redondeado a medio punto); b) si no aprueba el parcial, pero aprueba el recuperatorio (con 4 o más), EPi = 4; c) si no aprueba ni el parcial ni su recuperatorio, EPi es igual a la calificación en este último. 2) Es necesario aprobar ambos trabajos prácticos con nota mayor o igual a 4. De no aprobar un trabajo práctico, los alumnos podrán re-entregarlo una sola vez. En adelante, llamamos TPi (con i = 1,2) a la calificación (entre 0 y 10) del alumno en el i-ésimo trabajo práctico. TPi se calcula de la siguiente manera: a) si aprueba el trabajo práctico (con 4 o más), TPi es igual a la calificación del mismo (siempre un real no-negativo, redondeado a medio punto); b) si aprueba el trabajo práctico sólo luego de haberlo re-entregado (con 4 o más), TPi = 4; c) si no aprueba el trabajo práctico en ninguna de las dos instancias, TPi es igual a la calificación en la re-entrega.\n\nNota sobre recursantes: Los recursantes que hayan aprobado los trabajos prácticos en una oportunidad anterior, pueden optar por no realizar los mismos en la presente cursada. En ese caso, para la calificación se utilizará el valor de TP obtenido la última vez que se cursó la materia.\n\n¿Cómo se calcula la nota de cursada?\n\n1) En caso de que el alumno apruebe los parciales y los trabajos prácticos, se calcula C = (TP1+TP2+EP1+EP2)/4. 2) Si el alumno no aprueba los parciales o los trabajos prácticos, se calcula C = mín{3, (TP1+TP2+EP1+EP2)/4}. La nota de cursada es el valor de la fracción n/2 más cercana a C, donde n es un entero entre 0 y 20.",
+    "bibliografiaObligatoria": [
+      "J. H. Mathews y K. D. Fink, Métodos Numéricos Con MATLAB. 3ra. Ed. España: Prentice Hall, 2000.R. E. Ziemer, W. H. Tranter y D. R. Fannin, Signals and systems: continuous and discrete. 4ta. Ed. Upper Saddle River, N.J., EE.UU.: Pearson, 1998."
+    ],
+    "bibliografiaComplementaria": [
+      "G. Strang, Computational Science and Engineering. Wellesley, MA, EE.UU.: Wellesley-Cambridge Press, 2007.G. Strang, Introduction to Linear Algebra. 4ta. Ed. Wellesley, MA, EE.UU.: Wellesley-Cambridge Press, 2009.G. H. Golub y C. F. Van Loan, Matrix computations. 3ra. Ed. Baltimore, MD, EE.UU.: The Johns Hopkins University Press, 1996.Quarteroni, R. Sacco y F. Saleri, Numerical Mathematics. 2da. Ed. Nueva York, NY, EE.UU.: Springer Verlag, 2007."
+    ],
+    "pdf": "/electivas-fichas/93.75.pdf"
+  },
+  "94.21": {
+    "codigo": "94.21",
+    "materia": "Formación General I",
+    "creditos": 3,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería en Informática / Ingeniería en\n Petróleo / Ingeniería Industrial / Ingeniería Mecánica / Ingeniería Naval / Ingeniería Química",
+    "actualizado": "22/5/2023 10:00:00",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 0,
+      "practicas": 0,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": null,
+      "distancia": 3
+    },
+    "contenidosMinimos": "UNIDAD I. Análisis del cambio técnico: conceptos básicos y perspectiva histórica. UNIDAD II. La especificidad del cambio técnico en la agricultura UNIDAD III: La expansión de la economía de mercado y el cambio técnico UNIDAD IV. El sistema sociotécnico industrial UNIDAD V. El cambio técnico en un sistema con altos niveles de incertidumbre.",
+    "presentacion": "Esta materia se encuentra en el ciclo básico de las carreras de ingeniería.\n\nA través de la misma se aborda desde un enfoque transdisciplinar la interacción entre tecnología y sociedad.\n\nSe abordan conceptos de distintas ramas de las ciencias sociales para que el alumno pueda enriquecer sus habilidades de interacción, su formación universitaria como persona, su vocabulario técnico y construya su propio análisis crítico acerca de los problemas que involucran tecnología en las organizaciones que lo rodean, propiciando el diálogo con sus pares acerca de cómo comprender y abordar los mismos desde su futuro rol profesional.",
+    "objetivos": "Fomentar la formacion de habilidades de razonamiento conceptual analítico y de manejo intra e inter personal para la preparar la vinculación del futuro profesional. Habilidades conceptuales: Identificar, comprender y aplicar conceptos básicos del análisis de cambios técnicos en distintos contextos. Identificar la vinculación e interacción entre procesos de cambios sociales y procesos de cambios técnicos. Identificar aportes de diversas ramas de la ingeniería en la solución de problemas sociales. Comprender la complejidad de la resolución de problemas y toma de decisión en las organizaciones. Identificar el aporte de la ingeniería en las organizaciones involucradas. Describir el funcionamiento de artefactos y procesos técnicos utilizados en distintas actividades económicas. Aplicar los contenidos conceptuales en estudios de caso que describan y analicen procesos de cambio técnico específicos en empresas radicadas en la Argentina, o proyectos de experimentación tecnológica en el ITBA. Habilidades intra e inter personales: Comunicar con claridad los resultados de la búsqueda de información y los conceptos aplicado al realizar la investigación grupal de campo Desarrollar habilidades personales de : autogestión y comunicación efectiva, tanto oral como por escrito, ya sea en forma individual o grupal. Aprender a manejar la tolerancia a la frustración ante la presión de contar con recursos escasos para la toma de decisión. Identificar la importancia de las emociones y de la experiencia en gestión en la toma de decisiones, a la par de la formación técnico / académica. Desarrollar el aprendizaje de la gestión y entrega de un proyecto grupal en tiempo y forma. Desarrollar habilidades de interacción social, observación en una visita a una organización y obtención de datos a traves de una entrevista a alguien desconocido.",
+    "programa": [
+      {
+        "titulo": "Programa Analítico",
+        "descripcion": "UNIDAD 1. ANÁLISIS DEL CAMBIO TÉCNICO: CONCEPTOS BÁSICOS Y PERSPECTIVA HISTÓRICA 1.1. Los sistemas sociotécnicos. Los elementos y su funcionamiento: contexto, estructuras organizativas, relación expertos/usuarios y características de los artefactos. Sistema e historia: procesos de continuidad y de cambio técnico. 1.2. Aprendizaje, frontera tecnológica y conocimiento tecnológico local. Del uso de las técnicas al conocimiento tecnológico: niveles de expertise y acceso a nuevas técnicas (learning by doing, learning by using, learning by knowing). El “conocimiento local”: adaptaciones y particularidad del conocimiento en los procesos de difusión o de transferencia tecnológica. 1.3. Formación de estructuras organizativas en contextos de incertidumbre: el problema de la inestabilidad en la trayectoria de los sistemas sociotécnicos. Conocimiento, aprendizaje e incertidumbre: las limitaciones en la previsión del futuro tecnológico. UNIDAD 2. LA ESPECIFICIDAD DEL CAMBIO TÉCNICO EN LA AGRICULTURA 2.1 El sistema sociotécnico agrario y los cambios técnicos en los comienzos de la economía occidental. • Relación entre presión demográfica y cambio técnico en la agricultura • Localización y especificidad de las soluciones técnicas agrarias 2.2 Innovaciones en la agricultura: visión panorámica, desde los orígenes de la industrialización a la actualidad. • Cambios técnicos en el contexto de la revolución industrial del siglo XVIII. • La “revolución verde”, a mediados del siglo XX. • Transformaciones agrarias, difusión de la biotecnología y agroindustria en la Argentina 1970-2010. UNIDAD 3. LA EXPANSIÓN DE LA ECONOMÍA DE MERCADO Y EL CAMBIO TÉCNICO 3.1. Ampliación de los espacios de intercambio. Oriente-Occidente 3.2. El caso de la imprenta 3.3. Ferrocarriles, automóviles y telefonía UNIDAD 4. EL SISTEMA SOCIOTÉCNICO INDUSTRIAL 4.1. Invención e innovación en la Revolución Industrial. a) Cuellos de botella técnicos; invención e innovación en el salto industrial en Gran Bretaña; acumulación de conocimiento a través de la convergencia en la aplicación de nuevas técnicas. b) Casos: máquina de vapor de Watt; la organización, en la fábrica de Wedgwood; maquinaria textil y comercialización, en la empresa de Robert Peel. 4.2. Difusión mundial del sistema sociotécnico industrial. El contexto mundial y los mecanismos de irradiación y adopción de las nuevas tecnologías. a)Transferencias de estructuras y procesos técnicos de la Segunda Revolución Industrial). Transmisión de ideas, conocimientos y recursos tecnológicos: los proyectos y los avances materiales en la Argentina 1860-1914. El caso Bagley. b)Industrialización por sustitución de importaciones en el mundo del siglo XX. c)La industrialización en la Argentina 1930-2005. Estudios de caso: Siam Di Tella; EDIVAL UNIDAD 5. EL CAMBIO TÉCNICO EN UN SISTEMA CON ALTOS NIVELES DE INCERTIDUMBRE 5.1. Las vías de expansión del sistema industrial: oferta global y tradiciones locales en el uso de nuevas tecnologías. 5.2. Encrucijadas del sistema sociotécnico industrial. El crecimiento económico, ante el desafío de las cuestiones ambientales, demográficas y energéticas. ¿Qué tecnologías? ¿Para qué? 5.3. Las perspectivas en la Argentina: Evolución del sector agroindustrial. El caso “Los Grobos”. El caso \"ArCor\" Unidad 6: Desafíos de la ingeniería a futuro. Bioingeniería y superpoblación Nanotecnología y medicina. Mecatrónica y robótica. Informática e inteligencia artificial. Petróleo y energía, Química y exploración espacial. Ingeniería industrial y smart cities. La cuarta revolución industrial. La singularidad. El Transhumanismo. El rol del ingeniero del futuro."
+      }
+    ],
+    "estrategias": "Aula invertida - Clase expositiva o magistral - Clase práctica - Aprendizaje por proyectos - Taller de discusión - Aprendizaje colaborativo - Clase interactiva",
+    "evaluacion": "Modalidad de evaluación: La evaluación es individual y grupal, oral y por escrito. La misma consiste en dos parciales individuales por escrito, un proyecto grupal escrito/oral y dos actividades/test con calificación individual cuya modalidad puede variar cada cuatrimestre según se considere apropiado para la dinámica del curso (Test de lectura choice o múltiple choice, exposiciones grupales orales, exposiciones individuales orales, presentación de reportes escritos grupales)\n\nEl examen final es oral para quien obtenga una calificación final de 9.5 (nueve con cincuenta centésimos) o más, una vez aplicado el criterio de redondeo del promedio obtenido.\n\nEl examen es escrito para quien obtenga un mínimo de 4 (cuatro) y no llegue a la calificación de 9.5 (nueve con cincuenta centésimos) una vez aplicado el criterio de redondeo del promedio obtenido.\n\nRequisitos de aprobación: Los parciales individuales por escrito deben aprobarse cada uno con un mínimo de 4 (cuatro)\n\nEl proyecto grupal debe ser aprobado con un mínimo de 6 (seis)\n\nLa apoibación de la cursada remite a las normas dictadas en el reglamento ITBA acerca del porcentaje de asistencia y recuperatorios. Parcial 1 (P1) = 25%\n\nParcial 2 (P2) = 25%\n\nActividad/Test 1 (T1) = 10%\n\nActividad/Test 2 (T2) = 10%\n\nProyecto Grupal/Práctica de Campo=30%\n\nUna vez obtenida la nota promedio de cursada la misma se redondea según el siguiente criterio\n\n- si la parte decimal es igual o menor a .25, queda en el entero inmediatamente inferior\n\n- si la parte decimal está comprendida entre .26 y .75, queda como .5\n\n- si la parte decimal es superior a .75, queda en el entero inmediatamente superior",
+    "bibliografiaObligatoria": [
+      "Ashton, T.S. -. La Revolución Industrial 1760 – 1830. Fondo de Cultura Económica,, 1980",
+      "Roberto Bisang, G. Anlló y M. Campi. Una revolución (no tan) silenciosa. Claves para repensar el agro en la Argentina. Revista Desarrollo Económico, Nº190-191, Vol.48, 2008",
+      "Braudel, F. Civilización material, economía y capitalismo. Alianza Editorial, 1984",
+      "Duby, G. Guerreros y campesinos. Desarrollo inicial de la economía europea. Siglo XXI Editores, 1979",
+      "Giddens, A. La vida en la sociedad postradicional. Revista Ágora, 1997",
+      "Kosacoff, B. Comportamientos microeconomicos en contextos de alta incertidumbre. Boletín Techint Nº318, 2005",
+      "Lovins, A. More Profit with Less Carbon. Scientific American, 2005",
+      "Mokyr, J.. La palanca de la riqueza. Creatividad tecnológica y progreso económico,. Alianza Editorial, 1993",
+      "Prigogine, I. El futuro no está escrito. Clarín -11 de septiembre de 20002, 2000",
+      "Rifkin, J.. La economía del hidrógeno. Paidós, 2002",
+      "Sarmiento, D.F. Viajes. Ediciones Unesco, 1993",
+      "Sarmiento, D.F. Educación Popular. Editorial Luz del Día, 1950",
+      "Alberdi, J.B.. Bases y puntos de partida para la organización política de la República Argentina. Academia Nacional de Derecho y Ciencias Sociales de Córdoba, 2022",
+      "Hayek, F.. El uso del conocimiento en la sociedad. Revista Estudios Públicos Nº 12, 1983",
+      "Nelson, R.. Insertar las instituciones en la teoría evolutiva del crecimiento. Revista Análisis Económico, Nº 038, Universidad Autónoma Metropolitana, 2003",
+      "Edgerton, D. Innovación y tradición. Historia de la tecnología moderna. Editorial Crítica, 2007",
+      "Derry, T. y Williams, T.. Historia de la tecnología. Siglo XXI Editores, 2001"
+    ],
+    "bibliografiaComplementaria": [
+      "Bryan Arthur, W.. The Nature of Technology. Free Press, 2009",
+      "Castells, M. La era de la información, Vol.I. Siglo XXI Editores, 1998",
+      "Ceruzzi, Paul E.. A History of Modern Computing. The MIT Press, 2003",
+      "Hughes, T. L´histoire como systèmes en evolution. Rev. Annales, Vol. 53, Nº 4, 1998",
+      "OCDE. Manual de Frascati: Propuesta de Norma Práctica para Encuestas de Investigación y Desarrollo Experimental. Ministerio de Ciencia y Tecnología de España-Fundación Española de Ciencia y Tecnología, 2002",
+      "OCDE-EUROSTAT. Manual de Oslo: Guía para la recogida e interpretación de datos sobre innovación. Grupo Tragsa, 2006",
+      "Rosenberg, N. Incertidumbre y cambio tecnológico. Revista de Historia Industrial, Nº 6, 1994",
+      "Bibliografía sobre la última unidad se actualiza cada cuatrimestre, incluyendo noticias periodísticas y/o de revistas especializadas, papers, artículos de journals, entrevistas, ponencias en congresos y dossiers de investigación de revistas de actualidad en tecnología. El material audiovisual se actualiza cada cuatrimestre según se convenga para que las noticias antes mencionadas reflejen mejor los contenidos de la materia."
+    ],
+    "pdf": "/electivas-fichas/94.21.pdf"
+  },
   "94.23": {
     "codigo": "94.23",
     "materia": "Formación General III",
@@ -2898,6 +4568,78 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "pdf": "/electivas-fichas/94.23.pdf"
   },
+  "94.24": {
+    "codigo": "94.24",
+    "materia": "Metodología del Aprendizaje",
+    "creditos": 3,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2025",
+    "carrera": "Licenciatura en Analítica Empresarial y Social / Bioingeniería / Ingeniería Electricista / Ingeniería Industrial\n / Ingeniería Electrónica / Ingeniería Mecánica / Ingeniería Naval / Ingeniería en Petróleo / Ingeniería Química /\n Ingeniería en Informática",
+    "actualizado": "6/3/2025 11:01:13",
+    "cargaHoraria": {
+      "total": 51,
+      "teoricas": 22,
+      "practicas": 29,
+      "laboratorio": 0,
+      "semanales": 3,
+      "presencial": 2,
+      "distancia": 1
+    },
+    "contenidosMinimos": "ENFOQUE CIENTÍFICO TECNOLÓGICO DE LA INVESTIGACIÓN -\n\nINVESTIGACIÓN Y DESARROLLO -\n\nEL PROBLEMA DE INVESTIGACIÓN -\n\nEL LENGUAJE CIENTÍFICO-TECNOLÓGICO -\n\nHIPÓTESIS Y DISEÑO -\n\nLOS PROCEDIMIENTOS DE CONTRASTACIÓN -\n\nINFERENCIAS Y JUSTIFICACIÓN",
+    "presentacion": "La asignatura Metodología del Aprendizaje tiene como finalidad que los estudiantes – organizados en grupos – transiten la experiencia de resolución de un problema real a través del diseño y la realización de una investigación acorde a las pautas de la metodología científico-tecnológica. Para ello el equipo docente interdisciplinario provee los contenidos conceptuales y metodológicos que les permitan realizar la investigación, los orienta en las búsquedas y\n\nacompaña el proceso de resolución del problema elegido a lo largo de la cursada. Por su parte, la condición abierta de la materia exige de los alumnos toma de decisiones, creatividad y habilidades de comunicación para definir un problema en un área dada y diseñar un posible solución, determinar las estrategias para su puesta a prueba a través técnicas específicas, procesar y evaluar los resultados y elaborar sucesivas presentaciones que confluyen en el Informe final de la investigación. La investigación requiere el uso de algoritmos predictivos y/o descriptivos para lo cual se le proporciona al alumno una introducción a RStudio y algunas técnicas de aprendizaje estadístico como regresion lineal, logística y métodos de clasificación, los cuales deben implementar en su investigación. La modalidad es presencial, con dos horas semanales de clases dinámicas teórico- prácticas donde se tratan los temas teóricos y se trabaja en el avance del trabajo de cada equipo . La presentación de los contenidos teóricos y metodológicos necesarios para el desarrollo de la investigación – que abarca toda la cursada – se articula en sucesivos trabajos prácticos orientados al logro del objetivo general. El aula virtual se utiliza como complemento en este proceso. En la hora virtual ellos llevan adelante distintas actividades algunas individuales y otras grupales, las cuales son retomadas en las clases presenciales con el objetivo de solucionar distintos problemas que se pudieran haber suscitado en su resolución. La asignatura pertenece al Departamento de Economía, Sociedad y Negocios y es cursada por los alumnos de las carreras de Ingeniería en Informática y la Licenciatura en Analítica Empresarial y social, en primer año .Por las características enunciadas y por su ubicación en el ciclo básico, la materia los introduce tempranamente en la dinámica de la innovación desde los cánones de la investigación tecnológica ampliando la consideración de su perfil profesional futuro. Esta propuesta didáctica responde a la concepción actual de la formación a partir del desarrollo de competencias. Considera que el aprendizaje se efectúa cuando la comprensión de conceptos y procedimientos habilita el saber qué hacer con ese conocimiento, lo cual requiere su continua transferencia a una situación determinada y también, la actividad complementaria de ajustar la comprensión de esos contenidos a través de las experiencias que acompañan su aplicación. Esta acción reflexiva sobre el propio aprendizaje favorece la autonomía del aprender en el estudiante universitario.",
+    "objetivos": "OBJETIVO GENERAL DEL PROGRAMA Realizar una investigación en los cánones de la epistemología y la metodología de la investigación tecnológica.\n\nOBJETIVOS ESPECÍFICOS: COMPETENCIAS A DESARROLLAR Al finalizar el curso se espera que los alumnos sean capaces de:\n\nA. Nivel cognitivo y procedimental • Comprender la base teórica de la investigación en ciencia y tecnología. • Abordar problemas según la heurística de la resolución de problemas. • Diseñar un proyecto de investigación. • Manejar sistemas de obtención y procesamiento de datos. • Expresar los resultados empleando lenguaje y estilo científico-tecnológico en presentaciones orales y escritas.\n\nB. Nivel actitudinal • Valorar el análisis racional como instancia previa a la acción. • Aceptar la incertidumbre como parte del proceso de investigación. • Valorar el esfuerzo y la responsabilidad por el trabajo personal y del equipo.",
+    "programa": [
+      {
+        "titulo": "1. ENFOQUE CIENTÍFICO TECNOLÓGICO DE LA INVESTIGACIÓN",
+        "descripcion": "1. Conocimiento científico y conocimiento tecnológico: diferencias y relaciones. Sus objetivos. La clasificación de las ciencias. Relevancia de las ciencias formales y fácticas en la investigación tecnológica. El método científico como modelo de la investigación. El diseño ingenieril: características. Introducción a la noción de modelo. El modelo hipotético deductivo. Transferencia al trabajo de investigación: reconocimiento del campo de investigación. Búsqueda de antecedentes 2. El rol de la ciencia y la tecnología en la sociedad actual. Invención e innovación. Relaciones y diferencias. Tipos de innovación y paradigma tecnológico. Caracterización del programa de I+D La evaluación interna del diseño tecnológico: eficiencia, factibilidad y fiabilidad. La evaluación externa del diseño tecnológico: idoneidad y consecuencias de la aplicación del diseño. Transferencia al trabajo de investigación: selección de una dimensión para el estudio; identificación de la situación problemática. Revisión bibliográfica"
+      },
+      {
+        "titulo": "2. INVESTIGACIÓN Y DESARROLLO",
+        "descripcion": ""
+      },
+      {
+        "titulo": "3. EL PROBLEMA DE INVESTIGACIÓN",
+        "descripcion": "3. El problema como origen de la investigación. Conocimiento disponible e interrogante. Descubrimiento del problema.El problema científico y el problema tecnológico: semejanzas y diferencias El contexto del problema. Los marcos teóricos plurales en la investigación tecnológica Tipos de problemas. Caracterización del problema de ingeniería. El problema bien formulado. La investigación como estrategia de resolución de problemas: modelo heurístico. Transferencia al trabajo de investigación: La formulación del problema. Elaboración de su contexto. Procesamiento de información pertinente. 4. La investigación y su lenguaje: función, estilo y formatos Dimensión sintáctica y semántica del lenguaje. La noción de concepto. Tipos de conceptos. Clasificación. La estructura de la proposición. La cuestión de la verdad El razonamiento: estructura y clases. La cuestión de la validez Vaguedad y ambigüedad del lenguaje. Definición: caracterización y estructura. Función de la definición y de la clasificación en el discurso científico tecnológico. Transferencia al trabajo de investigación: identificación y clasificación de las variables de la incógnita. Planteo del lenguaje técnico básico del problema. 5. El papel de la hipótesis en la investigación. La hipótesis científica y la hipótesis de diseño. La problemática de la contrastación. Tipos de hipótesis. Variables y constantes. Datos y evidencias. Estrategias de validación de hipótesis en ciencia: confirmación y refutación. Sistematicidad del conocimiento. Las teorías científicas como mapas de la realidad. Transferencia al trabajo de investigación: redacción de la hipótesis de cada diseño. Identificación de operaciones de contrastación. 6. La observación en la investigación tecnológica. Hechos, fenómenos y objetos: caracterización. Elementos del proceso de observación. Instrumentos de observación. La construcción de la objetividad de la observación. Observación y prueba del diseño. La medición como procedimiento de contrastación. Cuantificación y medición. Tipos de magnitudes. Valor medido y valor numérico. Escala y unidad. La construcción de una escala métrica. El experimento: artificialidad y control. Tipos de experimentos. La incidencia del experimento en la contrastación. Experimento y medición en la generación de los datos. Transferencia al trabajo de investigación:elaboración de la estrategia para el control empírico –"
+      },
+      {
+        "titulo": "4. EL LENGUAJE CIENTÍFICO-TECN OLÓGICO",
+        "descripcion": ""
+      },
+      {
+        "titulo": "5. HIPÓTESIS Y DISEÑO",
+        "descripcion": ""
+      },
+      {
+        "titulo": "6. LOS PROCEDIMIENTO S DE CONTRASTACIÓN",
+        "descripcion": ""
+      },
+      {
+        "titulo": "7. INFERENCIAS Y JUSTIFICACIÓN: COMUNICACIÓN DE LOS RESULTADOS DE INVESTIGACIÓN",
+        "descripcion": ""
+      },
+      {
+        "titulo": "8. LOS PARADIGMAS DE KUHN",
+        "descripcion": "materiales y métodos Determinación de las técnicas, escalas, registro y control para la obtención y evaluación de los datos. Realización de pruebas. Presentación preliminar de resultados. 7. La explicación del diseño: estructura y desarrollo conceptual resultante de la investigación. Sistematización de la información empírica: discusión de resultados. Inferencias resultantes de la contrastación. Plausibilidad del conocimiento obtenido Presentación y justificación del diseño como modelo de innovación: maqueta, programa, simulación, prototipo u otros. Evaluación del proceso y conclusiones 8. Conocimiento de epistemologías alternativas. La importancia de los paradigmas tecnológicos y su configuración a través de las revoluciones tecnológicas"
+      },
+      {
+        "titulo": "1. INTRODUCCIÓN AL LENGUAJE DE PROGRAMACIÓN R",
+        "descripcion": "Introducción al lenguaje de programación R Nociones de estadistica descriptiva. Regresión lineal simple/multiple Clasificación: regresión logística simple/multiple. y análisis discriminante lineal/cuadrático"
+      },
+      {
+        "titulo": "2. INTRODUCCIÓN AL APRENDIZAJE ESTADÍSTICO",
+        "descripcion": ""
+      }
+    ],
+    "estrategias": "La materia se estructura sobre la resolución de un problema cuyo desarrollo dura todo el cuatrimestre y constituye el Trabajo Practico Final. Su realización implica una experiencia de investigación guiada por los conceptos, procedimientos y requisitos de la metodología de la investigación científica y tecnológica con la finalidad de aplicarlos al diseño de una solución a un problema tecnológico real. La propuesta didáctica combina modalidades en cada clase: explicaciones teóricas del docente, con instancias de participación por parte de los alumnos; resolución individual y grupal de guías de estudio; trabajos prácticos parciales realizados por los grupos establecidos como “equipos de investigación” que se integrarán en el trabajo final. Estos requieren técnicas de divergencia, instancias de análisis y selección de contenidos y de estrategias, desarrollo de habilidades de búsqueda de información calificada, generación de consensos. El énfasis y la alternancia en el uso de las dinámicas depende de la etapa en que se encuentre la investigación en curso. Los trabajos prácticos de cada clase son instancias que convergen en el trabajo final. Para esto se ha organizado un circuito de entregas y correcciones clase por clase, donde cada grupo muestra su grado de avance e interactúa con los profesores con la dinámica de taller. Se apunta a la integración conceptual y empírica de los contenidos que debe expresarse en la calidad de la ejecución del diseño y en la fundamentación del mismo en un paper redactado siguiendo los requisitos de estilo y formato para las publicaciones nacionales e internacionales. Se registra en fichas la actividad de cada equipo. Dentro de la dinámica ya explicitada, se detallan los siguientes trabajos prácticos:",
+    "evaluacion": "Modalidad de evaluación: Para conservar la regularidad en la materia y aprobar la cursada, el alumno deberá:\n\n• Asistir al 80% de las clases. Su cumplimiento se documenta en el aula. • Aprobar los 2 (dos) parciales individuales previstos en el cronograma con 4 (cuatro). Cada parcial tiene un recuperatorio. Si los desaprueba o no obtiene 4 (cuatro) en el recuperatorio, debe recursar la materia completa. • Aprobar el Trabajo final grupal. La nota de este trabajo tiene en cuenta el informe escrito de investigación, el diseño- solución y la presentación pública de los resultados de la investigación junto con el desenvolvimiento del equipo registrado clase por clase. Asimismo contempla la resolución de los TPs de R y análisis estadísco y su implementación en el trabajo final\n\nDel promedio de estas tres notas surge la nota de cursada.\n\nCriterios de evaluación.\n\nLas competencias propuestas serán evaluadas según los siguientes criterios: • Consistencia de las operaciones cognitivas. • Inteligencia de la resolución.\n\n• Uso apropiado de los algoritmos en el tratamiento de los datos. • Economía de recursos. • Riqueza de los conceptos. • Organización del informe final: estructura textual y estilo científico.\n\nCaracterísticas de las evaluaciones: El primer y segundo parcial evalúan contenidos teóricos de la asignatura, en el formato de opción múltiple (múltiple choice). El Trabajo Práctico final tiene el valor de tercer parcial, y se evalúa reuniendo las notas del seguimiento semanal del grupo en el proceso de diseño y realización de la investigación registrados en la ficha correspondiente, del informe final escrito (paper) y de la presentación oral del trabajo. Además, se computa los Tps preparatorios para la escritura del paper como los Tps preparatorios para el análisis de los datos\n\nExámenes finales: Final completo: se evalúan todos los temas teóricos desarrollados en la asignatura, en modalidad multiple choice Final diferenciado: se evalúa una selección de temas teóricos, en modalidad multiple choice.\n\nRequisitos de aprobación: Exámenes parciales y recuperatorios: Todos los exámenes parciales y recuperatorios se califican utilizando una escala del 0 (cero) al 10 (diez). La nota mínima para aprobarlos es de 4 (cuatro) puntos.\n\nEl criterio de redondeo de las notas (cuando las mismas tengan parte decimal) será el siguiente: • Si la parte decimal es menor a 0,49 puntos, se redondeará al entero inmediato inferior. • Si la parte decimal está comprendida entre 0,50 y 0,99 puntos, se redondeará al entero inmediato superior.\n\nLas fechas, horarios y aulas en las cuales se rinden los exámenes se comunican fehaciente y oportunamente a los alumnos.\n\nPara la aprobación final de la materia:\n\nPara poder rendir el examen final, se debe tener previamente aprobada la cursada de la materia. El examen final se califica utilizando una escala del 1 (uno) al 10 (diez). La nota mínima para aprobar es 4 (cuatro) puntos.\n\nLos alumnos que hayan obtenido promedio 8 (ocho) o superior en la cursada acceden a un examen final de carácter diferenciado, que comprende una selección de los temas teóricos desarrollados. Los alumnos cuyo promedio se encuentre entre 4 (cuatro) y 7 (siete) rendirán el examen final sobre la totalidad de los temas teóricos desarrollados.",
+    "bibliografiaObligatoria": [
+      "Bunge, Mario. (2002) La investigación científica. Siglo XXI Editores. Grech, Pablo. (2001) Introducción a la Ingeniería. Un enfoque a través del diseño. Colombia, Prentice Hall. Quintanilla, Miguel Ángel.(1991) Tecnología: un enfoque filosófico. Buenos Aires, EUDEBA. Rodolfo Gaeta y Nélida Gentile, Thomas Kuhn. De los paradigmas a la Teoría evolucionista, Buenos Aires, Eudeba, 1998 Los textos seleccionados de las autores mencionados se complementan con material teórico producido por la cátedra."
+    ],
+    "bibliografiaComplementaria": [
+      "Gareth James, Daniela Witten, Trevor Hastie y Robert Tibshirani, An introduction to statistical Learning. with Aplplications in R Castells, Manuel. (1999) La Era de la Información. Economía, sociedad y cultura. México, Siglo XXI Editores. Díez, José y Moulines, Ulises. (1999) Fundamentos de Filosofía de la Ciencia. Editorial Ariel. Gianella, Alicia. (2001) Introducción a la Epistemología y Metodología de la Ciencia. Ed., Universidad Nacional de la Plata. Polya, G.(1998) Cómo plantear y resolver problemas. Editorial Trillas. Además cada grupo debe basar su investigación en papers, trabajos publicados etc, que conforman el marco teórico de su investigación"
+    ],
+    "pdf": "/electivas-fichas/94.24.pdf"
+  },
   "94.42": {
     "codigo": "94.42",
     "materia": "Comunicación Estratégica",
@@ -2954,6 +4696,124 @@ export const FICHAS: Record<string, Ficha> = {
       "Robbins, Stephen; Judge, Timothy A. (2009). Comportamiento Organizacional. Decimotercera edición. México. Pearson Prentice Hall."
     ],
     "pdf": "/electivas-fichas/94.42.pdf"
+  },
+  "94.51": {
+    "codigo": "94.51",
+    "materia": "Inglés I",
+    "creditos": 0,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería en Informática / Ingeniería en\n Petróleo / Ingeniería Industrial / Ingeniería Mecánica / Ingeniería Naval / Ingeniería Química",
+    "actualizado": "23/12/2022 16:31:50",
+    "cargaHoraria": {
+      "total": 0,
+      "teoricas": 0,
+      "practicas": 0,
+      "laboratorio": 0,
+      "semanales": 0,
+      "presencial": 0,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Nivel necesario pare satisfacer demandas de viajes de rutina. Deberá ser capaz de construir oraciones simples aceptándose que cometa muchos errores y se exprese con dificultad. Deberá poseer un vocabulario que como mínimo le permita alcanzar los objetivos anteriores. Podrá comprender preguntas y oraciones simples. Deberá poder preguntar y contestar preguntas sobre temas que le sean conocidos.",
+    "presentacion": "El aprendizaje del inglés en la formación universitaria se fundamenta en función de la necesidad de que los estudiantes, futuros profesionales, puedan abordar con fluidez la comprensión lectora, la producción escrita, la comprensión auditiva y la producción oral en dicho idioma, tanto durante la etapa de formación como en el ejercicio profesional. Dada la globalización y el carácter internacional de la lengua inglesa, su aprendizaje constituye una importante herramienta para el desarrollo académico y profesional. En esta materia, se espera que los estudiantes alcancen el nivel B1 (Marco Común Europeo de Referencia).",
+    "objetivos": "Que el estudiante pueda • comprender las ideas principales de entradas estándar claras sobre asuntos que se encuentran regularmente en los ámbitos laboral, escolar, familiar, etc.; • manejar la mayoría de las situaciones que pueden surgir en caso de que se encuentre en un área donde se habla inglés; • comprender un texto simple sobre temas que son conocidos • comprender las ideas principales de un texto complejo sobre temas tanto concretos como abstractos, incluidas las discusiones técnicas de su campo de especialización; • interactuar con un grado de fluidez y espontaneidad que permitan una interacción regular con hablantes nativos sin inconvenientes para ninguna de las partes; • producir textos claros y detallados sobre una amplia gama de temas y expresar un punto de vista sobre un tema de actualidad brindando las ventajas y las desventajas de varias opciones. de interés personal; • producir textos simples relacionados con temas en los que está familiarizado o por los que tiene especial interés; • describir experiencias y eventos, deseos y ambiciones y dar razones y explicaciones breves sobre opiniones y planes.",
+    "programa": [
+      {
+        "titulo": "Léxico",
+        "descripcion": "Formación de adjetivos y adverbios, sustantivos compuestos, adjetivos fuertes o extremos, colocaciones. Campos semánticos: adjetivos para describir a las personas, la comida y la cocina, la familia, el dinero, el transporte, el lenguaje telefónico, los deportes, las relaciones, el cine, el cuerpo humano, la casa, la educación, el trabajo."
+      },
+      {
+        "titulo": "Gramática",
+        "descripcion": "Tiempos verbales del presente (presente simple), pasado (pasado perfecto, pasado simple, pasado continuo, pasado perfecto) y futuro (futuro simple, going to, presente continuo como futuro), comparativos y superlativos, artículos (a / the , ausencia de artículo), can / could / be able to, expresiones modales de obligación, usually / used to, formas de voz pasiva, expresiones modales de deducción, cláusulas condicionales, discurso referido, gerundio e infinitivo, cláusulas relativas, preguntas coletillas (question tags)."
+      },
+      {
+        "titulo": "Comprensión lectora",
+        "descripcion": "Artículo de temas generales y artículos de opinión. Sitios web y señales de información. Textos narrativos adaptados."
+      },
+      {
+        "titulo": "Comprensión auditiva",
+        "descripcion": "Fragmentos de programas de radio o podcasts a un ritmo razonable. Conversaciones dramatizadas propias de un nivel B1. Entrevistas con hablantes reales (adaptadas y no adaptadas)."
+      },
+      {
+        "titulo": "Producción escrita",
+        "descripcion": "Mensajes de correo electrónico personales y profesionales dando o solicitando información. Descripción de personas y lugares. Artículo de opinión o discursivo. Narración corta sobre experiencias personales o ficticias. Crítica de una película."
+      },
+      {
+        "titulo": "Expresión oral",
+        "descripcion": "Interacción acorde a un nivel intermedio sobre variedad de tópicos en situaciones que se puedan presentar mientras viaja en una zona en la que se habla el idioma."
+      }
+    ],
+    "estrategias": "La enseñanza se administra de manera externa.",
+    "evaluacion": "Modalidad de evaluación: El nivel Inglés I se evalúa a través de la Prueba de Inglés Duolingo (Duolingo English Test).\n\nRequisitos de aprobación: El nivel Inglés I se aprueba a través de la obtención de 85 puntos como mínimo en la Prueba de Inglés Duolingo (Duolingo English Test).",
+    "bibliografiaObligatoria": [
+      "Latham-Koenig, C., & Oxenden, C. (2013). English file intermediate (3.ª ed.). Oxford University Press."
+    ],
+    "bibliografiaComplementaria": [
+      "Cambridge. (2010). Advanced learner's dictionary (3.ª ed.). Cambridge UP.",
+      "Murphy, R. (1995). English grammar in use: Intermediate: Selft-study with key (3.ª ed.). Cambridge U.P."
+    ],
+    "pdf": "/electivas-fichas/94.51.pdf"
+  },
+  "94.52": {
+    "codigo": "94.52",
+    "materia": "Inglés II",
+    "creditos": 0,
+    "departamento": "Economía, Sociedad y Negocios",
+    "anio": "2023",
+    "carrera": "Bioingeniería / Ingeniería Electricista / Ingeniería Electrónica / Ingeniería en Informática / Ingeniería en\n Petróleo / Ingeniería Industrial / Ingeniería Mecánica / Ingeniería Naval / Ingeniería Química",
+    "actualizado": "23/12/2022 16:32:13",
+    "cargaHoraria": {
+      "total": 0,
+      "teoricas": 0,
+      "practicas": 0,
+      "laboratorio": 0,
+      "semanales": 0,
+      "presencial": 0,
+      "distancia": 0
+    },
+    "contenidosMinimos": "THEMES: Vacations, opinions and reactions. Likes and dislikes, preferences. Habits, strengths and weaknesses. Complaints. Landmarks. Good and bad news. Needs. Books. Appointments and meetings. Decisions. Exceptions. Telephone messages. Plans and past experiences. Interruptions. Imaginary situations. Products. Favors and requests. Shopping. Frightening stories. Apologies. Conversation openers. Reasons, excuses and permission. Arrangements, obligation and prohibitions. Injuries.\n\nRequests and instructions. Problems and advice. Concern, moods and feelings. Warnings and advice. Greetings, socializing. Fantasies. Information and objections. Food. Identifications. Regrets and judgements. Possibilities, conclusions and reactions. Excuses.\n\nACTIVITIES: LISTEN TO: opinions intonation habits complaints plans decisions people talking stories, excuses, favors, advice. Messages, wishes, locations. Descriptions, regrets and phone messages.\n\nREAD: historical texts interviews book jackets articles short stories\n\nWRITE: articles letters movie or book review letter of complaint response to a memo directions.",
+    "presentacion": "El aprendizaje del inglés en la formación universitaria se fundamenta en función de la necesidad de que los estudiantes, futuros profesionales, puedan abordar con fluidez la comprensión lectora, la producción escrita, la comprensión auditiva y la producción oral en dicho idioma, tanto durante la etapa de formación como en el ejercicio profesional. Dada la globalización y el carácter internacional de la lengua inglesa, su aprendizaje constituye una importante herramienta para el desarrollo académico y profesional. En esta materia, se espera que los estudiantes alcancen el nivel B2 (Marco Común Europeo de Referencia).",
+    "objetivos": "Que el estudiante pueda • comprender las ideas principales de un texto complejo sobre temas tanto concretos como abstractos, incluidas las discusiones técnicas de su campo de especialización; • interactuar con un grado de fluidez y espontaneidad que permitan una interacción regular con hablantes nativos sin inconvenientes para ninguna de las partes; • producir textos claros y detallados sobre una amplia gama de temas y expresar un punto de vista sobre un tema de actualidad brindando las ventajas y las desventajas de varias opciones.",
+    "programa": [
+      {
+        "titulo": "Gramática",
+        "descripcion": "Formación de preguntas. Verbos compuestos. Presente perfecto (simple y continuo) Uso de adjetivos como sustantivos, orden de los adjetivos. Tiempos narrativos, pasado perfecto continuo. So y such…that. Adverbios y frases adverbiales. Futuro perfecto y futuro continuo. Cláusulas condicionales reales (0 y 1) e irreales (2 y 3). Estructuras con wish. Gerundios e infinitivos. Used to, be used to , get used to. Verbos modales en pasado. Would rather, had better. Verbos de sentimiento. Voz pasiva: it is said that…, he is thought to…, etc. Verbos delocutivos. Cláusulas de contraste y propósito. Sustantivos incontables y plurales. Cuantificadores: all/every, etc."
+      },
+      {
+        "titulo": "Léxico",
+        "descripcion": "Adjetivos compuestos, modificadores. Expresiones con 'take'. Verbos comúnmente confundidos. Colocaciones. Adjetivos terminados en -ed/-ing y verbos relacionados. léxico especializado de los campos de formación. Expresiones con 'go'. Formación de palabras: prefijos y sufijos. Adverbios y frases adverbiales."
+      },
+      {
+        "titulo": "Campos temáticos",
+        "descripcion": "Vacaciones, opiniones y reacciones. Gustos y disgustos, preferencias. Hábitos, fortalezas y debilidades. Quejas. Puntos de referencia. Buenas y malas noticias. Necesidades. Libros. Citas y reuniones. Decisiones. Planes y experiencias pasadas. Interrupciones. Situaciones imaginarias. Productos. Favores y peticiones. Compras. Historias aterradoras. Disculpas. Iniciadores de conversación. Razones, excusas y permiso. Régimen, obligación y prohibiciones. Enfermedades y lesiones. Solicitudes e instrucciones. Problemas y consejos. Preocupación, estados de ánimo y sentimientos. Advertencias y consejos. Saludos, socializando. Fantasías. Información y objeciones. Comida. Identificaciones. Lamentos y juicios. Posibilidades, conclusiones y reacciones. Excusas."
+      },
+      {
+        "titulo": "Comprensión lectora",
+        "descripcion": "Artículos sobre asuntos actuales. Artículos de opinión. Textos narrativos de ficción no adaptados. Críticas de textos y películas."
+      },
+      {
+        "titulo": "Comprensión auditiva",
+        "descripcion": "Extractos de programas de radio, de series televisivas y películas en inglés estándar. Disertaciones sobre temas generales. Discurso auténticos de hablantes entrevistados en un estudio o en la calle."
+      },
+      {
+        "titulo": "Producción escrita",
+        "descripcion": "Emails. Cuentos. Artículos. Descripción de una foto. Expresión de opiniones. Informe. Cartas de reclamo."
+      },
+      {
+        "titulo": "Expresión oral",
+        "descripcion": "Interacción fluida y espontánea sobre variedad de tópicos. Expresión de opiniones"
+      }
+    ],
+    "estrategias": "La enseñanza se administra de manera externa.",
+    "evaluacion": "Modalidad de evaluación: Inglés II se evalúa a través de la Prueba de Inglés Duolingo (Duolingo English Test).\n\nRequisitos de aprobación: El nivel Inglés II se aprueba a través de la obtención de 100 puntos como mínimo en la Prueba de Inglés Duolingo (Duolingo English Test).",
+    "bibliografiaObligatoria": [
+      "Latham-Koenig, C., & Oxenden, C. (2020) English file: Upper-intermediate: Student's book with iTutor and online skills (3.ª ed.). Oxford University Press."
+    ],
+    "bibliografiaComplementaria": [
+      "Cambridge. (2010). Advanced learner's dictionary (3.ª ed.). Cambridge UP.",
+      "Hewings, M. (2015) Advanced Grammar in Use: A self-study reference and practice book for advaced learners of English. Cambridge UP."
+    ],
+    "pdf": "/electivas-fichas/94.52.pdf"
   },
   "94.62": {
     "codigo": "94.62",

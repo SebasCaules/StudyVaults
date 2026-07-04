@@ -5,17 +5,17 @@
 > backlog: `.plans/plan-mejoras-*.md`. Se conserva por las decisiones de diseño (D1–D7, §0b–0f).
 
 > Living directive for the multi-module UI/UX/feature/architecture overhaul.
-> Overseer (Opus) fija contratos + integra; workers (Sonnet) ejecutan; todo se verifica
-> adversarialmente y en el browser real. **Self-healing:** actualizar este doc con cada
-> decisión/patrón/edge-case nuevo (Section 2 del brief).
+> Overseer fija contratos + integra; workers ejecutan; **todos en Opus** (ver política abajo);
+> todo se verifica adversarialmente y en el browser real. **Self-healing:** actualizar este doc
+> con cada decisión/patrón/edge-case nuevo (Section 2 del brief).
 >
 > Estado global: **DESIGN-FIRST** — se producen specs + mockups HTML por módulo para
 > aprobación ANTES de escribir código de feature. Revisión **módulo por módulo**.
 > No se pushea nunca sin pedido explícito (convención del repo).
 >
-> **POLÍTICA DE MODELOS (instrucción del usuario, 2026-07-02):** TODOS los agentes/subagentes
-> corren en **Opus 4.8 1M** (`model: "opus"`), no Sonnet. Esto **invalida** el default de la skill
-> /orquesta (workers en Sonnet). El overseer también en Opus. Aplica de acá en más a todo fan-out.
+> **POLÍTICA DE MODELOS (instrucción del usuario, 2026-07-02; reconfirmada 2026-07-04):** TODOS
+> los agentes/subagentes corren en **Opus** (`model: "opus"`), no Sonnet. La skill /orquesta ya
+> tiene este default baked-in (§Modelos, 2026-07-04). Aplica a todo fan-out.
 
 ---
 

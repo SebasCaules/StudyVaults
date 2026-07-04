@@ -1,5 +1,4 @@
 {
-  "_README": "PROPUESTO por la auditoría de sesiones 2026-07. Revisar y activar con: mv .claude/settings.proposed.json .claude/settings.json (y abrir /hooks o reiniciar la sesión para que cargue). Hooks: (1) bloquea `cd` relativo en Bash — el cwd se resetea entre llamadas y esto causó ~11 errores; (2) bloquea `git commit` con trailer Co-Authored-By: Claude; (3) al iniciar sesión avisa si hay >15 archivos sin commitear (riesgo de pisadas entre sesiones concurrentes). attribution.commit='' evita que el harness agregue el trailer. El allowlist cubre los probes read-only y el loop de verificación (tsc/build/run.sh) que hoy piden permiso a cada rato.",
   "attribution": {
     "commit": ""
   },
