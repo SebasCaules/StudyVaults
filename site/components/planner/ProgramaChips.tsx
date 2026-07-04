@@ -71,14 +71,14 @@ export function ProgramaChips({
       label: "Promociona",
       cls: "prog-chip--promo",
       ico: "promo",
-      title: "Se aprueba sin examen final (según el programa)",
+      title: "Se aprueba sin examen final (según el programa; sin mesa en la planilla oficial)",
     });
   } else if (d.tieneFinal) {
     chips.push({
       label: "Con final",
       cls: "prog-chip--final",
       ico: "final",
-      title: "El programa menciona examen final",
+      title: "Rinde examen final (programa y/o mesa en la planilla oficial de finales)",
     });
   }
 

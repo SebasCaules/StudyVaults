@@ -9,10 +9,14 @@
 // de final salen de lib/planner/finalesData.ts (DATA DE EJEMPLO, a reemplazar).
 //
 // Regla de negocio (contrato del overseer):
-//   · un final está "pendiente" si tenés la cursada REGULAR aprobada y todavía
-//     no rendiste el final: approved.has(code) && !finalDone.has(code).
-//   · para rendir un final necesitás sus correlativas de FINAL aprobadas
-//     (finalDone). Si falta alguna, el final queda bloqueado (candado).
+//   · un final está "pendiente" si la materia RINDE final (tieneFinal), tenés
+//     la cursada regular aprobada y todavía no lo rendiste:
+//     tieneFinal(code) && approved.has(code) && !finalDone.has(code).
+//   · las materias que NO rinden final (promocionables / sin mesa) nunca son
+//     pendientes: su cursada aprobada SE TOMA COMO FINAL APROBADO — también
+//     para las correlativas de final (ver finalesAprobados en lib/planner/estado).
+//   · para rendir un final necesitás sus correlativas de FINAL aprobadas.
+//     Si falta alguna, el final queda bloqueado (candado).
 //
 // Static-export safe: el .ics se arma client-side (Blob + createObjectURL)
 // detrás de un guard `typeof window !== "undefined"`.
@@ -24,6 +28,7 @@ import {
   type CSSProperties,
 } from "react";
 import { usePlanner } from "@/components/planner/state";
+import { finalesAprobados, tieneFinal } from "@/lib/planner/estado";
 import { byId, credOf, PALETTE } from "@/lib/planner/model";
 import {
   PERIODOS,
@@ -168,9 +173,14 @@ export default function FinalesCombinadorView() {
   const conMesasReales = hayMesasOficialesCargadas(periodo, anio);
 
   // ----- universo de finales pendientes (approved && !finalDone) -----
+  // Las materias que NO rinden final (promocionables / sin mesa) no entran:
+  // su cursada aprobada cuenta como final aprobado — ni son pendientes ni
+  // bloquean; para las correlativas de final se computan en `finalesOk`.
   const rows: FinalRow[] = useMemo(() => {
+    const finalesOk = finalesAprobados(approved, finalDone);
     const codes: string[] = [];
-    for (const c of approved) if (!finalDone.has(c) && byId.has(c)) codes.push(c);
+    for (const c of approved)
+      if (!finalDone.has(c) && byId.has(c) && tieneFinal(c)) codes.push(c);
     // orden estable: por año/cuatri/nombre (para color y listado)
     codes.sort((a, b) => {
       const ma = byId.get(a)!;
@@ -183,7 +193,7 @@ export default function FinalesCombinadorView() {
     });
     return codes.map((code, i) => {
       const m = byId.get(code)!;
-      const { ok, faltan } = finalHabilitado(code, finalDone);
+      const { ok, faltan } = finalHabilitado(code, finalesOk);
       const manual = mesas.get(code);
       const oficial = mesaOficial(code, periodo, anio);
       const mesa = manual ?? oficial ?? null;

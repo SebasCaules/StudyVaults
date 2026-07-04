@@ -99,9 +99,13 @@ export interface Ficha {
  *  en fichas.ts, así se re-deriva sin re-parsear los PDFs. */
 export interface FichaDerivado {
   tieneParcial: boolean; // aparece "parcial(es)"
-  tieneFinal: boolean; // aparece "examen final" / "final" como instancia de examen
+  /** rinde examen final. Además del texto, `charsOf` fuerza `true` si la materia
+   *  tiene mesa en la planilla oficial de finales (finalesFlags.ts). */
+  tieneFinal: boolean;
   tieneTP: boolean; // aparece "trabajo práctico" / "TP"
-  /** promociona sin examen final: true si hay "promoc"; false si hay final; null si es dudoso. */
+  /** promociona (cierra la materia) SIN examen final. No confundir con final
+   *  reducido: si hay mesa oficial, `charsOf` fuerza `false` aunque la ficha
+   *  hable de promoción. true si hay "promoc"; false si hay final; null dudoso. */
   promocionable: boolean | null;
   /** asistencia/presentismo obligatorio detectado en "Requisitos de aprobación". */
   asistenciaObligatoria: boolean | null;

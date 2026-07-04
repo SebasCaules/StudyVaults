@@ -7,8 +7,17 @@
 // sin volver a parsear los PDFs. Convención de honestidad: se marca un valor SOLO
 // si la señal aparece explícita; `null`/`false` cuando no se detecta — nunca se
 // infiere un dato ausente, y la UI siempre muestra el texto crudo de `evaluacion`.
+//
+// Por ENCIMA de la heurística de texto hay una señal autoritativa: la planilla
+// oficial de finales (finalesFlags.ts). Si la materia tiene mesa publicada,
+// rinde final sí o sí — aunque la ficha no lo mencione o describa "promoción"
+// (esa promoción es a un final REDUCIDO, que no exime del final). `charsOf`
+// aplica ese override para que todos los consumidores (chips, estado, export)
+// vean lo mismo. No confundir promocionable (cierra sin final) con final
+// reducido (siempre hay mesa que rendir).
 
 import { FICHAS } from "./fichas";
+import { CODIGOS_CON_FINAL } from "./finalesFlags";
 import type { Ficha, FichaDerivado } from "./types";
 
 /** Normaliza a minúsculas sin acentos para matchear robusto. */
@@ -91,6 +100,12 @@ export function charsOf(codigo: string): FichaDerivado | null {
   let d = _cache.get(codigo);
   if (!d) {
     d = derivarChars(ficha);
+    // Override autoritativo (ver header): mesa en la planilla oficial ⇒ rinde
+    // final, y por lo tanto NO promociona la materia (a lo sumo promociona a
+    // un final reducido, que igual hay que rendir).
+    if (CODIGOS_CON_FINAL.has(codigo)) {
+      d = { ...d, tieneFinal: true, promocionable: false };
+    }
     _cache.set(codigo, d);
   }
   return d;
