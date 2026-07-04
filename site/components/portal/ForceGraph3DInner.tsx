@@ -421,7 +421,38 @@ export default function ForceGraph3DInner({
     return () => ro.disconnect();
   }, []);
 
-  // linterna: NDC del mouse dentro del canvas
+  // tooltip propio a nivel <body> (position:fixed, z-index máximo): el de la
+  // librería vive DENTRO del canvas → lo tapaban las pills y lo recortaba el
+  // overflow:hidden de la tarjeta. Este queda en primerísimo plano siempre.
+  const tipRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const tip = document.createElement("div");
+    tip.className = "fg3d-tooltip";
+    tip.style.display = "none";
+    document.body.appendChild(tip);
+    tipRef.current = tip;
+    return () => {
+      tip.remove();
+      tipRef.current = null;
+    };
+  }, []);
+
+  // linterna (NDC del mouse) + posición del tooltip fijo
+  const lastClientRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const placeTip = () => {
+    const tip = tipRef.current;
+    if (!tip || tip.style.display === "none") return;
+    const { x: cx, y: cy } = lastClientRef.current;
+    const tw = tip.offsetWidth,
+      th = tip.offsetHeight;
+    let x = cx + 14,
+      y = cy + 14;
+    if (x + tw > window.innerWidth - 8) x = cx - tw - 14;
+    if (y + th > window.innerHeight - 8) y = cy - th - 14;
+    tip.style.transform = `translate(${x}px, ${y}px)`;
+  };
+  const placeTipRef = useRef(placeTip);
+  placeTipRef.current = placeTip;
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -431,8 +462,13 @@ export default function ForceGraph3DInner({
         x: ((e.clientX - r.left) / r.width) * 2 - 1,
         y: -(((e.clientY - r.top) / r.height) * 2 - 1),
       };
+      lastClientRef.current = { x: e.clientX, y: e.clientY };
+      placeTipRef.current();
     };
-    const onLeave = () => (mouseRef.current = null);
+    const onLeave = () => {
+      mouseRef.current = null;
+      if (tipRef.current) tipRef.current.style.display = "none";
+    };
     el.addEventListener("mousemove", onMove);
     el.addEventListener("mouseleave", onLeave);
     return () => {
@@ -867,11 +903,7 @@ export default function ForceGraph3DInner({
             n.__base = new THREE.Color(dotColorOf(n.v, lightRef.current));
             return sp;
           }}
-          nodeLabel={(n) =>
-            `<div class="fg3d-tip">${escapeHtml(n.t)}<br/><span style="color:${colorOf(
-              n.v,
-            )}">${NAMES[n.v] ?? n.v}</span> · ${n.deg} enlaces</div>`
-          }
+          nodeLabel={() => ""}
           linkColor={(l) =>
             l.sv === l.tv
               ? dotColorOf(l.sv, light)
@@ -885,6 +917,18 @@ export default function ForceGraph3DInner({
             hoverRef.current = !!n;
             if (wrapRef.current)
               wrapRef.current.style.cursor = n ? "pointer" : "grab";
+            const tip = tipRef.current;
+            if (!tip) return;
+            if (n) {
+              tip.innerHTML = `${escapeHtml(n.t)}<br/><span style="color:${dotColorOf(
+                n.v,
+                lightRef.current,
+              )}">${NAMES[n.v] ?? n.v}</span> · ${n.deg} enlaces`;
+              tip.style.display = "block";
+              placeTipRef.current(); // posicionar YA (no esperar al próximo move)
+            } else {
+              tip.style.display = "none";
+            }
           }}
           onNodeClick={(n) => n?.u && onOpen(n.u)}
         />

@@ -980,6 +980,27 @@
   white-space: normal;
   line-height: 1.35;
 }
+/* tooltip PROPIO del grafo del hero: montado en <body> con position:fixed →
+   primerísimo plano SIEMPRE (nada lo tapa ni lo recorta el overflow de la
+   tarjeta). Lo posiciona el componente vía transform. */
+.fg3d-tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  max-width: 260px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 6px;
+  padding: 5px 9px;
+  box-shadow: var(--shadow-md);
+  white-space: normal;
+}
 /* etiquetas de materia en PRIMER plano sobre el grafo 3D (overlay proyectado).
    Pills nítidas con backdrop-blur — posicionadas por frame con anti-solape 2D. */
 .fg3d-labels {
