@@ -267,8 +267,18 @@ const CODE_RE = /^\d{1,3}\.\d{1,3}$/; // "10.01", "93.58"
  * filas problemáticas se descartan y se acumulan en `warnings`.
  */
 export function parseFinalesCsv(csv: string): FinalesParseResult {
+  return parseFinalesTable(parseCsv(csv));
+}
+
+/**
+ * Igual que `parseFinalesCsv` pero desde una tabla ya tokenizada (`string[][]`).
+ * Así el mismo pipeline sirve para CSV (`parseCsv`) y para HTML (`htmlToTables`
+ * en `source.ts`): ambos producen una matriz de celdas y `findHeader` mapea las
+ * columnas por nombre, tolerando un offset constante (p. ej. el row-header
+ * numérico que trae la tabla de un Google Sheet publicado).
+ */
+export function parseFinalesTable(table: string[][]): FinalesParseResult {
   const warnings: string[] = [];
-  const table = parseCsv(csv);
   if (table.length === 0) {
     return { rows: [], warnings: ["El archivo está vacío."], periodoDetectado: null, anioDetectado: null };
   }

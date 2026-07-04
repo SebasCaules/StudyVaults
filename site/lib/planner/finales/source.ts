@@ -9,7 +9,20 @@
 // se puede traer con `fetch()` directo desde el sitio estático en GitHub Pages
 // (verificado para localhost y sebascaules.github.io). El archivo subido es el
 // fallback: sirve para una planilla propia o si el link está caído.
+//
+// Además del CSV, se acepta subir/pegar el **HTML** de la planilla (la página
+// "Publicar en la web → pubhtml" de Google Sheets, guardada con «Guardar como →
+// Página web completa»). Ese HTML trae la grilla como un `<table>` con las
+// mismas columnas que el CSV, así que se extrae con `DOMParser` y se reusa el
+// mismo parser. Si el HTML es solo el *marco* de Sheets (la data vive aparte en
+// `…_files/sheet.html`), se detecta la URL publicada embebida y se trae su CSV.
 // ============================================================================
+
+import {
+  parseFinalesCsv,
+  parseFinalesTable,
+  type FinalesParseResult,
+} from "./parseFinales";
 
 /**
  * Endpoint CSV de la planilla oficial (Publicación en la web del Google Sheet
@@ -95,6 +108,90 @@ export function readFinalesFile(file: File): Promise<string> {
 
 /** Heurística mínima: ¿el texto es una página HTML en vez de un CSV? */
 function looksLikeHtml(text: string): boolean {
-  const head = text.slice(0, 200).trimStart().toLowerCase();
-  return head.startsWith("<!doctype html") || head.startsWith("<html");
+  const head = text.slice(0, 400).trimStart().toLowerCase();
+  return (
+    head.startsWith("<!doctype html") ||
+    head.startsWith("<html") ||
+    head.startsWith("<table") ||
+    head.startsWith("<tr") ||
+    /<table[\s>]/.test(head)
+  );
+}
+
+/**
+ * Extrae todas las tablas de un HTML como matrices de celdas (`string[][]`),
+ * usando el parser del navegador (`DOMParser`) — decodifica entidades y aplana
+ * el markup de cada celda sin ejecutar scripts. Incluye celdas `td` y `th`: el
+ * `th` de encabezado de fila (el número de fila que agrega Google Sheets) queda
+ * como columna 0, pero `findHeader` mapea por nombre y el offset es constante en
+ * todas las filas, así que no afecta el alineado. Browser-only: llamalo desde
+ * handlers del cliente (hay guard para SSR/export).
+ */
+export function htmlToTables(html: string): string[][][] {
+  if (typeof DOMParser === "undefined") {
+    throw new Error("Tu navegador no permite leer archivos HTML.");
+  }
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const out: string[][][] = [];
+  doc.querySelectorAll("table").forEach((tbl) => {
+    const rows: string[][] = [];
+    tbl.querySelectorAll("tr").forEach((tr) => {
+      const cells: string[] = [];
+      tr.querySelectorAll("td,th").forEach((c) =>
+        cells.push((c.textContent ?? "").replace(/\s+/g, " ").trim()),
+      );
+      if (cells.length) rows.push(cells);
+    });
+    if (rows.length) out.push(rows);
+  });
+  return out;
+}
+
+/**
+ * Si el HTML es una publicación de Google Sheets (pubhtml), devuelve la URL de
+ * su export CSV (`…/pub?output=csv`) derivada del id publicado embebido. Sirve
+ * para el caso en que el archivo subido es solo el *marco* de Sheets y la grilla
+ * vive en un archivo aparte: en vez de pedirla, se trae el CSV en vivo.
+ */
+export function extractPubCsvUrl(html: string): string | null {
+  const m = html.match(/spreadsheets\/d\/e\/([A-Za-z0-9_-]+)\/pub/);
+  return m ? `https://docs.google.com/spreadsheets/d/e/${m[1]}/pub?output=csv` : null;
+}
+
+/**
+ * Punto de entrada único para texto pegado o archivos leídos: detecta si es CSV
+ * o HTML y devuelve las filas parseadas.
+ *   · CSV/texto → `parseFinalesCsv`.
+ *   · HTML con la tabla adentro (p. ej. `sheet.html`) → se extrae y se parsea
+ *     100% local, sin red.
+ *   · HTML que es solo el marco pubhtml → se trae su CSV publicado (`fetch`).
+ * Es async porque el último caso puede necesitar red; los otros resuelven ya.
+ */
+export async function parseFinalesInput(text: string): Promise<FinalesParseResult> {
+  if (!looksLikeHtml(text)) return parseFinalesCsv(text);
+
+  let tables: string[][][] = [];
+  try {
+    tables = htmlToTables(text);
+  } catch {
+    /* sin DOMParser (SSR) — cae al fallback de red si hay URL */
+  }
+  for (const t of tables) {
+    const res = parseFinalesTable(t);
+    if (res.rows.length > 0) return res;
+  }
+
+  const csvUrl = extractPubCsvUrl(text);
+  if (csvUrl) return parseFinalesCsv(await fetchFinalesCsv(csvUrl));
+
+  return {
+    rows: [],
+    warnings: [
+      "El HTML no contenía la tabla de finales. Si lo guardaste desde Google " +
+        "Sheets, subí el archivo «sheet.html» de la carpeta «…_files», o usá " +
+        "«Traer del link oficial».",
+    ],
+    periodoDetectado: null,
+    anioDetectado: null,
+  };
 }

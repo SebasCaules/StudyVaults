@@ -2,7 +2,8 @@
 
 // Ingesta de la planilla oficial de finales → autocompleta las fechas de mesa
 // del combinador. Tres vías: traer del link oficial (fetch con CORS abierto),
-// subir un CSV, o pegar el texto. El parseo puro vive en
+// subir un archivo (CSV o el HTML de la planilla publicada), o pegar el texto.
+// El ruteo CSV/HTML lo resuelve `parseFinalesInput`; el parseo puro vive en
 // lib/planner/finales/parseFinales.ts; la I/O en lib/planner/finales/source.ts;
 // las mesas cargadas van al store reactivo de lib/planner/finalesData.ts, que
 // mesaOficial() consulta antes que el mock.
@@ -13,7 +14,6 @@ import { useMemo, useRef, useState } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { byId } from "@/lib/planner/model";
 import {
-  parseFinalesCsv,
   finalesRowsToMesas,
   type FinalMateriaRow,
   type Llamado,
@@ -21,6 +21,7 @@ import {
 import {
   fetchFinalesCsv,
   readFinalesFile,
+  parseFinalesInput,
   FINALES_PUB_HTML_URL,
 } from "@/lib/planner/finales/source";
 import {
@@ -79,8 +80,8 @@ export default function FinalesIngesta() {
     setMesasOficiales(per, an, finalesRowsToMesas(newRows, ll));
   };
 
-  const ingest = (csv: string): boolean => {
-    const res = parseFinalesCsv(csv);
+  const ingest = async (text: string): Promise<boolean> => {
+    const res = await parseFinalesInput(text);
     if (res.rows.length === 0) {
       setStatus("error");
       setError(
@@ -104,7 +105,7 @@ export default function FinalesIngesta() {
     setError("");
     try {
       const csv = await fetchFinalesCsv();
-      ingest(csv);
+      await ingest(csv);
     } catch (e) {
       setStatus("error");
       setError(e instanceof Error ? e.message : "No se pudo traer la planilla.");
@@ -118,7 +119,7 @@ export default function FinalesIngesta() {
     setError("");
     try {
       const text = await readFinalesFile(f);
-      ingest(text);
+      await ingest(text);
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "No se pudo leer el archivo.");
@@ -127,11 +128,11 @@ export default function FinalesIngesta() {
     }
   };
 
-  const procesarPegado = () => {
+  const procesarPegado = async () => {
     if (!pasteText.trim()) return;
     setStatus("loading");
     setError("");
-    if (ingest(pasteText)) setPasteOpen(false);
+    if (await ingest(pasteText)) setPasteOpen(false);
   };
 
   const switchLlamado = (ll: Llamado) => {
@@ -181,11 +182,11 @@ export default function FinalesIngesta() {
 
             <label className="fin__ing-file">
               <IconUpload size={13} />
-              <span>Subir CSV</span>
+              <span>Subir CSV o HTML</span>
               <input
                 ref={fileRef}
                 type="file"
-                accept=".csv,text/csv,text/plain"
+                accept=".csv,.html,.htm,text/csv,text/html,text/plain"
                 onChange={onFile}
                 disabled={status === "loading"}
               />
