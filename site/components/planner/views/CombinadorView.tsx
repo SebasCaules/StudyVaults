@@ -479,22 +479,25 @@ export default function CombinadorView() {
     );
   };
 
-  // ---------- sub-render: chip de materia elegida (con CommissionSelect) ----------
+  // ---------- sub-render: celda de materia elegida (grilla uniforme) ----------
+  // Anatomía FIJA (grid interno auto auto 1fr auto): barra de color · abbr ·
+  // créditos · selector de comisión (si hay >1; si no la celda queda vacía) · ×.
+  // El × va anclado a la última columna → queda alineado en todas las filas.
   const chip = (m: MateriaM, i: number) => {
     const coms = m.horario?.comisiones || [];
     const fx = fixedCom.get(m.codigo);
     return (
       <span
-        className="cmb-chip"
+        className="cmb9-mchip"
         key={m.codigo}
         style={{ "--chip-c": PALETTE[i % PALETTE.length] } as React.CSSProperties}
       >
-        <span className="cmb-chip__abbr">{m.abbr}</span>
-        <span className="cmb-chip__cr">{m.creditos}cr</span>
+        <span className="cmb9-mchip__abbr">{m.abbr}</span>
+        <span className="cmb9-mchip__cr">{m.creditos}cr</span>
         {coms.length > 1 && (
           <CommissionSelect
             size="sm"
-            className="cmb9-chip__com"
+            className="cmb9-mchip__com"
             placeholder="Auto"
             title="Auto: el combinador elige la comisión que arma la semana más compacta. Fijá una para forzarla."
             aria-label={`Comisión de ${m.nombre}`}
@@ -515,7 +518,7 @@ export default function CombinadorView() {
         )}
         <button
           type="button"
-          className="cmb-chip__x"
+          className="cmb9-mchip__x"
           aria-label={`Quitar ${m.abbr}`}
           onClick={() => dispatch({ type: "TOGGLE_COMBO", code: m.codigo })}
         >
@@ -525,274 +528,279 @@ export default function CombinadorView() {
     );
   };
 
-  // ---------- sub-render: header compacto ----------
+  // ---------- sub-render: header en filas (título · grilla · preferencias) ----------
   const header = (
     <header className="cmb9-header">
-      <div className="cmb9-header__left">
+      {/* Fila 1: label + contador + Vaciar a la izquierda; acciones a la derecha */}
+      <div className="cmb9-hrow">
         <div className="cmb9-mats">
           <span className="cmb9-mats__lbl">Materias</span>
-          {selected.length > 0 ? (
+          {selected.length > 0 && (
             <>
-              {selected.map(chip)}
+              <span className="cmb9-mats__count">· {selected.length}</span>
               <button
                 type="button"
-                className={"cmb2-add" + (showPicker ? " is-open" : "")}
-                onClick={() => setPickerOpen((o) => !o)}
-              >
-                {showPicker ? "Listo" : "＋ Agregar"}
-              </button>
-              <button
-                type="button"
-                className="cmb2-clear"
+                className="cmb9-clear"
                 onClick={() => dispatch({ type: "RESET_COMBO" })}
               >
                 Vaciar
               </button>
             </>
-          ) : (
-            <button
-              type="button"
-              className="cmb2-add"
-              onClick={() => setPickerOpen((o) => !o)}
-            >
-              ＋ Elegí las materias a cursar
-            </button>
           )}
         </div>
 
-        {selected.length > 0 && (
-          <>
-            <span className="cmb9-div" aria-hidden="true" />
-            <div className="cmb9-prefs">
-              {/* Label + tooltip: qué hace "Auto" en los selectores de comisión */}
-              {hasComChoice && (
-                <span className="cmb9-cominfo">
-                  Comisión: <b>Auto</b>
-                  <InfoTip
-                    label="Qué hace Auto en las comisiones"
-                    text="Cada materia con más de una comisión tiene su selector. Dejá «Auto» y el combinador elige la comisión que arma la semana más compacta; o fijá una vos."
-                  />
-                </span>
-              )}
-              <div className="cmb-prefs__modal" title="Modalidad de cursada">
-                {MODAL_KEYS.map((k) => (
-                  <button
-                    type="button"
-                    key={k}
-                    className={"cmb-pill" + (comboParams.modal[k] ? " on" : "")}
-                    aria-pressed={comboParams.modal[k]}
-                    onClick={() =>
-                      dispatch({
-                        type: "SET_MODAL",
-                        key: k,
-                        value: !comboParams.modal[k],
-                      })
-                    }
-                  >
-                    {k}
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                className={"cmb-switch" + (comboParams.allowOverlap ? " on" : "")}
-                role="switch"
-                aria-checked={comboParams.allowOverlap}
-                title="Permitir cursadas que se superponen"
-                onClick={() =>
-                  dispatch({
-                    type: "SET_ALLOW_OVERLAP",
-                    value: !comboParams.allowOverlap,
-                  })
-                }
-              >
-                <span className="cmb-switch__track">
-                  <span className="cmb-switch__knob" />
-                </span>
-                Superponer
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="cmb9-header__right">
-        {/* Modo libre efímero: combina horarios ignorando las aprobadas */}
-        <button
-          type="button"
-          className={"cmb9-hbtn" + (comboSolo ? " is-on" : "")}
-          aria-pressed={comboSolo}
-          title={
-            comboSolo
-              ? "Modo libre activo — se ignoran tus materias aprobadas. Tocá para volver a tu cursada real"
-              : "Combiná horarios ignorando tu progreso de cursada: ofrece también las materias que ya aprobaste"
-          }
-          onClick={() => {
-            setSaveOpen(false);
-            dispatch({ type: "SET_COMBO_SOLO", value: !comboSolo });
-          }}
-        >
-          Solo combinar
-        </button>
-
-        <button
-          type="button"
-          className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
-          aria-pressed={recOpen}
-          title={
-            recOpen
-              ? "Ocultar el recomendador de materias"
-              : "Mostrar el recomendador de materias"
-          }
-          onClick={() => setRecOpen((o) => !o)}
-        >
-          <IconLayers size={13} />
-          Sugeridas <span className="cmb9-hbtn__count">· {suggestions.length}</span>
-        </button>
-
-        <div className="cmb9-dl" ref={dlRef}>
+        <div className="cmb9-header__right">
+          {/* Modo libre efímero: combina horarios ignorando las aprobadas */}
           <button
             type="button"
-            className="cmb9-hbtn"
-            aria-haspopup="menu"
-            aria-expanded={dlOpen}
-            disabled={!canExport}
+            className={"cmb9-hbtn" + (comboSolo ? " is-on" : "")}
+            aria-pressed={comboSolo}
+            title={
+              comboSolo
+                ? "Modo libre activo — se ignoran tus materias aprobadas. Tocá para volver a tu cursada real"
+                : "Combiná horarios ignorando tu progreso de cursada: ofrece también las materias que ya aprobaste"
+            }
             onClick={() => {
               setSaveOpen(false);
-              setDlOpen((o) => !o);
+              dispatch({ type: "SET_COMBO_SOLO", value: !comboSolo });
             }}
           >
-            <IconDownload size={13} />
-            Descargar
+            Solo combinar
           </button>
-          {dlOpen && (
-            <div className="cmb9-dlmenu" role="menu" aria-label="Opciones de descarga">
-              <button
-                type="button"
-                role="menuitem"
-                className="cmb9-dlitem"
-                onClick={() =>
-                  downloadCombo({ includeSpecs: false }, "cursada-calendario.html")
-                }
-              >
-                <IconCalendar size={16} />
-                <span>
-                  Solo calendario
-                  <small>Grilla semanal, sin listado</small>
-                </span>
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="cmb9-dlitem"
-                onClick={() => downloadCombo({}, "cursada-completa.html")}
-              >
-                <IconLayers size={16} />
-                <span>
-                  Calendario + programa
-                  <small>Grilla y detalle de materias/comisiones</small>
-                </span>
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="cmb9-dlitem"
-                onClick={() =>
-                  downloadCombo({ includeCalendar: false }, "cursada-programa.html")
-                }
-              >
-                <IconFileText size={16} />
-                <span>
-                  Solo programa
-                  <small>Listado: créditos, comisión, horario</small>
-                </span>
-              </button>
-            </div>
-          )}
-        </div>
 
-        {/* «Guardar preferencia» alimenta el Plan de cursada; en modo libre
-            (comboSolo) la combinación puede incluir aprobadas → no se ofrece. */}
-        {!comboSolo && (
-          <div className="cmb9-save" ref={saveRef}>
+          <button
+            type="button"
+            className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
+            aria-pressed={recOpen}
+            title={
+              recOpen
+                ? "Ocultar el recomendador de materias"
+                : "Mostrar el recomendador de materias"
+            }
+            onClick={() => setRecOpen((o) => !o)}
+          >
+            <IconLayers size={13} />
+            Sugeridas <span className="cmb9-hbtn__count">· {suggestions.length}</span>
+          </button>
+
+          <div className="cmb9-dl" ref={dlRef}>
             <button
               type="button"
-              className="cmb9-hbtn cmb9-hbtn--primary"
+              className="cmb9-hbtn"
               aria-haspopup="menu"
-              aria-expanded={saveOpen}
+              aria-expanded={dlOpen}
               disabled={!canExport}
-              title="Guardá estas materias y comisiones en tu Plan de cursada"
               onClick={() => {
-                setDlOpen(false);
-                setSaveOpen((o) => !o);
+                setSaveOpen(false);
+                setDlOpen((o) => !o);
               }}
             >
-              <svg
-                viewBox="0 0 24 24"
-                width="13"
-                height="13"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="M5 4h11l3 3v13H5V4Z" />
-                <path d="M8 4v6h8V4M8 14h8" />
-              </svg>
-              Guardar preferencia
+              <IconDownload size={13} />
+              Descargar
             </button>
-            {saveOpen && (
-              <div
-                className="cmb9-savemenu"
-                role="menu"
-                aria-label="Guardar esta cursada en tu plan"
-              >
-                <p className="cmb9-savemenu__lead">
-                  Sumá esta cursada a tu <b>Plan de cursada</b>. Elegí en qué
-                  cuatrimestre fijarla; el optimizador re-arma el resto alrededor.
-                </p>
-                <label className="cmb9-savemenu__field">
-                  <span className="cmb9-savemenu__lbl">
-                    Fijar en el cuatrimestre
-                    <InfoTip
-                      label="Qué hace Auto al guardar"
-                      text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual. Los cuatrimestres finalizados (candado) no se ofrecen."
-                    />
-                  </span>
-                  <CommissionSelect
-                    size="sm"
-                    className="cmb9-savemenu__sel"
-                    placeholder="Auto — que el plan la ubique"
-                    aria-label="Cuatrimestre donde fijar la cursada"
-                    value={safeSaveIdx}
-                    options={cuatriOptions}
-                    onChange={(e) => setSaveIdx(e.target.value)}
-                  />
-                </label>
+            {dlOpen && (
+              <div className="cmb9-dlmenu" role="menu" aria-label="Opciones de descarga">
                 <button
                   type="button"
-                  className="cmb9-savemenu__go"
-                  onClick={savePreference}
+                  role="menuitem"
+                  className="cmb9-dlitem"
+                  onClick={() =>
+                    downloadCombo({ includeSpecs: false }, "cursada-calendario.html")
+                  }
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="14"
-                    height="14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 4h11l3 3v13H5V4Z" />
-                    <path d="M8 4v6h8V4M8 14h8" />
-                  </svg>
-                  Guardar en el plan
+                  <IconCalendar size={16} />
+                  <span>
+                    Solo calendario
+                    <small>Grilla semanal, sin listado</small>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="cmb9-dlitem"
+                  onClick={() => downloadCombo({}, "cursada-completa.html")}
+                >
+                  <IconLayers size={16} />
+                  <span>
+                    Calendario + programa
+                    <small>Grilla y detalle de materias/comisiones</small>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="cmb9-dlitem"
+                  onClick={() =>
+                    downloadCombo({ includeCalendar: false }, "cursada-programa.html")
+                  }
+                >
+                  <IconFileText size={16} />
+                  <span>
+                    Solo programa
+                    <small>Listado: créditos, comisión, horario</small>
+                  </span>
                 </button>
               </div>
             )}
           </div>
-        )}
+
+          {/* «Guardar preferencia» alimenta el Plan de cursada; en modo libre
+              (comboSolo) la combinación puede incluir aprobadas → no se ofrece. */}
+          {!comboSolo && (
+            <div className="cmb9-save" ref={saveRef}>
+              <button
+                type="button"
+                className="cmb9-hbtn cmb9-hbtn--primary"
+                aria-haspopup="menu"
+                aria-expanded={saveOpen}
+                disabled={!canExport}
+                title="Guardá estas materias y comisiones en tu Plan de cursada"
+                onClick={() => {
+                  setDlOpen(false);
+                  setSaveOpen((o) => !o);
+                }}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="13"
+                  height="13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path d="M5 4h11l3 3v13H5V4Z" />
+                  <path d="M8 4v6h8V4M8 14h8" />
+                </svg>
+                Guardar preferencia
+              </button>
+              {saveOpen && (
+                <div
+                  className="cmb9-savemenu"
+                  role="menu"
+                  aria-label="Guardar esta cursada en tu plan"
+                >
+                  <p className="cmb9-savemenu__lead">
+                    Sumá esta cursada a tu <b>Plan de cursada</b>. Elegí en qué
+                    cuatrimestre fijarla; el optimizador re-arma el resto alrededor.
+                  </p>
+                  <label className="cmb9-savemenu__field">
+                    <span className="cmb9-savemenu__lbl">
+                      Fijar en el cuatrimestre
+                      <InfoTip
+                        label="Qué hace Auto al guardar"
+                        text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual. Los cuatrimestres finalizados (candado) no se ofrecen."
+                      />
+                    </span>
+                    <CommissionSelect
+                      size="sm"
+                      className="cmb9-savemenu__sel"
+                      placeholder="Auto — que el plan la ubique"
+                      aria-label="Cuatrimestre donde fijar la cursada"
+                      value={safeSaveIdx}
+                      options={cuatriOptions}
+                      onChange={(e) => setSaveIdx(e.target.value)}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    className="cmb9-savemenu__go"
+                    onClick={savePreference}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 4h11l3 3v13H5V4Z" />
+                      <path d="M8 4v6h8V4M8 14h8" />
+                    </svg>
+                    Guardar en el plan
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Fila 2: grilla uniforme de materias + celda fantasma "Agregar" al final.
+          Sin selección, la celda es la invitación y ocupa toda la fila. */}
+      <div className="cmb9-matgrid">
+        {selected.map(chip)}
+        <button
+          type="button"
+          className={
+            "cmb9-addcell" +
+            (selected.length > 0 && showPicker ? " is-open" : "") +
+            (selected.length === 0 ? " cmb9-addcell--lead" : "")
+          }
+          onClick={() => setPickerOpen((o) => !o)}
+        >
+          {selected.length === 0
+            ? "＋ Elegí las materias a cursar"
+            : showPicker
+              ? "Listo"
+              : "＋ Agregar"}
+        </button>
+      </div>
+
+      {/* Fila 3: preferencias de cursada (solo con selección) */}
+      {selected.length > 0 && (
+        <div className="cmb9-prefs">
+          {/* Label + tooltip: qué hace "Auto" en los selectores de comisión */}
+          {hasComChoice && (
+            <span className="cmb9-cominfo">
+              Comisión: <b>Auto</b>
+              <InfoTip
+                label="Qué hace Auto en las comisiones"
+                text="Cada materia con más de una comisión tiene su selector. Dejá «Auto» y el combinador elige la comisión que arma la semana más compacta; o fijá una vos."
+              />
+            </span>
+          )}
+          <div className="cmb-prefs__modal" title="Modalidad de cursada">
+            {MODAL_KEYS.map((k) => (
+              <button
+                type="button"
+                key={k}
+                className={"cmb-pill" + (comboParams.modal[k] ? " on" : "")}
+                aria-pressed={comboParams.modal[k]}
+                onClick={() =>
+                  dispatch({
+                    type: "SET_MODAL",
+                    key: k,
+                    value: !comboParams.modal[k],
+                  })
+                }
+              >
+                {k}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className={"cmb-switch" + (comboParams.allowOverlap ? " on" : "")}
+            role="switch"
+            aria-checked={comboParams.allowOverlap}
+            title="Permitir cursadas que se superponen"
+            onClick={() =>
+              dispatch({
+                type: "SET_ALLOW_OVERLAP",
+                value: !comboParams.allowOverlap,
+              })
+            }
+          >
+            <span className="cmb-switch__track">
+              <span className="cmb-switch__knob" />
+            </span>
+            Superponer
+          </button>
+        </div>
+      )}
     </header>
   );
 

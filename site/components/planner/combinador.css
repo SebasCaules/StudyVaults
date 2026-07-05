@@ -15,25 +15,24 @@
   gap: 14px;
 }
 
-/* ---------- header compacto ---------- */
+/* ---------- header en filas (título · grilla de materias · preferencias) ---------- */
 .planner .cmb9-header {
   display: flex;
-  align-items: center;
-  gap: 14px 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   padding: 12px 14px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--r);
   box-shadow: var(--shadow-1);
 }
-.planner .cmb9-header__left {
+/* fila 1: "Materias · N" + Vaciar a la izquierda, acciones a la derecha */
+.planner .cmb9-hrow {
   display: flex;
   align-items: center;
-  gap: 8px 10px;
+  gap: 8px 14px;
   flex-wrap: wrap;
-  flex: 1 1 320px;
-  min-width: 0;
 }
 .planner .cmb9-header__right {
   display: flex;
@@ -48,7 +47,6 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  flex-wrap: wrap;
   min-width: 0;
 }
 .planner .cmb9-mats__lbl {
@@ -59,15 +57,31 @@
   color: var(--muted);
   flex: none;
 }
-
-/* hairline vertical entre las materias y las preferencias de cursada */
-.planner .cmb9-div {
-  width: 1px;
-  align-self: stretch;
-  min-height: 22px;
-  background: var(--line);
+/* contador discreto al lado del label */
+.planner .cmb9-mats__count {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--faint);
   flex: none;
 }
+/* Vaciar — mismo look texto-chico del botón histórico de planner.css, en tokens */
+.planner .cmb9-clear {
+  border: none;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-clear:hover {
+  color: var(--oxblood);
+}
+
+/* fila 3: preferencias de cursada (Comisión: Auto · modalidad · Superponer) */
 .planner .cmb9-prefs {
   display: flex;
   align-items: center;
@@ -75,9 +89,112 @@
   flex-wrap: wrap;
 }
 
-/* CommissionSelect dentro del chip de materia: sin ancho fijo, encaja compacto */
-.planner .cmb9-chip__com {
-  margin-left: 2px;
+/* ---------- fila 2: grilla uniforme de materias elegidas ---------- */
+.planner .cmb9-matgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 7px;
+}
+/* celda de materia: anatomía fija abbr · cr · (selector | vacío) · × sobre un
+   grid interno → el × queda alineado al borde derecho en todas las celdas */
+.planner .cmb9-mchip {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  min-width: 0;
+  padding: 4px 7px 4px 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--chip-c, var(--brass));
+  border-radius: 7px;
+  animation: cmb9-chip-in 0.26s var(--ease-out) both;
+}
+.planner .cmb9-mchip__abbr {
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.planner .cmb9-mchip__cr {
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+/* el CommissionSelect llena la celda flexible; si la materia tiene una sola
+   comisión no se renderiza y la celda queda vacía (el ancho no cambia) */
+.planner .cmb9-mchip__com {
+  grid-column: 3;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.planner .cmb9-mchip__x {
+  grid-column: 4;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-mchip__x:hover {
+  background: var(--oxblood);
+  color: var(--block-ink);
+}
+/* celda fantasma "＋ Agregar": misma altura que los chips, borde dashed */
+.planner .cmb9-addcell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px dashed var(--line-2);
+  background: transparent;
+  color: var(--brass);
+  cursor: pointer;
+  border-radius: 7px;
+  font-family: var(--f-m);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-addcell:hover {
+  background: var(--brass-soft);
+  border-color: var(--brass);
+}
+/* con el picker abierto la celda queda "activa" y ofrece cerrar (Listo) */
+.planner .cmb9-addcell.is-open {
+  border-style: solid;
+  border-color: var(--brass);
+  background: var(--brass-soft);
+}
+/* estado vacío: la invitación ocupa toda la fila de la grilla */
+.planner .cmb9-addcell--lead {
+  grid-column: 1 / -1;
+}
+
+@keyframes cmb9-chip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ---------- botones del cluster derecho (Electivas · Descargar · Guardar) ---------- */
@@ -407,7 +524,13 @@
 @media (prefers-reduced-motion: reduce) {
   .planner .cmb9-hbtn,
   .planner .cmb9-savemenu__go,
-  .planner .cmb9-tip__box {
+  .planner .cmb9-tip__box,
+  .planner .cmb9-clear,
+  .planner .cmb9-mchip__x,
+  .planner .cmb9-addcell {
     transition: none;
+  }
+  .planner .cmb9-mchip {
+    animation: none;
   }
 }
