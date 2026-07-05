@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toolkits de Física — demo (F1 · F2 · F3)</title>
+<style>
+  /* ===== tokens (subset de @studyvaults/ui "Technical Split", tema oscuro) ===== */
+  :root{
+    --hex-brown:#241208;
+    --hex-brown-soft:#382519;
+    --hex-zinc:#27272a;
+    --hex-blue:#92cff2;
+    --hex-gray:#a1a1aa;
+    --hex-coral:#f47c59;
+    --hex-white:#ffffff;
+
+    --background:color-mix(in srgb, var(--hex-brown-soft) 90%, var(--hex-white));
+    --surface:var(--hex-brown-soft);
+    --surface-2:color-mix(in srgb, var(--hex-brown-soft) 84%, var(--hex-white));
+    --surface-3:color-mix(in srgb, var(--hex-brown-soft) 76%, var(--hex-white));
+    --text-primary:var(--hex-white);
+    --text-secondary:var(--hex-gray);
+    --border:var(--hex-zinc);
+    --hairline:color-mix(in srgb, var(--hex-white) 10%, transparent);
+    --hairline-strong:color-mix(in srgb, var(--hex-white) 18%, transparent);
+    --row-hover:color-mix(in srgb, var(--hex-white) 4%, transparent);
+    --accent:var(--hex-coral);
+    --primary:var(--hex-blue);
+    --teal:#2f9f8f;
+    --accent-soft:color-mix(in srgb, var(--hex-coral) 16%, transparent);
+    --shadow-md:0 10px 30px color-mix(in srgb, var(--hex-brown) 42%, transparent);
+
+    --font-display:"Newsreader",Georgia,"Times New Roman",serif;
+    --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+
+    --r-card:8px;
+    --r-ctrl:8px;
+    --r-pill:9999px;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --dur-fast:240ms;
+
+    /* acento activo — lo conmuta el tab vigente */
+    --tab-tint:var(--hex-coral);
+  }
+  body[data-tab="f1"]{ --tab-tint:var(--hex-coral); }
+  body[data-tab="f2"]{ --tab-tint:var(--hex-blue); }
+  body[data-tab="f3"]{ --tab-tint:var(--teal); }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--background);
+    color:var(--text-primary);
+    font-family:var(--font-display);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  /* ===== header ===== */
+  header{
+    max-width:1160px;margin:0 auto;padding:40px 24px 0;
+  }
+  .kicker{
+    font-family:var(--font-mono);font-size:.7rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--tab-tint);margin:0 0 10px;
+    transition:color var(--dur-fast) var(--ease);
+  }
+  header h1{
+    font-weight:600;font-size:clamp(1.6rem,3.4vw,2.3rem);margin:0;letter-spacing:.01em;
+  }
+  header .sub{
+    color:var(--text-secondary);font-size:1.02rem;margin:.45em 0 0;max-width:62ch;
+  }
+
+  /* ===== tabs ===== */
+  nav.tabs{
+    max-width:1160px;margin:28px auto 0;padding:0 24px;
+    display:flex;gap:8px;border-bottom:1px solid var(--hairline-strong);
+  }
+  nav.tabs button{
+    appearance:none;background:none;border:none;cursor:pointer;
+    font-family:var(--font-mono);font-size:.86rem;letter-spacing:.02em;
+    color:var(--text-secondary);padding:12px 18px 14px;position:relative;
+    transition:color var(--dur-fast) var(--ease);
+  }
+  nav.tabs button:hover{color:var(--text-primary);}
+  nav.tabs button[aria-selected="true"]{color:var(--text-primary);}
+  nav.tabs button[aria-selected="true"]::after{
+    content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;
+    background:var(--tab-tint);border-radius:2px;
+  }
+  nav.tabs .n{
+    display:inline-block;margin-left:8px;padding:1px 8px;border-radius:var(--r-pill);
+    border:1px solid var(--hairline-strong);font-size:.68rem;color:var(--text-secondary);
+  }
+  nav.tabs button[aria-selected="true"] .n{border-color:var(--tab-tint);color:var(--tab-tint);}
+
+  /* ===== panel de tab ===== */
+  main{max-width:1160px;margin:0 auto;padding:10px 24px 80px;}
+  .tab-intro{
+    color:var(--text-secondary);font-size:.98rem;margin:22px 2px 6px;max-width:70ch;
+  }
+  section[role="tabpanel"][hidden]{display:none;}
+
+  /* ===== sim card ===== */
+  .sim-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);
+    box-shadow:var(--shadow-md);margin-top:26px;overflow:hidden;
+  }
+  .sim-head{
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    padding:18px 22px 0;
+  }
+  .sim-head h2{
+    font-weight:600;font-size:1.28rem;margin:0;letter-spacing:.01em;
+  }
+  .sim-head .refs{
+    font-family:var(--font-mono);font-size:.68rem;color:var(--text-secondary);
+    border:1px solid var(--hairline);border-radius:var(--r-pill);padding:2px 10px;
+  }
+  .sim-blurb{color:var(--text-secondary);font-size:.95rem;margin:6px 22px 0;max-width:78ch;}
+  .sim-formula{
+    font-family:var(--font-mono);font-size:.84rem;color:var(--tab-tint);
+    margin:10px 22px 0;
+  }
+  .sim-body{
+    display:grid;grid-template-columns:minmax(0,1fr) 272px;gap:0;
+    margin-top:14px;border-top:1px solid var(--hairline);
+  }
+  @media (max-width:860px){ .sim-body{grid-template-columns:1fr;} }
+
+  .sim-stage{position:relative;background:var(--hex-brown);min-height:340px;}
+  .sim-stage canvas{display:block;width:100%;height:100%;position:absolute;inset:0;}
+  .sim-plot{border-top:1px solid var(--hairline);background:color-mix(in srgb, var(--hex-brown) 88%, var(--hex-white));height:150px;position:relative;}
+  .sim-plot canvas{display:block;width:100%;height:100%;position:absolute;inset:0;}
+
+  /* panel de controles */
+  .sim-panel{
+    border-left:1px solid var(--hairline);padding:16px 18px 18px;
+    display:flex;flex-direction:column;gap:14px;background:var(--surface);
+  }
+  @media (max-width:860px){ .sim-panel{border-left:none;border-top:1px solid var(--hairline);} }
+
+  .sim-transport{display:flex;gap:8px;}
+  .sim-transport button{
+    appearance:none;cursor:pointer;flex:1;
+    font-family:var(--font-mono);font-size:.78rem;letter-spacing:.02em;
+    padding:8px 10px;border-radius:var(--r-ctrl);
+    border:1px solid var(--hairline-strong);
+    background:var(--surface-2);color:var(--text-primary);
+    transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
+  }
+  .sim-transport button:hover{background:var(--surface-3);}
+  .sim-transport button.primary{
+    background:var(--tab-tint);color:var(--hex-brown);border-color:transparent;font-weight:700;
+  }
+
+  .ctl{display:flex;flex-direction:column;gap:5px;}
+  .ctl label{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--font-mono);font-size:.72rem;color:var(--text-secondary);letter-spacing:.02em;
+  }
+  .ctl label .val{color:var(--text-primary);font-size:.78rem;}
+  .ctl input[type="range"]{
+    width:100%;accent-color:var(--tab-tint);height:22px;margin:0;
+  }
+  .ctl select,.ctl button.action{
+    appearance:none;font-family:var(--font-mono);font-size:.78rem;
+    background:var(--surface-2);color:var(--text-primary);
+    border:1px solid var(--hairline-strong);border-radius:var(--r-ctrl);
+    padding:7px 10px;cursor:pointer;
+  }
+  .ctl .seg{display:flex;gap:6px;flex-wrap:wrap;}
+  .ctl .seg button{
+    appearance:none;cursor:pointer;font-family:var(--font-mono);font-size:.72rem;
+    padding:5px 10px;border-radius:var(--r-pill);
+    border:1px solid var(--hairline-strong);background:none;color:var(--text-secondary);
+  }
+  .ctl .seg button[aria-pressed="true"]{
+    background:var(--tab-tint);border-color:transparent;color:var(--hex-brown);font-weight:700;
+  }
+  .ctl-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .ctl-toggle span{font-family:var(--font-mono);font-size:.72rem;color:var(--text-secondary);}
+  .ctl-toggle input{accent-color:var(--tab-tint);width:16px;height:16px;}
+
+  .readouts{
+    border-top:1px solid var(--hairline);padding-top:12px;
+    display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;
+  }
+  .readout .k{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);}
+  .readout .v{font-family:var(--font-mono);font-size:.98rem;color:var(--text-primary);margin-top:2px;}
+  .readout .v .unit{font-size:.68rem;color:var(--text-secondary);margin-left:4px;}
+
+  footer{
+    max-width:1160px;margin:0 auto;padding:0 24px 40px;
+    color:var(--text-secondary);font-family:var(--font-mono);font-size:.68rem;letter-spacing:.04em;
+  }
+</style>
+</head>
+<body data-tab="f1">
+
+<header>
+  <p class="kicker">StudyVaults · mockup de toolkits</p>
+  <h1>Física — laboratorio interactivo</h1>
+  <p class="sub">Demo de los toolkits de simulación para las tres Físicas, construidos desde los
+  apuntes de cada cursada. Todo corre en vivo: mové los sliders y la física responde.</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Materias">
+  <button role="tab" id="tab-f1" aria-controls="panel-f1" aria-selected="true">Física 1 <span class="n" data-count="f1">0</span></button>
+  <button role="tab" id="tab-f2" aria-controls="panel-f2" aria-selected="false">Física 2 <span class="n" data-count="f2">0</span></button>
+  <button role="tab" id="tab-f3" aria-controls="panel-f3" aria-selected="false">Física 3 <span class="n" data-count="f3">0</span></button>
+</nav>
+
+<main>
+  <section role="tabpanel" id="panel-f1" aria-labelledby="tab-f1">
+    <p class="tab-intro" data-intro="f1"></p>
+  </section>
+  <section role="tabpanel" id="panel-f2" aria-labelledby="tab-f2" hidden>
+    <p class="tab-intro" data-intro="f2"></p>
+  </section>
+  <section role="tabpanel" id="panel-f3" aria-labelledby="tab-f3" hidden>
+    <p class="tab-intro" data-intro="f3"></p>
+  </section>
+</main>
+
+<footer>mockup _design-review/fisicas-toolkits — no publicado · las sims se pausan fuera de pantalla</footer>
+
+<script src="sim-core.js"></script>
+<script src="f1.js"></script>
+<script src="f2.js"></script>
+<script src="f3.js"></script>
+<script>SimKit.boot();</script>
+</body>
+</html>
