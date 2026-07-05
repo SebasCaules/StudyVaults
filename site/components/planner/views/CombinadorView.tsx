@@ -183,14 +183,26 @@ export default function CombinadorView() {
     return { obs: pool.obs.filter(match), els: pool.els.filter(match) };
   }, [pool, q]);
 
+  // Selección EFECTIVA del combo: en modo normal, las aprobadas que hayan
+  // entrado vía «Solo combinar» quedan latentes (no se combinan, no se
+  // muestran, no se guardan — así el guardado al plan nunca es parcial en
+  // silencio) y reaparecen al reactivar el modo. No se borran del set.
+  const comboEff = useMemo(
+    () =>
+      new Set(
+        [...combo].filter((c) => comboSolo || !state.approved.has(c)),
+      ),
+    [combo, comboSolo, state.approved],
+  );
+
   // selección, ordenada por código (igual que generateCombos → colores alineados)
   const selected = useMemo(
     () =>
-      [...combo]
+      [...comboEff]
         .filter(hasHorario)
         .sort()
         .map((c) => byId.get(c)!),
-    [combo],
+    [comboEff],
   );
   const cred = selected.reduce((s, m) => s + (m.creditos || 0), 0);
   const elc = selected
@@ -204,8 +216,9 @@ export default function CombinadorView() {
 
   // ---------- generación automática ----------
   const result = useMemo(
-    () => (combo.size ? generateCombos(combo, fixedCom, comboParams) : null),
-    [combo, fixedCom, comboParams],
+    () =>
+      comboEff.size ? generateCombos(comboEff, fixedCom, comboParams) : null,
+    [comboEff, fixedCom, comboParams],
   );
 
   // Opciones ordenadas: menos días en el campus › termina más temprano › menos

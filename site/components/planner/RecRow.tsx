@@ -74,7 +74,9 @@ export function RecRow({
       onMouseLeave={onHoverEnd}
     >
       {minors.length > 0 ? (
-        <span className="recrow__minors" aria-hidden="true">
+        // sin aria-hidden: el dot es el único portador del dato "minor" en la
+        // fila y cada MinorBadge trae su propio aria-label.
+        <span className="recrow__minors">
           {minors.map((mn) => (
             <MinorBadge key={mn.id} minor={mn} variant="dot" />
           ))}

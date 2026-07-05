@@ -1053,6 +1053,17 @@
 .planner .plan2-recgrp .recrow-list {
   padding: 3px 0 7px;
 }
+/* ≤1080px el panel lateral pierde su sticky+scroll (pasa al flujo de la
+   página): sin este tope, el grupo abierto volcaría ~90 filas entre el board
+   y lo que sigue. Cada grupo scrollea adentro suyo. */
+@media (max-width: 1080px) {
+  .planner .plan2-recgrp .recrow-list {
+    max-height: 48vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll) transparent;
+  }
+}
 
 /* ============================ NOTA DEL MÉTODO (colapsable) ================ */
 /* "Cómo se armó este plan": plegado por default, discreto (mono muted) para no
