@@ -241,82 +241,7 @@
   line-height: 1.5;
 }
 
-/* lista plana de sugerencias (una fila por materia, lo más fina posible) */
-.planner .cmb9-reclist {
-  list-style: none;
-  margin: 0;
-  padding: 2px 0 7px;
-}
-.planner .cmb9-recrow {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-}
-.planner .cmb9-recrow:hover,
-.planner .cmb9-recrow:focus-within {
-  background: var(--panel-2);
-}
-.planner .cmb9-recrow:focus-visible {
-  outline: 2px solid var(--brass);
-  outline-offset: -2px;
-}
-.planner .cmb9-recrow__nodot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1px solid var(--line-2);
-  flex: none;
-}
-.planner .cmb9-recrow__name {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--f-b);
-  font-size: 12.5px;
-  color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-/* fila sugerida que se pisa con la semana actual: atenuada, pero agregable */
-.planner .cmb9-recrow.is-clash {
-  opacity: 0.72;
-}
-.planner .cmb9-recrow.is-clash .cmb9-recrow__name {
-  color: var(--muted);
-}
-.planner .cmb9-recrow__cr {
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  color: var(--muted);
-  flex: none;
-}
-.planner .cmb9-recrow__add {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  border: 1px solid var(--line-2);
-  background: var(--panel);
-  color: var(--muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  transition: border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
-}
-.planner .cmb9-recrow__add:hover:not(:disabled) {
-  border-color: var(--brass);
-  color: var(--brass);
-  background: color-mix(in srgb, var(--brass) 12%, var(--panel));
-}
-.planner .cmb9-recrow__add:disabled {
-  opacity: 0.38;
-  cursor: not-allowed;
-}
+/* la lista de sugerencias usa la fila compartida RecRow (rec-row.css) */
 
 /* ---------- Guardar preferencia: popover con selector de cuatrimestre ---------- */
 .planner .cmb9-save {
@@ -481,7 +406,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .planner .cmb9-hbtn,
-  .planner .cmb9-recrow__add,
   .planner .cmb9-savemenu__go,
   .planner .cmb9-tip__box {
     transition: none;

@@ -35,10 +35,10 @@ import { CommissionSelect } from "@studyvaults/ui";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import MinorsModal from "@/components/planner/MinorsModal";
 import { MinorBadge } from "@/components/planner/MinorBadge";
+import { RecRow, RecSig } from "@/components/planner/RecRow";
 import IOModal, { type IOCuatri } from "@/components/planner/IOModal";
 import {
   IconClose,
-  IconPlus,
   IconGraduationCap,
   IconCalendar,
   IconRoute,
@@ -1067,7 +1067,6 @@ function Recommendations({
   const toggleIn = <T,>(arr: T[], v: T) =>
     arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
   const anyFilter = fMinor.length > 0 || fParity.length > 0 || fHorario;
-  const activeCount = fMinor.length + fParity.length + (fHorario ? 1 : 0);
   const clearFilters = () => {
     setFMinor([]);
     setFParity([]);
@@ -1095,78 +1094,63 @@ function Recommendations({
   const extiende = fRecs.filter((r) => !r.conflict && r.addsCuatri);
   const noEntra = fRecs.filter((r) => r.conflict);
 
-  const card = (r: Recommendation) => (
-    <div
-      key={r.m.codigo}
-      className={
-        "rec-card" +
-        (preview === r.m.codigo ? " is-active" : "") +
-        (r.conflict ? " is-conf" : "") +
-        (r.noHorario ? " is-nohor" : "")
-      }
-      onMouseEnter={() => !r.conflict && onPreview(r.m.codigo)}
-      onMouseLeave={() => onPreview(null)}
+  // Chip "sin horario" — aparece en ambas ramas (con o sin conflicto).
+  const sigNoHorario = (
+    <RecSig
+      tone="soft"
+      title="Sin horario publicado — no se puede armar la cursada"
     >
-      <div className="rec-card__top">
-        <span className="rec-card__abbr">{r.m.abbr}</span>
-        <span className="rec-card__cr">{r.m.creditos} cr</span>
-      </div>
-      <p className="rec-card__name" title={r.m.nombre}>
-        {r.m.nombre}
-      </p>
-      <div className="rec-card__fit">
-        {r.conflict ? (
-          <span className="rec-fit rec-fit--bad">no entra sin conflictos</span>
-        ) : (
-          <>
-            <span className="rec-fit rec-fit--when">
-              {cuatriLabel(cuatriAt(start, r.landingIdx))}
-            </span>
-            <span
-              className={
-                "rec-fit " + (r.addsCuatri ? "rec-fit--warn" : "rec-fit--ok")
-              }
-            >
-              {r.addsCuatri ? "+1 cuatrimestre" : "sin alargar el plan"}
-            </span>
-            {r.newDays > 0 && (
-              <span className="rec-fit rec-fit--soft">
-                +{r.newDays} {r.newDays === 1 ? "día" : "días"}
-              </span>
-            )}
-          </>
-        )}
-        {r.noHorario && (
-          <span className="rec-fit rec-fit--nohor">sin horario</span>
-        )}
-        {r.area && <span className="rec-card__area">{r.area}</span>}
-      </div>
-      <div className="rec-card__acts">
-        <button
-          type="button"
-          className="rec-card__add"
-          onClick={() => {
-            dispatch({ type: "PLAN_POOL_ADD", code: r.m.codigo });
-            onPreview(null);
-          }}
-        >
-          <IconPlus size={13} /> Agregar
-        </button>
-        <button
-          type="button"
-          className="rec-card__info"
-          onClick={() => dispatch({ type: "OPEN_DRAWER", code: r.m.codigo })}
-        >
-          detalle
-        </button>
-      </div>
-    </div>
+      sin horario
+    </RecSig>
   );
 
-  // No volcamos todas las electivas de un grupo de golpe (con 0 aprobadas
-  // "No alargan la carrera" trae ~88 → un muro infinito). Mostramos las
-  // primeras y el resto detrás de un "ver más" (sin estado: <details>).
-  const HEAD = 12;
+  // Una fila densa por electiva (RecRow compartida con el Combinador). Señales
+  // mínimas para no robarle ancho al nombre: "alarga / no alarga" la da el
+  // grupo; los días extra van al tooltip del chip de cuatrimestre.
+  const row = (r: Recommendation) => (
+    <RecRow
+      key={r.m.codigo}
+      m={r.m}
+      active={preview === r.m.codigo}
+      muted={r.conflict || r.noHorario}
+      signals={
+        r.conflict ? (
+          <>
+            <RecSig tone="bad">no entra</RecSig>
+            {r.noHorario && sigNoHorario}
+          </>
+        ) : (
+          <>
+            <RecSig
+              tone="when"
+              title={
+                cuatriName(cuatriAt(start, r.landingIdx)) +
+                (r.newDays > 0
+                  ? ` · suma ${r.newDays} ${r.newDays === 1 ? "día" : "días"} de campus`
+                  : "")
+              }
+            >
+              {cuatriLabel(cuatriAt(start, r.landingIdx))}
+            </RecSig>
+            {r.noHorario && sigNoHorario}
+          </>
+        )
+      }
+      addLabel={`Agregar ${r.m.nombre} al plan`}
+      onAdd={() => {
+        dispatch({ type: "PLAN_POOL_ADD", code: r.m.codigo });
+        onPreview(null);
+      }}
+      onOpen={() => dispatch({ type: "OPEN_DRAWER", code: r.m.codigo })}
+      onHoverStart={() => {
+        if (!r.conflict) onPreview(r.m.codigo);
+      }}
+      onHoverEnd={() => onPreview(null)}
+    />
+  );
+
+  // Con filas de una línea listar TODO el grupo es viable (el panel lateral ya
+  // scrollea solo): se acabaron el corte HEAD y el "ver más".
   const group = (
     title: string,
     hint: string,
@@ -1185,13 +1169,7 @@ function Recommendations({
           <span className="plan2-recgrp__count">{items.length}</span>
           <span className="plan2-recgrp__hint">{hint}</span>
         </summary>
-        <div className="plan2-recs__grid">{items.slice(0, HEAD).map(card)}</div>
-        {items.length > HEAD && (
-          <details className="plan2-recmore">
-            <summary>Ver {items.length - HEAD} electivas más</summary>
-            <div className="plan2-recs__grid">{items.slice(HEAD).map(card)}</div>
-          </details>
-        )}
+        <ul className="recrow-list">{items.map(row)}</ul>
       </details>
     ) : null;
 
@@ -1228,87 +1206,68 @@ function Recommendations({
         </div>
         <span className="plan2-recs__sub">
           {faltan > 0
-            ? `Te faltan ${faltan} créditos electivos. Pasá el cursor sobre una para ver dónde entraría.`
+            ? `Te faltan ${faltan} créditos electivos. Pasá el cursor sobre una fila para previsualizar dónde entraría; tocala para ver el detalle.`
             : "Ya cubrís los créditos electivos — estas sumarían extra."}
         </span>
       </div>
 
-      <details className="plan2-recfilt">
-        <summary className="plan2-recfilt__sum">
-          <IconSliders size={13} />
-          <span className="plan2-recfilt__sumlbl">Filtros</span>
-          {anyFilter && (
-            <span className="plan2-recfilt__badge">{activeCount}</span>
-          )}
-        </summary>
-        <div className="plan2-recfilt__body" role="group" aria-label="Filtrar electivas">
-          <div className="plan2-recfilt__grp">
-            <span className="plan2-recfilt__lbl">Minor</span>
-            <div className="plan2-recfilt__chips">
-              {MINORS.map((mn) => {
-                const on = fMinor.includes(mn.id);
-                return (
-                  <button
-                    key={mn.id}
-                    type="button"
-                    className={"plan2-fchip" + (on ? " is-on" : "")}
-                    aria-pressed={on}
-                    title={mn.name}
-                    style={{ ["--fchip-color" as string]: mn.color }}
-                    onClick={() => setFMinor((a) => toggleIn(a, mn.id))}
-                  >
-                    <span className="plan2-fchip__dot" aria-hidden="true" />
-                    {mn.short}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="plan2-recfilt__grp">
-            <span className="plan2-recfilt__lbl">Se dicta en</span>
-            <div className="plan2-recfilt__chips">
-              {[
-                { v: 1, l: "1.º cuatri" },
-                { v: 2, l: "2.º cuatri" },
-              ].map((o) => {
-                const on = fParity.includes(o.v);
-                return (
-                  <button
-                    key={o.v}
-                    type="button"
-                    className={"plan2-fchip" + (on ? " is-on" : "")}
-                    aria-pressed={on}
-                    onClick={() => setFParity((a) => toggleIn(a, o.v))}
-                  >
-                    {o.l}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          {/* "con horario" pierde su grupo: chip suelto en la fila final,
-              junto a Limpiar (sólo con filtros activos). */}
-          <div className="plan2-recfilt__foot">
+      {/* Barra de filtros siempre visible: una fila con wrap, sin labels de
+          grupo (los chips se explican solos; separadores sutiles entre familias). */}
+      <div className="plan2-recbar" role="group" aria-label="Filtrar electivas">
+        {MINORS.map((mn) => {
+          const on = fMinor.includes(mn.id);
+          return (
             <button
+              key={mn.id}
               type="button"
-              className={"plan2-fchip" + (fHorario ? " is-on" : "")}
-              aria-pressed={fHorario}
-              onClick={() => setFHorario((v) => !v)}
+              className={"plan2-fchip" + (on ? " is-on" : "")}
+              aria-pressed={on}
+              title={mn.name}
+              style={{ ["--fchip-color" as string]: mn.color }}
+              onClick={() => setFMinor((a) => toggleIn(a, mn.id))}
             >
-              con horario
+              <span className="plan2-fchip__dot" aria-hidden="true" />
+              {mn.short}
             </button>
-            {anyFilter && (
-              <button
-                type="button"
-                className="plan2-recfilt__clear"
-                onClick={clearFilters}
-              >
-                <IconClose size={11} /> Limpiar
-              </button>
-            )}
-          </div>
-        </div>
-      </details>
+          );
+        })}
+        <span className="plan2-recbar__sep" aria-hidden="true" />
+        {[
+          { v: 1, l: "1.º C" },
+          { v: 2, l: "2.º C" },
+        ].map((o) => {
+          const on = fParity.includes(o.v);
+          return (
+            <button
+              key={o.v}
+              type="button"
+              className={"plan2-fchip" + (on ? " is-on" : "")}
+              aria-pressed={on}
+              onClick={() => setFParity((a) => toggleIn(a, o.v))}
+            >
+              {o.l}
+            </button>
+          );
+        })}
+        <span className="plan2-recbar__sep" aria-hidden="true" />
+        <button
+          type="button"
+          className={"plan2-fchip" + (fHorario ? " is-on" : "")}
+          aria-pressed={fHorario}
+          onClick={() => setFHorario((v) => !v)}
+        >
+          con horario
+        </button>
+        {anyFilter && (
+          <button
+            type="button"
+            className="plan2-recbar__clear"
+            onClick={clearFilters}
+          >
+            <IconClose size={11} /> Limpiar
+          </button>
+        )}
+      </div>
 
       {group(
         "No alargan la carrera",
@@ -1332,7 +1291,7 @@ function Recommendations({
         false,
       )}
       {anyFilter && fRecs.length === 0 && (
-        <p className="plan2-recfilt__empty">
+        <p className="plan2-recbar__empty">
           Ninguna electiva coincide con los filtros.{" "}
           <button type="button" onClick={clearFilters}>
             Limpiar filtros

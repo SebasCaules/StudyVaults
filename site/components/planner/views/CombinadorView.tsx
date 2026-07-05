@@ -22,17 +22,15 @@ import {
   cuatriLabel,
   cuatriName,
 } from "@/lib/planner/optimize";
-import { minorsOf } from "@/lib/planner/minors";
 import { MAX_PLAN_CUATRIS } from "@/lib/planner/consts";
 import { hasPrograma } from "@/lib/planner/programa";
 import { buildComboHTML } from "@/lib/planner/exportPlan";
 import { openForPrint } from "@/lib/planner/download";
 import { Legend } from "@/components/planner/WeekGrid";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
-import { MinorBadge } from "@/components/planner/MinorBadge";
+import { RecRow, RecSig } from "@/components/planner/RecRow";
 import { ComingSoonBadge, ProgramaChips } from "@/components/planner/ProgramaChips";
 import {
-  IconPlus,
   IconDownload,
   IconCalendar,
   IconFileText,
@@ -149,7 +147,7 @@ function InfoTip({ text, label }: { text: string; label?: string }) {
  */
 export default function CombinadorView() {
   const { state, dispatch } = usePlanner();
-  const { combo, fixedCom, comboParams } = state;
+  const { combo, fixedCom, comboParams, comboSolo } = state;
 
   const [q, setQ] = useState("");
   const [idx, setIdx] = useState(0);
@@ -163,8 +161,10 @@ export default function CombinadorView() {
 
   // ---------- materias combinables ----------
   const pool = useMemo(() => {
+    // «Solo combinar» ignora el progreso: ofrece también las ya aprobadas
     const ok = (m: Materia) =>
-      hasHorario(m.codigo) && !state.approved.has(m.codigo);
+      hasHorario(m.codigo) &&
+      (state.comboSolo || !state.approved.has(m.codigo));
     const obs = PLAN.obligatorias
       .filter(ok)
       .map((m) => byId.get(m.codigo)!)
@@ -174,7 +174,7 @@ export default function CombinadorView() {
       .map((m) => byId.get(m.codigo)!)
       .sort((a, b) => a.codigo.localeCompare(b.codigo));
     return { obs, els };
-  }, [state.approved]);
+  }, [state.approved, state.comboSolo]);
 
   const filtered = useMemo(() => {
     const needle = norm(q.trim());
@@ -601,6 +601,24 @@ export default function CombinadorView() {
       </div>
 
       <div className="cmb9-header__right">
+        {/* Modo libre efímero: combina horarios ignorando las aprobadas */}
+        <button
+          type="button"
+          className={"cmb9-hbtn" + (comboSolo ? " is-on" : "")}
+          aria-pressed={comboSolo}
+          title={
+            comboSolo
+              ? "Modo libre activo — se ignoran tus materias aprobadas. Tocá para volver a tu cursada real"
+              : "Combiná horarios ignorando tu progreso de cursada: ofrece también las materias que ya aprobaste"
+          }
+          onClick={() => {
+            setSaveOpen(false);
+            dispatch({ type: "SET_COMBO_SOLO", value: !comboSolo });
+          }}
+        >
+          Solo combinar
+        </button>
+
         <button
           type="button"
           className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
@@ -677,83 +695,87 @@ export default function CombinadorView() {
           )}
         </div>
 
-        <div className="cmb9-save" ref={saveRef}>
-          <button
-            type="button"
-            className="cmb9-hbtn cmb9-hbtn--primary"
-            aria-haspopup="menu"
-            aria-expanded={saveOpen}
-            disabled={!canExport}
-            title="Guardá estas materias y comisiones en tu Plan de cursada"
-            onClick={() => {
-              setDlOpen(false);
-              setSaveOpen((o) => !o);
-            }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              width="13"
-              height="13"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
+        {/* «Guardar preferencia» alimenta el Plan de cursada; en modo libre
+            (comboSolo) la combinación puede incluir aprobadas → no se ofrece. */}
+        {!comboSolo && (
+          <div className="cmb9-save" ref={saveRef}>
+            <button
+              type="button"
+              className="cmb9-hbtn cmb9-hbtn--primary"
+              aria-haspopup="menu"
+              aria-expanded={saveOpen}
+              disabled={!canExport}
+              title="Guardá estas materias y comisiones en tu Plan de cursada"
+              onClick={() => {
+                setDlOpen(false);
+                setSaveOpen((o) => !o);
+              }}
             >
-              <path d="M5 4h11l3 3v13H5V4Z" />
-              <path d="M8 4v6h8V4M8 14h8" />
-            </svg>
-            Guardar preferencia
-          </button>
-          {saveOpen && (
-            <div
-              className="cmb9-savemenu"
-              role="menu"
-              aria-label="Guardar esta cursada en tu plan"
-            >
-              <p className="cmb9-savemenu__lead">
-                Sumá esta cursada a tu <b>Plan de cursada</b>. Elegí en qué
-                cuatrimestre fijarla; el optimizador re-arma el resto alrededor.
-              </p>
-              <label className="cmb9-savemenu__field">
-                <span className="cmb9-savemenu__lbl">
-                  Fijar en el cuatrimestre
-                  <InfoTip
-                    label="Qué hace Auto al guardar"
-                    text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual. Los cuatrimestres finalizados (candado) no se ofrecen."
-                  />
-                </span>
-                <CommissionSelect
-                  size="sm"
-                  className="cmb9-savemenu__sel"
-                  placeholder="Auto — que el plan la ubique"
-                  aria-label="Cuatrimestre donde fijar la cursada"
-                  value={safeSaveIdx}
-                  options={cuatriOptions}
-                  onChange={(e) => setSaveIdx(e.target.value)}
-                />
-              </label>
-              <button
-                type="button"
-                className="cmb9-savemenu__go"
-                onClick={savePreference}
+              <svg
+                viewBox="0 0 24 24"
+                width="13"
+                height="13"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="14"
-                  height="14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  aria-hidden="true"
+                <path d="M5 4h11l3 3v13H5V4Z" />
+                <path d="M8 4v6h8V4M8 14h8" />
+              </svg>
+              Guardar preferencia
+            </button>
+            {saveOpen && (
+              <div
+                className="cmb9-savemenu"
+                role="menu"
+                aria-label="Guardar esta cursada en tu plan"
+              >
+                <p className="cmb9-savemenu__lead">
+                  Sumá esta cursada a tu <b>Plan de cursada</b>. Elegí en qué
+                  cuatrimestre fijarla; el optimizador re-arma el resto alrededor.
+                </p>
+                <label className="cmb9-savemenu__field">
+                  <span className="cmb9-savemenu__lbl">
+                    Fijar en el cuatrimestre
+                    <InfoTip
+                      label="Qué hace Auto al guardar"
+                      text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual. Los cuatrimestres finalizados (candado) no se ofrecen."
+                    />
+                  </span>
+                  <CommissionSelect
+                    size="sm"
+                    className="cmb9-savemenu__sel"
+                    placeholder="Auto — que el plan la ubique"
+                    aria-label="Cuatrimestre donde fijar la cursada"
+                    value={safeSaveIdx}
+                    options={cuatriOptions}
+                    onChange={(e) => setSaveIdx(e.target.value)}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="cmb9-savemenu__go"
+                  onClick={savePreference}
                 >
-                  <path d="M5 4h11l3 3v13H5V4Z" />
-                  <path d="M8 4v6h8V4M8 14h8" />
-                </svg>
-                Guardar en el plan
-              </button>
-            </div>
-          )}
-        </div>
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="14"
+                    height="14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 4h11l3 3v13H5V4Z" />
+                    <path d="M8 4v6h8V4M8 14h8" />
+                  </svg>
+                  Guardar en el plan
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </header>
   );
@@ -823,37 +845,23 @@ export default function CombinadorView() {
       {suggestions.length === 0 ? (
         <p className="cmb9-recempty">No quedan materias para sugerir ahora.</p>
       ) : (
-        <ul className="cmb9-reclist">
-          {suggestions.map(({ m, fit }) => {
-            const minor = minorsOf(m.areas)[0];
-            return (
-              <li
-                className={"cmb9-recrow" + (fit ? "" : " is-clash")}
-                key={m.codigo}
-                title={
-                  fit
-                    ? m.nombre
-                    : `${m.nombre} — se superpone con tu semana actual; activá «Superponer» o fijá otra comisión`
-                }
-              >
-                {minor ? (
-                  <MinorBadge minor={minor} variant="dot" />
-                ) : (
-                  <span className="cmb9-recrow__nodot" aria-hidden="true" />
-                )}
-                <span className="cmb9-recrow__name">{m.nombre}</span>
-                <span className="cmb9-recrow__cr">{m.creditos} cr</span>
-                <button
-                  type="button"
-                  className="cmb9-recrow__add"
-                  aria-label={`Agregar ${m.nombre} a tu cuatrimestre`}
-                  onClick={() => dispatch({ type: "TOGGLE_COMBO", code: m.codigo })}
-                >
-                  <IconPlus size={11} />
-                </button>
-              </li>
-            );
-          })}
+        <ul className="recrow-list">
+          {suggestions.map(({ m, fit }) => (
+            <RecRow
+              key={m.codigo}
+              m={m}
+              muted={!fit}
+              signals={fit ? undefined : <RecSig tone="bad">se pisa</RecSig>}
+              title={
+                fit
+                  ? undefined
+                  : `${m.nombre} — se superpone con tu semana actual; activá «Superponer» o fijá otra comisión`
+              }
+              addLabel={`Agregar ${m.nombre} a tu cuatrimestre`}
+              onAdd={() => dispatch({ type: "TOGGLE_COMBO", code: m.codigo })}
+              onOpen={() => dispatch({ type: "OPEN_DRAWER", code: m.codigo })}
+            />
+          ))}
         </ul>
       )}
     </aside>

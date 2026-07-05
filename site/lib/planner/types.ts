@@ -247,6 +247,10 @@ export interface PlannerState {
    *  nivel; las materias que promocionan/no rinden final nunca entran acá. */
   finalDone: Set<string>;
   combo: Set<string>;
+  /** modo "Solo combinar" del combinador: arma horarios ignorando el progreso
+   *  de cursada (ofrece también las materias ya aprobadas) y se desacopla del
+   *  plan. Efímero — no se persiste (vuelve a false al recargar). */
+  comboSolo: boolean;
   fixedCom: Map<string, string>;
   areasOn: Set<string>;
   search: string;
