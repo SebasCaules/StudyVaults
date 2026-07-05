@@ -53,6 +53,7 @@ export function initialState(): PlannerState {
     // nunca entran en finalDone (ver types.ts).
     finalDone: new Set<string>([...approved].filter(tieneFinal)),
     combo: new Set<string>(),
+    comboSolo: false,
     fixedCom: new Map<string, string>(),
     areasOn: new Set<string>(PLAN.areas),
     search: "",
@@ -91,6 +92,7 @@ export type Action =
   | { type: "SET_VIEW"; view: ViewKey }
   | { type: "SET_ESTADO"; code: string; estado: Estado }
   | { type: "TOGGLE_COMBO"; code: string }
+  | { type: "SET_COMBO_SOLO"; value: boolean }
   | { type: "SET_FIXED_COM"; code: string; comision: string | null }
   | { type: "SET_SEARCH"; value: string }
   | { type: "TOGGLE_AREA"; area: string }
@@ -235,6 +237,8 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       combo.has(a.code) ? combo.delete(a.code) : combo.add(a.code);
       return { ...s, combo };
     }
+    case "SET_COMBO_SOLO":
+      return { ...s, comboSolo: a.value };
     case "SET_FIXED_COM": {
       const fixedCom = new Map(s.fixedCom);
       if (a.comision) fixedCom.set(a.code, a.comision);
@@ -350,6 +354,9 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
       const pool = new Set(s.plan.pool);
       const fixed = new Map(s.plan.fixed);
       for (const c of a.codes) {
+        // una aprobada nunca entra al plan (posible vía «Solo combinar»):
+        // el pool la ocultaría en la UI y quedaría imposible de quitar.
+        if (s.approved.has(c)) continue;
         pool.add(c);
         if (a.idx !== undefined) fixed.set(c, a.idx);
       }

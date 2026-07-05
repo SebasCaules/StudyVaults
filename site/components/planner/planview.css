@@ -955,106 +955,21 @@
 }
 
 /* ============================ FILTROS DEL RECOMENDADOR ==================== */
-/* En la columna angosta del recomendador (~230-310px) los grupos horizontales
-   envolvían caótico. Ahora es un <details> plegable: summary "Filtros" + badge
-   de activos; adentro los grupos apilados verticalmente. */
-.planner .plan2-recfilt {
-  margin: 4px 0 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  background: var(--panel-2);
-}
-.planner .plan2-recfilt__sum {
+/* Barra de chips SIEMPRE visible (una fila con wrap, sin labels de grupo):
+   con filas densas de electivas el plegable "Filtros" ya no se justifica. */
+.planner .plan2-recbar {
   display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
   align-items: center;
-  gap: 8px;
-  padding: 9px 12px;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-  font-family: var(--f-m);
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  transition: color var(--dur-fast) var(--ease-out);
+  margin-bottom: 10px;
 }
-.planner .plan2-recfilt__sum::-webkit-details-marker {
-  display: none;
-}
-.planner .plan2-recfilt__sum:hover {
-  color: var(--ink);
-}
-.planner .plan2-recfilt[open] .plan2-recfilt__sum {
-  color: var(--ink);
-  border-bottom: 1px solid var(--line);
-}
-.planner .plan2-recfilt__sum > svg {
-  width: 13px;
-  height: 13px;
+/* separador sutil entre familias de chips (minors · régimen · horario) */
+.planner .plan2-recbar__sep {
+  width: 1px;
+  height: 14px;
   flex: none;
-}
-.planner .plan2-recfilt__sumlbl {
-  font-weight: 600;
-}
-/* chevron a la derecha del summary */
-.planner .plan2-recfilt__sum::after {
-  content: "";
-  margin-left: auto;
-  width: 7px;
-  height: 7px;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg);
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-.planner .plan2-recfilt[open] .plan2-recfilt__sum::after {
-  transform: rotate(-135deg);
-}
-.planner .plan2-recfilt__badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: var(--brass);
-  color: var(--block-ink);
-  font-family: var(--f-m);
-  font-size: 9.5px;
-  font-weight: 700;
-}
-.planner .plan2-recfilt__body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 12px;
-}
-.planner .plan2-recfilt__grp {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.planner .plan2-recfilt__lbl {
-  font-family: var(--f-m);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.planner .plan2-recfilt__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-/* fila final: "con horario" como chip suelto + "Limpiar" a la derecha */
-.planner .plan2-recfilt__foot {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
+  background: var(--line);
 }
 .planner .plan2-fchip {
   display: inline-flex;
@@ -1095,7 +1010,8 @@
 .planner .plan2-fchip.is-on .plan2-fchip__dot {
   box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--brass) 42%, transparent);
 }
-.planner .plan2-recfilt__clear {
+/* "Limpiar" al final de la barra, empujado al borde derecho de su línea */
+.planner .plan2-recbar__clear {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -1108,19 +1024,19 @@
   padding: 5px 4px;
   margin-left: auto;
 }
-.planner .plan2-recfilt__clear:hover {
+.planner .plan2-recbar__clear:hover {
   text-decoration: underline;
 }
-.planner .plan2-recfilt__clear svg {
+.planner .plan2-recbar__clear svg {
   width: 11px;
   height: 11px;
 }
-.planner .plan2-recfilt__empty {
+.planner .plan2-recbar__empty {
   font-size: 12.5px;
   color: var(--muted);
   padding: 14px 2px 4px;
 }
-.planner .plan2-recfilt__empty button {
+.planner .plan2-recbar__empty button {
   font-family: var(--f-m);
   font-size: 12px;
   color: var(--brass);
@@ -1129,8 +1045,13 @@
   cursor: pointer;
   padding: 0;
 }
-.planner .plan2-recfilt__empty button:hover {
+.planner .plan2-recbar__empty button:hover {
   text-decoration: underline;
+}
+/* listado de filas dentro de cada grupo (reemplaza el padding que antes
+   aportaba la grilla de cartas) */
+.planner .plan2-recgrp .recrow-list {
+  padding: 3px 0 7px;
 }
 
 /* ============================ NOTA DEL MÉTODO (colapsable) ================ */
