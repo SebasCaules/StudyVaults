@@ -355,8 +355,11 @@ export default function CombinadorView() {
     return cand
       .map((m) => ({ m, fit: fits(m) }))
       .sort(
+        // entra en la semana › TRONCAL antes que electiva (lo obligatorio
+        // manda) › más créditos › código.
         (a, b) =>
           (a.fit === b.fit ? 0 : a.fit ? -1 : 1) ||
+          (a.m.tipo === b.m.tipo ? 0 : a.m.tipo === "obligatoria" ? -1 : 1) ||
           (b.m.creditos || 0) - (a.m.creditos || 0) ||
           a.m.codigo.localeCompare(b.m.codigo),
       )

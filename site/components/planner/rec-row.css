@@ -25,9 +25,40 @@
   background: var(--brass-soft);
 }
 
-.planner .recrow__minors {
+/* marca de la fila: slot de ancho fijo para que los nombres alineen aunque
+   haya 0, 1 o 3 señales. Varios minors se APILAN con offset (se ve que hay
+   más de uno y de qué color, sin gastar tres espacios). */
+.planner .recrow__mark {
+  flex: none;
+  width: 16px;
   display: inline-flex;
-  gap: 3px;
+  align-items: center;
+}
+.planner .recrow__mark .minor-dot {
+  /* anillo del color del panel: separa los dots apilados con borde nítido */
+  box-shadow: 0 0 0 1.5px var(--panel);
+  position: relative;
+}
+.planner .recrow__mark .minor-dot + .minor-dot {
+  margin-left: -4px;
+}
+/* el PRIMER minor queda entero arriba; los siguientes asoman por atrás */
+.planner .recrow__mark .minor-dot:nth-child(1) {
+  z-index: 3;
+}
+.planner .recrow__mark .minor-dot:nth-child(2) {
+  z-index: 2;
+}
+.planner .recrow__mark .minor-dot:nth-child(3) {
+  z-index: 1;
+}
+/* troncal (obligatoria): CUADRADITO slate — la forma (no el color) la
+   distingue de cualquier dot de minor y del aro vacío (electiva sin minor). */
+.planner .recrow__ob {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 2px;
+  background: var(--slate);
   flex: none;
 }
 .planner .recrow__nodot {

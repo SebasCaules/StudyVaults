@@ -65,6 +65,7 @@ export function RecRow({
   onHoverEnd,
 }: RecRowProps) {
   const minors = minorsOf(m.areas);
+  const troncal = m.tipo === "obligatoria";
   return (
     <li
       className={
@@ -73,17 +74,27 @@ export function RecRow({
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
     >
-      {minors.length > 0 ? (
-        // sin aria-hidden: el dot es el único portador del dato "minor" en la
-        // fila y cada MinorBadge trae su propio aria-label.
-        <span className="recrow__minors">
-          {minors.map((mn) => (
+      {/* marca de ancho FIJO (los nombres quedan alineados): troncal (dot
+          slate sólido, mismo código de color que los grupos ob/el) › dots de
+          minor apilados con offset › aro vacío (electiva sin minor). Sin
+          aria-hidden en los minors: el dot es el único portador del dato en
+          la fila y cada MinorBadge trae su propio aria-label. */}
+      <span className="recrow__mark">
+        {troncal ? (
+          <span
+            className="recrow__ob"
+            role="img"
+            aria-label="Troncal (obligatoria del plan)"
+            title="Troncal — obligatoria de tu plan"
+          />
+        ) : minors.length > 0 ? (
+          minors.map((mn) => (
             <MinorBadge key={mn.id} minor={mn} variant="dot" />
-          ))}
-        </span>
-      ) : (
-        <span className="recrow__nodot" aria-hidden="true" />
-      )}
+          ))
+        ) : (
+          <span className="recrow__nodot" aria-hidden="true" />
+        )}
+      </span>
       <button
         type="button"
         className="recrow__main"
