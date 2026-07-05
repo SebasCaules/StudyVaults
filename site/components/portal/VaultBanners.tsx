@@ -47,6 +47,21 @@ const sig = (s: string) => (
   </text>
 );
 
+/** Placeholder temporal para vaults recién dados de alta (expansión 2026-07):
+ *  fondo + sello, sin ilustración temática todavía. Se reemplazan por arte
+ *  propio por materia (mismo estilo que los 7 originales). */
+function pendingBanner(id: string, label: string): ReactNode {
+  return (
+    <svg className="vaultcard__banner" viewBox={VB} preserveAspectRatio={AR} fill="none" aria-hidden="true">
+      <Bg id={`vb-${id}`} />
+      <g stroke="currentColor" strokeWidth="1.2" opacity="0.25">
+        <path d="M0 42h400M0 86h400M0 130h400" />
+      </g>
+      {sig(label)}
+    </svg>
+  );
+}
+
 export const BANNERS: Record<VaultId, ReactNode> = {
   // MNA — matriz (métodos numéricos) + curva muestreada (interpolación)
   mna: (
@@ -273,6 +288,27 @@ export const BANNERS: Record<VaultId, ReactNode> = {
       {sig("SYS.07 · INGE2")}
     </svg>
   ),
+
+  // ---- expansión 2026-07: placeholders hasta tener arte temático propio ----
+  fisica1: pendingBanner("f1", "SYS.08 · FÍSICA 1"),
+  fisica2: pendingBanner("f2", "SYS.09 · FÍSICA 2"),
+  fisica3: pendingBanner("f3", "SYS.10 · FÍSICA 3"),
+  am1: pendingBanner("am1", "SYS.11 · AM1"),
+  am2: pendingBanner("am2", "SYS.12 · AM2"),
+  algebra: pendingBanner("alg", "SYS.13 · ÁLGEBRA"),
+  discreta: pendingBanner("dis", "SYS.14 · DISCRETA"),
+  logica: pendingBanner("log", "SYS.15 · LÓGICA"),
+  metnum: pendingBanner("mn", "SYS.16 · METNUM"),
+  pi: pendingBanner("pi", "SYS.17 · PI"),
+  poo: pendingBanner("poo", "SYS.18 · POO"),
+  eda: pendingBanner("eda", "SYS.19 · EDA"),
+  arqui: pendingBanner("arq", "SYS.20 · ARQUI"),
+  so: pendingBanner("so", "SYS.21 · SO"),
+  tla: pendingBanner("tla", "SYS.22 · TLA"),
+  bd1: pendingBanner("bd1", "SYS.23 · BD1"),
+  protos: pendingBanner("pro", "SYS.24 · PROTOS"),
+  quimica: pendingBanner("qui", "SYS.25 · QUÍMICA"),
+  info: pendingBanner("inf", "SYS.26 · INFO"),
 };
 
 // Banner del Planificador de electivas — un calendario (mes con días y clases

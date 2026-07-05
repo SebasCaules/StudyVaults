@@ -8,7 +8,26 @@ export type VaultId =
   | "proba"
   | "paw"
   | "sds"
-  | "inge2";
+  | "inge2"
+  | "fisica1"
+  | "fisica2"
+  | "fisica3"
+  | "am1"
+  | "am2"
+  | "algebra"
+  | "discreta"
+  | "logica"
+  | "metnum"
+  | "pi"
+  | "poo"
+  | "eda"
+  | "arqui"
+  | "so"
+  | "tla"
+  | "bd1"
+  | "protos"
+  | "quimica"
+  | "info";
 
 /** App estática propia de una materia (HTML servido bajo /apps/<vault>/). */
 export interface VaultApp {
@@ -175,6 +194,254 @@ export const VAULTS: VaultConfig[] = [
     toolkit: true,
     sheets: true,
     library: true,
+  },
+  // ---- expansión 2026-07: vaults transcriptos desde apuntes GoodNotes 2023-2026 ----
+  {
+    id: "fisica1",
+    dir: "Fisica1",
+    name: "Física 1",
+    short: "Física 1",
+    blurb:
+      "Mecánica clásica completa y fluidos: cinemática, dinámica, energía, colisiones, cuerpo rígido, momento angular, hidrostática y Bernoulli.",
+    code: "SYS.08",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "fisica2",
+    dir: "Fisica2",
+    name: "Física 2",
+    short: "Física 2",
+    blurb:
+      "Oscilaciones, ondas, óptica y termodinámica: MAS, resonancia, ondas estacionarias, interferencia y difracción, Snell, ciclos y entropía.",
+    code: "SYS.09",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "fisica3",
+    dir: "Fisica3",
+    name: "Física 3",
+    short: "Física 3",
+    blurb:
+      "Electromagnetismo completo e intro a relatividad especial: Coulomb, Gauss, potencial, circuitos, Biot-Savart, Faraday, RLC y ondas EM.",
+    code: "SYS.10",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "am1",
+    dir: "AM1",
+    name: "Análisis Matemático I",
+    short: "AM1",
+    blurb:
+      "Cálculo integral: tabla de primitivas, técnicas de integración, TFC, aplicaciones y Taylor. Organizado por técnica, con finales resueltos.",
+    code: "SYS.11",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "am2",
+    dir: "AM2",
+    name: "Análisis Matemático II",
+    short: "AM2",
+    blurb:
+      "Cálculo multivariable: topología de Rⁿ, límites, diferenciación, integrales múltiples y cálculo vectorial, con parciales y finales fechados.",
+    code: "SYS.12",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "algebra",
+    dir: "Algebra",
+    name: "Álgebra",
+    short: "Álgebra",
+    blurb:
+      "Relaciones, funciones, enteros y congruencias, combinatoria, recurrencias, matrices y espacios vectoriales, con parciales resueltos.",
+    code: "SYS.13",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "discreta",
+    dir: "Discreta",
+    name: "Matemática Discreta",
+    short: "Discreta",
+    blurb:
+      "Teoría de grafos de punta a punta: paths, conexidad, planaridad, coloreo, árboles, redes de flujo y complejidad, siguiendo P1–P9.",
+    code: "SYS.14",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "logica",
+    dir: "Logica",
+    name: "Lógica Computacional",
+    short: "Lógica",
+    blurb:
+      "Lógica proposicional y de primer orden, completitud, y computabilidad: Lenguaje S, funciones recursivas primitivas, Gödel y Halting.",
+    code: "SYS.15",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "metnum",
+    dir: "MetNum",
+    name: "Métodos Numéricos",
+    short: "MetNum",
+    blurb:
+      "Curso introductorio: raíces (Newton, punto fijo), interpolación, integración de Simpson con cotas de error y EDOs de un paso.",
+    code: "SYS.16",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "pi",
+    dir: "PI",
+    name: "Programación Imperativa",
+    short: "PI",
+    blurb:
+      "C (c99) de punta a punta: toolchain, tipos, punteros, memoria dinámica, structs, recursividad, listas enlazadas y TADs.",
+    code: "SYS.17",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false,
+    lang: "es",
+  },
+  {
+    id: "poo",
+    dir: "POO",
+    name: "Programación Orientada a Objetos",
+    short: "POO",
+    blurb:
+      "Java: herencia y resolución de override (formato parcial), Collections y Generics, Iterator/Comparator y comparativa con Ruby.",
+    code: "SYS.18",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false,
+    lang: "es",
+  },
+  {
+    id: "eda",
+    dir: "EDA",
+    name: "Estructuras de Datos y Algoritmos",
+    short: "EDA",
+    blurb:
+      "Complejidad, ordenamiento, AVL/Red-Black/B-trees con trazas completas, grafos, strings y heurísticas, desde parciales resueltos.",
+    code: "SYS.19",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "arqui",
+    dir: "Arqui",
+    name: "Arquitectura de Computadoras",
+    short: "Arqui",
+    blurb:
+      "x86 concreto: assembler, pila y funciones, decodificación de memoria, interrupciones, modo protegido, paginación, cache y pipeline.",
+    code: "SYS.20",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "so",
+    dir: "SO",
+    name: "Sistemas Operativos",
+    short: "SO",
+    blurb:
+      "Procesos, threads y concurrencia a fondo: IPC, exclusión mutua (Peterson, TSL), semáforos y estructura del kernel.",
+    code: "SYS.21",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false,
+    lang: "es",
+  },
+  {
+    id: "tla",
+    dir: "TLA",
+    name: "Teoría de Lenguajes y Autómatas",
+    short: "TLA",
+    blurb:
+      "Lenguajes formales, jerarquía de Chomsky, AFD/AFND y minimización, expresiones regulares, lema de bombeo, autómatas de pila y Turing.",
+    code: "SYS.22",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "bd1",
+    dir: "BD1",
+    name: "Base de Datos I",
+    short: "BD1",
+    blurb:
+      "Diseño y normalización a fondo: DER, álgebra y cálculo relacional, dependencias funcionales, claves, 1NF–5NF/BCNF y tableau/chase.",
+    code: "SYS.23",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "protos",
+    dir: "Protos",
+    name: "Protocolos de Comunicación",
+    short: "Protos",
+    blurb:
+      "Modelo de capas OSI/TCP-IP, encapsulamiento, capa de transporte y protocolos de aplicación (DNS, SMTP), con tablas de referencia.",
+    code: "SYS.24",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: false,
+    lang: "es",
+  },
+  {
+    id: "quimica",
+    dir: "Quimica",
+    name: "Química",
+    short: "Química",
+    blurb:
+      "Enlace y geometría molecular (VSEPR), cinética, equilibrio, ácido-base y pH, solubilidad y electroquímica, fusión de dos cursadas.",
+    code: "SYS.25",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
+  },
+  {
+    id: "info",
+    dir: "Info",
+    name: "Informática",
+    short: "Info",
+    blurb:
+      "Introducción al assembler Z80: memoria y arquitectura, mapa de registros y modos de direccionamiento. Wiki breve de referencia.",
+    code: "SYS.26",
+    indexPath: "wiki/index.md",
+    contentRoot: "wiki",
+    math: true,
+    lang: "es",
   },
 ];
 
