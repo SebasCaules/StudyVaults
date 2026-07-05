@@ -21,6 +21,19 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
+- **Recomendadas como fila compartida + modo «Solo combinar»** — `f6a5ae1` + `51807cf`
+  (2026-07-05, **pendiente OK visual del usuario; SIN push**): `RecRow.tsx`/`rec-row.css`
+  = fuente única de la fila de materia recomendada (dots minor · nombre · señales RecSig ·
+  cr · +; cuerpo abre drawer) para el Combinador («Sugeridas») y el Plan («Recomendadas»).
+  Plan: filas en vez de cartas, TODAS listadas por grupo de encaje, filtros chips siempre
+  visibles (`plan2-recbar`), señal por fila = cuatri de aterrizaje (días extra en tooltip).
+  Combinador: toggle «Solo combinar» (comboSolo en estado, efímero/no persistido) ignora
+  approved en el pool y oculta «Guardar preferencia»; aprobadas del combo quedan LATENTES
+  en modo normal; guard en PLAN_SAVE_PREFERENCE (aprobada nunca entra al pool del plan).
+  Verificado: tsc + build estático en worktree aislado + 29 checks Playwright (light/dark/
+  mobile) + revisión adversarial independiente (2 MEDIA corregidos: scroll por grupo
+  ≤1080px, guardado parcial silencioso). CSS muerto rec-card/plan2-recfilt/cmb9-recrow
+  removido. Antes/después: artifact "planner-recs-review".
 - **Rework HCI del "Plan por cuatrimestre"** — `92ad4bf` (2026-07-04, aprobado con
   antes/después): timeline vertical por año (una carta partida en sus 2 cuatrimestres),
   filas checklist `[EstadoControl] código nombre … señal · créditos`, micro-barra de avance
