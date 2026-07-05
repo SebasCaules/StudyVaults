@@ -19,7 +19,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-1);
-  padding: clamp(18px, 3vw, 30px);
+  padding: clamp(16px, 2vw, 20px) clamp(18px, 3vw, 30px);
 }
 .planner .pv-banner::before {
   content: "";
@@ -32,13 +32,21 @@
     transparent 55%
   );
 }
-.planner .pv-banner__top {
+/* una sola zona: [stat+chips | controles | grad+meter]. position:relative para
+   pintar por encima del ::before, igual que hacían las filas viejas. */
+.planner .pv-banner__grid {
   position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(280px, 1fr) clamp(300px, 30%, 380px);
+  gap: 16px 28px;
+  align-items: center;
+}
+/* columnas laterales: bloques apilados (stat→chips / grad→meter) */
+.planner .pv-bcol {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 22px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
 }
 .planner .pv-stat {
   display: flex;
@@ -98,16 +106,6 @@
   color: var(--ink);
 }
 
-/* fila media: chips + medidor de progreso */
-.planner .pv-banner__mid {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px 28px;
-  flex-wrap: wrap;
-  margin-top: 18px;
-}
 .planner .pv-chips {
   display: flex;
   flex-wrap: wrap;
@@ -127,9 +125,9 @@
   font-weight: 600;
 }
 .planner .pv-meter {
-  min-width: 220px;
-  flex: 1 1 240px;
-  max-width: 360px;
+  /* apilado bajo la tarjeta de egreso: llena el ancho de su columna */
+  width: 100%;
+  min-width: 0;
 }
 .planner .pv-meter__top {
   display: flex;
@@ -180,20 +178,14 @@
   opacity: 0.5;
 }
 
-.planner .pv-banner__divider {
-  position: relative;
-  border: none;
-  border-top: 1px solid var(--line);
-  margin: 20px 0;
-}
-
-/* controles integrados (empiezo / máx mat / máx cr / optimizar / horario) */
-.planner .pv-controls {
-  position: relative;
+/* controles (empiezo / máx mat / máx cr / horario) en la columna central del
+   grid: absorben el hueco que antes quedaba vacío entre el stat y el egreso */
+.planner .pv-bctl {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px 24px;
+  gap: 12px 18px;
   align-items: flex-end;
+  min-width: 0;
 }
 .planner .pv-field {
   display: flex;
@@ -207,11 +199,6 @@
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--muted);
-}
-.planner .pv-field__lbl .hint {
-  text-transform: none;
-  letter-spacing: 0;
-  opacity: 0.75;
 }
 /* el <select> de "empiezo a cursar" reusa el look de CommissionSelect
    (@studyvaults/ui) pero en tamaño banner: padding-derecho holgado y la flecha
@@ -229,11 +216,8 @@
 .planner .pv-field--num .plan2-field {
   gap: 7px;
 }
-.planner .pv-field--seg {
-  flex: 1 1 300px;
-}
 
-/* segmentado del método de optimización */
+/* segmentado del método de optimización (lo reusa .plan2-opt, bajo el board) */
 .planner .pv-seg {
   display: inline-flex;
   background: var(--panel-3);
@@ -1065,6 +1049,30 @@
   }
 }
 
+/* ============================ OPTIMIZAR PARA (bajo el board) =============== */
+/* El segmentado del método salió del banner: vive acá SIEMPRE visible, con la
+   nota "Cómo se armó este plan" plegada debajo. */
+.planner .plan2-opt {
+  margin-top: 2px;
+}
+.planner .plan2-opt__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.planner .plan2-opt__lbl {
+  font-family: var(--f-m);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* la nota queda pegada al segmentado, no colgando del board */
+.planner .plan2-opt .plan2-optnote-d {
+  margin-top: 6px;
+}
+
 /* ============================ NOTA DEL MÉTODO (colapsable) ================ */
 /* "Cómo se armó este plan": plegado por default, discreto (mono muted) para no
    competir con el board. El detalle vive en el <p class="plan2-method">. */
@@ -1115,16 +1123,16 @@
 }
 
 /* ============================ RESPONSIVE ================================== */
+/* el grid del banner colapsa temprano: entre ~640 y ~950px los tracks mínimos
+   (280px de controles + 300px de egreso) ya desbordarían lado a lado */
+@media (max-width: 980px) {
+  .planner .pv-banner__grid {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 640px) {
   .planner .pv-semgrid {
     grid-template-columns: 1fr;
-  }
-  .planner .pv-banner__mid {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .planner .pv-meter {
-    max-width: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

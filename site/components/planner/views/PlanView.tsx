@@ -1777,153 +1777,132 @@ export default function PlanView() {
 
       {used.length > 0 && (
         <div className="pv-banner">
-          <div className="pv-banner__top">
-            <div className="pv-stat">
-              <span className="pv-stat__num">{used.length}</span>
-              <span className="pv-stat__txt">
-                <span className="lead">
-                  {used.length === 1 ? "cuatrimestre" : "cuatrimestres"}
+          {/* una sola zona: [stat+chips | controles | grad+meter] — sin filas
+              apiladas ni divider; los controles absorben el centro del banner */}
+          <div className="pv-banner__grid">
+            <div className="pv-bcol">
+              <div className="pv-stat">
+                <span className="pv-stat__num">{used.length}</span>
+                <span className="pv-stat__txt">
+                  <span className="lead">
+                    {used.length === 1 ? "cuatrimestre" : "cuatrimestres"}
+                  </span>
+                  <span className="sub">por delante</span>
                 </span>
-                <span className="sub">por delante</span>
-              </span>
-            </div>
-            <div className="pv-grad">
-              <IconGraduationCap size={22} />
-              <div>
-                <span className="pv-grad__lbl">Te recibís en</span>
-                <span className="pv-grad__val">{cuatriName(gradCu)}</span>
               </div>
-            </div>
-          </div>
-
-          <div className="pv-banner__mid">
-            <div className="pv-chips">
-              <span className="pv-chip">
-                <b>{flat.length}</b> materias
-              </span>
-              <span className="pv-chip">
-                <b>
-                  {elecTotal}/{ELEC_REQ}
-                </b>{" "}
-                electivos
-              </span>
-            </div>
-            <div className="pv-meter">
-              <div className="pv-meter__top">
-                <span className="pv-meter__lbl">Progreso de créditos</span>
-                <span className="pv-meter__pct">{pct}%</span>
-              </div>
-              <div className="pv-meter__bar">
-                <i style={{ width: `${pct}%` }} />
-              </div>
-              <div className="pv-meter__foot">
-                <span>
-                  <b>{accNow}</b> aprobados
+              <div className="pv-chips">
+                <span className="pv-chip">
+                  <b>{flat.length}</b> materias
                 </span>
-                <span className="pv-meter__sep">·</span>
-                <span>
-                  faltan <b>{totalCred}</b>
-                </span>
-                <span className="pv-meter__sep">·</span>
-                <span>
-                  meta <b>{finalCred}</b>
+                <span className="pv-chip">
+                  <b>
+                    {elecTotal}/{ELEC_REQ}
+                  </b>{" "}
+                  electivos
                 </span>
               </div>
             </div>
-          </div>
 
-          <hr className="pv-banner__divider" />
+            <div className="pv-bctl">
+              <div className="pv-field">
+                <label className="pv-field__lbl" htmlFor="pcStart">
+                  Empiezo a cursar
+                </label>
+                <select
+                  id="pcStart"
+                  className="commission-select"
+                  aria-label="Cuatrimestre de inicio"
+                  value={PL.start.parity + "-" + PL.start.year}
+                  onChange={(e) => {
+                    const [p, y] = e.target.value.split("-").map(Number);
+                    dispatch({
+                      type: "SET_PLAN_START",
+                      start: { parity: p, year: y },
+                    });
+                  }}
+                >
+                  {startOptions.map((o) => (
+                    <option value={o.value} key={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="pv-controls">
-            <div className="pv-field">
-              <label className="pv-field__lbl" htmlFor="pcStart">
-                Empiezo a cursar
-              </label>
-              <select
-                id="pcStart"
-                className="commission-select"
-                aria-label="Cuatrimestre de inicio"
-                value={PL.start.parity + "-" + PL.start.year}
-                onChange={(e) => {
-                  const [p, y] = e.target.value.split("-").map(Number);
-                  dispatch({
-                    type: "SET_PLAN_START",
-                    start: { parity: p, year: y },
-                  });
-                }}
-              >
-                {startOptions.map((o) => (
-                  <option value={o.value} key={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="pv-field pv-field--num">
+                <NumField
+                  id="pcMaxMat"
+                  label="Máx. materias"
+                  value={PL.maxMat}
+                  min={1}
+                  max={9}
+                  onCommit={(n) =>
+                    dispatch({ type: "SET_PLAN_MAXMAT", value: n })
+                  }
+                />
+              </div>
 
-            <div className="pv-field pv-field--num">
-              <NumField
-                id="pcMaxMat"
-                label="Máx. materias"
-                value={PL.maxMat}
-                min={1}
-                max={9}
-                onCommit={(n) => dispatch({ type: "SET_PLAN_MAXMAT", value: n })}
-              />
-            </div>
+              <div className="pv-field pv-field--num">
+                <NumField
+                  id="pcMaxCred"
+                  label="Máx. créditos"
+                  value={PL.maxCred}
+                  min={3}
+                  max={40}
+                  onCommit={(n) =>
+                    dispatch({ type: "SET_PLAN_MAXCRED", value: n })
+                  }
+                />
+              </div>
 
-            <div className="pv-field pv-field--num">
-              <NumField
-                id="pcMaxCred"
-                label="Máx. créditos"
-                value={PL.maxCred}
-                min={3}
-                max={40}
-                onCommit={(n) => dispatch({ type: "SET_PLAN_MAXCRED", value: n })}
-              />
-            </div>
-
-            <div className="pv-field pv-field--seg">
-              <span className="pv-field__lbl">
-                Optimizar para{" "}
-                <span className="hint">— cómo arma el plan</span>
-              </span>
-              <div
-                className="pv-seg"
-                role="group"
-                aria-label="Método de optimización del plan"
-              >
-                {OPT_METHODS.map((m: OptMethodMeta) => (
-                  <button
-                    key={m.key}
-                    type="button"
-                    className="pv-seg__opt"
-                    aria-pressed={PL.method === m.key}
-                    title={m.objetivo}
-                    onClick={() =>
-                      dispatch({ type: "SET_PLAN_METHOD", value: m.key })
-                    }
-                  >
-                    {m.label}
-                  </button>
-                ))}
+              <div className="pv-field pv-field--sw">
+                <button
+                  type="button"
+                  className={"cmb-switch" + (PL.avoid ? " on" : "")}
+                  role="switch"
+                  aria-checked={PL.avoid}
+                  onClick={() =>
+                    dispatch({ type: "SET_PLAN_AVOID", value: !PL.avoid })
+                  }
+                >
+                  <span className="cmb-switch__track">
+                    <span className="cmb-switch__knob" />
+                  </span>
+                  Evitar superposiciones
+                </button>
               </div>
             </div>
 
-            <div className="pv-field pv-field--sw">
-              <button
-                type="button"
-                className={"cmb-switch" + (PL.avoid ? " on" : "")}
-                role="switch"
-                aria-checked={PL.avoid}
-                onClick={() =>
-                  dispatch({ type: "SET_PLAN_AVOID", value: !PL.avoid })
-                }
-              >
-                <span className="cmb-switch__track">
-                  <span className="cmb-switch__knob" />
-                </span>
-                Evitar superposiciones
-              </button>
+            <div className="pv-bcol">
+              <div className="pv-grad">
+                <IconGraduationCap size={22} />
+                <div>
+                  <span className="pv-grad__lbl">Te recibís en</span>
+                  <span className="pv-grad__val">{cuatriName(gradCu)}</span>
+                </div>
+              </div>
+              <div className="pv-meter">
+                <div className="pv-meter__top">
+                  <span className="pv-meter__lbl">Progreso de créditos</span>
+                  <span className="pv-meter__pct">{pct}%</span>
+                </div>
+                <div className="pv-meter__bar">
+                  <i style={{ width: `${pct}%` }} />
+                </div>
+                <div className="pv-meter__foot">
+                  <span>
+                    <b>{accNow}</b> aprobados
+                  </span>
+                  <span className="pv-meter__sep">·</span>
+                  <span>
+                    faltan <b>{totalCred}</b>
+                  </span>
+                  <span className="pv-meter__sep">·</span>
+                  <span>
+                    meta <b>{finalCred}</b>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2118,11 +2097,38 @@ export default function PlanView() {
         </div>
       )}
 
+      {/* método de optimización: el segmentado salió del banner y vive acá,
+          SIEMPRE visible, con la nota del método plegada debajo */}
       {used.length > 0 && (
-        <details className="plan2-optnote-d">
-          <summary>Cómo se armó este plan</summary>
-          <p className="plan2-method">{methodText(R, PL)}</p>
-        </details>
+        <div className="plan2-opt">
+          <div className="plan2-opt__head">
+            <span className="plan2-opt__lbl">Optimizar para</span>
+            <div
+              className="pv-seg"
+              role="group"
+              aria-label="Método de optimización del plan"
+            >
+              {OPT_METHODS.map((m: OptMethodMeta) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  className="pv-seg__opt"
+                  aria-pressed={PL.method === m.key}
+                  title={m.objetivo}
+                  onClick={() =>
+                    dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                  }
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <details className="plan2-optnote-d">
+            <summary>Cómo se armó este plan</summary>
+            <p className="plan2-method">{methodText(R, PL)}</p>
+          </details>
+        </div>
       )}
 
       {warns.length > 0 && (
