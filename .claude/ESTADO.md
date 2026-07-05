@@ -34,6 +34,18 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
   mobile) + revisión adversarial independiente (2 MEDIA corregidos: scroll por grupo
   ≤1080px, guardado parcial silencioso). CSS muerto rec-card/plan2-recfilt/cmb9-recrow
   removido. Antes/después: artifact "planner-recs-review".
+  **Iteración 2** — `b7bed07`: troncales priorizadas en Sugeridas; marca de fila en slot
+  fijo 16px (▪ troncal slate / dots de minor apilados con offset y primer dot entero /
+  aro = electiva sin minor). **Ronda 3** (2026-07-05, tras feedback): banner del Plan
+  compacto 330→174px (controles en el hueco, grid 3 columnas, `pv-controls` eliminado) —
+  `7599844`; «Optimizar para» junto al details "Cómo se armó este plan" (`plan2-opt`);
+  materias del combinador en grilla uniforme `cmb9-matgrid`/`cmb9-mchip` (celdas idénticas,
+  ＋Agregar celda fantasma) — `5aa0399`; corte con footer: margen DS 48→24, wiki 80→48,
+  shell planner 70→36 — `bc52bc1`. 19 checks Playwright más. **Incidente resuelto**: otra
+  sesión pusheó la v1 (`c3c592a`, HOY EN PRODUCCIÓN) y un pull generó conflicto → merge
+  `aec46d1` conservando lo local; un clobber concurrente arrasó trabajo sin commitear que
+  se rehizo (banner + spacing). Regla reforzada: commitear cada pieza al toque; jamás
+  amend sin verificar HEAD en la misma llamada.
 - **Rework HCI del "Plan por cuatrimestre"** — `92ad4bf` (2026-07-04, aprobado con
   antes/después): timeline vertical por año (una carta partida en sus 2 cuatrimestres),
   filas checklist `[EstadoControl] código nombre … señal · créditos`, micro-barra de avance
