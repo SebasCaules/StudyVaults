@@ -127,4 +127,4 @@ particular, para los reales.
 - [[02-subespacios]] — subconjuntos de $V$ que heredan la estructura
 - [[03-combinacion-lineal-generadores]] — cómo se generan vectores a partir de otros
 - [[04-independencia-base-dimension]] — independencia lineal, base y dimensión
-- [[06-matrices-sistemas/01-matrices-y-sistemas|Matrices y sistemas]] — $\mathbb{K}^{n\times r}$ y los sistemas lineales de fondo
+- [[06-matrices-sistemas/01-matrices-operaciones|Matrices y operaciones]] — $\mathbb{K}^{n\times r}$ y los sistemas lineales de fondo

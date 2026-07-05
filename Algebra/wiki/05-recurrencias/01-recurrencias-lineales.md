@@ -20,7 +20,7 @@ Transcripción de los apuntes de la cursada 2023-1C.
 Una sucesión definida por recurrencia queda determinada por dos datos: la **regla** que liga
 un término con los anteriores, y las **condiciones iniciales** que fijan los primeros valores.
 
-> **Definición (recurrencia lineal homogénea de orden 2).** Es una sucesión $(a_n)$ que verifica
+> **Definición (recurrencia lineal homogénea de orden 2).** El caso que trabaja esta unidad es la sucesión $(a_n)$ que verifica
 > $$a_n = a_{n-1} + a_{n-2}$$
 > junto con dos condiciones iniciales que fijan $a_0$ y $a_1$ (o $a_1$ y $a_2$).
 

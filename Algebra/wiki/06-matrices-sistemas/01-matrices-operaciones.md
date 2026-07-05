@@ -97,14 +97,14 @@ A partir de la transpuesta se distinguen dos clases de matrices cuadradas:
 Estas observaciones surgen de los ejercicios de la cursada y conviene tenerlas presentes:
 
 - **Operaciones imposibles por dimensión.** Antes de operar hay que chequear tamaños: una suma
-  como $3C - D$ o un producto como $E(3D)$ pueden no estar definidos si las dimensiones no
-  encajan. La expresión se declara imposible en vez de forzarla.
+  como $3C - D$ o una expresión combinada como $(AB)C + 2B$ pueden no estar definidas si las
+  dimensiones no encajan. La expresión se declara imposible en vez de forzarla.
 - **Fila o columna de un producto sin calcular todo.** La fila $i$ de $AB$ es la fila $i$ de $A$
   multiplicada por toda $B$; la columna $j$ de $AB$ es $A$ por la columna $j$ de $B$. Permite
   extraer una sola fila o columna del producto sin computarlo entero.
 - **$AB = 0$ no implica $A = 0$ ni $B = 0$.** Existen matrices no nulas cuyo producto es la matriz
-  nula (por ejemplo $A = \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix}$ y $B$ elegida adecuadamente
-  dan $AB = 0$ con $A, B \neq 0$).
+  nula. Por ejemplo, con $A = B = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ se obtiene
+  $AB = 0$ aunque $A, B \neq 0$.
 - **$A^2 = 0$ no implica $A = 0$.** Contraejemplo: $A = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$
   cumple $A^2 = 0$ pero $A \neq 0$.
 - **Cancelación de la suma.** De $A + B = C + A$ sí se deduce $B = C$: alcanza con sumar el inverso

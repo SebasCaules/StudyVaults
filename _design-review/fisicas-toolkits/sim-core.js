@@ -77,8 +77,8 @@
     return n;
   }
   function fmtNum(v, digits) {
-    if (v === null || v === undefined || isNaN(v)) return "—";
     if (typeof v === "string") return v;
+    if (v === null || v === undefined || isNaN(v)) return "—";
     var d = digits === undefined ? 2 : digits;
     var a = Math.abs(v);
     if (a !== 0 && (a >= 1e5 || a < Math.pow(10, -d))) return v.toExponential(2);

@@ -30,6 +30,23 @@ resistivo, $\phi = 0$ y $\cos\phi = 1$: se entrega la máxima potencia posible. 
 puramente reactivo, $\phi = \pm 90^\circ$ y $\cos\phi = 0$: el inductor y el capacitor
 intercambian energía con la fuente pero no la disipan.
 
+### Triángulo de potencias
+
+Los apuntes esbozan un **triángulo de potencias** que relaciona tres magnitudes: la potencia
+aparente $S$ (hipotenusa), la potencia activa $P_A$ (cateto horizontal, la que se disipa) y la
+potencia reactiva $P_r$ (cateto vertical, la que intercambian inductor y capacitor). El
+teorema de Pitágoras sobre ese triángulo da
+
+$$S^2 = P_A^2 + P_r^2$$
+
+donde $S$ es la potencia aparente, $P_A$ la activa y $P_r$ la reactiva. La parte reactiva se
+asocia a la reactancia neta mediante un término de la forma $(X_L - X_C)\,I^2$.
+
+> **Nota.** En el original este triángulo aparece suelto, sin desarrollo del contexto, y la
+> relación entre los catetos y $R\,I^2$ / $(X_L - X_C)\,I^2$ está *(dudosa en el original)*:
+> se transcribe la identidad pitagórica $S^2 = P_A^2 + P_r^2$, que sí es legible, y se omite el
+> resto para no adivinar.
+
 ## Resonancia en un circuito RLC serie
 
 La corriente eficaz del circuito serie, escrita en función de las reactancias, es

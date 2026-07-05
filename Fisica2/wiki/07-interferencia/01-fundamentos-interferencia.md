@@ -50,7 +50,7 @@ fuente puede tomarse $I \approx$ constante.
 $$I = \frac{\langle P \rangle}{\text{área}} = n\,c\,\varepsilon_0\,\langle |\vec E|^2 \rangle$$
 
 donde $n$ es el índice de refracción del medio, $c$ la velocidad de la luz en el vacío,
-$\varepsilon_0 = 8.854\times 10^{-12}\ \mathrm{Ws/Vm}$ la permitividad del vacío y
+$\varepsilon_0 = 8.854\times 10^{-12}\ \mathrm{Ws}/(\mathrm{m\,V^2})$ la permitividad del vacío y
 $\langle |\vec E|^2 \rangle$ el promedio temporal del módulo al cuadrado del campo. Como el
 promedio de $\cos^2$ es $\tfrac12$, en términos de las amplitudes:
 

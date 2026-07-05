@@ -1,6 +1,6 @@
 ---
 tags: [teoria, unidad-5, capacitores, dielectricos, energia]
-fuente: raw/resumenes/resumen-fisica-3.pdf
+fuente: apuntes manuscritos de la cursada 2024-1C
 unidad: 5
 tipo: teoria
 actualizado: 2026-07-05
@@ -58,8 +58,8 @@ energía con dieléctrico $U_E = \dfrac{Q_0^2}{2C}$:
 $$U_E = \frac{Q_0^2}{2\,\varepsilon_r C_0} = \frac{U_0}{\varepsilon_r}$$
 
 donde $U_0$ es la energía sin dieléctrico. A carga constante, la energía almacenada
-**disminuye** por el factor $\varepsilon_r$: el capacitor "atrae" al dieléctrico hacia
-adentro, y el sistema pierde energía en el proceso.
+**disminuye** por el factor $\varepsilon_r$: el capacitor con dieléctrico queda con menos
+energía que el mismo capacitor en vacío.
 
 > **Nota.** Este resultado supone la **carga** $Q_0$ constante (capacitor aislado, desconectado
 > de la fuente). Si en cambio se mantiene el **voltaje** constante el balance energético es

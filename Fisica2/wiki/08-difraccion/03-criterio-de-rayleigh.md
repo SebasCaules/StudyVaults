@@ -15,9 +15,9 @@ la mínima separación angular que un instrumento óptico puede distinguir.
 
 ## El problema de la resolución
 
-Cada fuente puntual, al pasar por una abertura de ancho $a$, no da un punto sino la campana
-de difracción de [[01-rendija-simple|ancho $\theta_D \approx 2\lambda/a$]]. Con dos fuentes
-separadas un ángulo $\theta_0$, se dan tres situaciones:
+Cada fuente puntual, al pasar por una abertura de ancho $a$, no da un punto sino la
+[[01-rendija-simple|campana de difracción]] de ancho $\theta_D \approx 2\lambda/a$. Con dos
+fuentes separadas un ángulo $\theta_0$, se dan tres situaciones:
 
 | Situación | Descripción |
 |---|---|

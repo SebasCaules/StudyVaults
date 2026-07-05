@@ -1,6 +1,8 @@
 ---
 tags: [teoria, unidad-2, funciones, composicion, inversa, biyectiva]
-fuente: raw/3-resumenes/algebra.pdf
+fuentes:
+  - raw/3-resumenes/algebra.pdf
+  - raw/4-parciales-finales/algebra.pdf
 unidad: 2
 tipo: teoria
 actualizado: 2026-07-05
@@ -40,7 +42,7 @@ Una función es inversible cuando existe otra que la "deshace" por ambos lados.
 Las dos igualdades dicen que aplicar $f$ y después su inversa (o al revés) devuelve el punto de
 partida. Sobre los elementos, con $b = f(a)$ y $a = f^{-1}(b)$:
 
-$$\big(f \circ f^{-1}\big)(a) = a \qquad \big(f^{-1} \circ f\big)(b) = b$$
+$$\big(f^{-1} \circ f\big)(a) = a \qquad \big(f \circ f^{-1}\big)(b) = b$$
 
 **Nota sobre notación.** Este $f^{-1}$ (la función inversa) sólo existe cuando $f$ es inversible.
 No hay que confundirlo con la [[01-funciones-clasificacion#preimagen|preimagen]] $f^{-1}(b)$, que

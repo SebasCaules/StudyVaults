@@ -57,7 +57,7 @@ La integral se resuelve por la sustitución trigonométrica
 
 $$x = y\,\tan\theta, \qquad dx = y\,\sec^2\theta\, d\theta$$
 
-que lleva el integrando a la forma $\dfrac{1}{y^2 \sec^3\theta}\, y\,\sec^2\theta\, d\theta$,
+que lleva el integrando a la forma $\dfrac{1}{y^2 \sec^3\theta}\,\sec^2\theta\, d\theta = \dfrac{\cos\theta}{y^2}\, d\theta$,
 integrable directamente.
 
 > **Nota.** En los apuntes de la cursada la resolución continúa con esta sustitución

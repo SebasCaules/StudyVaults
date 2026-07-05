@@ -36,11 +36,12 @@ iniciada en [[01-espacios-vectoriales]]. Transcripción de los apuntes de la cur
 - Todo vector de $\mathbb{R}^2$ es combinación lineal de $e_1 = (1, 0)$ y $e_2 = (0, 1)$:
   $(a, b) = a\, e_1 + b\, e_2$.
 
-**Contraejemplo.** $w = (1, 2, 3)$ **no** es combinación lineal de $v_1 = (1, 0, 0)$ y
-$v_2 = (0, 1, 0)$. Si lo fuera, existirían $\alpha, \beta$ con $w = \alpha v_1 + \beta
+**Contraejemplo.** $w = (1, 2, 3)$ **no** es combinación lineal de $v_1 = (1, 0, 1)$ y
+$v_2 = (0, 1, -1)$. Si lo fuera, existirían $\alpha, \beta$ con $w = \alpha v_1 + \beta
 v_2$, de donde
-$$(1, 2, 3) = (\alpha,\, \beta,\, 0).$$
-Igualando componentes, la tercera daría $3 = 0$, un absurdo.
+$$(1, 2, 3) = (\alpha,\, \beta,\, \alpha - \beta).$$
+Igualando componentes, las dos primeras dan $\alpha = 1$ y $\beta = 2$, pero la tercera
+exige $\alpha - \beta = 3$, es decir $1 - 2 = 3$, un absurdo.
 
 **Observación (vía sistema).** Decidir si $(a, b)$ es combinación lineal de $v_1 = (1, 1)$
 y $v_2 = (1, -1)$ equivale a resolver el sistema $\alpha + \beta = a$, $\alpha - \beta =

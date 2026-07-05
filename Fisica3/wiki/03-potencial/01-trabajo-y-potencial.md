@@ -96,6 +96,24 @@ $$W_{mec} = q\int_A^B \vec{\nabla}V\cdot d\vec{\ell} = q\,\Delta V = q\,(V_B - V
 donde $q$ es la carga trasladada y $V_A$, $V_B$ los potenciales en los extremos. El trabajo para
 mover la carga entre dos puntos depende solo de la diferencia de potencial, no del camino.
 
+## Analogía con la mecánica
+
+La electrostática reproduce, término a término, el esquema de energías de la mecánica de
+Física 1: la fuerza eléctrica es conservativa igual que la gravitatoria, y el potencial cumple
+el papel de la altura. La tabla resume la correspondencia entre ambos esquemas:
+
+| Mecánica (F1) | Electrostática (F3) |
+|---|---|
+| $W = -\Delta E_p$ | $W = -\Delta U$ |
+| $E = E_c + E_p$ | $E = K + U$ |
+| $E_c = \tfrac{1}{2}\,m\,v^2$ | $E_c = \tfrac{1}{2}\,m_q\,v_q^2$ |
+| $E_p = m\,g\,h$ | $U = \dfrac{k\,q\,Q}{r}$ |
+| $\Delta E = 0$ (si $F$ se conserva) | $\Delta E = 0$ (se conserva $E$) |
+
+donde $E_c$ (o $K$) es la energía cinética, $E_p$ (o $U$) la potencial y $E$ la mecánica total.
+La lectura práctica es que, cuando solo actúan fuerzas conservativas, la energía mecánica total
+se conserva y se puede plantear $E_A = E_B$ para resolver el movimiento de una carga.
+
 ## Equipotenciales
 
 La relación $\vec{E} = -\vec{\nabla}V$ ordena el movimiento de las cargas y define las

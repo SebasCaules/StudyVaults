@@ -1,6 +1,6 @@
 ---
 tags: [resuelto, unidad-5, capacitores, redes, redistribucion-de-carga]
-fuente: raw/practicas/practica-fisica-3.pdf
+fuente: apuntes manuscritos de la cursada 2024-1C
 unidad: 5
 tipo: resuelto
 actualizado: 2026-07-05
@@ -99,8 +99,10 @@ $$Q_1 = C_1 V_0\left(\frac{C_1 C_2 + C_1 C_3}{C_1 C_2 + C_1 C_3 + C_2 C_3}\right
 Dos capacitores iguales $C_0 = \dfrac{\varepsilon_0 A}{d}$ en paralelo a una fuente $V_0$. La
 carga total inicial es $Q_{\text{tot}} = Q_1 + Q_2 = 2 V_0 C_0$, con $Q_1 = Q_2 = V_0 C_0$.
 
-Luego se inserta un dieléctrico en uno de ellos, que pasa a valer $C_1 = 2 C_0$, y quedan
-**en serie**. La carga total se conserva, $Q_{\text{tot}} = 2 V_0 C_0$, y por Kirchhoff
+Luego se inserta un dieléctrico en uno de ellos, que pasa a valer $C_1 = 2 C_0$. Con la
+fuente ya desconectada, los dos capacitores quedan conectados **en paralelo** como isla
+aislada: comparten la misma tensión y la carga total se conserva, $Q_{\text{tot}} = 2 V_0 C_0$.
+Por Kirchhoff (misma tensión en ambos),
 $\dfrac{Q_{f1}}{C_1} - \dfrac{Q_{f2}}{C_0} = 0 \Rightarrow Q_{f1} = 2 Q_{f2}$. Con
 $Q_{f1} + Q_{f2} = 3 Q_{f2} = 2 V_0 C_0$:
 
@@ -114,7 +116,7 @@ de donde el cambio de energía es negativo:
 
 $$\Delta U = U_f - U_i = -\tfrac{1}{3} V_0^2 C_0$$
 
-El sistema pierde energía, coherente con que el capacitor tiende a incorporar el dieléctrico
+El sistema pierde energía al insertar el dieléctrico manteniendo la carga
 (ver [[02-dielectricos]]).
 
 ---

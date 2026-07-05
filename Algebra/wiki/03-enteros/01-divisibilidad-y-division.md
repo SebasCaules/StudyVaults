@@ -89,8 +89,8 @@ solución de una [[04-diofanticas-congruencias-lineales|ecuación diofántica]] 
 
 ## Criterios de divisibilidad
 
-Los apuntes registran el criterio del $3$, apoyado en la representación decimal
-$a = a_n + a_{n-1} + \dots + a_1 + a_0$ (suma de los dígitos de $a$):
+Los apuntes registran el criterio del $3$, notando el número como la suma de sus dígitos
+$a = a_n + a_{n-1} + \dots + a_1 + a_0$:
 
 > **Criterio (divisibilidad por 3).** Si la suma de los dígitos de un número es múltiplo de $3$,
 > entonces el número es múltiplo de $3$.

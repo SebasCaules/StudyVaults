@@ -36,15 +36,18 @@ $$v_B = \sqrt{\frac{2mg\,(1) - k\,d^2}{m}} = 4{,}03\ \text{m/s}$$
 ## Dos bloques con resortes sobre una polea
 
 Dos bloques de masas $m_1 = 5\ \text{kg}$ y $m_2 = 10\ \text{kg}$ cuelgan de una polea; cada uno
-está sujeto además a un resorte de constante $k = 250\ \text{N/m}$ anclado al piso. El sistema parte
-de la posición de equilibrio. Se busca la rapidez de los bloques.
+está sujeto además a un resorte de constante $k = 250\ \text{N/m}$ anclado al piso. Se sueltan desde
+el reposo con los resortes sin deformar y se busca su rapidez máxima.
 
-En el equilibrio, planteando las ecuaciones de cada bloque ($0 = -F_e - m_1 g + t$ para uno y
-$0 = t - m_2 g + F_e$ para el otro) se obtiene la deformación inicial de cada resorte:
+La rapidez es máxima al pasar por la posición de equilibrio. Planteando allí las ecuaciones de cada
+bloque ($0 = -F_e - m_1 g + t$ para uno y $0 = t - m_2 g + F_e$ para el otro) se obtiene la
+deformación de cada resorte en el equilibrio:
 
 $$d = \frac{g\,(m_2 - m_1)}{2k} = 0{,}1\ \text{m}$$
 
-Al soltar el sistema, la conservación de la energía entre esa posición y la de máxima rapidez da
+Como esa deformación coincide con el desplazamiento de cada bloque desde la longitud natural, la
+conservación de la energía entre la posición de partida (resortes sin deformar) y la de equilibrio
+—donde la rapidez es máxima— da
 
 $$0 = \tfrac{1}{2}m_1 v^2 + m_1 g\, d + 2\cdot\tfrac{1}{2}k\, d^2 + \tfrac{1}{2}m_2 v^2 - m_2 g\, d$$
 

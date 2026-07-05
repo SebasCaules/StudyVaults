@@ -42,11 +42,11 @@ $$I = 4I_0\,\cos^2\!\gamma\;\frac{\operatorname{sen}^2\beta}{\beta^2}$$
 
 donde $I_0$ es la intensidad de una rendija sola, y los dos ángulos auxiliares son
 
-$$\gamma = \frac{\pi}{\lambda_0}\,d\operatorname{sen}\theta, \qquad
-\beta = \frac{\pi}{\lambda_0}\,a\operatorname{sen}\theta$$
+$$\gamma = \frac{\pi}{\lambda_0}\,n\,d\operatorname{sen}\theta, \qquad
+\beta = \frac{\pi}{\lambda_0}\,n\,a\operatorname{sen}\theta$$
 
-con $d$ la separación entre rendijas, $a$ el ancho de cada rendija, $\lambda_0$ la longitud de
-onda en el vacío y $\theta$ el ángulo de observación. El factor $\cos^2\gamma$ es la
+con $d$ la separación entre rendijas, $a$ el ancho de cada rendija, $n$ el índice del medio,
+$\lambda_0$ la longitud de onda en el vacío y $\theta$ el ángulo de observación. El factor $\cos^2\gamma$ es la
 **interferencia** entre las dos rendijas (franjas finas y numerosas); el factor
 $(\operatorname{sen}\beta / \beta)^2$ es la **envolvente de difracción** de una rendija (una campana
 ancha que decide la altura de cada franja).
@@ -56,11 +56,11 @@ ancha que decide la altura de cada franja).
 Las franjas de interferencia las gobierna el factor $\cos^2\gamma$:
 
 > **Máximos de interferencia.** Cuando $\gamma = m\pi$, es decir
-> $$d\operatorname{sen}\theta = m\,\lambda_0, \qquad m \in \mathbb{Z}$$
+> $$n\,d\operatorname{sen}\theta = m\,\lambda_0, \qquad m \in \mathbb{Z}$$
 > el factor $\cos^2\gamma = 1$ y aparece una franja brillante de orden $m$.
 
 > **Mínimos de interferencia.** Cuando $\gamma = (2m+1)\tfrac{\pi}{2}$, es decir
-> $$d\operatorname{sen}\theta = \left(m + \tfrac12\right)\lambda_0$$
+> $$n\,d\operatorname{sen}\theta = \left(m + \tfrac12\right)\lambda_0$$
 > el factor $\cos^2\gamma = 0$ y la franja se apaga.
 
 donde $m$ es el orden de la franja. Cuando se está sobre un máximo de interferencia, la altura de
@@ -71,12 +71,12 @@ vale $1$ solo en el máximo central ($\theta = 0$).
 
 El factor $(\operatorname{sen}\beta / \beta)^2$ tiene sus propios **mínimos** cuando
 
-$$\beta = p\pi \;\Rightarrow\; a\operatorname{sen}\theta = p\,\lambda_0, \qquad p = 1, 2, 3, \dots$$
+$$\beta = p\pi \;\Rightarrow\; n\,a\operatorname{sen}\theta = p\,\lambda_0, \qquad p = 1, 2, 3, \dots$$
 
 En esos ángulos la envolvente cae a cero y **suprime** cualquier franja de interferencia que
-coincida ahí. Igualando la condición de máximo de interferencia ($d\operatorname{sen}\theta =
-m\lambda_0$) con la de mínimo de difracción ($a\operatorname{sen}\theta = p\lambda_0$) se obtienen
-los **órdenes ausentes**:
+coincida ahí. Igualando la condición de máximo de interferencia ($n\,d\operatorname{sen}\theta =
+m\lambda_0$) con la de mínimo de difracción ($n\,a\operatorname{sen}\theta = p\lambda_0$) se obtienen
+los **órdenes ausentes** (el índice $n$ se cancela):
 
 $$m = p\,\frac{d}{a}$$
 
@@ -87,19 +87,19 @@ por un cero de la difracción).
 
 En la pantalla, ubicada a una distancia $s$ de las rendijas y para ángulos pequeños
 ($\operatorname{sen}\theta \approx y/s$), los máximos de interferencia caen en posiciones
-$y_m = m\,\lambda_0\,s / d$. La **interfranja** —distancia entre dos máximos consecutivos— es por
-lo tanto
+$y_m = m\,\lambda_0\,s / (n\,d)$. La **interfranja** —distancia entre dos máximos consecutivos— es
+por lo tanto
 
-$$\Delta y = \frac{\lambda_0\,s}{d}$$
+$$\Delta y = \frac{\lambda_0\,s}{n\,d}$$
 
-donde $\lambda_0$ es la longitud de onda en el vacío, $s$ la distancia a la pantalla y $d$ la
-separación entre rendijas. La interfranja **crece** con $\lambda_0$ y con $s$, y **se achica** al
-aumentar $d$.
+donde $\lambda_0$ es la longitud de onda en el vacío, $s$ la distancia a la pantalla, $d$ la
+separación entre rendijas y $n$ el índice del medio. La interfranja **crece** con $\lambda_0$ y con
+$s$, y **se achica** al aumentar $d$ o $n$.
 
-> **Observación.** Si todo el dispositivo se sumerge en un medio de índice $n$, la longitud de
-> onda efectiva pasa a ser $\lambda_0/n$ y la interfranja se reduce a $\Delta y = \lambda_0 s /
-> (n\,d)$: el patrón se comprime. Del mismo modo, cambiar a una luz de mayor $\lambda_0$ separa
-> las franjas.
+> **Observación.** El índice $n$ es el del medio donde está el dispositivo: en aire ($n \approx 1$)
+> la interfranja vale $\lambda_0 s / d$. Sumergir todo en un medio de índice $n$ reduce la longitud
+> de onda efectiva a $\lambda_0/n$ y comprime el patrón; del mismo modo, cambiar a una luz de mayor
+> $\lambda_0$ separa las franjas.
 
 ## Corrimiento del patrón por una lámina
 

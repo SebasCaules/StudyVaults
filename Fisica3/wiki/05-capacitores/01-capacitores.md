@@ -1,6 +1,6 @@
 ---
 tags: [teoria, unidad-5, capacitores, capacidad, energia]
-fuente: raw/resumenes/resumen-fisica-3.pdf
+fuente: apuntes manuscritos de la cursada 2024-1C
 unidad: 5
 tipo: teoria
 actualizado: 2026-07-05

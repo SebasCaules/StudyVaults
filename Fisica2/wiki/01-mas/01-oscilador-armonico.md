@@ -30,12 +30,12 @@ elástica del resorte y $\ddot{x}$ la aceleración (derivada segunda de $x$ resp
 
 ### Resolución de la ecuación diferencial
 
-Se propone una solución exponencial $x(t) = C\,e^{rt}$, de modo que $\ddot{x} = r^2\,e^{rt}$.
+Se propone una solución exponencial $x(t) = C\,e^{rt}$, de modo que $\ddot{x} = C\,r^2\,e^{rt}$.
 Reemplazando en la ecuación:
 
-$$e^{rt}\left(r^2 + \frac{k}{m}\right) = 0$$
+$$C\,e^{rt}\left(r^2 + \frac{k}{m}\right) = 0$$
 
-Como $e^{rt} \neq 0$, se anula el paréntesis y queda $r = \pm\,i\sqrt{k/m}$. La solución
+Como $C\,e^{rt} \neq 0$, se anula el paréntesis y queda $r = \pm\,i\sqrt{k/m}$. La solución
 general es una combinación de las dos exponenciales imaginarias:
 
 $$x(t) = C_1\,e^{\,i\sqrt{k/m}\;t} + C_2\,e^{-i\sqrt{k/m}\;t}$$

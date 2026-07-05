@@ -114,7 +114,7 @@ $$u_x' = \frac{u_x - V}{1 - \dfrac{u_x V}{c^2}} = \frac{-2V}{1 + \dfrac{V^2}{c^2
 
 Reordenando se llega a una ecuación cuadrática en $V$:
 
-$$-0{,}7\,c - 0{,}7\frac{V^2}{c} = -2V \qquad \Longrightarrow \qquad 0 = \frac{0{,}7}{c}V^2 - 2V - 0{,}7\,c$$
+$$-0{,}7\,c - 0{,}7\frac{V^2}{c} = -2V \qquad \Longrightarrow \qquad 0 = \frac{0{,}7}{c}V^2 - 2V + 0{,}7\,c$$
 
 Resolviendo con la fórmula cuadrática, una raíz da $V > c$ (no física, se descarta) y la
 otra es la solución válida:

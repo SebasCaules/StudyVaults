@@ -99,9 +99,11 @@ $$\frac{F'}{F} = \left(\frac{8}{7}\right)^2 = \frac{64}{49}$$
 Es decir, **sí es posible**: manteniendo los mismos 3 nodos interiores y la misma frecuencia al
 pasar de fija–fija a fija–libre, la tensión debe aumentar en un factor $F'/F = 64/49$.
 
-> **Nota.** El desarrollo numérico de este ejemplo se transcribe de un problema resuelto de la
-> cursada; algunos pasos intermedios manuscritos son de lectura ajustada, pero el planteo
-> (modo $m=4$ fija–fija vs. $m=7$ fija–libre) y el resultado $64/49$ son legibles.
+> **Nota.** El planteo (fija–fija $m=4$ con 3 nodos interiores → fija–libre $m=7$) y el resultado
+> $F'/F = 64/49$ son matemáticamente consistentes y respetan las convenciones de conteo de nodos
+> de la unidad, pero el enunciado *no pudo confirmarse* contra las fuentes verificadas: los
+> parciales de onda estacionaria de la práctica plantean otras variantes. Vale como ejercicio
+> ilustrativo; su procedencia manuscrita queda sin verificar.
 
 ---
 

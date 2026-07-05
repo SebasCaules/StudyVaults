@@ -36,8 +36,8 @@ $$dU = \delta Q - \delta W$$
 
 donde la notación distingue el carácter de cada término: $d$ es una **derivada total** (de una
 función de estado, como $U$), mientras que $\delta$ marca una cantidad que **depende del camino**
-recorrido (como $Q$ y $W$). El teorema de conservación de la energía mecánica,
-$\Delta E_{mec} = W_{FNC}$, es un caso particular de este balance.
+recorrido (como $Q$ y $W$). Los apuntes ubican junto a la primera ley el teorema de conservación
+de la energía mecánica, $\Delta E_{mec} = W_{FNC}$.
 
 ## Trabajo al cambiar el volumen
 
