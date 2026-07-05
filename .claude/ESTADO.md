@@ -26,9 +26,10 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
   filas checklist `[EstadoControl] código nombre … señal · créditos`, micro-barra de avance
   por año (terminadas/deben final), candado de disponibilidad unificado con Electivas
   (`CardSignals.tsx`, fuente única), sin tags en palabras. Verificado: tsc + build 804/804 +
-  screenshots dark/light/mobile. **Pendiente menor**: click-through en browser (otra sesión
-  ocupaba :3000) y limpiar `.cuatri-grid/.qcol/.qcard` muertos en planner.css (archivo
-  caliente del track finales). **Bug transversal detectado**: `badge.css` del DS define
+  screenshots dark/light/mobile + click-through en browser real (control cicla y persiste,
+  fila abre drawer, Esc cierra; verificado sobre build estático en worktree aislado con
+  :3000 ocupado). **Pendiente menor**: limpiar `.cuatri-grid/.qcol/.qcard` muertos en
+  planner.css (archivo caliente del track finales). **Bug transversal detectado**: `badge.css` del DS define
   `.tag::before{content:"#"}` y colisiona con los `.tag` del planner (visible hoy en
   DetailDrawer, "# disponible") — falta fix aparte.
 - **Overhaul UI/UX implementado y commiteado** — `25b93b4` (77 archivos, +13.953): landing
