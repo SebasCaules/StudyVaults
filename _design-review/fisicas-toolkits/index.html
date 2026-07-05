@@ -101,6 +101,16 @@
   .tab-intro{
     color:var(--text-secondary);font-size:.98rem;margin:22px 2px 6px;max-width:70ch;
   }
+  .sim-jump{
+    display:flex;flex-wrap:wrap;gap:8px;margin:14px 2px 2px;
+  }
+  .sim-jump a{
+    font-family:var(--font-mono);font-size:.7rem;letter-spacing:.02em;
+    color:var(--text-secondary);text-decoration:none;
+    border:1px solid var(--hairline-strong);border-radius:var(--r-pill);
+    padding:4px 12px;transition:color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
+  }
+  .sim-jump a:hover{color:var(--text-primary);border-color:var(--tab-tint);}
   section[role="tabpanel"][hidden]{display:none;}
 
   /* ===== sim card ===== */

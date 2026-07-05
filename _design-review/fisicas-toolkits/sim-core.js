@@ -38,6 +38,35 @@
     registerTab: function (opts) { tabMeta[opts.id] = opts; },
     registerSim: function (spec) { sims.push(spec); },
     boot: boot,
+    /* Grilla sutil estándar (fondo de stage). */
+    grid: function (ctx, W, H, step) {
+      var s = step || 40;
+      ctx.save();
+      ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var x = s; x < W; x += s) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+      for (var y = s; y < H; y += s) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      ctx.stroke();
+      ctx.restore();
+    },
+    /* Flecha estándar (vectores). */
+    arrow: function (ctx, x0, y0, x1, y1, color, width) {
+      var dx = x1 - x0, dy = y1 - y0;
+      var len = Math.hypot(dx, dy);
+      if (len < 1) return;
+      var ang = Math.atan2(dy, dx);
+      ctx.save();
+      ctx.strokeStyle = color; ctx.fillStyle = color;
+      ctx.lineWidth = width || 2; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      var h = Math.min(10, 4 + len * 0.06);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1 - h * Math.cos(ang - 0.44), y1 - h * Math.sin(ang - 0.44));
+      ctx.lineTo(x1 - h * Math.cos(ang + 0.44), y1 - h * Math.sin(ang + 0.44));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    },
   };
 
   /* ---------- helpers ---------- */
@@ -315,6 +344,73 @@
       });
     }
 
+    // --- manipulación directa: handles arrastrables sobre el canvas ---
+    // addHandle({x:()=>px, y:()=>px, r?, onDrag(x,y), onStart?, onEnd?}) — el
+    // core hace hit-testing, cursores grab/grabbing y dibuja el halo de
+    // affordance (para que TODO lo agarrable se vea igual en las 3 pestañas).
+    inst.handles = [];
+    var hovered = null, active = null;
+    function pos(e) {
+      var rect = canvas.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+    function hit(p) {
+      for (var i = inst.handles.length - 1; i >= 0; i--) {
+        var h = inst.handles[i];
+        if (h.hidden && h.hidden()) continue;
+        var r = h.r || 20;
+        if (Math.hypot(h.x() - p.x, h.y() - p.y) <= r) return h;
+      }
+      return null;
+    }
+    canvas.addEventListener("pointerdown", function (e) {
+      var p = pos(e);
+      var h = hit(p);
+      if (!h) return;
+      active = h;
+      canvas.setPointerCapture(e.pointerId);
+      canvas.style.cursor = "grabbing";
+      if (h.onStart) h.onStart(p.x, p.y);
+      h.onDrag(p.x, p.y);
+      e.preventDefault();
+    });
+    canvas.addEventListener("pointermove", function (e) {
+      var p = pos(e);
+      if (active) { active.onDrag(p.x, p.y); return; }
+      hovered = hit(p);
+      canvas.style.cursor = hovered ? "grab" : "default";
+    });
+    function release(e) {
+      if (!active) return;
+      if (active.onEnd) active.onEnd();
+      active = null;
+      canvas.style.cursor = hovered ? "grab" : "default";
+    }
+    canvas.addEventListener("pointerup", release);
+    canvas.addEventListener("pointercancel", release);
+
+    inst.drawHandles = function (ctx) {
+      inst.handles.forEach(function (h) {
+        if (h.hidden && h.hidden()) return;
+        var r = h.r || 20;
+        var isActive = h === active, isHover = h === hovered;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(h.x(), h.y(), Math.max(9, r * 0.55), 0, Math.PI * 2);
+        ctx.strokeStyle = tint;
+        ctx.globalAlpha = isActive ? 0.95 : isHover ? 0.7 : 0.3;
+        ctx.lineWidth = isActive ? 2.4 : 1.4;
+        ctx.setLineDash(isActive || isHover ? [] : [3, 4]);
+        ctx.stroke();
+        if (isActive) {
+          ctx.globalAlpha = 0.15;
+          ctx.fillStyle = tint;
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+    };
+
     // env que ve la sim
     var env = {
       canvas: canvas,
@@ -333,6 +429,9 @@
         push: function (x, values) { if (chart) chart.push(x, values); },
         clear: function () { if (chart) chart.clear(); },
       },
+      addHandle: function (h) { inst.handles.push(h); return h; },
+      grid: window.SimKit.grid,
+      arrow: window.SimKit.arrow,
     };
     inst.env = env;
     inst.sim = spec.create(env);
@@ -374,6 +473,28 @@
       var count = sims.filter(function (s) { return s.tab === t; }).length;
       var badge = document.querySelector('[data-count="' + t + '"]');
       if (badge) badge.textContent = String(count);
+    });
+
+    // chips de salto rápido por tab (antes de las cards, después del intro)
+    TABS.forEach(function (t) {
+      var tabSims = sims.filter(function (s) { return s.tab === t; });
+      if (tabSims.length < 2) return;
+      var intro = document.querySelector('[data-intro="' + t + '"]');
+      if (!intro) return;
+      var row = document.createElement("nav");
+      row.className = "sim-jump";
+      tabSims.forEach(function (s) {
+        var a = document.createElement("a");
+        a.href = "#sim-" + s.id;
+        a.textContent = s.title;
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          var card = document.getElementById("sim-" + s.id);
+          if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        row.appendChild(a);
+      });
+      intro.insertAdjacentElement("afterend", row);
     });
 
     // cards
@@ -425,6 +546,7 @@
         var ctx = inst.canvas.getContext("2d");
         ctx.clearRect(0, 0, inst.env.W, inst.env.H);
         inst.sim.draw(ctx, inst.env.W, inst.env.H);
+        inst.drawHandles(ctx);
         if (inst.chart) inst.chart.draw();
       });
       requestAnimationFrame(frame);
