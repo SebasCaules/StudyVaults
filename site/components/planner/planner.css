@@ -90,7 +90,7 @@
 
 /* ===================== SHELL ===================== */
 .planner .shell{position:relative;z-index:2;display:grid;grid-template-columns:230px 1fr;gap:clamp(16px,2.4vw,34px);
-  padding:clamp(16px,2.4vw,32px) clamp(16px,3vw,44px) 70px;align-items:start}
+  padding:clamp(16px,2.4vw,32px) clamp(16px,3vw,44px) 36px;align-items:start}
 .planner .side{position:sticky;top:calc(var(--nav-h) + 52px);display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - var(--nav-h) - 64px);overflow:auto;padding-right:5px}
 .planner .side>*{flex:0 0 auto}
 .planner.side-collapsed .shell{grid-template-columns:1fr}
@@ -462,30 +462,7 @@
 /* ---------- WORKSPACE ---------- */
 .planner .cmb__work{display:flex;flex-direction:column;gap:14px;min-width:0}
 
-.planner .cmb-chips{display:flex;flex-wrap:wrap;gap:8px}
-.planner .cmb-chip{
-  display:inline-flex;align-items:center;gap:8px;padding:6px 8px 6px 11px;
-  background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--chip-c,var(--brass));
-  border-radius:7px;animation:cmb-chip-in .26s var(--ease,ease) both;
-}
-.planner .cmb-chip__abbr{font-family:var(--f-d);font-weight:600;font-size:14px;color:var(--ink)}
-.planner .cmb-chip__cr{font-family:var(--f-m);font-size:10.5px;color:var(--faint)}
-.planner .cmb-chip__com{
-  background:var(--panel-3);border:1px solid var(--line);color:var(--ink-soft);
-  border-radius:5px;padding:2px 5px;font-family:var(--f-m);font-size:10px;cursor:pointer;max-width:118px;
-}
-.planner .cmb-chip__x{
-  width:18px;height:18px;border-radius:50%;border:none;background:transparent;color:var(--muted);
-  cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center;transition:.15s;
-}
-.planner .cmb-chip__x:hover{background:var(--oxblood);color:#fff}
-.planner .cmb-empty{
-  display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
-  padding:22px 16px 10px;color:var(--faint);
-}
-.planner .cmb-empty svg{color:var(--line-2);opacity:.9}
-.planner .cmb-empty p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
-.planner .cmb-empty b{color:var(--brass);font-weight:600}
+/* (los chips de materias elegidas viven en combinador.css: .cmb9-matgrid/.cmb9-mchip) */
 
 /* preferencias */
 .planner .cmb-prefs{
@@ -551,10 +528,8 @@
 .planner .cmb-conflict b{color:var(--ink);font-family:var(--f-d);font-weight:600}
 .planner .cmb-conflict__x{color:var(--oxblood);font-weight:700;margin:0 2px}
 
-@keyframes cmb-chip-in{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 @keyframes cmb-grid-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
-  .planner .cmb-chip{animation:none}
   .planner .cmb-grid{animation:none}
   .planner .cmbx-picker,.planner .cmbx-stage{animation:none}
   .planner .cmb-row:hover,.planner .cmb-row.is-added:hover{transform:none}
@@ -636,22 +611,6 @@
 .planner .cmb2-step__count{
   margin-left:auto;font-family:var(--f-m);font-size:11.5px;color:var(--muted);
 }
-
-/* chips + acciones del paso 1 */
-.planner .cmb2-add{
-  display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--line-2);
-  background:transparent;color:var(--brass);cursor:pointer;border-radius:8px;
-  font-family:var(--f-m);font-size:12px;font-weight:600;padding:6px 13px;transition:.15s;
-}
-.planner .cmb2-add:hover{background:var(--brass-soft);border-color:var(--brass)}
-.planner .cmb2-clear{
-  border:none;background:none;color:var(--faint);cursor:pointer;
-  font-family:var(--f-m);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
-  padding:6px 8px;transition:.15s;
-}
-.planner .cmb2-clear:hover{color:var(--oxblood)}
-.planner .cmb2-hint{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
-.planner .cmb2-hint b{color:var(--brass);font-weight:600}
 
 /* buscador desplegable */
 .planner .cmb2-picker{
