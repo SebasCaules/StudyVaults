@@ -59,9 +59,21 @@ paginación · metnum iterador Newton/punto fijo con tabla · so visualizador de
 simulador AFD/AFND + minimizador · bd1 normalizador (X⁺, claves, 3NF/BCNF) · protos visualizador de
 encapsulamiento · fisica1/2/3 laboratorios de simulación (demo en curso).
 
-## Estado del pipeline
+## Estado del pipeline (actualizado 2026-07-05 ~16:00)
 - [x] F0 organización (100 PDFs en XX-YC/Apuntes)
 - [x] F0 triage (18 + 3 Físicas analizadas)
-- [ ] Aprobación del usuario de esta tabla
-- [ ] Demo toolkits Físicas (3 constructores corriendo)
-- [ ] F2 alta de vaults (19) + F3 transcripción con verificación adversarial
+- [x] Aprobación del usuario: GO con las 19
+- [x] Alta de los 19 vaults (vaults.ts + esqueletos + banners temáticos) — build verde
+- [x] Demo Físicas ronda 1 (15 sims verificadas) — feedback: más temas / más pulido / tocable
+- [x] **Ola 1 transcripción**: 33/33 unidades transcriptas (96 páginas) en F1/F2/F3/Álgebra — commit f01ba7d
+
+### Interrumpido por límite de sesión (resetea 19:30 AR) — cómo reanudar
+1. **Verificación adversarial pendiente** de F2/F3/Álgebra (24 verificadores) + 4 índices:
+   `Workflow({scriptPath: "<session>/workflows/scripts/transcribir-ola-wf_d99f203b-9af.js", resumeFromRunId: "wf_d99f203b-9af", args: <mismos args>})`
+   — los 33 transcriptores salen de caché, solo re-corren verify/idx caídos.
+2. **Demo ronda 2**: relanzar los 3 agentes (F1/F2/F3) — murieron sin trabajar; prompts en el transcript de esta sesión. Core ya upgradeado (addHandle/grid/arrow/chips, commit b18a246).
+3. **Olas 2 y 3**: mismas del plan — Ola 2: discreta, logica, eda, arqui, tla, bd1, quimica, pi · Ola 3 (delgadas): am1, am2, metnum, so, poo, protos, info.
+
+### Pulido pendiente detectado
+- Unificar frontmatter `fuente:` a la forma descriptiva ("Apuntes manuscritos de la cursada XXXX-XC (…)") — algunas páginas de F1 usan paths tipo `raw/...` que no existen.
+- Los 4 index.md siguen siendo stubs (los idx agents cayeron) — los regenera el resume.
