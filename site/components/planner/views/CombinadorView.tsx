@@ -159,7 +159,9 @@ export default function CombinadorView() {
   const [recOpen, setRecOpen] = useState(true);
   const [dlOpen, setDlOpen] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
-  const [saveIdx, setSaveIdx] = useState(""); // "" = Auto (que el plan la ubique)
+  // destino al guardar: null = sin tocar (defaultea al PRÓXIMO cuatrimestre —
+  // la cursada que armás acá es para ese); "" = Auto elegido explícitamente.
+  const [saveIdx, setSaveIdx] = useState<string | null>(null);
   const dlRef = useRef<HTMLDivElement>(null);
   const saveRef = useRef<HTMLDivElement>(null);
 
@@ -463,11 +465,16 @@ export default function CombinadorView() {
     state.fixedCom,
   ]);
 
-  // si el destino elegido dejó de ofrecerse (p. ej. se lockeó ese cuatri en el
-  // Plan), cae a "" = Auto en vez de guardar en un cuatrimestre finalizado.
-  const safeSaveIdx = cuatriOptions.some((o) => o.value === saveIdx)
-    ? saveIdx
-    : "";
+  // destino efectivo: lo elegido, si sigue ofreciéndose; sin tocar (o si el
+  // elegido se lockeó en el Plan) cae al PRÓXIMO cuatrimestre disponible.
+  // "Auto" ("") solo si el usuario lo eligió explícitamente — guardar con Auto
+  // deja que el optimizador desparrame la combinación entre cuatrimestres, que
+  // casi nunca es lo que se espera al guardar "esta cursada".
+  const safeSaveIdx =
+    saveIdx !== null &&
+    (saveIdx === "" || cuatriOptions.some((o) => o.value === saveIdx))
+      ? saveIdx
+      : (cuatriOptions[0]?.value ?? "");
 
   const noResults =
     filtered.obs.length === 0 &&
@@ -525,12 +532,22 @@ export default function CombinadorView() {
   };
 
   // Guardar preferencia: transfiere la combinación elegida al Plan de cursada,
-  // fijándola en el cuatrimestre elegido (idx) o dejándola en "Auto" para que el
-  // optimizador la ubique. Las comisiones ya viajan por el `fixedCom` compartido.
+  // fijándola en el cuatrimestre elegido (idx) o en "Auto" (el optimizador la
+  // ubica). Además FIJA la comisión de cada materia tal como quedó en la opción
+  // guardada: sin esto el plan re-elige comisiones y el calendario no reproduce
+  // lo que el usuario armó acá ("guardé la cursada y no la veo").
   const savePreference = () => {
     const placed = ranked[safeIdx];
     if (!placed) return;
     const targetIdx = safeSaveIdx === "" ? undefined : Number(safeSaveIdx);
+    for (const x of placed) {
+      if (x.com)
+        dispatch({
+          type: "SET_FIXED_COM",
+          code: x.m.codigo,
+          comision: x.com.comision,
+        });
+    }
     dispatch({
       type: "PLAN_SAVE_PREFERENCE",
       codes: placed.map((x) => x.m.codigo),
@@ -802,8 +819,9 @@ export default function CombinadorView() {
                   aria-label="Guardar esta cursada en tu plan"
                 >
                   <p className="cmb9-savemenu__lead">
-                    Sumá esta cursada a tu <b>Plan de cursada</b>. Elegí en qué
-                    cuatrimestre fijarla; el optimizador re-arma el resto alrededor.
+                    Sumá esta cursada a tu <b>Plan de cursada</b>, con estas
+                    comisiones. Se fija en el cuatrimestre elegido y el
+                    optimizador re-arma el resto alrededor.
                   </p>
                   <label className="cmb9-savemenu__field">
                     <span className="cmb9-savemenu__lbl">
