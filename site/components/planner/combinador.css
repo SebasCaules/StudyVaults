@@ -602,25 +602,35 @@
   flex-direction: column;
   gap: 2px;
 }
-/* sub-header {año · cuatri}: más tenue que el header de grupo, sin dot, con
-   sangría leve; STICKY dentro del scroll de .cmb-list (fondo opaco = el del
-   picker, para que las filas pasen por debajo sin verse a través).
-   top:-8px = compensa el padding de .cmb-list: pineado al ras del borde visual,
-   sin que las filas salientes asomen en la franja del padding. */
+/* sub-header {año · cuatri}: BANDA divisoria (hairline arriba/abajo + fondo
+   opaco) para que el corte entre cuatrimestres se note de un vistazo; STICKY
+   dentro del scroll de .cmb-list (la banda viaja pineada y el corte se ve aun
+   scrolleando). top:-8px = compensa el padding de .cmb-list: pineada al ras del
+   borde visual, sin que las filas salientes asomen en la franja del padding. */
 .planner .cmb9-subh {
   position: sticky;
   top: -8px;
   z-index: 1;
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  padding: 5px 8px 4px 16px;
+  gap: 6px;
+  padding: 6px 8px 5px 10px;
   background: var(--panel-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   font-family: var(--f-m);
   font-size: 9.5px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--muted);
+}
+/* el año manda; el cuatri acompaña más tenue */
+.planner .cmb9-subh b {
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.planner .cmb9-subh__cu {
   color: var(--faint);
 }
 /* count por sub-grupo, alineado a la derecha (como el <i> de los group headers) */
@@ -629,6 +639,13 @@
   font-style: normal;
   letter-spacing: 0;
   color: var(--faint);
+}
+/* aire entre cuatrimestres: el bloque siguiente respira antes de su banda */
+.planner .cmb9-subgroup + .cmb9-subgroup {
+  margin-top: 14px;
+}
+.planner .cmb9-subgroup {
+  padding-bottom: 2px;
 }
 
 /* ---------- picker: hint de aprobadas ocultas + tag «✓ aprobada» ---------- */

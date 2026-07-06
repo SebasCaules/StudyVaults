@@ -992,7 +992,8 @@ export default function CombinadorView() {
               {obsGroups.ordered.map((g) => (
                 <div className="cmb9-subgroup" key={`${g.anio}-${g.cuatri}`}>
                   <div className="cmb9-subh">
-                    {anioLabel(g.anio)} · {g.cuatri}.º cuatri
+                    <b>{anioLabel(g.anio)}</b>
+                    <span className="cmb9-subh__cu">· {g.cuatri}.º cuatri</span>
                     <i>{g.mats.length}</i>
                   </div>
                   {g.mats.map(row)}
