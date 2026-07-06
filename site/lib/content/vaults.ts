@@ -38,6 +38,10 @@ export interface VaultApp {
 
 export interface VaultConfig {
   id: VaultId;
+  // Vault inhabilitado: registrado pero excluido del sitio (nav/portal/build).
+  // La expansión 2026-07 está inhabilitada salvo fisica3 mientras se revisa;
+  // el contenido sigue en el repo — reactivar borrando el flag.
+  disabled?: boolean;
   dir: string; // carpeta en la raíz del repo
   name: string; // nombre completo de la materia
   short: string; // etiqueta corta (nav/cards)
@@ -65,7 +69,7 @@ export interface VaultConfig {
   unitLabels?: Record<string, string>;
 }
 
-export const VAULTS: VaultConfig[] = [
+const ALL_VAULTS: VaultConfig[] = [
   {
     id: "mna",
     dir: "MNA",
@@ -198,6 +202,7 @@ export const VAULTS: VaultConfig[] = [
   // ---- expansión 2026-07: vaults transcriptos desde apuntes GoodNotes 2023-2026 ----
   {
     id: "fisica1",
+    disabled: true,
     dir: "Fisica1",
     name: "Física 1",
     short: "Física 1",
@@ -211,6 +216,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "fisica2",
+    disabled: true,
     dir: "Fisica2",
     name: "Física 2",
     short: "Física 2",
@@ -234,9 +240,11 @@ export const VAULTS: VaultConfig[] = [
     contentRoot: "wiki",
     math: true,
     lang: "es",
+    library: true,
   },
   {
     id: "am1",
+    disabled: true,
     dir: "AM1",
     name: "Análisis Matemático I",
     short: "AM1",
@@ -250,6 +258,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "am2",
+    disabled: true,
     dir: "AM2",
     name: "Análisis Matemático II",
     short: "AM2",
@@ -263,6 +272,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "algebra",
+    disabled: true,
     dir: "Algebra",
     name: "Álgebra",
     short: "Álgebra",
@@ -276,6 +286,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "discreta",
+    disabled: true,
     dir: "Discreta",
     name: "Matemática Discreta",
     short: "Discreta",
@@ -289,6 +300,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "logica",
+    disabled: true,
     dir: "Logica",
     name: "Lógica Computacional",
     short: "Lógica",
@@ -302,6 +314,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "metnum",
+    disabled: true,
     dir: "MetNum",
     name: "Métodos Numéricos",
     short: "MetNum",
@@ -315,6 +328,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "pi",
+    disabled: true,
     dir: "PI",
     name: "Programación Imperativa",
     short: "PI",
@@ -328,6 +342,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "poo",
+    disabled: true,
     dir: "POO",
     name: "Programación Orientada a Objetos",
     short: "POO",
@@ -341,6 +356,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "eda",
+    disabled: true,
     dir: "EDA",
     name: "Estructuras de Datos y Algoritmos",
     short: "EDA",
@@ -354,6 +370,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "arqui",
+    disabled: true,
     dir: "Arqui",
     name: "Arquitectura de Computadoras",
     short: "Arqui",
@@ -367,6 +384,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "so",
+    disabled: true,
     dir: "SO",
     name: "Sistemas Operativos",
     short: "SO",
@@ -380,6 +398,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "tla",
+    disabled: true,
     dir: "TLA",
     name: "Teoría de Lenguajes y Autómatas",
     short: "TLA",
@@ -393,6 +412,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "bd1",
+    disabled: true,
     dir: "BD1",
     name: "Base de Datos I",
     short: "BD1",
@@ -406,6 +426,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "protos",
+    disabled: true,
     dir: "Protos",
     name: "Protocolos de Comunicación",
     short: "Protos",
@@ -419,6 +440,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "quimica",
+    disabled: true,
     dir: "Quimica",
     name: "Química",
     short: "Química",
@@ -432,6 +454,7 @@ export const VAULTS: VaultConfig[] = [
   },
   {
     id: "info",
+    disabled: true,
     dir: "Info",
     name: "Informática",
     short: "Info",
@@ -444,6 +467,10 @@ export const VAULTS: VaultConfig[] = [
     lang: "es",
   },
 ];
+
+// Vaults visibles en el sitio: los inhabilitados quedan registrados (tipos,
+// banners) pero fuera de nav, portal, grafo, búsqueda y build.
+export const VAULTS: VaultConfig[] = ALL_VAULTS.filter((v) => !v.disabled);
 
 export const VAULTS_BY_ID: Record<VaultId, VaultConfig> = Object.fromEntries(
   VAULTS.map((v) => [v.id, v]),

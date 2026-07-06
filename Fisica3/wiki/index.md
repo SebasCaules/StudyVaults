@@ -9,6 +9,10 @@ Catálogo completo del wiki **organizado por unidad**. Cada entrada enlaza a la 
 correspondiente; el texto del enlace es el título de la página. Para volver al portal del
 repo, ir a [HOME](../../HOME.md).
 
+> 📜 **Las Sagradas Escrituras** — el resumen maestro manuscrito de la cursada, del que
+> sale toda esta wiki, está entero en la **[biblioteca del vault](biblioteca/resumen-maestro-fisica-3.pdf)**:
+> 29 páginas color-codeadas con las fórmulas clave encajonadas, listas para imprimir.
+
 ## Unidad 1 — Electrostática
 
 - [Ley de Coulomb](01-electrostatica/01-ley-de-coulomb.md) — fuerza entre cargas puntuales y superposición.
