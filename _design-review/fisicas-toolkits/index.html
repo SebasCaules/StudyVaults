@@ -111,6 +111,28 @@
     padding:4px 12px;transition:color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
   }
   .sim-jump a:hover{color:var(--text-primary);border-color:var(--tab-tint);}
+  .sim-jump .sec{
+    flex-basis:100%;margin-top:6px;
+    font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--tab-tint);
+  }
+  .sim-jump .sec:first-child{margin-top:0;}
+  .sim-section-head{
+    display:flex;align-items:baseline;gap:12px;
+    margin:48px 2px 0;padding-bottom:10px;
+    border-bottom:1px solid var(--hairline-strong);
+  }
+  .sim-section-head h2{
+    font-weight:600;font-size:1.35rem;margin:0;letter-spacing:.01em;
+    color:var(--text-primary);
+  }
+  .sim-section-head h2::before{
+    content:"";display:inline-block;width:10px;height:10px;border-radius:2px;
+    background:var(--tab-tint);margin-right:12px;
+  }
+  .sim-section-head .n{
+    font-family:var(--font-mono);font-size:.68rem;color:var(--text-secondary);
+  }
   section[role="tabpanel"][hidden]{display:none;}
 
   /* ===== sim card ===== */

@@ -475,7 +475,8 @@
       if (badge) badge.textContent = String(count);
     });
 
-    // chips de salto rápido por tab (antes de las cards, después del intro)
+    // chips de salto rápido por tab (antes de las cards, después del intro),
+    // agrupados por sección cuando las sims declaran spec.section
     TABS.forEach(function (t) {
       var tabSims = sims.filter(function (s) { return s.tab === t; });
       if (tabSims.length < 2) return;
@@ -483,7 +484,15 @@
       if (!intro) return;
       var row = document.createElement("nav");
       row.className = "sim-jump";
+      var lastSec = null;
       tabSims.forEach(function (s) {
+        if (s.section && s.section !== lastSec) {
+          lastSec = s.section;
+          var sec = document.createElement("span");
+          sec.className = "sec";
+          sec.textContent = s.section;
+          row.appendChild(sec);
+        }
         var a = document.createElement("a");
         a.href = "#sim-" + s.id;
         a.textContent = s.title;
@@ -497,8 +506,21 @@
       intro.insertAdjacentElement("afterend", row);
     });
 
-    // cards
+    // cards (con header de sección cuando cambia spec.section dentro del tab)
+    var lastSectionByTab = {};
     sims.forEach(function (spec) {
+      if (spec.section && lastSectionByTab[spec.tab] !== spec.section) {
+        lastSectionByTab[spec.tab] = spec.section;
+        var panel = document.getElementById("panel-" + spec.tab);
+        if (panel) {
+          var head = el("div", "sim-section-head", panel);
+          var h = el("h2", null, head);
+          h.textContent = spec.section;
+          var count = sims.filter(function (s) { return s.tab === spec.tab && s.section === spec.section; }).length;
+          var n = el("span", "n", head);
+          n.textContent = count + (count === 1 ? " laboratorio" : " laboratorios");
+        }
+      }
       var inst = buildSim(spec);
       if (inst) instances.push(inst);
     });
