@@ -1,5 +1,5 @@
 import { Navbar, type NavbarLink } from "@studyvaults/ui";
-import { REPO_URL } from "@/lib/content/vaults";
+import { REPO_URL, VAULTS } from "@/lib/content/vaults";
 
 // Configuración StudyVaults de la <Navbar> del sistema de diseño.
 // La barra genérica (comportamiento, mobile, scroll-spy, búsqueda, tema)
@@ -16,7 +16,7 @@ export default function AppNavbar() {
       links={LINKS}
       meta={
         <>
-          SYS.00 // <b>ITBA</b> · 7 vaults
+          SYS.00 // <b>ITBA</b> · {VAULTS.length} vaults
         </>
       }
       cta={{ label: "GitHub", href: REPO_URL, external: true }}
