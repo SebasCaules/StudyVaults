@@ -543,6 +543,59 @@
   padding-top: 8px;
 }
 
+/* ---------- picker: filas de UNA línea (control · código · nombre · meta) ---------- */
+/* Columnas alineadas: el código en mono de ancho fijo arma un índice escaneable;
+   el nombre elide; la meta (créditos/comisiones) queda como una sola cifra a la
+   derecha. Overridea la métrica base de .cmb-row (planner.css) solo acá. */
+.planner .cmb9-picklist .cmb-row {
+  gap: 9px;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+.planner .cmb9-picklist .cmb-row:hover {
+  transform: none;
+}
+.planner .cmb9-picklist .cmb-row__plus {
+  width: 19px;
+  height: 19px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.planner .cmb9-picklist .cmb-row__code {
+  flex: none;
+  width: 44px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.planner .cmb9-picklist .cmb-row__name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.planner .cmb9-picklist .cmb-row__meta {
+  flex: none;
+  gap: 0;
+  font-size: 10px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.planner .cmb9-picklist .cmb-row.is-added {
+  box-shadow: inset 2px 0 0 var(--brass);
+}
+.planner .cmb9-picklist .cmb-row.is-added .cmb-row__code {
+  color: var(--brass);
+}
+.planner .cmb9-picklist .cmb-row.is-added .cmb-row__name {
+  color: var(--ink);
+  font-weight: 500;
+}
+
 /* ---------- picker: sub-agrupado de obligatorias por año y cuatrimestre ---------- */
 .planner .cmb9-subgroup {
   display: flex;
@@ -618,41 +671,37 @@
 .planner .cmb-list .dot--ghost {
   background: var(--faint);
 }
-/* fila no-agregable: misma métrica que .cmb-row pero atenuada y sin affordances
-   de click (no es un botón, no tiene «+») */
+/* fila no-agregable: misma métrica de una línea que .cmb-row pero atenuada y
+   sin affordances de click (no es un botón, no tiene «+» — la sangría izquierda
+   deja el hueco del control para que los códigos queden alineados) */
 .planner .cmb9-ghost {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   width: 100%;
-  padding: 9px 10px;
+  padding: 5px 8px 5px 36px;
   border: 1px solid transparent;
-  border-radius: var(--r);
+  border-radius: 6px;
   opacity: 0.55;
   cursor: default;
 }
-.planner .cmb9-ghost__main {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
+.planner .cmb9-ghost .cmb-row__code {
+  flex: none;
+  width: 44px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 .planner .cmb9-ghost__name {
-  font-size: 13.5px;
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
   color: var(--ink-soft);
   line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.planner .cmb9-ghost__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  color: var(--faint);
 }
 .planner .cmb9-ghost__note {
   flex: none;

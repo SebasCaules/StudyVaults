@@ -23,13 +23,11 @@ import {
   cuatriName,
 } from "@/lib/planner/optimize";
 import { MAX_PLAN_CUATRIS } from "@/lib/planner/consts";
-import { hasPrograma } from "@/lib/planner/programa";
 import { buildComboHTML } from "@/lib/planner/exportPlan";
 import { openForPrint } from "@/lib/planner/download";
 import { Legend } from "@/components/planner/WeekGrid";
 import CursadaCalendar from "@/components/planner/CursadaCalendar";
 import { RecRow, RecSig } from "@/components/planner/RecRow";
-import { ComingSoonBadge, ProgramaChips } from "@/components/planner/ProgramaChips";
 import {
   IconDownload,
   IconCalendar,
@@ -557,6 +555,11 @@ export default function CombinadorView() {
   };
 
   // ---------- sub-render: fila del buscador ----------
+  // UNA línea por materia: control · código (columna mono fija) · nombre · meta.
+  // Con ~80 materias, la fila de 3 líneas (nombre + meta + chips de programa)
+  // era ilegible: entraban 5 por pantalla y toda señal repetida por fila
+  // (régimen, créditos duplicados) enterraba la elección. El detalle de cada
+  // materia vive en el drawer/ficha, no acá.
   const row = (m: MateriaM) => {
     const added = combo.has(m.codigo);
     const coms = m.horario?.comisiones.length || 0;
@@ -568,27 +571,17 @@ export default function CombinadorView() {
         key={m.codigo}
         className={"cmb-row" + (added ? " is-added" : "")}
         onClick={() => dispatch({ type: "TOGGLE_COMBO", code: m.codigo })}
-        title={added ? "Quitar de tu cuatrimestre" : "Agregar a tu cuatrimestre"}
+        title={`${m.codigo} · ${m.nombre} — ${added ? "quitar de" : "agregar a"} tu cuatrimestre`}
       >
         <span className="cmb-row__plus" aria-hidden="true">
           {added ? "✓" : "+"}
         </span>
-        <span className="cmb-row__main">
-          <span className="cmb-row__name">{m.nombre}</span>
-          <span className="cmb-row__meta">
-            <span className="cmb-row__code">{m.codigo}</span>
-            <span>{m.abbr}</span>
-            <span>· {m.creditos} cr</span>
-            {coms > 1 && <span>· {coms} com.</span>}
-            {appr && <span className="cmb9-oktag">✓ aprobada</span>}
-          </span>
-          {hasPrograma(m.codigo) ? (
-            <ProgramaChips codigo={m.codigo} showEval={false} />
-          ) : (
-            <ComingSoonBadge short />
-          )}
+        <span className="cmb-row__code">{m.codigo}</span>
+        <span className="cmb-row__name">{m.nombre}</span>
+        {appr && <span className="cmb9-oktag">✓ aprobada</span>}
+        <span className="cmb-row__meta">
+          {m.creditos} cr{coms > 1 ? ` · ${coms} com` : ""}
         </span>
-        <span className="cmb-row__cr">{m.creditos}</span>
       </button>
     );
   };
@@ -1037,17 +1030,11 @@ export default function CombinadorView() {
               <div
                 className="cmb9-ghost"
                 key={m.codigo}
-                title={`${m.codigo} · ${m.nombre}`}
+                title={`${m.codigo} · ${m.nombre} — sin horario cargado todavía`}
               >
-                <span className="cmb9-ghost__main">
-                  <span className="cmb9-ghost__name">{m.nombre}</span>
-                  <span className="cmb9-ghost__meta">
-                    <span className="cmb-row__code">{m.codigo}</span>
-                    <span>{m.abbr}</span>
-                    <span>· {m.creditos} cr</span>
-                  </span>
-                </span>
-                <span className="cmb9-ghost__note">Sin horario cargado todavía</span>
+                <span className="cmb-row__code">{m.codigo}</span>
+                <span className="cmb9-ghost__name">{m.nombre}</span>
+                <span className="cmb9-ghost__note">sin horario cargado</span>
               </div>
             ))}
           </div>
