@@ -197,7 +197,7 @@
   }
 }
 
-/* ---------- botones del cluster derecho (Electivas · Descargar · Guardar) ---------- */
+/* ---------- botones del cluster derecho (Ignorar mi progreso · Sugeridas · Descargar · Guardar) ---------- */
 .planner .cmb9-hbtn {
   display: inline-flex;
   align-items: center;
@@ -230,7 +230,7 @@
   font-size: 10px;
   color: var(--muted);
 }
-/* estado "presionado" del toggle de Electivas */
+/* estado "presionado" de un toggle .cmb9-hbtn (p. ej. Sugeridas) */
 .planner .cmb9-hbtn.is-on {
   color: var(--brass);
   border-color: var(--brass);
@@ -250,6 +250,19 @@
   background: var(--brass-2);
   border-color: var(--brass-2);
   color: var(--block-ink);
+}
+
+/* ---------- switch de modo «Ignorar mi progreso» (siempre visible) ---------- */
+/* reusa .cmb-switch (planner.css); el wrapper lo agrupa con su InfoTip hermano */
+.planner .cmb9-solowrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+.planner .cmb9-solo {
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 /* ---------- menú Descargar (3 opciones) ---------- */
@@ -506,22 +519,96 @@
   pointer-events: auto;
 }
 
-/* ---------- picker: sub-agrupado de obligatorias por año ---------- */
+/* ---------- picker: lista más alta + dos columnas (obligatorias | electivas) ---------- */
+/* override de planner.css (.cmbx-picker .cmb-list{max-height:288px}); la clase
+   extra .cmb9-picklist sube la especificidad para ganar sin depender del orden */
+.planner .cmbx-picker .cmb-list.cmb9-picklist {
+  max-height: min(62vh, 560px);
+}
+/* dos columnas en ≥880px; abajo, apiladas. El scroll lo maneja .cmb-list. */
+.planner .cmb9-pickcols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  align-items: start;
+}
+@media (max-width: 880px) {
+  .planner .cmb9-pickcols {
+    grid-template-columns: 1fr;
+  }
+}
+/* «Sin horario cargado»: a lo ancho, debajo de las columnas, con un separador leve */
+.planner .cmb9-pickghost {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+/* ---------- picker: sub-agrupado de obligatorias por año y cuatrimestre ---------- */
 .planner .cmb9-subgroup {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-/* sub-header de año: más tenue que el header de grupo (Obligatorias/Electivas),
-   sin dot, con una sangría leve para leerse como sub-nivel */
+/* sub-header {año · cuatri}: más tenue que el header de grupo, sin dot, con
+   sangría leve; STICKY dentro del scroll de .cmb-list (fondo opaco = el del
+   picker, para que las filas pasen por debajo sin verse a través) */
 .planner .cmb9-subh {
-  padding: 5px 8px 3px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 8px 4px 16px;
+  background: var(--panel-2);
   font-family: var(--f-m);
   font-size: 9.5px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
+}
+/* count por sub-grupo, alineado a la derecha (como el <i> de los group headers) */
+.planner .cmb9-subh i {
+  margin-left: auto;
+  font-style: normal;
+  letter-spacing: 0;
+  color: var(--faint);
+}
+
+/* ---------- picker: hint de aprobadas ocultas + tag «✓ aprobada» ---------- */
+.planner .cmb9-hiddenhint {
+  margin: 0;
+  padding: 8px 13px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.planner .cmb9-hiddenhint__btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--brass);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-hiddenhint__btn:hover {
+  color: var(--brass-2);
+}
+/* tag de fila aprobada (solo visible con «Ignorar mi progreso» ON): rol ok/sage */
+.planner .cmb9-oktag {
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  color: var(--sage);
+  border: 1px solid color-mix(in srgb, var(--sage) 34%, transparent);
+  background: color-mix(in srgb, var(--sage) 12%, transparent);
+  border-radius: 999px;
+  padding: 1px 6px;
+  white-space: nowrap;
 }
 
 /* ---------- picker: filas «sin horario cargado» (búsqueda honesta) ---------- */
@@ -619,6 +706,7 @@
   .planner .cmb9-clear,
   .planner .cmb9-mchip__x,
   .planner .cmb9-addcell,
+  .planner .cmb9-hiddenhint__btn,
   .planner .cmb-conflict__rm {
     transition: none;
   }

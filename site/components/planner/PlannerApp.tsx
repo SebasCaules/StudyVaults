@@ -7,6 +7,7 @@ import {
   saveApproved,
   saveCombo,
   saveComboParams,
+  saveComboSolo,
   saveFinalDone,
   saveFinalesCombo,
   saveFixedCom,
@@ -174,6 +175,9 @@ function PlannerInner() {
   useEffect(() => {
     if (state.hydrated) saveComboParams(state.comboParams);
   }, [state.comboParams, state.hydrated]);
+  useEffect(() => {
+    if (state.hydrated) saveComboSolo(state.comboSolo);
+  }, [state.comboSolo, state.hydrated]);
   useEffect(() => {
     if (state.hydrated) saveFixedCom(state.fixedCom);
   }, [state.fixedCom, state.hydrated]);

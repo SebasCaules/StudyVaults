@@ -195,6 +195,7 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
             : s.plan.capMatByIdx,
         },
         sideCollapsed: p.sideCollapsed,
+        comboSolo: p.comboSolo,
         // una vez cerrado, cerrado queda (un import de preferencias no lo revive)
         introDismissed: p.introDismissed || s.introDismissed,
         hydrated: true,

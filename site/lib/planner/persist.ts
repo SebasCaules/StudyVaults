@@ -27,6 +27,7 @@ const K = {
   planOpts: "plan_opts_v1",
   finalesCombo: "plan_finales_combo_v1",
   introDismissed: "plan_intro_dismissed_v1",
+  comboSolo: "plan_combo_solo_v1",
 } as const;
 
 export interface PlanOpts {
@@ -67,6 +68,8 @@ export interface Persisted {
   sideCollapsed: boolean;
   /** banner de primer uso cerrado (flag simple, como sideCollapsed). */
   introDismissed: boolean;
+  /** modo "ignorar progreso" del combinador (flag simple, como sideCollapsed). */
+  comboSolo: boolean;
 }
 
 function read<T>(key: string): T | null {
@@ -105,6 +108,13 @@ export function loadPersisted(): Persisted {
     introDismissed: ((): boolean => {
       try {
         return localStorage.getItem(K.introDismissed) === "1";
+      } catch {
+        return false;
+      }
+    })(),
+    comboSolo: ((): boolean => {
+      try {
+        return localStorage.getItem(K.comboSolo) === "1";
       } catch {
         return false;
       }
@@ -160,6 +170,13 @@ export const saveIntroDismissed = (dismissed: boolean) => {
     /* noop */
   }
 };
+export const saveComboSolo = (solo: boolean) => {
+  try {
+    localStorage.setItem(K.comboSolo, solo ? "1" : "0");
+  } catch {
+    /* noop */
+  }
+};
 
 /* =========================================================================
    EXPORT / IMPORT de preferencias (archivo .json portable)
@@ -188,6 +205,7 @@ export interface PreferenceBundle {
   planOpts: PlanOpts;
   finales: PersistedFinales;
   sideCollapsed: boolean;
+  comboSolo: boolean;
 }
 
 /** Arma el bundle exportable a partir del estado vivo del planner. */
@@ -219,6 +237,7 @@ export function buildPreferenceBundle(
     },
     finales: serializeFinales(state.finales),
     sideCollapsed: state.sideCollapsed,
+    comboSolo: state.comboSolo,
   };
 }
 
@@ -365,5 +384,7 @@ export function parsePreferences(text: string): Persisted | null {
     // quien importa preferencias no es un primer uso: no revivir el banner
     // (HYDRATE además hace OR con el estado actual).
     introDismissed: true,
+    // bundles viejos no traen comboSolo → false (modo por defecto).
+    comboSolo: typeof b.comboSolo === "boolean" ? b.comboSolo : false,
   };
 }

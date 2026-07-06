@@ -187,24 +187,47 @@ export default function CombinadorView() {
     return { obs: pool.obs.filter(match), els: pool.els.filter(match) };
   }, [pool, q]);
 
-  // Obligatorias sub-agrupadas por año (el listado creció a ~41 troncales con
-  // horario): grupos ordenados 1.º→5.º, y las de año nulo al final como «Otras».
-  const obsByAnio = useMemo(() => {
-    const groups = new Map<number, MateriaM[]>();
+  // Obligatorias sub-agrupadas por (año, cuatrimestre): un sub-grupo por combo
+  // año-cuatri, ordenados 1.º año→5.º y, dentro, 1.º cuatri→2.º. Las materias sin
+  // año o sin cuatri caen a «Otras» al final. Sub-dividir por cuatri hace el
+  // listado (~41 troncales con horario) escaneable como el Plan por cuatrimestre.
+  const obsGroups = useMemo(() => {
+    const groups = new Map<
+      string,
+      { anio: number; cuatri: number; mats: MateriaM[] }
+    >();
     const otras: MateriaM[] = [];
     for (const m of filtered.obs) {
-      if (m.anio == null) otras.push(m);
-      else {
-        const arr = groups.get(m.anio);
-        if (arr) arr.push(m);
-        else groups.set(m.anio, [m]);
+      if (m.anio == null || m.cuatri == null) {
+        otras.push(m);
+        continue;
       }
+      const key = `${m.anio}-${m.cuatri}`;
+      const g = groups.get(key);
+      if (g) g.mats.push(m);
+      else groups.set(key, { anio: m.anio, cuatri: m.cuatri, mats: [m] });
     }
     return {
-      ordered: [...groups.entries()].sort((a, b) => a[0] - b[0]),
+      ordered: [...groups.values()].sort(
+        (a, b) => a.anio - b.anio || a.cuatri - b.cuatri,
+      ),
       otras,
     };
   }, [filtered.obs]);
+
+  // Electivas ordenadas por NOMBRE (en un picker se busca por nombre, no por código).
+  const elsByName = useMemo(
+    () =>
+      [...filtered.els].sort((a, b) => a.nombre.localeCompare(b.nombre, "es")),
+    [filtered.els],
+  );
+
+  // Aprobadas CON horario que hoy no aparecen en el picker (modo normal): alimenta
+  // el hint de descubribilidad del switch «Ignorar mi progreso».
+  const hiddenApproved = useMemo(
+    () => [...state.approved].filter(hasHorario).length,
+    [state.approved],
+  );
 
   // Búsqueda honesta: materias DEL PLAN que matchean el texto pero todavía no
   // tienen horario cargado. No son combinables (van atenuadas y no-agregables),
@@ -520,6 +543,8 @@ export default function CombinadorView() {
   const row = (m: MateriaM) => {
     const added = combo.has(m.codigo);
     const coms = m.horario?.comisiones.length || 0;
+    // Sólo aparecen con «Ignorar mi progreso» ON; el tag deja claro por qué está.
+    const appr = state.approved.has(m.codigo);
     return (
       <button
         type="button"
@@ -538,6 +563,7 @@ export default function CombinadorView() {
             <span>{m.abbr}</span>
             <span>· {m.creditos} cr</span>
             {coms > 1 && <span>· {coms} com.</span>}
+            {appr && <span className="cmb9-oktag">✓ aprobada</span>}
           </span>
           {hasPrograma(m.codigo) ? (
             <ProgramaChips codigo={m.codigo} showEval={false} />
@@ -620,32 +646,41 @@ export default function CombinadorView() {
           )}
         </div>
 
-        {/* Progressive disclosure: sin materias elegidas no hay nada que combinar,
-            así que el cluster de acciones entero no se monta (el estado vacío
-            queda solo con la invitación a elegir materias + el picker). */}
-        {selected.length > 0 && (
+        {/* Cluster de acciones — SIEMPRE montado: el switch de modo tiene que
+            estar visible aun sin materias elegidas. Cada acción conserva su gate;
+            el switch «Ignorar mi progreso» no tiene ninguno. */}
         <div className="cmb9-header__right">
-          {/* «Incluir aprobadas»: ofrece también las materias ya aprobadas, solo
-              para combinar horarios. Con 0 aprobadas no tiene ningún efecto → no
-              se monta. */}
-          {state.approved.size > 0 && (
+          {/* «Ignorar mi progreso»: para quien no usa el avance real y solo quiere
+              combinar horarios. ON ⇒ el pool ofrece TODAS las materias con horario,
+              también las aprobadas (armado puro, no se guarda al plan). Siempre
+              visible — no depende de tener materias elegidas ni aprobadas. El
+              InfoTip va como HERMANO del switch (ambos son <button>, no anidar). */}
+          <span className="cmb9-solowrap">
             <button
               type="button"
-              className={"cmb9-hbtn" + (comboSolo ? " is-on" : "")}
-              aria-pressed={comboSolo}
+              className={"cmb-switch cmb9-solo" + (comboSolo ? " on" : "")}
+              role="switch"
+              aria-checked={comboSolo}
               title={
                 comboSolo
-                  ? "Activo: se incluyen también tus materias aprobadas, solo para combinar horarios. Tocá para volver a tu cursada real"
-                  : "Ofrece también las materias que ya aprobaste, solo para combinar horarios"
+                  ? "Ignorando tu progreso: se ofrecen todas las materias con horario, incluidas las aprobadas"
+                  : "Combiná solo lo que te falta; activá para incluir todas las materias con horario"
               }
               onClick={() => {
                 setSaveOpen(false);
                 dispatch({ type: "SET_COMBO_SOLO", value: !comboSolo });
               }}
             >
-              Incluir aprobadas
+              <span className="cmb-switch__track">
+                <span className="cmb-switch__knob" />
+              </span>
+              Ignorar mi progreso
             </button>
-          )}
+            <InfoTip
+              label="Qué hace «Ignorar mi progreso»"
+              text="Activado: el combinador ofrece todas las materias con horario, incluidas las que ya aprobaste — puro armado de horarios, sin guardar la cursada en tu plan. Desactivado: solo las materias que te faltan."
+            />
+          </span>
 
           {/* Sugeridas: solo tiene sentido cuando hay combos que llenar; en estado
               vacío era un control muerto con un contador engañoso. */}
@@ -812,7 +847,6 @@ export default function CombinadorView() {
             </div>
           )}
         </div>
-        )}
       </div>
 
       {/* Fila 2: grilla uniforme de materias + celda fantasma "Agregar" al final.
@@ -917,41 +951,63 @@ export default function CombinadorView() {
           </button>
         )}
       </div>
-      <div className="cmb-list">
-        {filtered.obs.length > 0 && (
-          <div className="cmb-group">
-            <div className="cmb-grouph">
-              <span className="dot dot--ob" /> Obligatorias
-              <i>{filtered.obs.length}</i>
-            </div>
-            {/* sub-agrupadas por año (el listado creció): 1.º→5.º y «Otras» al final */}
-            {obsByAnio.ordered.map(([anio, mats]) => (
-              <div className="cmb9-subgroup" key={anio}>
-                <div className="cmb9-subh">{anioLabel(anio)}</div>
-                {mats.map(row)}
+      {/* Hint de descubribilidad: en modo normal, avisa que las aprobadas están
+          ocultas y ofrece encender el switch sin ir a buscarlo al header. */}
+      {!comboSolo && hiddenApproved > 0 && (
+        <p className="cmb9-hiddenhint">
+          Tus {hiddenApproved} aprobadas no aparecen ·{" "}
+          <button
+            type="button"
+            className="cmb9-hiddenhint__btn"
+            onClick={() => dispatch({ type: "SET_COMBO_SOLO", value: true })}
+          >
+            mostrarlas igual
+          </button>
+        </p>
+      )}
+      <div className="cmb-list cmb9-picklist">
+        {/* Dos columnas en desktop: Obligatorias (por año·cuatri) | Electivas. */}
+        <div className="cmb9-pickcols">
+          {filtered.obs.length > 0 && (
+            <div className="cmb-group cmb9-pickcol">
+              <div className="cmb-grouph">
+                <span className="dot dot--ob" /> Obligatorias
+                <i>{filtered.obs.length}</i>
               </div>
-            ))}
-            {obsByAnio.otras.length > 0 && (
-              <div className="cmb9-subgroup">
-                <div className="cmb9-subh">Otras</div>
-                {obsByAnio.otras.map(row)}
-              </div>
-            )}
-          </div>
-        )}
-        {filtered.els.length > 0 && (
-          <div className="cmb-group">
-            <div className="cmb-grouph">
-              <span className="dot dot--el" /> Electivas
-              <i>{filtered.els.length}</i>
+              {/* sub-agrupadas por (año, cuatri): 1.º año→5.º y, dentro, 1.º→2.º cuatri */}
+              {obsGroups.ordered.map((g) => (
+                <div className="cmb9-subgroup" key={`${g.anio}-${g.cuatri}`}>
+                  <div className="cmb9-subh">
+                    {anioLabel(g.anio)} · {g.cuatri}.º cuatri
+                    <i>{g.mats.length}</i>
+                  </div>
+                  {g.mats.map(row)}
+                </div>
+              ))}
+              {obsGroups.otras.length > 0 && (
+                <div className="cmb9-subgroup">
+                  <div className="cmb9-subh">
+                    Otras<i>{obsGroups.otras.length}</i>
+                  </div>
+                  {obsGroups.otras.map(row)}
+                </div>
+              )}
             </div>
-            {filtered.els.map(row)}
-          </div>
-        )}
+          )}
+          {filtered.els.length > 0 && (
+            <div className="cmb-group cmb9-pickcol">
+              <div className="cmb-grouph">
+                <span className="dot dot--el" /> Electivas
+                <i>{filtered.els.length}</i>
+              </div>
+              {elsByName.map(row)}
+            </div>
+          )}
+        </div>
         {/* Búsqueda honesta: materias del plan que matchean pero aún no tienen
-            horario cargado — atenuadas y no-agregables, para no ocultar que existen. */}
+            horario cargado — atenuadas y no-agregables, a lo ancho bajo las columnas. */}
         {ghostMatches.length > 0 && (
-          <div className="cmb-group">
+          <div className="cmb-group cmb9-pickghost">
             <div className="cmb-grouph">
               <span className="dot dot--ghost" /> Sin horario cargado
               <i>{ghostMatches.length}</i>
