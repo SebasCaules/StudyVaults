@@ -9,7 +9,7 @@ const REPO = path.resolve(process.cwd(), "..");
 const OUT = path.join(process.cwd(), "public", "vault-assets");
 const EXTS = ["svg", "png", "jpg", "jpeg", "gif", "webp", "pdf"];
 
-// [id, dir] — debe coincidir con lib/content/vaults.ts
+// [id, dir] — debe coincidir con los vaults HABILITADOS de lib/content/vaults.ts
 const VAULTS = [
   ["mna", "MNA"],
   ["derecho", "Derecho"],
@@ -18,6 +18,7 @@ const VAULTS = [
   ["paw", "PAW"],
   ["sds", "SDS"],
   ["inge2", "Inge2"],
+  ["fisica3", "Fisica3"],
 ];
 
 let total = 0;
