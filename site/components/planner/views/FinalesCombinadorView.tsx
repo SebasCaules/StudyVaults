@@ -262,6 +262,9 @@ export default function FinalesCombinadorView() {
     state.finales;
 
   const [panelOpen, setPanelOpen] = useState(true);
+  // P1 — la ingesta arranca abierta solo si NO hay mesas reales cargadas; una vez
+  // que el usuario la toca respetamos su elección (null = todavía sin decidir).
+  const [ingestaOpen, setIngestaOpen] = useState<boolean | null>(null);
   const [exportMsg, setExportMsg] = useState<string | null>(null);
   // menú «Descargar» (popover local) + toggle «Otras fechas» (chips fantasma).
   const [dlOpen, setDlOpen] = useState(false);
@@ -420,6 +423,12 @@ export default function FinalesCombinadorView() {
   );
   const selectedInPeriod = useMemo(
     () => selectedRows.filter((r) => r.inPeriod && r.mesa),
+    [selectedRows],
+  );
+  // P1 — elegidos SIN mesa cargada (source "none"): no aparecen en el calendario;
+  // se cuentan para el nudge y para el titular «rendís N (M con fecha)».
+  const sinFecha = useMemo(
+    () => selectedRows.filter((r) => !r.mesa),
     [selectedRows],
   );
 
@@ -594,6 +603,10 @@ export default function FinalesCombinadorView() {
     dispatch({ type: "SET_FINAL_ASIGNACION", code, asignacion });
   const setMesa = (code: string, mesa: MesaFinal | null) =>
     dispatch({ type: "SET_MESA", code, mesa });
+  // P1 — siembra una mesa manual por defecto (día 15 del mes visible, 09:00).
+  // Mismo seed que usa el editor «Fechas de mesa» y el botón «＋ fecha» del panel.
+  const seedMesa = (code: string) =>
+    setMesa(code, { fecha: isoOf(new Date(year, month - 1, 15)), hora: "09:00" });
 
   // Llamado por defecto al agregar/mover un final al período visible: 1.º si hay
   // 1.ª mesa oficial (o un override manual, que pisa igual); si no, 2.º.
@@ -795,7 +808,44 @@ export default function FinalesCombinadorView() {
   const rendirFantasma = (g: Ghost) =>
     asignar(g.code, { periodo, llamado: g.llamado });
 
-  // ----- textos de resumen -----
+  // ----- empty state focalizado (P0) -----
+  // Sin finales pendientes cortamos temprano: SOLO el encabezado + una card que
+  // lleva a «Mis materias» (donde se marcan las cursadas). Nada de ingesta, barra,
+  // calendario ni pie hasta que haya al menos un final para combinar.
+  if (rows.length === 0) {
+    return (
+      <section className="view-panel fin" aria-label="Combinación de finales">
+        <div className="panel-head">
+          <h2>Combinación de finales</h2>
+          <p>
+            Sumá tus finales pendientes y armá una combinación sin
+            superposiciones, con margen de repaso.
+          </p>
+        </div>
+        <div className="fin__empty">
+          <span className="fin__empty-ico" aria-hidden="true">
+            <IconGraduation />
+          </span>
+          <h3 className="fin__empty-title">
+            Todavía no tenés finales para combinar
+          </h3>
+          <p className="fin__empty-body">
+            Esta vista arma tu calendario con las materias que cursaste y te
+            falta rendir. Marcá una cursada (✓) en «Mis materias» y aparece acá.
+          </p>
+          <button
+            type="button"
+            className="fin__hbtn is-primary"
+            onClick={() => dispatch({ type: "SET_VIEW", view: "cuatri" })}
+          >
+            Ir a Mis materias
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  // ----- textos de resumen (rows.length > 0 garantizado por el early return) -----
   const nSel = selectedRows.length;
   // desglose por llamado de los elegidos en el período visible (solo si hay 2.º).
   const nSegundo = selectedRows.filter(
@@ -806,23 +856,24 @@ export default function FinalesCombinadorView() {
     nSegundo > 0 ? ` (${nPrimer} en 1.º llamado · ${nSegundo} en 2.º)` : "";
   // "te quedan N para los otros llamados": elegibles sin asignar en NINGÚN período.
   const nSinAsignar = eligibles.filter((r) => !r.asig).length;
-  const resumenMain =
-    rows.length === 0
-      ? "No tenés finales pendientes en este llamado."
-      : `En ${PERIODO_LABEL[periodo]} rendís ${nSel} final${nSel === 1 ? "" : "es"}${desglose} · te queda${nSinAsignar === 1 ? "" : "n"} ${nSinAsignar} para los otros llamados.`;
+  // P1 5c — cuando hay elegidos sin fecha, el titular aclara cuántos tienen mesa.
+  const nConFecha = nSel - sinFecha.length;
+  const rendisTxt =
+    nConFecha < nSel
+      ? `rendís ${nSel} (${nConFecha} con fecha)`
+      : `rendís ${nSel} final${nSel === 1 ? "" : "es"}`;
+  const resumenMain = `En ${PERIODO_LABEL[periodo]} ${rendisTxt}${desglose} · te queda${nSinAsignar === 1 ? "" : "n"} ${nSinAsignar} para los otros llamados.`;
   const resumenSub =
-    rows.length === 0
-      ? "Marcá una materia como cursada regular (una tilde) en la pestaña de aprobadas para verla acá."
-      : [
-          blocked.length > 0
-            ? `${blocked.length} bloqueado${blocked.length === 1 ? "" : "s"} por correlativa de final`
-            : null,
-          flags.some((f) => f.kind === "caution")
-            ? "revisá los cruces marcados"
-            : null,
-        ]
-          .filter(Boolean)
-          .join(" · ") || "sin conflictos detectados en la selección actual";
+    [
+      blocked.length > 0
+        ? `${blocked.length} bloqueado${blocked.length === 1 ? "" : "s"} por correlativa de final`
+        : null,
+      flags.some((f) => f.kind === "caution")
+        ? "revisá los cruces marcados"
+        : null,
+    ]
+      .filter(Boolean)
+      .join(" · ") || "sin conflictos detectados en la selección actual";
 
   const yearOpts = Array.from(new Set([2025, 2026, 2027, 2028, anio])).sort(
     (a, b) => a - b,
@@ -851,10 +902,7 @@ export default function FinalesCombinadorView() {
         </p>
       </div>
 
-      {/* ---- ingesta de la planilla oficial (autocompleta las mesas) ---- */}
-      <FinalesIngesta />
-
-      {/* ---- barra unificada: período + año + margen · panel + sugerir ---- */}
+      {/* ---- barra: período + año (decisión principal) · panel + sugerir ---- */}
       <div className="fin__bar">
         <div className="fin__bar-left">
           <span className="fin__lbl">Período</span>
@@ -893,24 +941,6 @@ export default function FinalesCombinadorView() {
               ))}
             </select>
           </label>
-          <label className="fin__margen">
-            <span>Margen de repaso</span>
-            <select
-              value={margenDias}
-              onChange={(e) =>
-                dispatch({
-                  type: "SET_FINALES_MARGEN",
-                  dias: Number(e.target.value),
-                })
-              }
-            >
-              {[1, 2, 3, 4].map((d) => (
-                <option key={d} value={d}>
-                  {d} día{d === 1 ? "" : "s"}
-                </option>
-              ))}
-            </select>
-          </label>
         </div>
 
         <div className="fin__bar-right">
@@ -921,13 +951,18 @@ export default function FinalesCombinadorView() {
             onClick={() => setPanelOpen((v) => !v)}
           >
             <IconCalendar size={13} />
-            Finales pendientes <span className="fin__count">· {rows.length}</span>
+            {panelOpen ? "Ocultar lista" : "Mostrar lista"}
           </button>
           <button
             type="button"
             className="fin__hbtn is-primary"
             onClick={sugerir}
             disabled={sugCandidatos.length === 0}
+            title={
+              sugCandidatos.length === 0
+                ? "Agregá finales con fecha para sugerir una combinación."
+                : "Ubica automáticamente tus finales sin superponerlos y con margen de repaso."
+            }
           >
             <IconCheck size={13} />
             Sugerir combinación
@@ -1037,6 +1072,25 @@ export default function FinalesCombinadorView() {
                       <IconPrinter size={15} /> PDF / imprimir
                     </button>
                     <hr className="fin__dl-sep" />
+                    {/* ajustes de planificación, fuera de la barra primaria */}
+                    <label className="fin__dl-aviso">
+                      <span>Margen</span>
+                      <select
+                        value={margenDias}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "SET_FINALES_MARGEN",
+                            dias: Number(e.target.value),
+                          })
+                        }
+                      >
+                        {[1, 2, 3, 4].map((d) => (
+                          <option key={d} value={d}>
+                            {d} día{d === 1 ? "" : "s"} de repaso
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                     <label className="fin__dl-aviso">
                       <span>Aviso</span>
                       <select
@@ -1061,6 +1115,14 @@ export default function FinalesCombinadorView() {
             </div>
           </div>
 
+          {/* P1 5b — nudge: elegidos sin mesa no entran al calendario. */}
+          {sinFecha.length > 0 && (
+            <p className="fin__nudge">
+              {sinFecha.length} sin fecha — cargales fecha para verlas en el
+              calendario.
+            </p>
+          )}
+
           <div className="fin__cal-scroll">
             <div
               className="fin__agenda"
@@ -1078,6 +1140,7 @@ export default function FinalesCombinadorView() {
                   key={wi}
                   week={wk}
                   pisanCodes={pisanCodes}
+                  conMesasReales={conMesasReales}
                   onToggleLlamado={toggleLlamado}
                   onGhost={rendirFantasma}
                 />
@@ -1104,12 +1167,7 @@ export default function FinalesCombinadorView() {
                       <button
                         type="button"
                         className="fin__addfecha"
-                        onClick={() =>
-                          setMesa(r.code, {
-                            fecha: isoOf(new Date(year, month - 1, 15)),
-                            hora: "09:00",
-                          })
-                        }
+                        onClick={() => seedMesa(r.code)}
                       >
                         <IconPlus size={12} /> agregar fecha
                       </button>
@@ -1182,7 +1240,15 @@ export default function FinalesCombinadorView() {
                         <span className="fin__mesa-oficial">
                           {ddmm(r.mesa!.fecha)} · {r.mesa!.hora}
                         </span>
-                        <span className="fin__badge is-oficial">oficial</span>
+                        {/* P1 6 — sin planilla real, la fecha es de ejemplo. */}
+                        <span
+                          className={
+                            "fin__badge " +
+                            (conMesasReales ? "is-oficial" : "is-ejemplo")
+                          }
+                        >
+                          {conMesasReales ? "oficial" : "ejemplo"}
+                        </span>
                         {!r.hasBoth && r.llamado && (
                           <span className="fin__badge is-llamado">
                             {LLAMADO_ORD[r.llamado]}
@@ -1216,14 +1282,8 @@ export default function FinalesCombinadorView() {
               </span>
             </div>
 
-            {rows.length === 0 ? (
-              <p className="fin__side-empty">
-                No hay finales pendientes. En la pestaña de materias aprobadas,
-                marcá una cursada como <b>regular</b> (una tilde) y va a aparecer
-                acá para combinarla.
-              </p>
-            ) : (
-              <>
+            {/* rows.length > 0 garantizado por el early state (P0) */}
+            <>
                 <div
                   className="fin__group"
                   style={cvar("--tone", "var(--status-go)")}
@@ -1309,6 +1369,16 @@ export default function FinalesCombinadorView() {
                                     ),
                                   )}
                                 </span>
+                              ) : r.source === "none" && !r.selected ? (
+                                // P1 5a — sin fecha: botón que siembra la mesa
+                                // (mismo seed que el editor) en vez de una label pasiva.
+                                <button
+                                  type="button"
+                                  className="fin__addfecha is-sm"
+                                  onClick={() => seedMesa(r.code)}
+                                >
+                                  <IconPlus size={11} /> fecha
+                                </button>
                               ) : (
                                 <span
                                   className={
@@ -1398,11 +1468,22 @@ export default function FinalesCombinadorView() {
                     </ul>
                   </div>
                 )}
-              </>
-            )}
+            </>
           </aside>
         )}
       </div>
+
+      {/* P1 — ingesta de la planilla oficial: ahora vive DEBAJO del área de
+          trabajo, colapsada tras un summary discreto; abierta por defecto solo
+          mientras no haya mesas reales cargadas. */}
+      <details
+        className="fin__ing-wrap"
+        open={ingestaOpen ?? !conMesasReales}
+        onToggle={(e) => setIngestaOpen(e.currentTarget.open)}
+      >
+        <summary className="fin__ing-summary">Cargar fechas oficiales</summary>
+        <FinalesIngesta />
+      </details>
 
       <p className="fin__foot">
         <IconInfo size={13} />
@@ -1420,6 +1501,7 @@ export default function FinalesCombinadorView() {
 function FinalesWeek({
   week,
   pisanCodes,
+  conMesasReales,
   onToggleLlamado,
   onGhost,
 }: {
@@ -1436,6 +1518,7 @@ function FinalesWeek({
     }[];
   };
   pisanCodes: Set<string>;
+  conMesasReales: boolean;
   onToggleLlamado: (r: FinalRow) => void;
   onGhost: (g: Ghost) => void;
 }) {
@@ -1477,13 +1560,22 @@ function FinalesWeek({
                 <span className="fin__exam-name">{e.nombre}</span>
                 <span className="fin__exam-meta">
                   {e.mesa!.hora}
+                  {/* P1 6 — sin planilla real, la fecha oficial se marca «ejemplo». */}
                   <span
                     className={
                       "fin__badge " +
-                      (e.source === "manual" ? "is-manual" : "is-oficial")
+                      (e.source === "manual"
+                        ? "is-manual"
+                        : conMesasReales
+                          ? "is-oficial"
+                          : "is-ejemplo")
                     }
                   >
-                    {e.source === "manual" ? "manual" : "oficial"}
+                    {e.source === "manual"
+                      ? "manual"
+                      : conMesasReales
+                        ? "oficial"
+                        : "ejemplo"}
                   </span>
                   {e.source === "oficial" &&
                     e.llamado &&

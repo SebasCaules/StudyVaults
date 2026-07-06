@@ -79,8 +79,16 @@ function CuatriLegend() {
 }
 
 export default function CuatriView() {
-  const { state } = usePlanner();
+  const { state, dispatch } = usePlanner();
   const { approved, finalDone, search, fDisp, fHor } = state;
+
+  // ¿Hay algún filtro activo que valga la pena ofrecer limpiar en el empty state?
+  const hasFilters = search !== "" || fDisp || fHor;
+  const clearFilters = () => {
+    dispatch({ type: "SET_SEARCH", value: "" });
+    dispatch({ type: "SET_FILTER", key: "fDisp", value: false });
+    dispatch({ type: "SET_FILTER", key: "fHor", value: false });
+  };
 
   const years = useMemo<YearGroup[]>(() => {
     const q = search.toLowerCase();
@@ -121,15 +129,23 @@ export default function CuatriView() {
   return (
     <section className="view-panel">
       <div className="panel-head">
-        <h2>Plan por cuatrimestre</h2>
+        <h2>Mis materias</h2>
         <p>
-          Las obligatorias del plan, año por año: un toque en el control marca
-          la cursada, dos el final, y el resto del planner se recalcula solo.
+          Marcá lo que ya aprobaste tocando el círculo de cada materia: un toque
+          = cursada (✓), dos = final aprobado (✓✓). El resto del planner se
+          recalcula solo.
         </p>
       </div>
       <CuatriLegend />
       {years.length === 0 ? (
-        <div className="empty">No hay obligatorias que cumplan los filtros.</div>
+        <div className="empty">
+          No hay obligatorias que cumplan los filtros.
+          {hasFilters && (
+            <button type="button" className="empty__clear" onClick={clearFilters}>
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       ) : (
         <div className="cq-years">
           {years.map((y) => {

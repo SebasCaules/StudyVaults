@@ -9,10 +9,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { byId } from "@/lib/planner/model";
-import { isAvailable } from "@/lib/planner/metrics";
+import { isAvailable, approvedCredits } from "@/lib/planner/metrics";
 import { comModalidad, isAsync } from "@/lib/planner/time";
 import { usePlanner } from "@/components/planner/state";
 import { EstadoControl } from "@/components/planner/EstadoControl";
+import { AvailLock } from "@/components/planner/CardSignals";
 import { estadoOf, tieneFinal } from "@/lib/planner/estado";
 import { useModalFocus } from "@/components/planner/useModalFocus";
 import { FICHAS } from "@/lib/planner/fichas";
@@ -498,9 +499,9 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
     ? [...WEEK_BASE, { key: "Sábado", ab: "Sá" }]
     : WEEK_BASE;
 
-  // acciones que se renderizan: estado + descargar (siempre) + combinador (si
-  // hay comisiones). El grid se ajusta a 2 o 3 columnas para quedar simétrico.
-  const actionCount = hasComs ? 3 : 2;
+  // cursabilidad: pill al tope, junto a la identidad. Cursable = isAvailable &&
+  // no aprobada; bloqueada = cuenta de correlativas que faltan aprobar.
+  const faltanCorr = correlativas.filter((c) => !state.approved.has(c)).length;
 
   // estado académico en palabras, al lado del control tri-estado
   const estadoLabel =
@@ -512,15 +513,13 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
           ? "cursada regular — falta el final"
           : "promociona / terminada";
 
-  // meta de identidad como items sueltos: el CSS agrega los separadores de punto
-  // (así el ritmo es uniforme y no se concatena una cadena a mano).
+  // meta de identidad: SÓLO lo estructural (tipo · año/cuatri · créditos). El
+  // "requiere N cr" pasó junto a la cursabilidad y el depto vive en Horario.
   const metaItems: string[] = [
     ...(ob
       ? ["Obligatoria", m.ciclo, `Año ${m.anio}`, `${m.cuatri}.º cuat.`]
       : ["Electiva"]),
     `${m.creditos} créditos`,
-    m.creditosReq ? `requiere ${m.creditosReq} cr` : "",
-    hor?.depto ?? "",
   ].filter(Boolean) as string[];
 
   const onDownload = () => {
@@ -552,8 +551,19 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
             if (el) setScrolled(el.scrollTop > 4);
           }}
         >
-          {/* FIX A — barra de cierre STICKY: la X queda siempre alcanzable. */}
+          {/* FIX A — barra de cierre STICKY: la X queda siempre alcanzable.
+              Descargar vive acá como icon-button discreto (fuera del flujo de
+              acciones primarias). */}
           <div className={"dd-closebar" + (scrolled ? " is-scrolled" : "")}>
+            <button
+              type="button"
+              className="dd-icon-btn"
+              onClick={onDownload}
+              aria-label="Descargar detalle (HTML)"
+              title="Descargar detalle (HTML)"
+            >
+              <IconDownload size={15} />
+            </button>
             <button className="dd-close" onClick={close} aria-label="Cerrar">
               <IconClose size={15} />
             </button>
@@ -561,11 +571,31 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
 
           {/* cuerpo con margen interno: el contenido no toca los bordes. */}
           <div className="dd-body">
-            {/* identidad: código · título serif · meta mono con separadores */}
+            {/* identidad: código · título serif · meta mono con separadores.
+                La cursabilidad sube a primer nivel (pill junto al código). */}
             <header className="dd-head">
-              <span className={"dr-code " + (ob ? "ob" : "")}>
-                {m.codigo} · {m.abbr}
-              </span>
+              <div className="dd-head__top">
+                <span className={"dr-code " + (ob ? "ob" : "")}>
+                  {m.codigo} · {m.abbr}
+                </span>
+                {!appr ? (
+                  avail ? (
+                    <span className="dd-avail dd-avail--go">
+                      <AvailLock ok /> Cursable
+                    </span>
+                  ) : (
+                    <span className="dd-avail dd-avail--wait">
+                      <AvailLock ok={false} />{" "}
+                      {faltanCorr > 0
+                        ? `Te faltan ${faltanCorr} correlativa${faltanCorr > 1 ? "s" : ""}`
+                        : "Requisitos pendientes"}
+                    </span>
+                  )
+                ) : null}
+                {m.creditosReq ? (
+                  <span className="dd-req">requiere {m.creditosReq} cr</span>
+                ) : null}
+              </div>
               <h3 className="dr-title">{m.nombre}</h3>
               <div className="dd-meta">
                 {metaItems.map((it, i) => (
@@ -576,8 +606,9 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
               </div>
             </header>
 
-            {/* FIX B — fila de acciones simétrica (grid 2/3 columnas parejas). */}
-            <div className={"dd-actions" + (actionCount === 2 ? " dd-actions--2" : "")}>
+            {/* FIX B — fila de acciones del flujo: estado + combinador (si hay
+                comisiones). Descargar salió a la barra de cierre. */}
+            <div className={"dd-actions dd-actions--" + (hasComs ? "2" : "1")}>
               {/* tri-estado canónico + estado en palabras (reemplaza al viejo
                   toggle binario). El div ocupa una celda del grid de acciones;
                   el inline style sólo lo alinea a la altura de los botones. */}
@@ -611,9 +642,6 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
                   )}
                 </button>
               ) : null}
-              <button type="button" className="dd-dl" onClick={onDownload}>
-                <IconDownload size={13} /> Descargar
-              </button>
             </div>
 
             {/* grid de dos columnas: main (áreas/correlativas/horario) + aside
@@ -674,8 +702,8 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
                   <div className="dd-hor__head">
                     <div className="dd-hor__title">
                       <h4>Horario 2C 2026</h4>
-                      {avail && !appr ? (
-                        <span className="tag tag--ok">disponible</span>
+                      {hor?.depto ? (
+                        <span className="dd-hor__depto">{hor.depto}</span>
                       ) : null}
                     </div>
                     {/* control de comisión: label + CommissionSelect (fija la

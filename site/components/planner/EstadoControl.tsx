@@ -81,12 +81,17 @@ export function EstadoControl({
           : "Promociona / terminada"
         : "Final aprobado";
 
+  // Tri-estado real para lectores de pantalla: sin avance = false; cursada que
+  // todavía debe final = "mixed" (parcial); final/promoción/terminada = true.
+  const ariaChecked: boolean | "mixed" =
+    estado === "pendiente" ? false : estado === "regular" && has2 ? "mixed" : true;
+
   return (
     <button
       type="button"
       className={"estado-ctl " + stateCls + (className ? " " + className : "")}
       role="checkbox"
-      aria-checked={estado !== "pendiente"}
+      aria-checked={ariaChecked}
       aria-label={label}
       title={label}
       onClick={(e) => {
@@ -98,7 +103,21 @@ export function EstadoControl({
         <CheckDouble />
       ) : estado !== "pendiente" ? (
         <CheckSingle />
-      ) : null}
+      ) : (
+        // Affordance de "agregable": un + fantasma señala que el círculo hueco
+        // es clickeable (un toque lo marca cursada). Su opacidad la fija cards.css.
+        <svg
+          className="ctl-plus"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <path d="M8 4.2v7.6M4.2 8h7.6" />
+        </svg>
+      )}
     </button>
   );
 }

@@ -68,7 +68,9 @@
   top: 0;
   z-index: 6;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 8px;
   padding: 14px 16px 6px;
   background: var(--panel);
   border-bottom: 1px solid transparent;
@@ -102,6 +104,29 @@
   border-color: var(--brass);
 }
 
+/* ---- descargar: icon-button discreto en la barra de cierre ---- */
+.planner .dd-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    background 0.16s var(--ease),
+    color 0.16s var(--ease),
+    border-color 0.16s var(--ease);
+}
+.planner .dd-icon-btn:hover {
+  background: var(--panel-2);
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+
 /* ---- cuerpo: margen interno generoso y parejo ---- */
 .planner .dd-body {
   padding: 2px 34px 36px;
@@ -113,9 +138,52 @@
 .planner .dd-head {
   margin: 0;
 }
+/* fila superior de identidad: código + pill de cursabilidad + "requiere N cr" */
+.planner .dd-head__top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
 .planner .dd-body .dr-code {
   display: block;
   margin: 0;
+}
+
+/* pill de cursabilidad (primer nivel, junto a la identidad) */
+.planner .dd-avail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border: 1px solid;
+  border-radius: var(--r-pill);
+  font-family: var(--f-m);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.planner .dd-avail svg {
+  width: 14px;
+  height: 14px;
+}
+.planner .dd-avail--go {
+  color: var(--status-go);
+  border-color: color-mix(in srgb, var(--status-go) 34%, transparent);
+  background: color-mix(in srgb, var(--status-go) 12%, transparent);
+}
+.planner .dd-avail--wait {
+  color: var(--status-warn);
+  border-color: color-mix(in srgb, var(--status-warn) 34%, transparent);
+  background: color-mix(in srgb, var(--status-warn) 12%, transparent);
+}
+/* "requiere N cr": nota mono discreta al lado de la cursabilidad */
+.planner .dd-req {
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--muted);
+  white-space: nowrap;
 }
 .planner .dd-body .dr-title {
   margin: 9px 0 0;
@@ -161,9 +229,11 @@
 .planner .dd-actions--2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-/* base común: mismo alto / peso / forma para los tres controles */
-.planner .dd-actions .mini,
-.planner .dd-actions .dd-dl {
+.planner .dd-actions--1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* base común: mismo alto / peso / forma para los controles del flujo */
+.planner .dd-actions .mini {
   width: 100%;
   min-height: 42px;
   margin: 0;
@@ -178,27 +248,8 @@
   letter-spacing: 0.01em;
   border-radius: var(--r);
 }
-.planner .dd-actions .mini svg,
-.planner .dd-actions .dd-dl svg {
+.planner .dd-actions .mini svg {
   flex: none;
-}
-
-
-/* ghost: descargar — tercera en jerarquía, discreta */
-.planner .dd-actions .dd-dl {
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition:
-    color 0.15s var(--ease),
-    border-color 0.15s var(--ease),
-    background 0.15s var(--ease);
-}
-.planner .dd-actions .dd-dl:hover {
-  border-color: var(--line-2);
-  color: var(--ink);
-  background: var(--panel-2);
 }
 
 /* =========================================================================
@@ -304,9 +355,14 @@
   gap: 10px;
   min-width: 0;
 }
-/* el h4 lleva el estilo eyebrow (con tick) definido en el bloque de labels */
-.planner .dd-hor__title .tag--ok {
+/* el h4 lleva el estilo eyebrow (con tick) definido en el bloque de labels;
+   al lado, el departamento (única fuente de hor.depto, sin duplicar en la meta) */
+.planner .dd-hor__depto {
   flex: none;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 
 /* control de comisión: label + select + tooltip, alineados y compactos */

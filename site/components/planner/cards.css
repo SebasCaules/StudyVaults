@@ -91,6 +91,20 @@
 /* la leyenda muestra controles de estado no interactivos */
 .planner .card-legend .estado-ctl{cursor:default}
 
+/* ----- affordance del control pendiente: "+" fantasma -----
+   La base .estado-ctl vive en planner.css (NO editable). En "pendiente" ese
+   archivo pone color:transparent (círculo hueco), así que el "+" no puede
+   heredar el color: fija el suyo. Señaliza "clickeable / agrega": opacidad baja
+   en reposo, sube al hover. Solo se renderiza cuando estado === "pendiente"
+   (EstadoControl), así que no hace falta acotar por .st-pending. */
+.planner .estado-ctl .ctl-plus{
+  width:11px;height:11px;flex:none;
+  color:var(--muted);
+  opacity:.45;
+  transition:opacity var(--dur-fast) var(--ease);
+}
+.planner .estado-ctl:hover .ctl-plus{opacity:.8}
+
 /* ============================================================
    Plan por cuatrimestre — timeline por año (rework HCI 2026-07).
    Un año = UNA carta partida en sus dos cuatrimestres (split vertical
@@ -146,6 +160,30 @@
 @media (max-width:700px){
   .planner .cq-year__cols{grid-template-columns:1fr}
   .planner .cq-sem + .cq-sem{border-left:0;border-top:1px solid var(--line)}
+}
+
+/* ----- chip "falta final" en la card de electiva -----
+   Cursada aprobada que todavía debe el final; mismo microcopy y color que el
+   qrow__due de CuatriView (rol --status-warn), para leerse igual entre vistas. */
+.planner .card__due{
+  flex:none;font-family:var(--f-m);font-size:9.5px;letter-spacing:.03em;
+  color:var(--status-warn);
+}
+
+/* ----- empty state accionable: atajo "Limpiar filtros" -----
+   .empty vive en planner.css (NO editable); acá solo estilamos el botón inline
+   que restaura búsqueda/filtros/áreas. Va en su renglón, centrado bajo el texto. */
+.planner .empty__clear{
+  display:block;margin:12px auto 0;
+  padding:6px 14px;
+  font-family:var(--f-m);font-size:12px;
+  color:var(--ink-soft);background:var(--surface-2);
+  border:1px solid var(--line);border-radius:8px;cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.planner .empty__clear:hover{border-color:var(--accent-line);color:var(--ink)}
+.planner .empty__clear:focus-visible{
+  outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);
 }
 
 /* ----- ProgramaChips (modal/drawer): ícono por concepto ----- */

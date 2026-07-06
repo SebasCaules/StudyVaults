@@ -42,8 +42,36 @@
   content:"";position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;
   background:var(--status-go);box-shadow:0 0 0 2px var(--panel);
 }
+/* cursable: borde de acento verde (mismo verde que el candado abierto de las cards) */
+.planner .grafo-legend .sw.av{background:var(--panel);border-color:var(--status-go)}
+/* requisitos pendientes: swatch atenuado con candado ámbar (= nodo bloqueado) */
+.planner .grafo-legend .sw.lk{
+  background:color-mix(in srgb, var(--muted) 12%, var(--panel));border-color:var(--line-2);
+  display:inline-flex;align-items:center;justify-content:center;color:var(--status-warn);opacity:.8;
+}
+.planner .grafo-legend .sw.lk svg{width:11px;height:11px}
+/* flecha "habilita a": mismo tono que las aristas por defecto */
+.planner .grafo-legend .lg-arrow{
+  font-family:var(--f-m);font-size:14px;font-weight:700;line-height:1;color:var(--muted);
+}
 .planner .grafo-count{font-family:var(--f-m);font-size:11.5px;color:var(--muted)}
 .planner .grafo-count b{color:var(--ink);font-weight:600}
+
+/* fin de toolbar: búsqueda + conteo agrupados a la derecha */
+.planner .grafo-toolbar__end{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap}
+.planner .grafo-search{
+  display:inline-flex;align-items:center;gap:7px;
+  height:30px;padding:0 10px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--panel-2);color:var(--muted);
+  transition:border-color .16s ease;
+}
+.planner .grafo-search:focus-within{border-color:var(--brass);color:var(--ink-soft)}
+.planner .grafo-search svg{flex:none}
+.planner .grafo-search__input{
+  width:min(180px,42vw);border:none;background:none;outline:none;padding:0;
+  font-family:var(--f-b);font-size:12.5px;color:var(--ink);
+}
+.planner .grafo-search__input::placeholder{color:var(--faint)}
 
 /* ---------- viewport ---------- */
 .planner .grafo-viewport{
@@ -85,7 +113,11 @@
 
 /* ---------- nodos ---------- */
 .planner .grafo-node{cursor:pointer;transition:opacity .2s ease}
-.planner .grafo-node.dim{opacity:.16}
+/* bloqueada (no aprobada, faltan correlativas/créditos): atenuada de forma
+   persistente. Va ANTES de .dim → el hover-dim (más fuerte) lo puede pisar. */
+.planner .grafo-node.blk{opacity:.45}
+/* atenuado por hover de cadena: piso más alto (.16 apagaba demasiado) */
+.planner .grafo-node.dim{opacity:.28}
 .planner .grafo-node .gn-rect{
   stroke-width:1.6;transition:fill .18s ease,stroke .18s ease,stroke-width .18s ease;
 }
@@ -93,10 +125,15 @@
 .planner .grafo-node.el .gn-rect{fill:var(--gnode-el-fill);stroke:var(--gnode-el-stroke)}
 .planner .grafo-node.ap.ob .gn-rect{fill:var(--gnode-ob-fill-ap);stroke-width:2}
 .planner .grafo-node.ap.el .gn-rect{fill:var(--gnode-el-fill-ap);stroke-width:2}
+/* cursable: borde de acento verde (conserva el relleno que indica el tipo) */
+.planner .grafo-node.avail .gn-rect{stroke:var(--status-go);stroke-width:2}
 .planner .grafo-node .gn-abbr{fill:var(--ink);font-family:var(--f-m);font-weight:600;font-size:12.5px}
 .planner .grafo-node .gn-code{fill:var(--muted);font-family:var(--f-m);font-size:10.5px}
 .planner .grafo-node .gn-badge circle{fill:var(--status-go)}
 .planner .grafo-node .gn-badge path{stroke:var(--panel);stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+/* mini candado ámbar (misma semántica que AvailLock cerrado): body relleno + arco */
+.planner .grafo-node .gn-lock rect{fill:var(--status-warn);stroke:none}
+.planner .grafo-node .gn-lock path{fill:none;stroke:var(--status-warn);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .planner .grafo-node:hover .gn-rect{stroke-width:2}
 .planner .grafo-node:focus{outline:none}
 .planner .grafo-node:focus-visible .gn-rect{stroke:var(--brass);stroke-width:2.6}
@@ -139,10 +176,13 @@
 /* ---------- pista de uso ---------- */
 .planner .grafo-hint{
   position:absolute;left:12px;bottom:12px;z-index:5;
+  display:flex;flex-direction:column;gap:2px;max-width:min(320px,60%);
   font-family:var(--f-m);font-size:10.5px;color:var(--muted);
   background:color-mix(in srgb, var(--panel) 82%, transparent);
-  border:1px solid var(--line);border-radius:999px;padding:5px 11px;letter-spacing:.02em;
+  border:1px solid var(--line);border-radius:8px;padding:6px 11px;letter-spacing:.02em;
 }
+.planner .grafo-hint__row{line-height:1.4}
+.planner .grafo-hint__row:last-child{color:var(--faint)}
 
 @media (max-width:640px){
   .planner .grafo-hint{display:none}

@@ -157,10 +157,9 @@ function NumField({
         value={draft}
         onFocus={() => setFocused(true)}
         onChange={(e) => {
-          const s = e.target.value;
-          setDraft(s); // permite vacío / edición parcial sin saltar al default
-          const n = parseInt(s, 10);
-          if (!Number.isNaN(n) && n >= min && n <= max) onCommit(n);
+          // Solo actualizamos el borrador local: NO commiteamos por dígito (cada
+          // commit re-optimiza todo el plan). El valor real se fija en blur/Enter.
+          setDraft(e.target.value);
         }}
         onBlur={() => {
           setFocused(false);
@@ -412,22 +411,23 @@ function SemCard({
           <span className="pv-sem__title">{cuatriName(cu)}</span>
         </div>
         <div className="pv-sem__tools" ref={toolsRef}>
-          {/* lock siempre visible, a la izquierda del ⋯: candado abierto abre el
-              confirm de finalizar; cerrado (acento) desbloquea directo. */}
+          {/* lock siempre visible, a la izquierda del ⋯: botón chico con texto.
+              Sin lockear: "Finalizar" (candado abierto → abre el confirm).
+              Lockeado: "Finalizado" (candado cerrado, acento → desbloquea directo). */}
           {locked ? (
             <button
               type="button"
-              className="pv-dotbtn pv-dotbtn--lock is-locked"
+              className="pv-lockbtn is-locked"
               aria-label="Desbloquear cuatrimestre"
               title="Desbloquear cuatrimestre"
               onClick={() => onUnlock(i)}
             >
-              <IconLock size={15} />
+              <IconLock size={13} /> Finalizado
             </button>
           ) : (
             <button
               type="button"
-              className="pv-dotbtn pv-dotbtn--lock"
+              className="pv-lockbtn"
               aria-label="Finalizar cuatrimestre — el optimizador deja de tocarlo"
               title="Finalizar cuatrimestre — el optimizador deja de tocarlo"
               onClick={() => {
@@ -435,7 +435,7 @@ function SemCard({
                 setConfirmOpen(true);
               }}
             >
-              <IconUnlock size={15} />
+              <IconUnlock size={13} /> Finalizar
             </button>
           )}
           <button
@@ -807,6 +807,12 @@ function RoadmapStop({
                   <span className="rmap-mat__abbr">{x.m.abbr}</span>
                   <MinorDots m={x.m} />
                   <span className="rmap-mat__cr">{x.m.creditos}</span>
+                  {/* tag "fijada": distingue lo que fijó el usuario (fx en un
+                      cuatri editable) de lo que ubicó el optimizador. En cuatris
+                      finalizados no aplica (el chip "finalizado" ya lo comunica). */}
+                  {!locked && fx !== undefined && (
+                    <span className="rmap-mat__fixed">fijada</span>
+                  )}
                   {isRecTagged(x.m, recOn) && (
                     <span className="rmap-mat__rec">rec</span>
                   )}
@@ -1355,6 +1361,7 @@ function PlanPool({ start }: { start: PlanStart }) {
             <span className="pno-hor">sin horario</span>
           )}
         </span>
+        {fx !== undefined && <span className="pfix">fijada</span>}
         {m.horario && m.horario.comisiones.length > 1 && (
           <CommissionSelect
             size="sm"
@@ -1434,6 +1441,7 @@ function PlanPool({ start }: { start: PlanStart }) {
           </svg>
           <input
             type="text"
+            id="planPoolSearch"
             placeholder="Agregar electiva por código o nombre…"
             autoComplete="off"
             value={query}
@@ -1495,9 +1503,6 @@ export default function PlanView() {
   const PL = state.plan;
   const approved = state.approved;
   const [preview, setPreview] = useState<string | null>(null);
-  // el calendario es la vista default (más útil de un vistazo que el roadmap
-  // para chequear superposiciones y días en el campus).
-  const [tab, setTab] = useState<PlanTab>("cal");
   const [minorsOpen, setMinorsOpen] = useState(false);
   const [recsHidden, setRecsHidden] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
@@ -1583,6 +1588,18 @@ export default function PlanView() {
   }, []);
 
   const used = R.items.map((it, i) => ({ it, i })).filter((x) => x.it.length);
+
+  // Tab default según el tamaño del plan: si usa más de 6 cuatrimestres, abrimos
+  // en Roadmap (más compacto que el Calendario para planes largos). Es SOLO el
+  // default inicial (inicializador lazy: corre una vez con el plan ya calculado);
+  // dentro de la sesión no pisa la elección del usuario.
+  const [tab, setTab] = useState<PlanTab>(() => (used.length > 6 ? "road" : "cal"));
+
+  // objetivo del método seleccionado (string canónico de OPT_METHODS): se muestra
+  // SIEMPRE bajo el segmentado del banner, para leer objetivo→resultado juntos.
+  const optObjetivo =
+    OPT_METHODS.find((m) => m.key === PL.method)?.objetivo ?? "";
+
   const flat = R.items.flat();
   const totalCred = flat.reduce((s, x) => s + (x.m.creditos || 0), 0);
   const accNow = approvedCredits(approved);
@@ -1759,6 +1776,23 @@ export default function PlanView() {
     tabs[next]?.focus();
   };
 
+  // "+ Agregar electiva": abre el pool (si estaba plegado), lo trae a la vista y
+  // enfoca su buscador. Static-export safe (guard de document).
+  const focusElectivaSearch = () => {
+    if (typeof document === "undefined") return;
+    const det = document.getElementById("planPool") as HTMLDetailsElement | null;
+    if (det && !det.open) det.open = true;
+    const input = document.getElementById(
+      "planPoolSearch",
+    ) as HTMLInputElement | null;
+    if (input) {
+      input.focus({ preventScroll: true });
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else if (det) {
+      det.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   const recOn = !recsHidden;
   const showSide = recOn && recs.length > 0 && tab !== "min";
   const showPreviewSlot =
@@ -1874,6 +1908,33 @@ export default function PlanView() {
             </div>
 
             <div className="pv-bcol">
+              {/* Objetivo pegado al resultado: el segmentado "Optimizar para"
+                  subió acá (antes vivía bajo el board) para leer objetivo→"Te
+                  recibís en" juntos. Debajo, SIEMPRE, el objetivo del método. */}
+              <div className="pv-optsel">
+                <span className="pv-field__lbl">Optimizar para</span>
+                <div
+                  className="pv-seg"
+                  role="group"
+                  aria-label="Método de optimización del plan"
+                >
+                  {OPT_METHODS.map((m: OptMethodMeta) => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      className="pv-seg__opt"
+                      aria-pressed={PL.method === m.key}
+                      title={m.objetivo}
+                      onClick={() =>
+                        dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                      }
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="pv-optsel__obj">{optObjetivo}</p>
+              </div>
               <div className="pv-grad">
                 <IconGraduationCap size={22} />
                 <div>
@@ -1906,6 +1967,47 @@ export default function PlanView() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Aviso de plan gigante: un usuario sin materias aprobadas ve el plan
+          COMPLETO de la carrera. Una línea + CTA a «Mis materias» para achicarlo. */}
+      {used.length > 0 && approved.size === 0 && (
+        <div className="pv-bigplan" role="note">
+          <svg
+            className="pv-bigplan__ic"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5" strokeLinecap="round" />
+            <circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none" />
+          </svg>
+          <span className="pv-bigplan__txt">
+            Este es el plan completo de la carrera: <b>{flat.length}</b> materias
+            en <b>{used.length}</b> cuatrimestres. Marcá lo que ya aprobaste en
+            «Mis materias» para achicarlo.
+          </span>
+          <button
+            type="button"
+            className="btn btn--go btn--sm pv-bigplan__cta"
+            onClick={() => dispatch({ type: "SET_VIEW", view: "cuatri" })}
+          >
+            Ir a Mis materias
+          </button>
+        </div>
+      )}
+
+      {/* Modelo mental "plan automático": línea persistente y discreta que explica
+          que el board se rearma solo con cada cambio. */}
+      {used.length > 0 && (
+        <p className="pv-automatic">
+          <b>Plan automático</b> — se rearma con cada cambio que hagas.
+        </p>
       )}
 
       {used.length > 0 && (
@@ -1944,11 +2046,31 @@ export default function PlanView() {
               tabIndex={tab === "min" ? 0 : -1}
               onClick={() => setTab("min")}
             >
-              <IconLayers size={15} /> Minors <span className="pv-tab__new">Nuevo</span>
+              <IconLayers size={15} /> Minors
             </button>
           </div>
 
           <div className="pv-tabs__actions">
+            <button
+              type="button"
+              className="pv-iconbtn pv-iconbtn--label pv-addelec"
+              aria-label="Agregar electiva — abre el buscador del pool"
+              title="Agregar electiva"
+              onClick={focusElectivaSearch}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                aria-hidden="true"
+              >
+                <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+              </svg>
+              Agregar electiva
+            </button>
             <button
               type="button"
               className="pv-rec-toggle"
@@ -2050,6 +2172,12 @@ export default function PlanView() {
                   ))}
                 </div>
               )}
+              {tab === "cal" && (
+                <p className="pv-movehint">
+                  Para mover materias de cuatrimestre usá Roadmap o «Materias del
+                  plan».
+                </p>
+              )}
               {tab === "road" && (
                 <ol className="rmap">
                   {used.map(({ it, i }) => (
@@ -2097,33 +2225,10 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* método de optimización: el segmentado salió del banner y vive acá,
-          SIEMPRE visible, con la nota del método plegada debajo */}
+      {/* El segmentado "Optimizar para" subió al banner (junto a "Te recibís
+          en"). Acá queda solo la nota detallada del método, plegada. */}
       {used.length > 0 && (
         <div className="plan2-opt">
-          <div className="plan2-opt__head">
-            <span className="plan2-opt__lbl">Optimizar para</span>
-            <div
-              className="pv-seg"
-              role="group"
-              aria-label="Método de optimización del plan"
-            >
-              {OPT_METHODS.map((m: OptMethodMeta) => (
-                <button
-                  key={m.key}
-                  type="button"
-                  className="pv-seg__opt"
-                  aria-pressed={PL.method === m.key}
-                  title={m.objetivo}
-                  onClick={() =>
-                    dispatch({ type: "SET_PLAN_METHOD", value: m.key })
-                  }
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-          </div>
           <details className="plan2-optnote-d">
             <summary>Cómo se armó este plan</summary>
             <p className="plan2-method">{methodText(R, PL)}</p>
@@ -2144,7 +2249,7 @@ export default function PlanView() {
         </div>
       )}
 
-      <details className="plan2-pool" open>
+      <details className="plan2-pool" id="planPool" open>
         <summary>
           <span className="plan2-pool__title">Materias del plan</span>
           <span className="plan2-pool__hint">

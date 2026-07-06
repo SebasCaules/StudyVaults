@@ -12,6 +12,9 @@ import {
 } from "react";
 import { usePlanner } from "@/components/planner/state";
 import { computeGraphLayout } from "@/lib/planner/layoutGraph";
+import { byId } from "@/lib/planner/model";
+import { isAvailable } from "@/lib/planner/metrics";
+import { IconSearch, IconLock } from "@/components/planner/icons";
 
 /**
  * Mapa de correlativas. Reemplaza vis-network (planner.js renderGraph) por un
@@ -29,6 +32,10 @@ import { computeGraphLayout } from "@/lib/planner/layoutGraph";
 
 const MIN_SCALE = 0.3; // piso del zoom manual (rueda / botones)
 const MAX_SCALE = 2.4;
+// Piso de escala del encuadre INICIAL: el grafo entero suele quedar ilegible a
+// fit-all, así que la entrada arranca a una escala legible (~0.55) encuadrando el
+// 1.er año. El botón "Ajustar" sigue dando el overview completo (sin este piso).
+const INITIAL_MIN_SCALE = 0.55;
 const FIT_PAD = 40; // padding del fit() en píxeles de pantalla
 // El fit() puede bajar por debajo de MIN_SCALE: así SIEMPRE encuadra todo el
 // grafo dentro del viewport, aunque el DAG sea más grande que la caja. Es la
@@ -56,6 +63,18 @@ export default function GrafoView() {
 
   // Conjunto de ids presentes en el grafo (para resaltar sólo lo que existe).
   const nodeIds = useMemo(() => new Set(nodes.map((n) => n.id)), [nodes]);
+
+  // Cursabilidad: ids no aprobados que YA se pueden cursar (correlativas +
+  // créditos OK). El resto de los no aprobados quedan "bloqueados". Reusa la
+  // misma verdad que las cards (isAvailable / AvailLock) → semántica única.
+  const availSet = useMemo(() => {
+    const s = new Set<string>();
+    nodes.forEach((n) => {
+      const m = byId.get(n.id);
+      if (m && isAvailable(m, approved)) s.add(n.id);
+    });
+    return s;
+  }, [nodes, approved]);
 
   // Adyacencias directa (habilita) e inversa (requiere) para la cadena.
   const { adj, radj } = useMemo(() => {
@@ -135,6 +154,30 @@ export default function GrafoView() {
     return { top, bottom };
   }, [nodes, nodeH]);
 
+  // Encuadre del 1.er año: borde izquierdo de la columna más a la izquierda +
+  // centro vertical de esa columna (los nodos de la 1.ª columna quedan centrados
+  // en la banda). Es el ancla del zoom inicial legible.
+  const firstColFrame = useMemo(() => {
+    let left = Infinity;
+    nodes.forEach((n) => {
+      if (n.x < left) left = n.x;
+    });
+    let top = Infinity;
+    let bottom = -Infinity;
+    nodes.forEach((n) => {
+      if (n.x <= left + 1) {
+        if (n.y < top) top = n.y;
+        if (n.y + nodeH > bottom) bottom = n.y + nodeH;
+      }
+    });
+    if (!Number.isFinite(left)) left = 0;
+    if (!Number.isFinite(top)) {
+      top = 0;
+      bottom = height;
+    }
+    return { left, cy: (top + bottom) / 2 };
+  }, [nodes, nodeH, height]);
+
   // ---------- refs de DOM + estado de la transformación (imperativo) ----------
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -146,6 +189,9 @@ export default function GrafoView() {
   // luego de que el usuario tomó control.
   const tf = useRef({ scale: 1, tx: 0, ty: 0 });
   const userInteracted = useRef(false);
+  // modo del encuadre automático (mount + resize): false = entrada legible al
+  // 1.er año; true = overview completo (lo fija el botón "Ajustar").
+  const wantFit = useRef(false);
   const [ready, setReady] = useState(false);
 
   const applyTransform = useCallback(() => {
@@ -205,8 +251,47 @@ export default function GrafoView() {
     [zoomAt],
   );
 
+  // Encuadre inicial legible: si el grafo entero YA entra a escala legible, lo
+  // muestra completo; si no, entra a INITIAL_MIN_SCALE anclado al 1.er año.
+  const initialFrame = useCallback(() => {
+    const vp = viewportRef.current;
+    if (!vp || !width || !height) return;
+    const vw = vp.clientWidth;
+    const vh = vp.clientHeight;
+    if (!vw || !vh) return;
+    const availW = Math.max(1, vw - 2 * FIT_PAD);
+    const availH = Math.max(1, vh - 2 * FIT_PAD);
+    const fitScale = Math.min(availW / width, availH / height);
+    if (fitScale >= INITIAL_MIN_SCALE) {
+      // grafo chico: el overview completo ya es legible → mostrarlo entero.
+      fit();
+      return;
+    }
+    const s = clamp(INITIAL_MIN_SCALE, FIT_MIN_SCALE, MAX_SCALE);
+    const { left, cy } = firstColFrame;
+    const contentW = width * s;
+    const contentH = height * s;
+    tf.current.scale = s;
+    // horizontal: si entra completo, centrar; si no, 1.ª columna a la izquierda.
+    tf.current.tx = contentW <= vw ? (vw - contentW) / 2 : FIT_PAD - left * s;
+    // vertical: centrar sobre la banda de la 1.ª columna sin descubrir márgenes.
+    tf.current.ty =
+      contentH <= vh
+        ? (vh - contentH) / 2
+        : clamp(vh / 2 - cy * s, vh - contentH, 0);
+    applyTransform();
+  }, [width, height, firstColFrame, fit, applyTransform]);
+
+  // Encuadre automático (mount + resize): overview si el usuario pidió "Ajustar",
+  // entrada legible en caso contrario.
+  const applyAutoFrame = useCallback(() => {
+    if (wantFit.current) fit();
+    else initialFrame();
+  }, [fit, initialFrame]);
+
   const onFit = useCallback(() => {
     userInteracted.current = false;
+    wantFit.current = true; // "Ajustar" = overview explícito, se mantiene al resize
     fit();
   }, [fit]);
 
@@ -217,9 +302,9 @@ export default function GrafoView() {
     // ya con el tamaño final (evita un fit con dimensiones a medio calcular).
     let raf2 = 0;
     const raf1 = requestAnimationFrame(() => {
-      fit();
+      applyAutoFrame();
       raf2 = requestAnimationFrame(() => {
-        fit();
+        applyAutoFrame();
         setReady(true);
       });
     });
@@ -227,7 +312,7 @@ export default function GrafoView() {
     const vp = viewportRef.current;
     if (vp && typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver(() => {
-        if (!userInteracted.current) fit();
+        if (!userInteracted.current) applyAutoFrame();
       });
       ro.observe(vp);
     }
@@ -236,7 +321,7 @@ export default function GrafoView() {
       cancelAnimationFrame(raf2);
       if (ro) ro.disconnect();
     };
-  }, [fit]);
+  }, [applyAutoFrame]);
 
   // Zoom con rueda: listener nativo con {passive:false} para poder
   // preventDefault (React lo adjunta passive y ahí el preventDefault no aplica).
@@ -340,6 +425,63 @@ export default function GrafoView() {
     [activeId, nodeIds, chainOf],
   );
 
+  // ---------- búsqueda: código / abbr / nombre → primer match ----------
+  const [query, setQuery] = useState("");
+
+  // Prioriza prefijo de código o abbr; si no, primer "contiene" (código/abbr/nombre).
+  const matchNode = useCallback(
+    (raw: string): string | null => {
+      const q = raw.trim().toLowerCase();
+      if (!q) return null;
+      let incl: string | null = null;
+      for (const n of nodes) {
+        const code = n.id.toLowerCase();
+        const abbr = n.abbr.toLowerCase();
+        if (code.startsWith(q) || abbr.startsWith(q)) return n.id;
+        if (!incl) {
+          const name = (byId.get(n.id)?.nombre ?? "").toLowerCase();
+          if (code.includes(q) || abbr.includes(q) || name.includes(q))
+            incl = n.id;
+        }
+      }
+      return incl;
+    },
+    [nodes],
+  );
+
+  // Centra un nodo en el viewport y lo resalta (misma cadena que el hover).
+  const focusNode = useCallback(
+    (id: string) => {
+      const p = pos.get(id);
+      const vp = viewportRef.current;
+      if (!p || !vp) return;
+      userInteracted.current = true;
+      const cx = p.x + nodeW / 2;
+      const cy = p.y + nodeH / 2;
+      // 1) centrar el nodo a la escala actual…
+      tf.current.tx = vp.clientWidth / 2 - cx * tf.current.scale;
+      tf.current.ty = vp.clientHeight / 2 - cy * tf.current.scale;
+      applyTransform();
+      // 2) …y zoom anclado al centro hasta una escala legible (queda centrado).
+      const target = Math.max(tf.current.scale, 0.95);
+      zoomAt(
+        vp.clientWidth / 2,
+        vp.clientHeight / 2,
+        target / tf.current.scale,
+      );
+      setHoverId(id);
+    },
+    [pos, nodeW, nodeH, applyTransform, zoomAt],
+  );
+
+  const onSearchKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const id = matchNode(query);
+      if (id) focusNode(id);
+    }
+  };
+
   const onNodeKeyDown = (e: ReactKeyboardEvent<SVGGElement>, code: string) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -353,8 +495,7 @@ export default function GrafoView() {
         <h2>Mapa de correlativas</h2>
         <p>
           Cada columna es un cuatrimestre de la carrera (1º·1c &rarr; 5º·2c): las
-          correlativas fluyen de izquierda a derecha. Tono pizarra: obligatorias.
-          Tono latón: electivas.
+          correlativas fluyen de izquierda a derecha.
         </p>
       </div>
 
@@ -369,10 +510,39 @@ export default function GrafoView() {
           <span className="lg">
             <span className="sw ap" /> Aprobada
           </span>
+          <span className="lg">
+            <span className="sw av" /> Cursable
+          </span>
+          <span className="lg">
+            <span className="sw lk">
+              <IconLock size={11} />
+            </span>{" "}
+            Requisitos pendientes
+          </span>
+          <span className="lg">
+            <span className="lg-arrow" aria-hidden="true">
+              &rarr;
+            </span>{" "}
+            habilita a
+          </span>
         </div>
-        <div className="grafo-count">
-          <b>{nodes.length}</b> materias &middot; <b>{edges.length}</b>{" "}
-          correlativas
+        <div className="grafo-toolbar__end">
+          <div className="grafo-search">
+            <IconSearch size={14} aria-hidden="true" />
+            <input
+              type="text"
+              className="grafo-search__input"
+              placeholder="Buscar materia…"
+              aria-label="Buscar materia por código, sigla o nombre"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={onSearchKeyDown}
+            />
+          </div>
+          <div className="grafo-count">
+            <b>{nodes.length}</b> materias &middot; <b>{edges.length}</b>{" "}
+            correlativas
+          </div>
         </div>
       </div>
 
@@ -468,12 +638,18 @@ export default function GrafoView() {
             <g className="grafo-nodes">
               {nodes.map((n) => {
                 const ap = approved.has(n.id);
+                // estado de cursabilidad (sólo para no aprobadas): cursable
+                // (borde de acento) vs bloqueada (atenuada + candado).
+                const avail = !ap && availSet.has(n.id);
+                const blocked = !ap && !avail;
                 const dim = chain ? !chain.has(n.id) : false;
                 const sel = n.id === selectedId;
                 const cls =
                   "grafo-node " +
                   (n.ob ? "ob" : "el") +
                   (ap ? " ap" : "") +
+                  (avail ? " avail" : "") +
+                  (blocked ? " blk" : "") +
                   (dim ? " dim" : "") +
                   (sel ? " sel" : "");
                 return (
@@ -486,7 +662,13 @@ export default function GrafoView() {
                     role="button"
                     aria-label={`${n.abbr}, código ${n.id}, ${
                       n.ob ? "obligatoria" : "electiva"
-                    }${ap ? ", aprobada" : ""}`}
+                    }${
+                      ap
+                        ? ", aprobada"
+                        : avail
+                          ? ", cursable"
+                          : ", requisitos pendientes"
+                    }`}
                     onMouseEnter={() => setHoverId(n.id)}
                     onMouseLeave={() =>
                       setHoverId((cur) => (cur === n.id ? null : cur))
@@ -530,6 +712,20 @@ export default function GrafoView() {
                         />
                       </g>
                     )}
+                    {blocked && (
+                      <g className="gn-lock" aria-hidden="true">
+                        <rect
+                          x={nodeW - 15.5}
+                          y={10.5}
+                          width={9}
+                          height={6.5}
+                          rx={1.5}
+                        />
+                        <path
+                          d={`M ${nodeW - 13.2} 10.5 V 8.6 a 2.2 2.2 0 0 1 4.4 0 V 10.5`}
+                        />
+                      </g>
+                    )}
                   </g>
                 );
               })}
@@ -538,7 +734,12 @@ export default function GrafoView() {
         </svg>
 
         <div className="grafo-hint" aria-hidden="true">
-          arrastrá para mover &middot; rueda para zoom
+          <span className="grafo-hint__row">
+            arrastrá para mover &middot; rueda para zoom
+          </span>
+          <span className="grafo-hint__row">
+            Pasá el mouse por una materia para ver su cadena de correlativas.
+          </span>
         </div>
 
         <div className="grafo-controls">

@@ -66,6 +66,11 @@ const norm = (s: string) =>
 const hhmm = (m: number) =>
   `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 
+/** Etiqueta del año de cursada (para sub-agrupar las obligatorias en el picker).
+ *  Ordinales en español: 1.er / 3.er año; 2.º / 4.º / 5.º año. */
+const anioLabel = (a: number) =>
+  `${a === 1 || a === 3 ? `${a}.er` : `${a}.º`} año`;
+
 /** Fecha legible para el pie del documento exportado. */
 function nowStr(): string {
   try {
@@ -108,7 +113,6 @@ function comboMetrics(placed: PlacedMateria[]) {
   }
   return {
     dias: days.size,
-    libres: Math.max(0, DAYS.length - days.size),
     horas: Math.round((totalMin / 60) * 10) / 10,
     minStart: minStart === Infinity ? 0 : minStart,
     maxEnd: maxEnd === -Infinity ? 0 : maxEnd,
@@ -182,6 +186,42 @@ export default function CombinadorView() {
       !needle || norm(`${m.codigo} ${m.nombre} ${m.abbr}`).includes(needle);
     return { obs: pool.obs.filter(match), els: pool.els.filter(match) };
   }, [pool, q]);
+
+  // Obligatorias sub-agrupadas por año (el listado creció a ~41 troncales con
+  // horario): grupos ordenados 1.º→5.º, y las de año nulo al final como «Otras».
+  const obsByAnio = useMemo(() => {
+    const groups = new Map<number, MateriaM[]>();
+    const otras: MateriaM[] = [];
+    for (const m of filtered.obs) {
+      if (m.anio == null) otras.push(m);
+      else {
+        const arr = groups.get(m.anio);
+        if (arr) arr.push(m);
+        else groups.set(m.anio, [m]);
+      }
+    }
+    return {
+      ordered: [...groups.entries()].sort((a, b) => a[0] - b[0]),
+      otras,
+    };
+  }, [filtered.obs]);
+
+  // Búsqueda honesta: materias DEL PLAN que matchean el texto pero todavía no
+  // tienen horario cargado. No son combinables (van atenuadas y no-agregables),
+  // pero se muestran para no dar la falsa señal de que no existen.
+  const ghostMatches = useMemo(() => {
+    const needle = norm(q.trim());
+    if (!needle) return [];
+    return [...PLAN.obligatorias, ...PLAN.electivas]
+      .filter(
+        (m) =>
+          !hasHorario(m.codigo) &&
+          (state.comboSolo || !state.approved.has(m.codigo)) &&
+          norm(`${m.codigo} ${m.nombre} ${m.abbr}`).includes(needle),
+      )
+      .map((m) => byId.get(m.codigo)!)
+      .sort((a, b) => a.codigo.localeCompare(b.codigo));
+  }, [q, state.comboSolo, state.approved]);
 
   // Selección EFECTIVA del combo: en modo normal, las aprobadas que hayan
   // entrado vía «Solo combinar» quedan latentes (no se combinan, no se
@@ -406,9 +446,40 @@ export default function CombinadorView() {
     ? saveIdx
     : "";
 
-  const noResults = filtered.obs.length === 0 && filtered.els.length === 0;
+  const noResults =
+    filtered.obs.length === 0 &&
+    filtered.els.length === 0 &&
+    ghostMatches.length === 0;
   const showPicker = pickerOpen || selected.length === 0;
   const canExport = total > 0 && Boolean(ranked[safeIdx]);
+
+  // ---------- diagnóstico de "sin solución": ¿la culpa es la modalidad? ----------
+  // Espejo del filtro de comisionesFor (comisión fija → modalidad) SIN su fallback:
+  // si con las pills activas alguna materia elegida se queda sin ninguna comisión,
+  // o si las 3 pills están apagadas, el nudo a desatar es la modalidad —no la
+  // superposición— y hay que ofrecer re-encender modalidades, no permitir pisadas.
+  const modalPass = (c: Comision) => {
+    const cm = comModalidad(c);
+    return (
+      cm === "Asincrónico" ||
+      comboParams.modal[cm as keyof typeof comboParams.modal] !== false
+    );
+  };
+  const modalAllOff =
+    !comboParams.modal.Presencial &&
+    !comboParams.modal.Virtual &&
+    !comboParams.modal.Blended;
+  const modalityBlocks =
+    modalAllOff ||
+    selected.some((m) => {
+      let coms = m.horario?.comisiones ?? [];
+      const fx = fixedCom.get(m.codigo);
+      if (fx) {
+        const f = coms.filter((c) => c.comision === fx);
+        if (f.length) coms = f;
+      }
+      return coms.length > 0 && !coms.some(modalPass);
+    });
 
   // ---------- acciones del cluster derecho ----------
   const downloadCombo = (
@@ -549,47 +620,62 @@ export default function CombinadorView() {
           )}
         </div>
 
+        {/* Progressive disclosure: sin materias elegidas no hay nada que combinar,
+            así que el cluster de acciones entero no se monta (el estado vacío
+            queda solo con la invitación a elegir materias + el picker). */}
+        {selected.length > 0 && (
         <div className="cmb9-header__right">
-          {/* Modo libre efímero: combina horarios ignorando las aprobadas */}
-          <button
-            type="button"
-            className={"cmb9-hbtn" + (comboSolo ? " is-on" : "")}
-            aria-pressed={comboSolo}
-            title={
-              comboSolo
-                ? "Modo libre activo — se ignoran tus materias aprobadas. Tocá para volver a tu cursada real"
-                : "Combiná horarios ignorando tu progreso de cursada: ofrece también las materias que ya aprobaste"
-            }
-            onClick={() => {
-              setSaveOpen(false);
-              dispatch({ type: "SET_COMBO_SOLO", value: !comboSolo });
-            }}
-          >
-            Solo combinar
-          </button>
+          {/* «Incluir aprobadas»: ofrece también las materias ya aprobadas, solo
+              para combinar horarios. Con 0 aprobadas no tiene ningún efecto → no
+              se monta. */}
+          {state.approved.size > 0 && (
+            <button
+              type="button"
+              className={"cmb9-hbtn" + (comboSolo ? " is-on" : "")}
+              aria-pressed={comboSolo}
+              title={
+                comboSolo
+                  ? "Activo: se incluyen también tus materias aprobadas, solo para combinar horarios. Tocá para volver a tu cursada real"
+                  : "Ofrece también las materias que ya aprobaste, solo para combinar horarios"
+              }
+              onClick={() => {
+                setSaveOpen(false);
+                dispatch({ type: "SET_COMBO_SOLO", value: !comboSolo });
+              }}
+            >
+              Incluir aprobadas
+            </button>
+          )}
 
-          <button
-            type="button"
-            className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
-            aria-pressed={recOpen}
-            title={
-              recOpen
-                ? "Ocultar el recomendador de materias"
-                : "Mostrar el recomendador de materias"
-            }
-            onClick={() => setRecOpen((o) => !o)}
-          >
-            <IconLayers size={13} />
-            Sugeridas <span className="cmb9-hbtn__count">· {suggestions.length}</span>
-          </button>
+          {/* Sugeridas: solo tiene sentido cuando hay combos que llenar; en estado
+              vacío era un control muerto con un contador engañoso. */}
+          {total > 0 && (
+            <button
+              type="button"
+              className={"cmb9-hbtn" + (recOpen ? " is-on" : "")}
+              aria-pressed={recOpen}
+              title={
+                recOpen
+                  ? "Ocultar el recomendador de materias"
+                  : "Mostrar el recomendador de materias"
+              }
+              onClick={() => setRecOpen((o) => !o)}
+            >
+              <IconLayers size={13} />
+              Sugeridas{" "}
+              <span className="cmb9-hbtn__count">· {suggestions.length}</span>
+            </button>
+          )}
 
+          {/* Descargar / Guardar se MONTAN solo cuando hay una cursada exportable
+              (canExport) — nunca en estado disabled. */}
+          {canExport && (
           <div className="cmb9-dl" ref={dlRef}>
             <button
               type="button"
               className="cmb9-hbtn"
               aria-haspopup="menu"
               aria-expanded={dlOpen}
-              disabled={!canExport}
               onClick={() => {
                 setSaveOpen(false);
                 setDlOpen((o) => !o);
@@ -643,17 +729,17 @@ export default function CombinadorView() {
               </div>
             )}
           </div>
+          )}
 
           {/* «Guardar preferencia» alimenta el Plan de cursada; en modo libre
               (comboSolo) la combinación puede incluir aprobadas → no se ofrece. */}
-          {!comboSolo && (
+          {canExport && !comboSolo && (
             <div className="cmb9-save" ref={saveRef}>
               <button
                 type="button"
                 className="cmb9-hbtn cmb9-hbtn--primary"
                 aria-haspopup="menu"
                 aria-expanded={saveOpen}
-                disabled={!canExport}
                 title="Guardá estas materias y comisiones en tu Plan de cursada"
                 onClick={() => {
                   setDlOpen(false);
@@ -726,6 +812,7 @@ export default function CombinadorView() {
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* Fila 2: grilla uniforme de materias + celda fantasma "Agregar" al final.
@@ -837,7 +924,19 @@ export default function CombinadorView() {
               <span className="dot dot--ob" /> Obligatorias
               <i>{filtered.obs.length}</i>
             </div>
-            {filtered.obs.map(row)}
+            {/* sub-agrupadas por año (el listado creció): 1.º→5.º y «Otras» al final */}
+            {obsByAnio.ordered.map(([anio, mats]) => (
+              <div className="cmb9-subgroup" key={anio}>
+                <div className="cmb9-subh">{anioLabel(anio)}</div>
+                {mats.map(row)}
+              </div>
+            ))}
+            {obsByAnio.otras.length > 0 && (
+              <div className="cmb9-subgroup">
+                <div className="cmb9-subh">Otras</div>
+                {obsByAnio.otras.map(row)}
+              </div>
+            )}
           </div>
         )}
         {filtered.els.length > 0 && (
@@ -847,6 +946,33 @@ export default function CombinadorView() {
               <i>{filtered.els.length}</i>
             </div>
             {filtered.els.map(row)}
+          </div>
+        )}
+        {/* Búsqueda honesta: materias del plan que matchean pero aún no tienen
+            horario cargado — atenuadas y no-agregables, para no ocultar que existen. */}
+        {ghostMatches.length > 0 && (
+          <div className="cmb-group">
+            <div className="cmb-grouph">
+              <span className="dot dot--ghost" /> Sin horario cargado
+              <i>{ghostMatches.length}</i>
+            </div>
+            {ghostMatches.map((m) => (
+              <div
+                className="cmb9-ghost"
+                key={m.codigo}
+                title={`${m.codigo} · ${m.nombre}`}
+              >
+                <span className="cmb9-ghost__main">
+                  <span className="cmb9-ghost__name">{m.nombre}</span>
+                  <span className="cmb9-ghost__meta">
+                    <span className="cmb-row__code">{m.codigo}</span>
+                    <span>{m.abbr}</span>
+                    <span>· {m.creditos} cr</span>
+                  </span>
+                </span>
+                <span className="cmb9-ghost__note">Sin horario cargado todavía</span>
+              </div>
+            ))}
           </div>
         )}
         {noResults && <p className="cmb-noresults">No hay materias con “{q}”.</p>}
@@ -939,10 +1065,6 @@ export default function CombinadorView() {
                 {insights.dias === 1 ? "día con clase" : "días con clase"}
               </span>
               <span>
-                <b>{insights.libres}</b>{" "}
-                {insights.libres === 1 ? "libre" : "libres"}
-              </span>
-              <span>
                 <b>{insights.horas}</b> h/sem
               </span>
               <span className="cmbx-statstrip__range">{insights.rango}</span>
@@ -1009,31 +1131,71 @@ export default function CombinadorView() {
         <div className="cmb-nosol__icon" aria-hidden="true">
           ⚠
         </div>
-        <h4>No entra ninguna cursada sin que se pisen</h4>
-        <p>
-          Probá permitir que se superpongan, fijar otra comisión o sacar alguna
-          materia.
-        </p>
-        {!comboParams.allowOverlap && (
-          <button
-            type="button"
-            className="cmb-nosol__cta"
-            onClick={() => dispatch({ type: "SET_ALLOW_OVERLAP", value: true })}
-          >
-            Permitir que se superpongan
-          </button>
-        )}
-        {result && result.conflictPairs.length > 0 && (
-          <div className="cmb-conflicts">
-            <span className="cmb-conflicts__h">Se pisan entre sí</span>
-            {result.conflictPairs.map(([a, b], i) => (
-              <div className="cmb-conflict" key={i}>
-                <b>{a.abbr}</b> {a.nombre}
-                <span className="cmb-conflict__x">⨯</span>
-                <b>{b.abbr}</b> {b.nombre}
+        {modalityBlocks ? (
+          // Causa = filtro de modalidad: la superposición no es el problema, así
+          // que ofrecemos re-encender modalidades en vez del CTA de pisadas.
+          <>
+            <h4>Con la modalidad elegida no queda ninguna comisión</h4>
+            <p>Activá otra modalidad para volver a ver cursadas.</p>
+            <button
+              type="button"
+              className="cmb-nosol__cta"
+              onClick={() =>
+                MODAL_KEYS.forEach((k) =>
+                  dispatch({ type: "SET_MODAL", key: k, value: true }),
+                )
+              }
+            >
+              Activar modalidades
+            </button>
+          </>
+        ) : (
+          <>
+            <h4>No entra ninguna cursada sin que se pisen</h4>
+            <p>
+              Probá permitir que se superpongan, fijar otra comisión o sacar
+              alguna materia.
+            </p>
+            {!comboParams.allowOverlap && (
+              <button
+                type="button"
+                className="cmb-nosol__cta"
+                onClick={() =>
+                  dispatch({ type: "SET_ALLOW_OVERLAP", value: true })
+                }
+              >
+                Permitir que se superpongan
+              </button>
+            )}
+            {result && result.conflictPairs.length > 0 && (
+              <div className="cmb-conflicts">
+                <span className="cmb-conflicts__h">Se pisan entre sí</span>
+                {result.conflictPairs.map(([a, b], i) => {
+                  // Botón de acción: quitar la materia menos esencial del par
+                  // (la electiva si hay una; si no, la segunda) para desatarlo.
+                  const drop =
+                    a.tipo === b.tipo ? b : a.tipo === "electiva" ? a : b;
+                  return (
+                    <div className="cmb-conflict" key={i}>
+                      <b>{a.abbr}</b> {a.nombre}
+                      <span className="cmb-conflict__x">⨯</span>
+                      <b>{b.abbr}</b> {b.nombre}
+                      <button
+                        type="button"
+                        className="cmb-conflict__rm"
+                        title={`Quitar ${drop.nombre} de tu cuatrimestre`}
+                        onClick={() =>
+                          dispatch({ type: "TOGGLE_COMBO", code: drop.codigo })
+                        }
+                      >
+                        Quitar {drop.abbr}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     );

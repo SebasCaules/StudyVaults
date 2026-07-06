@@ -1122,6 +1122,160 @@
   font-weight: 600;
 }
 
+/* ============================ OPTIMIZAR PARA (en el banner) ================ */
+/* El segmentado subió al banner (columna derecha, sobre "Te recibís en"): así el
+   objetivo y su resultado se leen juntos. La línea de objetivo va SIEMPRE debajo. */
+.planner .pv-optsel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.planner .pv-optsel .pv-seg {
+  align-self: flex-start;
+  max-width: 100%;
+}
+.planner .pv-optsel__obj {
+  margin: 0;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ============================ AVISO PLAN COMPLETO ========================= */
+/* Una sola línea con CTA a «Mis materias» (solo cuando no hay materias aprobadas:
+   el usuario ve el plan completo de la carrera). */
+.planner .pv-bigplan {
+  display: flex;
+  align-items: center;
+  gap: 10px 13px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--brass) 32%, var(--line));
+  background: color-mix(in srgb, var(--brass) 8%, var(--panel));
+  border-radius: var(--r);
+}
+.planner .pv-bigplan__ic {
+  flex: none;
+  color: var(--brass);
+}
+.planner .pv-bigplan__txt {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.planner .pv-bigplan__txt b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.planner .pv-bigplan__cta {
+  flex: none;
+}
+
+/* ============================ LÍNEA "PLAN AUTOMÁTICO" ===================== */
+/* Modelo mental persistente y discreto, pegado al encabezado del board. */
+.planner .pv-automatic {
+  margin: 12px 2px 0;
+  font-family: var(--f-m);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+.planner .pv-automatic b {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* ============================ TAG "FIJADA" =============================== */
+/* Distingue "lo puse yo" (cuatri fijado) de "lo puso el optimizador". En el
+   roadmap: tono neutro para NO confundirse con los tags brass "rec"/"nueva". */
+.planner .rmap-mat__fixed {
+  font-family: var(--f-m);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--line-2);
+  background: var(--panel-3);
+  padding: 1px 5px;
+  border-radius: 999px;
+  flex: none;
+}
+/* En el pool la fila ya tiene fondo brass (.is-fixed): el chip lo hace explícito. */
+.planner .pool-item .pfix {
+  flex: none;
+  align-self: center;
+  font-family: var(--f-m);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--brass);
+  border: 1px solid color-mix(in srgb, var(--brass) 40%, transparent);
+  background: color-mix(in srgb, var(--brass) 12%, transparent);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+/* ============================ BOTÓN FINALIZAR (legible) ================== */
+/* Reemplaza el candado icon-only del header de la SemCard por un botón chico con
+   texto: "Finalizar" (abierto) / "Finalizado" (cerrado, acento brass). */
+.planner .pv-lockbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--f-m);
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.planner .pv-lockbtn svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+.planner .pv-lockbtn:hover {
+  color: var(--ink);
+  border-color: var(--brass);
+  background: var(--panel-2);
+}
+.planner .pv-lockbtn.is-locked {
+  color: var(--brass);
+  border-color: color-mix(in srgb, var(--brass) 40%, var(--line));
+  background: color-mix(in srgb, var(--brass) 8%, transparent);
+}
+.planner .pv-lockbtn.is-locked:hover {
+  background: color-mix(in srgb, var(--brass) 14%, transparent);
+}
+
+/* ============================ HINT MOVER (Calendario) =================== */
+/* Bajo la grilla de SemCards: el Calendario es solo lectura; mover se hace en
+   Roadmap o en «Materias del plan». */
+.planner .pv-movehint {
+  margin: 12px 2px 0;
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ============================ + AGREGAR ELECTIVA ======================== */
+/* Descubribilidad del pool: el "+" en brass; el resto reusa .pv-iconbtn--label. */
+.planner .pv-addelec svg {
+  color: var(--brass);
+}
+
 /* ============================ RESPONSIVE ================================== */
 /* el grid del banner colapsa temprano: entre ~640 y ~950px los tracks mínimos
    (280px de controles + 300px de egreso) ya desbordarían lado a lado */

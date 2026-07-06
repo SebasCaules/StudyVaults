@@ -143,12 +143,46 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-.planner .fin__count {
-  font-size: 9px;
+
+/* ---- empty state focalizado (sin finales pendientes) ---- */
+.planner .fin__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  max-width: 420px;
+  margin: 8px auto 0;
+  padding: 34px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: color-mix(in srgb, var(--brass) 5%, var(--panel));
+}
+.planner .fin__empty-ico {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  color: var(--brass);
+  background: color-mix(in srgb, var(--brass) 14%, transparent);
+}
+.planner .fin__empty-title {
+  margin: 2px 0 0;
+  font-family: var(--f-d);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.planner .fin__empty-body {
+  margin: 0;
+  font-family: var(--f-m);
+  font-size: 11.5px;
+  line-height: 1.6;
   color: var(--muted);
 }
-.planner .fin__hbtn[aria-pressed="true"] .fin__count {
-  color: var(--brass);
+.planner .fin__empty .fin__hbtn {
+  margin-top: 6px;
 }
 
 /* ---- resumen ---- */
@@ -190,19 +224,6 @@
   color: var(--muted);
   margin-top: 3px;
 }
-.planner .fin__margen {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-}
-.planner .fin__margen > span {
-  font-family: var(--f-m);
-  font-size: 10px;
-  letter-spacing: 0.03em;
-  color: var(--muted);
-}
-
 /* ---- flags de conflicto ---- */
 .planner .fin__flags {
   display: flex;
@@ -287,6 +308,14 @@
   font-family: var(--f-m);
   font-size: 10px;
   color: var(--muted);
+}
+/* nudge: elegidos sin mesa (no entran al calendario) */
+.planner .fin__nudge {
+  margin: 0 0 10px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--status-warn);
 }
 .planner .fin__cal-scroll {
   overflow-x: auto;
@@ -546,6 +575,14 @@
   background: color-mix(in srgb, var(--brass) 14%, transparent);
   border: 1px solid color-mix(in srgb, var(--brass) 40%, transparent);
 }
+/* badge «ejemplo»: fecha NO oficial (todavía sin planilla real). Tenue y
+   dashed para distinguirse claramente de is-oficial (sólido). */
+.planner .fin__badge.is-ejemplo {
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed var(--line);
+  opacity: 0.85;
+}
 
 /* editor de fechas de mesa */
 .planner .fin__mesas {
@@ -644,6 +681,14 @@
   color: var(--brass);
   background: color-mix(in srgb, var(--brass) 12%, var(--panel));
 }
+/* variante compacta del «＋ fecha» dentro de la fila del panel de pendientes */
+.planner .fin__addfecha.is-sm {
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 9px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
 .planner .fin__mesa-clear {
   display: inline-flex;
   align-items: center;
@@ -689,16 +734,6 @@
   font-size: 9.5px;
   color: var(--muted);
   white-space: nowrap;
-}
-.planner .fin__side-empty {
-  padding: 16px 14px;
-  font-family: var(--f-m);
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.6;
-}
-.planner .fin__side-empty b {
-  color: var(--ink);
 }
 .planner .fin__group {
   border-bottom: 1px solid var(--line);
@@ -917,6 +952,50 @@
 /* ============================================================
    Ingesta de la planilla oficial de finales (FinalesIngesta.tsx)
    ============================================================ */
+/* wrapper colapsable: la ingesta ahora vive debajo del área de trabajo,
+   detrás de un summary discreto («Cargar fechas oficiales ▾»). */
+.planner .fin__ing-wrap {
+  margin-top: 16px;
+}
+.planner .fin__ing-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  transition: all 0.16s var(--ease, ease);
+}
+.planner .fin__ing-summary::-webkit-details-marker {
+  display: none;
+}
+.planner .fin__ing-summary::after {
+  content: "▾";
+  font-size: 9px;
+  transition: transform 0.16s var(--ease, ease);
+}
+.planner .fin__ing-wrap[open] > .fin__ing-summary {
+  margin-bottom: 10px;
+}
+.planner .fin__ing-wrap[open] > .fin__ing-summary::after {
+  transform: rotate(180deg);
+}
+.planner .fin__ing-summary:hover {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--brass) 45%, var(--line));
+}
+/* dentro del wrapper el espaciado lo maneja el details, no la sección */
+.planner .fin__ing-wrap .fin__ing {
+  margin-bottom: 0;
+}
 .planner .fin__ing {
   border: 1px solid var(--line);
   border-radius: var(--r);

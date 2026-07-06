@@ -506,6 +506,97 @@
   pointer-events: auto;
 }
 
+/* ---------- picker: sub-agrupado de obligatorias por año ---------- */
+.planner .cmb9-subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+/* sub-header de año: más tenue que el header de grupo (Obligatorias/Electivas),
+   sin dot, con una sangría leve para leerse como sub-nivel */
+.planner .cmb9-subh {
+  padding: 5px 8px 3px 16px;
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* ---------- picker: filas «sin horario cargado» (búsqueda honesta) ---------- */
+/* dot neutro para el grupo atenuado */
+.planner .cmb-list .dot--ghost {
+  background: var(--faint);
+}
+/* fila no-agregable: misma métrica que .cmb-row pero atenuada y sin affordances
+   de click (no es un botón, no tiene «+») */
+.planner .cmb9-ghost {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  opacity: 0.55;
+  cursor: default;
+}
+.planner .cmb9-ghost__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.planner .cmb9-ghost__name {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.planner .cmb9-ghost__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--f-m);
+  font-size: 10.5px;
+  color: var(--faint);
+}
+.planner .cmb9-ghost__note {
+  flex: none;
+  font-family: var(--f-m);
+  font-size: 9.5px;
+  font-style: italic;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+/* ---------- «sin solución»: botón inline para quitar la materia del par ---------- */
+.planner .cmb-conflict__rm {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--f-m);
+  font-size: 10px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 3px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb-conflict__rm:hover {
+  background: var(--oxblood);
+  border-color: var(--oxblood);
+  color: var(--block-ink);
+}
+
 /* ---------- responsive: apila el recomendador debajo del calendario ---------- */
 @media (max-width: 860px) {
   .planner .cmb9-row {
@@ -527,7 +618,8 @@
   .planner .cmb9-tip__box,
   .planner .cmb9-clear,
   .planner .cmb9-mchip__x,
-  .planner .cmb9-addcell {
+  .planner .cmb9-addcell,
+  .planner .cmb-conflict__rm {
     transition: none;
   }
   .planner .cmb9-mchip {
