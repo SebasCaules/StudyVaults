@@ -890,25 +890,31 @@
    esta columna (no del viewport) y no se aprietan al ceder espacio al sidebar. */
 .planner .plan2-split{
   display:grid;grid-template-columns:minmax(0,1fr) clamp(228px,23%,312px);
-  gap:16px;align-items:start;margin-top:4px;
+  gap:16px;align-items:stretch;margin-top:4px;
 }
 .planner .plan2-split--solo{grid-template-columns:1fr}
 .planner .plan2-split__main{min-width:0;container-type:inline-size}
+/* El panel de recomendaciones ESPEJA el alto de la grilla de calendarios:
+   la celda no aporta alto propio (el panel es absoluto adentro), así una fila
+   de calendarios ⇒ panel de una fila, dos filas ⇒ dos, con scroll interno. */
 .planner .plan2-split__side{
-  position:sticky;top:calc(var(--nav-h) + 52px);
-  max-height:calc(100vh - var(--nav-h) - 64px);overflow:auto;
-  min-width:0;padding-right:4px;
+  position:relative;min-width:0;
 }
-.planner .plan2-split__side::-webkit-scrollbar{width:8px}
-.planner .plan2-split__side::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:20px}
-.planner .plan2-split__side .plan2-recs{margin-top:0}
+.planner .plan2-split__side .plan2-recs{
+  margin-top:0;
+  position:absolute;inset:0;overflow:auto;padding-right:4px;
+}
+.planner .plan2-split__side .plan2-recs::-webkit-scrollbar{width:8px}
+.planner .plan2-split__side .plan2-recs::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:20px}
 /* mismo umbral que el sidebar principal (.shell/.side, 1080px): así todo el
    layout pasa a una columna a la vez y no queda el board apretado en la franja
    981–1080 con el panel principal ya apilado arriba */
 @media (max-width:1080px){
   .planner .plan2-split{grid-template-columns:1fr}
-  .planner .plan2-split__side{
-    position:static;max-height:none;overflow:visible;padding-right:0;
+  .planner .plan2-split__side{position:static}
+  /* apilado en una columna: el panel vuelve al flujo normal, sin espejo de alto */
+  .planner .plan2-split__side .plan2-recs{
+    position:static;inset:auto;overflow:visible;padding-right:0;
   }
 }
 /* grilla que mete la mayor cantidad de cuatrimestres por fila y envuelve.

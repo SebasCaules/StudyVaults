@@ -1595,10 +1595,6 @@ export default function PlanView() {
   // dentro de la sesión no pisa la elección del usuario.
   const [tab, setTab] = useState<PlanTab>(() => (used.length > 6 ? "road" : "cal"));
 
-  // objetivo del método seleccionado (string canónico de OPT_METHODS): se muestra
-  // SIEMPRE junto al segmentado, en la tira "Optimizar para" bajo el banner.
-  const optObjetivo =
-    OPT_METHODS.find((m) => m.key === PL.method)?.objetivo ?? "";
 
   const flat = R.items.flat();
   const totalCred = flat.reduce((s, x) => s + (x.m.creditos || 0), 0);
@@ -1975,37 +1971,6 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* Tira "Optimizar para": el segmentado + el disclaimer de optimización
-          (objetivo del método + "se rearma solo") en UNA sola línea compacta
-          bajo el banner — el banner queda solo con stat/controles/resultado. */}
-      {used.length > 0 && (
-        <div className="pv-optbar">
-          <span className="pv-field__lbl">Optimizar para</span>
-          <div
-            className="pv-seg"
-            role="group"
-            aria-label="Método de optimización del plan"
-          >
-            {OPT_METHODS.map((m: OptMethodMeta) => (
-              <button
-                key={m.key}
-                type="button"
-                className="pv-seg__opt"
-                aria-pressed={PL.method === m.key}
-                title={m.objetivo}
-                onClick={() =>
-                  dispatch({ type: "SET_PLAN_METHOD", value: m.key })
-                }
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
-          <p className="pv-optbar__note">
-            {optObjetivo} El plan se rearma solo con cada cambio.
-          </p>
-        </div>
-      )}
 
       {used.length > 0 && (
         <div className="pv-tabs">
@@ -2222,12 +2187,35 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* El segmentado "Optimizar para" vive en la tira bajo el banner. Acá
-          queda solo la nota detallada del método, plegada. */}
+      {/* "Cómo se armó este plan": guarda el selector del método (no es una
+          decisión frecuente) + la nota detallada, todo plegado y discreto. */}
       {used.length > 0 && (
         <div className="plan2-opt">
           <details className="plan2-optnote-d">
             <summary>Cómo se armó este plan</summary>
+            <div className="plan2-opt__ctl">
+              <span className="plan2-opt__lbl">Optimizar para</span>
+              <div
+                className="pv-seg"
+                role="group"
+                aria-label="Método de optimización del plan"
+              >
+                {OPT_METHODS.map((m: OptMethodMeta) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    className="pv-seg__opt"
+                    aria-pressed={PL.method === m.key}
+                    title={m.objetivo}
+                    onClick={() =>
+                      dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                    }
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <p className="plan2-method">{methodText(R, PL)}</p>
           </details>
         </div>

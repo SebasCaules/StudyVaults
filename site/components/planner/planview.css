@@ -1123,28 +1123,15 @@
   font-weight: 600;
 }
 
-/* ============================ TIRA "OPTIMIZAR PARA" ======================= */
-/* Bajo el banner, en UNA línea: label + segmentado + disclaimer de optimización
-   (objetivo del método + "se rearma solo"). Absorbe la vieja línea
-   "Plan automático" — un bloque menos de alto vertical. */
-.planner .pv-optbar {
+/* El selector "Optimizar para" vive DENTRO de "Cómo se armó este plan"
+   (.plan2-opt__ctl): no es una decisión frecuente, así que queda guardado
+   ahí junto a la nota del método. */
+.planner .plan2-opt__ctl {
   display: flex;
   align-items: center;
-  gap: 8px 14px;
+  gap: 8px 12px;
   flex-wrap: wrap;
-  margin-top: 10px;
-}
-.planner .pv-optbar .pv-field__lbl {
-  margin: 0;
-}
-.planner .pv-optbar__note {
-  flex: 1 1 260px;
-  min-width: 0;
-  margin: 0;
-  font-family: var(--f-m);
-  font-size: 10.5px;
-  line-height: 1.45;
-  color: var(--muted);
+  margin-top: 8px;
 }
 
 /* ============================ AVISO PLAN COMPLETO ========================= */
