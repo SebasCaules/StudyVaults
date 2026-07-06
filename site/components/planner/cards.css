@@ -162,6 +162,56 @@
   .planner .cq-sem + .cq-sem{border-left:0;border-top:1px solid var(--line)}
 }
 
+/* ============================================================
+   Mosaico de electivas — rework densidad + uniformidad (2026-07).
+   Diagnóstico: la grilla base (planner.css) usa auto-fill minmax(256px)
+   + align-items:stretch → pocas columnas anchas y, sobre todo, cada card
+   se ESTIRA al alto de la más alta de su fila, dejando un hueco entre el
+   meta y el footer flotante. Ese era el "lugar muerto".
+   Fix: overrides scopeados a .card-grid--el (selector COMPUESTO → gana a
+   planner.css por especificidad, sin editar el archivo compartido). Todas
+   las cards MIDEN IGUAL vía slots de alto fijo — nada de stretch ragged:
+     código·créditos │ nombre a 2 líneas (clamp) │ señales (1 renglón) │
+     acciones en 1 fila (estado · combinar · ficha↗ a la derecha).
+   Columnas más angostas (~205px) → ~6-7 en vez de ~5; menos ancho muerto.
+   ============================================================ */
+.planner .card-grid.card-grid--el{
+  grid-template-columns:repeat(auto-fill,minmax(205px,1fr));
+  gap:10px;align-items:start;
+}
+/* empty state a todo el ancho de la grilla (antes ocupaba 1 columna) */
+.planner .card-grid--el .empty{grid-column:1/-1}
+
+/* card: columna flex con slots de alto fijo → altura idéntica en todas */
+.planner .card-grid--el .card{
+  display:flex;flex-direction:column;padding:13px 13px 11px;
+}
+.planner .card-grid--el .card__top{margin-bottom:3px}
+.planner .card-grid--el .card__name{
+  font-size:15px;line-height:1.16;margin:4px 0 0;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+  min-height:calc(15px * 1.16 * 2);   /* 2 líneas fijas → todos los títulos alinean */
+}
+/* señales en 1 renglón reservado (sin wrap): así el alto no varía card a card */
+.planner .card-grid--el .card__meta{
+  flex-wrap:nowrap;overflow:hidden;gap:5px;margin:8px 0 0;min-height:18px;
+}
+/* acciones: una sola fila compacta; combinar deja de estirarse (flex:1) y la
+   ficha se vuelve un botón inline empujado a la derecha (antes: renglón extra) */
+.planner .card-grid--el .card__acts{
+  align-items:center;gap:8px;margin-top:10px;padding-top:9px;
+}
+.planner .card-grid--el .mini{
+  flex:0 0 auto;padding:5px 10px;border-radius:6px;font-size:11.5px;
+}
+.planner .card-grid--el .card__read{
+  width:auto;margin:0 0 0 auto;padding:5px 8px;
+  border:1px solid transparent;border-radius:6px;font-size:10.5px;
+}
+.planner .card-grid--el .card__read:hover{
+  background:var(--accent-soft);border-color:var(--accent-line);color:var(--brass-2);
+}
+
 /* ----- chip "falta final" en la card de electiva -----
    Cursada aprobada que todavía debe el final; mismo microcopy y color que el
    qrow__due de CuatriView (rol --status-warn), para leerse igual entre vistas. */

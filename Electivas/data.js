@@ -38,7 +38,7 @@ window.PLAN = {
   {
    "codigo": "31.08",
    "nombre": "Sistemas de Representación",
-   "abbr": "SR",
+   "abbr": "Sist. Representación",
    "creditos": 3,
    "creditosReq": 0,
    "correlativas": [],
@@ -80,7 +80,7 @@ window.PLAN = {
   {
    "codigo": "72.03",
    "nombre": "Introducción a la Informática",
-   "abbr": "II",
+   "abbr": "Intro a la Info",
    "creditos": 3,
    "creditosReq": 0,
    "correlativas": [],
@@ -94,7 +94,7 @@ window.PLAN = {
   {
    "codigo": "72.07",
    "nombre": "Protocolos de Comunicación",
-   "abbr": "PC",
+   "abbr": "Protos",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -110,7 +110,7 @@ window.PLAN = {
   {
    "codigo": "72.08",
    "nombre": "Arquitectura de Computadoras",
-   "abbr": "AC",
+   "abbr": "Arqui",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -159,7 +159,7 @@ window.PLAN = {
   {
    "codigo": "72.25",
    "nombre": "Simulación de Sistemas",
-   "abbr": "SimSist",
+   "abbr": "SDS",
    "creditos": 6,
    "creditosReq": 140,
    "correlativas": [
@@ -210,7 +210,7 @@ window.PLAN = {
   {
    "codigo": "72.32",
    "nombre": "Diseño y Procesamiento de Documentos XML",
-   "abbr": "DPDX",
+   "abbr": "XML",
    "creditos": 3,
    "creditosReq": 0,
    "correlativas": [
@@ -259,7 +259,7 @@ window.PLAN = {
   {
    "codigo": "72.35",
    "nombre": "Ingenieria de Software I",
-   "abbr": "ISI",
+   "abbr": "Inge 1",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -275,7 +275,7 @@ window.PLAN = {
   {
    "codigo": "72.36",
    "nombre": "Interacción Hombre-Computadora (HCI)",
-   "abbr": "IHCH",
+   "abbr": "HCI",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -328,7 +328,7 @@ window.PLAN = {
   {
    "codigo": "72.39",
    "nombre": "Autómatas, Teoría de Lenguajes y Compiladores",
-   "abbr": "ATLC",
+   "abbr": "TLA",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -344,7 +344,7 @@ window.PLAN = {
   {
    "codigo": "72.40",
    "nombre": "Ingenieria del Software II",
-   "abbr": "ISW II",
+   "abbr": "Inge 2",
    "creditos": 3,
    "creditosReq": 0,
    "correlativas": [
@@ -468,7 +468,7 @@ window.PLAN = {
   {
    "codigo": "93.24",
    "nombre": "Probabilidad y Estadística",
-   "abbr": "PE",
+   "abbr": "Proba",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -515,7 +515,7 @@ window.PLAN = {
   {
    "codigo": "93.35",
    "nombre": "Lógica Computacional",
-   "abbr": "LC",
+   "abbr": "Lógica",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -531,7 +531,7 @@ window.PLAN = {
   {
    "codigo": "93.41",
    "nombre": "Física I",
-   "abbr": "FI",
+   "abbr": "F1",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -547,7 +547,7 @@ window.PLAN = {
   {
    "codigo": "93.42",
    "nombre": "Física II",
-   "abbr": "FII",
+   "abbr": "F2",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -563,7 +563,7 @@ window.PLAN = {
   {
    "codigo": "93.43",
    "nombre": "Física III",
-   "abbr": "FIII",
+   "abbr": "F3",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -594,7 +594,7 @@ window.PLAN = {
   {
    "codigo": "93.59",
    "nombre": "Matemática Discreta",
-   "abbr": "MD",
+   "abbr": "Discreta",
    "creditos": 6,
    "creditosReq": 0,
    "correlativas": [
@@ -654,7 +654,7 @@ window.PLAN = {
   {
    "codigo": "94.24",
    "nombre": "Metodología del Aprendizaje",
-   "abbr": "MA",
+   "abbr": "Metodología",
    "creditos": 3,
    "creditosReq": 0,
    "correlativas": [],

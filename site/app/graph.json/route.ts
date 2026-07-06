@@ -141,8 +141,21 @@ export async function GET() {
     sds: mix(HEX.coral, HEX.gray, 50),
     inge2: mix(HEX.gray, HEX.blue, 68),
   };
-  const cDark = (v: string) => mix(BASE[v] ?? HEX.blue, HEX.white, 68);
-  const cLight = (v: string) => mix(BASE[v] ?? HEX.blue, HEX.brown, 48);
+  // Materias fuera de la paleta curada (BASE): base propia y DISTINTA derivada
+  // del id — una materia nueva (p. ej. fisica3) ya no colapsa al azul default
+  // ni colisiona con otra. Se mantiene dentro de la familia de la paleta.
+  const EXTRA = ["#8fcf45", "#c24fd6"];
+  const hashStr = (s: string) => {
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  };
+  const baseOf = (v: string) => BASE[v] ?? EXTRA[hashStr(v) % EXTRA.length];
+  const cDark = (v: string) => mix(baseOf(v), HEX.white, 68);
+  const cLight = (v: string) => mix(baseOf(v), HEX.brown, 48);
 
   const idx = new Map(nodes.map((n, i) => [n.id, i]));
   const outNodes = nodes.map((n) => ({

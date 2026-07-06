@@ -26,6 +26,7 @@ import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import type { GNode, GLink } from "./ForceGraphInner";
+import { VAULTS } from "@/lib/content/vaults";
 
 const VIVID: Record<string, string> = {
   derecho: "#E06B4F",
@@ -36,17 +37,38 @@ const VIVID: Record<string, string> = {
   inge2: "#9A88F2",
   sds: "#E67CB2",
 };
-const NAMES: Record<string, string> = {
-  mna: "MNA",
-  derecho: "Derecho",
-  economia: "Economía",
-  proba: "Proba",
-  paw: "PAW",
-  sds: "SDS",
-  inge2: "Inge2",
+// Colores vivid para materias FUERA de la paleta curada (VIVID): tonos joya en
+// los dos huecos más grandes del círculo cromático de los 7 curados —lima
+// (h≈88, entre economía y paw) y magenta-púrpura (h≈291, entre inge2 y sds)—,
+// bien separados de todos. Así una materia nueva (p. ej. fisica3 → magenta)
+// entra al hero con su propio color en vez de colapsar al azul default de antes.
+const EXTRA_VIVID = ["#8FCF45", "#C24FD6"];
+const hashStr = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
 };
+const colorOf = (v: string) =>
+  VIVID[v] ?? EXTRA_VIVID[hashStr(v) % EXTRA_VIVID.length];
+// Nombre corto de cada materia, derivado de VAULTS → una materia nueva aparece
+// etiquetada sin tocar este archivo (para las 7 curadas coincide con lo previo).
+const NAMES: Record<string, string> = Object.fromEntries(
+  VAULTS.map((v) => [v.id, v.short]),
+);
+// Orden estable de las 7 materias curadas (define su secuencia visual histórica).
 const VORDER = ["mna", "derecho", "economia", "proba", "paw", "sds", "inge2"];
-const colorOf = (v: string) => VIVID[v] ?? "#8fb3e0";
+// Orden efectivo de render: curadas presentes primero, luego cualquier otra
+// materia presente en los datos (alfabético). Data-driven → una materia nueva
+// obtiene celda voronoi + color + etiqueta automáticamente.
+function orderVaults(present: string[]): string[] {
+  const set = new Set(present);
+  const pref = VORDER.filter((v) => set.has(v));
+  const extra = present.filter((v) => !VORDER.includes(v)).sort();
+  return [...pref, ...extra];
+}
 
 // tema CLARO: tintas sobre papel — los vivid se oscurecen hacia el marrón ancla
 function mixHex(a: string, b: string, pa: number): string {
@@ -232,7 +254,7 @@ function buildVoronoi(seedsVor: Record<string, V3>): {
   cells: Cell[];
   walls: THREE.Vector3[][];
 } {
-  const order = VORDER.filter((v) => seedsVor[v]);
+  const order = orderVaults(Object.keys(seedsVor));
   const S = order.map((v) => new THREE.Vector3(seedsVor[v].x, seedsVor[v].y, seedsVor[v].z));
   const bisector = (i: number, k: number) => ({
     n: S[i].clone().sub(S[k]),
@@ -396,7 +418,11 @@ export default function ForceGraph3DInner({
       anchors[v] = { x: acc[v].x / acc[v].k, y: acc[v].top + 18, z: acc[v].z / acc[v].k };
     const counts: Record<string, number> = {};
     gnodes.forEach((n) => (counts[n.v] = (counts[n.v] ?? 0) + 1));
-    return { gnodes, glinks, vor, seedIdx, anchors, counts };
+    // orden de materias presente en los datos (curadas primero) → mismo array
+    // para las pills (JSX) y para el posicionador por-frame: sus índices deben
+    // alinearse con los hijos del overlay.
+    const order = orderVaults(Object.keys(counts));
+    return { gnodes, glinks, vor, seedIdx, anchors, counts, order };
   }, [nodes, links]);
 
   const graphData = useMemo(
@@ -503,7 +529,8 @@ export default function ForceGraph3DInner({
     const tmpC = new THREE.Color();
     const WHITE = new THREE.Color("#ffffff");
     const VIVIDC: Record<string, THREE.Color> = {};
-    for (const v of VORDER) VIVIDC[v] = new THREE.Color(colorOf(v));
+    for (const v of new Set(graphData.nodes.map((n) => n.v)))
+      VIVIDC[v] = new THREE.Color(colorOf(v));
 
     // re-estiliza TODO el mobiliario según el tema (se llama en setup y al
     // conmutar data-theme; los props de react-force-graph se re-aplican solos)
@@ -808,10 +835,10 @@ export default function ForceGraph3DInner({
           const kids = overlay.children;
           type Lab = { el: HTMLElement; x: number; y: number; hw: number; hh: number };
           const labs: Lab[] = [];
-          for (let i = 0; i < VORDER.length; i++) {
+          for (let i = 0; i < built.order.length; i++) {
             const el = kids[i] as HTMLElement | undefined;
             if (!el) continue;
-            const a = built.anchors[VORDER[i]];
+            const a = built.anchors[built.order[i]];
             if (!a) {
               el.style.opacity = "0";
               continue;
@@ -935,7 +962,7 @@ export default function ForceGraph3DInner({
       )}
       {/* etiquetas de materia en primer plano (overlay, proyectado por frame) */}
       <div className="fg3d-labels" ref={overlayRef} aria-hidden="true">
-        {VORDER.map((v) => (
+        {built.order.map((v) => (
           <div key={v} className="fg3d-cluster" style={{ ["--c" as string]: colorOf(v) }}>
             <span className="fg3d-lab">
               {NAMES[v] ?? v}

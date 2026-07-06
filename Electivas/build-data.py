@@ -17,10 +17,17 @@ AREA_MAP = {
 
 # Abreviaturas curadas (las lindas). El resto se autogenera.
 ABBR = {
+    # --- Obligatorias del núcleo informático (abreviaturas pedidas) ---
+    "72.03": "Intro a la Info", "93.59": "Discreta", "93.35": "Lógica",
+    "72.32": "XML", "93.41": "F1", "93.42": "F2", "93.43": "F3",
+    "72.08": "Arqui", "72.35": "Inge 1", "72.36": "HCI", "72.07": "Protos",
+    "72.39": "TLA", "93.24": "Proba", "31.08": "Sist. Representación",
+    "94.24": "Metodología",
+    # ------------------------------------------------------------------
     "72.41": "BDII", "72.42": "POD", "93.75": "MNA", "72.27": "SIA",
     "72.43": "GPI", "72.44": "Cripto", "72.20": "Redes", "12.83": "SOA",
     "72.45": "PF", "72.98": "PL", "94.23": "FG3", "94.52": "Inglés II",
-    "72.40": "ISW II", "61.23": "Eco", "61.32": "Der", "72.25": "SimSist",
+    "72.40": "Inge 2", "61.23": "Eco", "61.32": "Der", "72.25": "SDS",
     "72.52": "ATI", "72.75": "ML", "73.40": "ArqMS", "81.57": "ASD",
     "73.82": "BDEM", "72.80": "BigData", "73.81": "Ciber", "73.84": "CDA",
     "82.08": "Cloud", "25.04": "Cuántica", "72.58": "CG", "94.42": "ComEst",

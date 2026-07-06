@@ -765,8 +765,15 @@
 }
 .planner .cmbcal-blk:hover{transform:translateY(-2px);box-shadow:0 7px 18px color-mix(in srgb,var(--blk) 34%,transparent);filter:brightness(1.04);z-index:3}
 .planner .cmbcal-blk__abbr{
-  font-family:var(--f-d);font-weight:600;font-size:13px;line-height:1.1;color:var(--ink);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-family:var(--f-d);font-weight:600;font-size:13px;line-height:1.12;color:var(--ink);
+  /* Se envuelve por palabra y clampa con … a la cantidad de líneas que caben en
+     el bloque (`--abbr-lines`, que CursadaCalendar calcula según la altura real).
+     Así los nombres largos ("Sist. Representación", "Intro a la Info") saltan de
+     línea sin agrandar ni desbordar el bloque; una palabra sola que no entra se
+     parte como último recurso. Responsive: las líneas se ajustan a cada escala. */
+  display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:var(--abbr-lines,2);line-clamp:var(--abbr-lines,2);
+  overflow:hidden;overflow-wrap:break-word;min-width:0;
 }
 .planner .cmbcal-blk__time{font-family:var(--f-m);font-size:10px;color:var(--ink-soft);line-height:1.2}
 .planner .cmbcal-blk__room{font-family:var(--f-m);font-size:9px;color:var(--muted);margin-top:auto}

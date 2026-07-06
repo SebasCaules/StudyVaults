@@ -638,7 +638,7 @@ const BASE_CSS = `
   .cg-free{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-90deg);font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);opacity:.6}
   .cg-abs{position:absolute;inset:0}
   .cg-blk{position:absolute;left:3px;right:3px;border-radius:6px;overflow:hidden;border:1px solid;border-left-width:3px;padding:4px 6px;display:flex;flex-direction:column;gap:1px;min-height:0}
-  .cg-blk__abbr{font-family:Georgia,"Times New Roman",serif;font-weight:bold;font-size:12px;line-height:1.12;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cg-blk__abbr{font-family:Georgia,"Times New Roman",serif;font-weight:bold;font-size:12px;line-height:1.12;color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:break-word}
   .cg-blk__time{font-family:"SFMono-Regular",Menlo,monospace;font-size:9.5px;color:var(--soft);line-height:1.2}
   .cg-blk__room{font-family:"SFMono-Regular",Menlo,monospace;font-size:8.5px;color:var(--muted);margin-top:auto}
   .cg-blk.is-conf{border-color:#9c3b2e !important;border-left-color:#9c3b2e !important;box-shadow:0 0 0 1px #9c3b2e}

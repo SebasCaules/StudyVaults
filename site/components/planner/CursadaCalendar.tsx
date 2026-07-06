@@ -90,6 +90,17 @@ export default function CursadaCalendar({
                 const top = (toMin(b.desde) - minM) * PX;
                 const h = (toMin(b.hasta) - toMin(b.desde)) * PX;
                 const idx = order++;
+                // Cuántas líneas de la abreviatura caben sin agrandar el bloque:
+                // descontamos el padding vertical y la fila de rango horario (solo
+                // fuera de compacto), y dividimos por el alto de línea de la escala.
+                // El CSS envuelve por palabra y clampa con … a este número.
+                const pad = compact ? 4 : dense ? 6 : 10;
+                const extras = compact ? 0 : dense ? 12 : 14;
+                const lh = compact ? 11.5 : dense ? 13 : 15;
+                const abbrLines = Math.max(
+                  1,
+                  Math.min(3, Math.floor((h - pad - extras) / lh)),
+                );
                 // Interactivo solo si hay código y el caller pasó handler.
                 const clickable = Boolean(b.codigo && onBlockClick);
                 return (
@@ -123,7 +134,14 @@ export default function CursadaCalendar({
                         }
                       : {})}
                   >
-                    <span className="cmbcal-blk__abbr">{b.abbr}</span>
+                    <span
+                      className="cmbcal-blk__abbr"
+                      style={
+                        { "--abbr-lines": abbrLines } as React.CSSProperties
+                      }
+                    >
+                      {b.abbr}
+                    </span>
                     {/* En compacto omitimos el rango horario: ya lo da el eje de
                         la izquierda. Liberamos altura y destacamos el aula. */}
                     {!compact && (

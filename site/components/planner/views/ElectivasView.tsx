@@ -103,7 +103,7 @@ export default function ElectivasView() {
         </p>
       </div>
       <CardLegend />
-      <div className="card-grid">
+      <div className="card-grid card-grid--el">
         {list.length === 0 ? (
           <div className="empty">
             Ninguna electiva cumple los filtros.
@@ -146,12 +146,16 @@ export default function ElectivasView() {
           <span className="code">{m.codigo}</span>
           <span className="card__cred">{m.creditos} cr</span>
         </div>
-        <h3 className="card__name">{m.nombre}</h3>
+        <h3 className="card__name" title={m.nombre}>{m.nombre}</h3>
+        {/* fila de señales — alto reservado (1 renglón) para que todas las
+            cards midan igual; sin wrap: badges + candado + "falta final". */}
         <div className="card__meta">
           <MinorBadges areas={m.areas} variant="logo" />
           {!appr ? <AvailLock ok={avail} /> : null}
           {debeFinal ? <span className="card__due">falta final</span> : null}
         </div>
+        {/* acciones en UNA sola fila: estado · combinar · ficha↗ (a la derecha).
+            La ficha ya no es un renglón full-width extra — inline y compacta. */}
         <div className="card__acts">
           {/* tri-estado canónico (pendiente → ✓ cursada → ✓✓ final); el span
               sólo centra verticalmente el control frente al botón vecino. */}
@@ -169,16 +173,16 @@ export default function ElectivasView() {
           >
             {inCombo ? "combinar ✓" : "combinar"}
           </button>
+          {hasFicha ? (
+            <button
+              className="card__read"
+              onClick={(e) => { e.stopPropagation(); dispatch({ type: "OPEN_FICHA", code: m.codigo }); }}
+              aria-label={`Leer ficha de ${m.nombre}`}
+            >
+              ficha ↗
+            </button>
+          ) : null}
         </div>
-        {hasFicha ? (
-          <button
-            className="card__read"
-            onClick={(e) => { e.stopPropagation(); dispatch({ type: "OPEN_FICHA", code: m.codigo }); }}
-            aria-label={`Leer ficha de ${m.nombre}`}
-          >
-            Leer ficha ↗
-          </button>
-        ) : null}
       </article>
     );
   }
