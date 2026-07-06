@@ -1596,7 +1596,7 @@ export default function PlanView() {
   const [tab, setTab] = useState<PlanTab>(() => (used.length > 6 ? "road" : "cal"));
 
   // objetivo del método seleccionado (string canónico de OPT_METHODS): se muestra
-  // SIEMPRE bajo el segmentado del banner, para leer objetivo→resultado juntos.
+  // SIEMPRE junto al segmentado, en la tira "Optimizar para" bajo el banner.
   const optObjetivo =
     OPT_METHODS.find((m) => m.key === PL.method)?.objetivo ?? "";
 
@@ -1908,33 +1908,6 @@ export default function PlanView() {
             </div>
 
             <div className="pv-bcol">
-              {/* Objetivo pegado al resultado: el segmentado "Optimizar para"
-                  subió acá (antes vivía bajo el board) para leer objetivo→"Te
-                  recibís en" juntos. Debajo, SIEMPRE, el objetivo del método. */}
-              <div className="pv-optsel">
-                <span className="pv-field__lbl">Optimizar para</span>
-                <div
-                  className="pv-seg"
-                  role="group"
-                  aria-label="Método de optimización del plan"
-                >
-                  {OPT_METHODS.map((m: OptMethodMeta) => (
-                    <button
-                      key={m.key}
-                      type="button"
-                      className="pv-seg__opt"
-                      aria-pressed={PL.method === m.key}
-                      title={m.objetivo}
-                      onClick={() =>
-                        dispatch({ type: "SET_PLAN_METHOD", value: m.key })
-                      }
-                    >
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
-                <p className="pv-optsel__obj">{optObjetivo}</p>
-              </div>
               <div className="pv-grad">
                 <IconGraduationCap size={22} />
                 <div>
@@ -2002,12 +1975,36 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* Modelo mental "plan automático": línea persistente y discreta que explica
-          que el board se rearma solo con cada cambio. */}
+      {/* Tira "Optimizar para": el segmentado + el disclaimer de optimización
+          (objetivo del método + "se rearma solo") en UNA sola línea compacta
+          bajo el banner — el banner queda solo con stat/controles/resultado. */}
       {used.length > 0 && (
-        <p className="pv-automatic">
-          <b>Plan automático</b> — se rearma con cada cambio que hagas.
-        </p>
+        <div className="pv-optbar">
+          <span className="pv-field__lbl">Optimizar para</span>
+          <div
+            className="pv-seg"
+            role="group"
+            aria-label="Método de optimización del plan"
+          >
+            {OPT_METHODS.map((m: OptMethodMeta) => (
+              <button
+                key={m.key}
+                type="button"
+                className="pv-seg__opt"
+                aria-pressed={PL.method === m.key}
+                title={m.objetivo}
+                onClick={() =>
+                  dispatch({ type: "SET_PLAN_METHOD", value: m.key })
+                }
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+          <p className="pv-optbar__note">
+            {optObjetivo} El plan se rearma solo con cada cambio.
+          </p>
+        </div>
       )}
 
       {used.length > 0 && (
@@ -2225,8 +2222,8 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* El segmentado "Optimizar para" subió al banner (junto a "Te recibís
-          en"). Acá queda solo la nota detallada del método, plegada. */}
+      {/* El segmentado "Optimizar para" vive en la tira bajo el banner. Acá
+          queda solo la nota detallada del método, plegada. */}
       {used.length > 0 && (
         <div className="plan2-opt">
           <details className="plan2-optnote-d">
