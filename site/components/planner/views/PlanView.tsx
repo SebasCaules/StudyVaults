@@ -2221,17 +2221,19 @@ export default function PlanView() {
         </div>
       )}
 
+      {/* Observaciones plegadas por default: el contador del summary ya dice
+          cuántas hay; el detalle se abre a demanda. */}
       {warns.length > 0 && (
-        <div className="plan2-warns">
-          <span className="plan2-warns__h">
+        <details className="plan2-warns">
+          <summary className="plan2-warns__h">
             Observaciones <i>{warns.length}</i>
-          </span>
+          </summary>
           {warns.map((w, i) => (
             <div className="plan2-warn" key={i}>
               {w}
             </div>
           ))}
-        </div>
+        </details>
       )}
 
       <details className="plan2-pool" id="planPool" open>

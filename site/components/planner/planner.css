@@ -1018,18 +1018,27 @@
 .planner .plan2-empty svg{color:var(--line-2)}
 .planner .plan2-empty p{margin:0;color:var(--muted);font-size:14px}
 
-/* warnings */
+/* warnings — <details> plegado por default; el summary lleva el contador */
 .planner .plan2-warns{
   margin-top:18px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;
   border:1px solid color-mix(in srgb,var(--oxblood) 30%,var(--line));border-radius:var(--r);
   background:color-mix(in srgb,var(--oxblood) 5%,transparent);
   border-left:3px solid var(--oxblood);
 }
+.planner .plan2-warns:not([open]){padding:10px 16px}
 .planner .plan2-warns__h{
   display:flex;align-items:center;gap:8px;
   font-family:var(--f-m);font-size:10px;font-weight:600;letter-spacing:.12em;
   text-transform:uppercase;color:var(--oxblood);
+  cursor:pointer;list-style:none;user-select:none;
 }
+.planner .plan2-warns__h::-webkit-details-marker{display:none}
+.planner .plan2-warns__h::after{
+  content:"";width:6px;height:6px;margin-left:2px;
+  border-right:1.4px solid currentColor;border-bottom:1.4px solid currentColor;
+  transform:rotate(45deg) translateY(-1px);transition:transform .18s;
+}
+.planner .plan2-warns[open] .plan2-warns__h::after{transform:rotate(-135deg)}
 .planner .plan2-warns__h i{
   font-style:normal;background:color-mix(in srgb,var(--oxblood) 16%,transparent);
   border-radius:999px;min-width:16px;text-align:center;padding:1px 6px;font-size:9.5px;
