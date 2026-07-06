@@ -10,6 +10,7 @@ import {
   saveFinalDone,
   saveFinalesCombo,
   saveFixedCom,
+  saveIntroDismissed,
   saveLocked,
   saveLockPins,
   savePlanOpts,
@@ -200,13 +201,48 @@ function PlannerInner() {
   useEffect(() => {
     if (state.hydrated) saveSidebar(state.sideCollapsed);
   }, [state.sideCollapsed, state.hydrated]);
+  useEffect(() => {
+    if (state.hydrated) saveIntroDismissed(state.introDismissed);
+  }, [state.introDismissed, state.hydrated]);
 
   const View = VIEWS[state.view];
+
+  // Banner de primer uso: usuario sin nada marcado y que no lo cerró. Se va
+  // solo al marcar la primera materia (approved.size > 0) o con la ×.
+  const showIntro =
+    state.hydrated && state.approved.size === 0 && !state.introDismissed;
 
   return (
     <div className={`planner${state.sideCollapsed ? " side-collapsed" : ""}`}>
       <h1 className="sr-only">Planificador de electivas</h1>
       <Topbar />
+      {showIntro && (
+        <div className="first-run" role="note">
+          <p className="first-run__txt">
+            <b>Empezá por acá:</b> marcá las materias que ya aprobaste — un
+            toque = cursada (✓), dos = final aprobado (✓✓). El resto del
+            planner se arma solo.
+          </p>
+          {state.view !== "cuatri" && (
+            <button
+              type="button"
+              className="first-run__go"
+              onClick={() => dispatch({ type: "SET_VIEW", view: "cuatri" })}
+            >
+              Marcar mis aprobadas
+            </button>
+          )}
+          <button
+            type="button"
+            className="first-run__x"
+            aria-label="Cerrar esta guía"
+            title="No volver a mostrar"
+            onClick={() => dispatch({ type: "DISMISS_INTRO" })}
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="shell">
         <Sidebar />
         <div className="main">

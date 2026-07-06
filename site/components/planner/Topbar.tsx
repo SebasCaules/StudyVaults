@@ -55,6 +55,13 @@ export default function Topbar() {
 
   return (
     <header className="topbar">
+      {/* Sin materias marcadas la tira sería un muro de ceros que no informa
+          nada: se muestra recién cuando hay progreso (el banner de primer uso
+          ocupa ese lugar mientras tanto). El div vacío conserva el layout
+          space-between. */}
+      {approved.size === 0 ? (
+        <div aria-hidden="true" />
+      ) : (
       <div className="statline">
         <span className="statline__it">
           <b>{statCreditos}</b> cr aprobados
@@ -66,13 +73,14 @@ export default function Topbar() {
         </span>
         <span className="statline__sep" aria-hidden="true" />
         <span className="statline__it">
-          <b>{statDisp}</b> disponibles
+          <b>{statDisp}</b> cursables
         </span>
         <span className="statline__sep" aria-hidden="true" />
         <span className="statline__it">
           <b>{statRestan}</b> oblig. restantes
         </span>
       </div>
+      )}
       <button
         type="button"
         className={`share-btn${copied ? " is-copied" : ""}`}

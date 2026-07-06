@@ -82,6 +82,7 @@ export function initialState(): PlannerState {
     drawerCode: null,
     fichaCode: null,
     finales: initialFinales(),
+    introDismissed: false,
     hydrated: false,
   };
 }
@@ -119,6 +120,7 @@ export type Action =
   | { type: "PLAN_SAVE_PREFERENCE"; codes: string[]; idx?: number }
   | { type: "PLAN_RESET" }
   | { type: "RESET_APPROVED" }
+  | { type: "DISMISS_INTRO" }
   | { type: "TOGGLE_SIDEBAR" }
   | { type: "OPEN_DRAWER"; code: string }
   | { type: "CLOSE_DRAWER" }
@@ -193,6 +195,8 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
             : s.plan.capMatByIdx,
         },
         sideCollapsed: p.sideCollapsed,
+        // una vez cerrado, cerrado queda (un import de preferencias no lo revive)
+        introDismissed: p.introDismissed || s.introDismissed,
         hydrated: true,
       };
     }
@@ -390,6 +394,8 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
         },
       };
     }
+    case "DISMISS_INTRO":
+      return { ...s, introDismissed: true };
     case "TOGGLE_SIDEBAR":
       return { ...s, sideCollapsed: !s.sideCollapsed };
     case "OPEN_DRAWER":

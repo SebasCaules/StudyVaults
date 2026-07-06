@@ -26,6 +26,7 @@ const K = {
   fixedCom: "plan_fixed_com_v1",
   planOpts: "plan_opts_v1",
   finalesCombo: "plan_finales_combo_v1",
+  introDismissed: "plan_intro_dismissed_v1",
 } as const;
 
 export interface PlanOpts {
@@ -64,6 +65,8 @@ export interface Persisted {
   planOpts: PlanOpts | null;
   finales: PersistedFinales | null;
   sideCollapsed: boolean;
+  /** banner de primer uso cerrado (flag simple, como sideCollapsed). */
+  introDismissed: boolean;
 }
 
 function read<T>(key: string): T | null {
@@ -95,6 +98,13 @@ export function loadPersisted(): Persisted {
     sideCollapsed: ((): boolean => {
       try {
         return localStorage.getItem(K.sidebar) === "1";
+      } catch {
+        return false;
+      }
+    })(),
+    introDismissed: ((): boolean => {
+      try {
+        return localStorage.getItem(K.introDismissed) === "1";
       } catch {
         return false;
       }
@@ -139,6 +149,13 @@ export const savePlanOpts = (o: PlanOpts) => write(K.planOpts, o);
 export const saveSidebar = (collapsed: boolean) => {
   try {
     localStorage.setItem(K.sidebar, collapsed ? "1" : "0");
+  } catch {
+    /* noop */
+  }
+};
+export const saveIntroDismissed = (dismissed: boolean) => {
+  try {
+    localStorage.setItem(K.introDismissed, dismissed ? "1" : "0");
   } catch {
     /* noop */
   }
@@ -345,5 +362,8 @@ export function parsePreferences(text: string): Persisted | null {
     planOpts,
     finales: parseFinales(b.finales),
     sideCollapsed: typeof b.sideCollapsed === "boolean" ? b.sideCollapsed : false,
+    // quien importa preferencias no es un primer uso: no revivir el banner
+    // (HYDRATE además hace OR con el estado actual).
+    introDismissed: true,
   };
 }

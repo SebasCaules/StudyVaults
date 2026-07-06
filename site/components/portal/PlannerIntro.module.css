@@ -120,6 +120,49 @@
 .btnIcon svg { width: 17px; height: 17px; transition: transform var(--dur-fast) var(--ease); }
 .btn:hover .btnIcon svg { transform: translateX(3px); }
 
+/* ---------- CÓMO EMPEZAR (3 pasos) ---------- */
+.how {
+  padding: var(--s-6) 0;
+  border-top: 1px solid var(--hairline);
+}
+.howTitle {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
+  margin: 0 0 var(--s-4);
+  color: var(--text-primary);
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-4);
+}
+.step { min-width: 0; }
+.stepNum {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--accent-text);
+  margin-bottom: 8px;
+}
+.stepTitle {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.15rem;
+  margin: 0 0 6px;
+  color: var(--text-primary);
+}
+.stepDek {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  max-width: 40ch;
+}
+
 /* ---------- FEATURES ---------- */
 .feature {
   padding: var(--s-6) 0;
@@ -557,6 +600,7 @@
     gap: var(--s-3);
   }
   .heroTitle { max-width: none; }
+  .steps { grid-template-columns: 1fr; gap: var(--s-3); }
 }
 @media (max-width: 620px) {
   .ctaCard { flex-direction: column; align-items: flex-start; }

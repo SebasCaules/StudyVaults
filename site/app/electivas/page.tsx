@@ -4,7 +4,7 @@ import PlannerIntro from "@/components/portal/PlannerIntro";
 export const metadata: Metadata = {
   title: "Planificador de electivas — cómo funciona",
   description:
-    "Armá tu carrera cuatrimestre por cuatrimestre: correlativas, minors, combinador de horarios y de finales, todo en una vista. Conocé cada feature y abrí el planificador.",
+    "Marcá tus materias aprobadas y armá tu cursada: correlativas, horarios y finales sin choques, cuatrimestre por cuatrimestre. Sin cuenta — se guarda en tu navegador.",
 };
 
 /** Pseudo-landing de electivas: explica cada feature con animaciones y baja al

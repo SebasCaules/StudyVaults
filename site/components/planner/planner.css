@@ -69,6 +69,36 @@
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
 }
 
+/* ===================== BANNER DE PRIMER USO ===================== */
+/* Una sola línea entre topbar y shell; visible solo sin materias marcadas
+   y hasta que el usuario la cierre (persistido). */
+.planner .first-run{
+  display:flex;align-items:center;gap:14px;
+  margin:12px clamp(16px,3vw,44px) 0;padding:10px 14px;
+  border:1px solid var(--line);border-left:2px solid var(--brass);
+  border-radius:var(--r);background:var(--panel);
+}
+.planner .first-run__txt{margin:0;font-size:13px;color:var(--ink-soft)}
+.planner .first-run__txt b{color:var(--ink)}
+.planner .first-run__go{
+  flex:none;margin-left:auto;padding:7px 12px;white-space:nowrap;
+  border-radius:var(--r);border:1px solid var(--brass);
+  background:var(--brass-soft);color:var(--ink);
+  font-family:var(--f-b);font-size:12.5px;cursor:pointer;transition:.15s;
+}
+.planner .first-run__go:hover{background:var(--brass);color:var(--block-ink)}
+.planner .first-run__x{
+  flex:none;width:26px;height:26px;border:none;background:transparent;
+  color:var(--muted);font-size:17px;line-height:1;cursor:pointer;border-radius:6px;
+}
+.planner .first-run__x:hover{background:var(--panel-2);color:var(--ink)}
+/* sin botón "ir" (ya estás en Mis materias), la × va al borde derecho */
+.planner .first-run__txt + .first-run__x{margin-left:auto}
+@media (max-width:640px){
+  .planner .first-run{flex-wrap:wrap}
+  .planner .first-run__go{margin-left:0}
+}
+
 /* Tira de métricas inline en una fila (~37px de alto) — reemplaza las 4
    tarjetas .stats/.stat: mismo dato, mucho menos alto vertical. */
 .planner .statline{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 20px}
@@ -1492,6 +1522,9 @@
 
 /* — Navegación: índice numerado SIN caja (el héroe, limpio) — */
 .planner .side .views{display:flex;flex-direction:column;gap:1px;border:none;border-radius:0;background:transparent;overflow:visible}
+/* rótulos de grupo del nav: "Tu plan" (flujo numerado) / "Consultar" (utilidades) */
+.planner .side .views__h{display:block;padding-left:11px;margin-bottom:6px;font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--faint)}
+.planner .side .views__h--sep{margin-top:16px}
 .planner .side .view{display:flex;align-items:center;gap:11px;padding:9px 11px;border:none;border-radius:7px;font-size:13.5px;color:var(--muted)}
 .planner .side .view::before{display:none}
 .planner .side .view__ix{flex:none;width:15px;font-family:var(--f-m);font-size:10px;letter-spacing:.04em;color:var(--faint);transition:color .16s}

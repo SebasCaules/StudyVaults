@@ -478,35 +478,103 @@ export default function PlannerIntro() {
               Armá tu carrera, <em>cuatrimestre por cuatrimestre</em>
             </h1>
             <p className={s.heroDek}>
-              Un plan completo, un horario armado y las correlativas resueltas —
-              antes de que te anotes a nada.
+              Marcá lo que ya aprobaste y armá tu cursada — correlativas,
+              horarios y finales, sin choques y antes de anotarte.
             </p>
             <div className={s.heroCtas}>
               <Link href={APP_HREF} className={cx(s.btn, s.btnPrimary)}>
                 Abrir planificador
                 <span className={s.btnIcon}>{arrow}</span>
               </Link>
-              <a href="#features" className={cx(s.btn, s.btnGhost)}>
-                Ver las herramientas
+              <a href="#como-empezar" className={cx(s.btn, s.btnGhost)}>
+                Cómo funciona
               </a>
             </div>
             <div className={cx(s.heroMeta, s.mono)}>
-              <span>
-                <b>6</b> herramientas en una sola vista
-              </span>
-              <span>Se adapta a tus preferencias</span>
+              <span>Sin cuenta — se guarda en tu navegador</span>
               <span>Pensado para ITBA</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURES */}
+      {/* CÓMO EMPEZAR — el paso 0 que la app requiere: marcar aprobadas.
+          Sin reveal por IntersectionObserver: es contenido de orientación,
+          tiene que estar visible siempre. */}
+      <section className={s.how} id="como-empezar">
+        <div className={s.wrap}>
+          <div className={s.heroEyebrow}>Cómo funciona</div>
+          <h2 className={s.howTitle}>Empezá marcando lo que ya aprobaste</h2>
+          <ol className={s.steps}>
+            <li className={s.step}>
+              <span className={cx(s.stepNum, s.mono)}>01</span>
+              <h3 className={s.stepTitle}>Marcá tus aprobadas</h3>
+              <p className={s.stepDek}>
+                Tildá las materias que ya cursaste. Es el punto de partida del
+                planificador.
+              </p>
+            </li>
+            <li className={s.step}>
+              <span className={cx(s.stepNum, s.mono)}>02</span>
+              <h3 className={s.stepTitle}>Elegí tus electivas</h3>
+              <p className={s.stepDek}>
+                Explorá la oferta con las correlativas ya resueltas y sumá las
+                que te interesan.
+              </p>
+            </li>
+            <li className={s.step}>
+              <span className={cx(s.stepNum, s.mono)}>03</span>
+              <h3 className={s.stepTitle}>Combiná horarios y finales</h3>
+              <p className={s.stepDek}>
+                El planificador arma tu cuatrimestre y tu turno de finales, sin
+                choques.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      {/* FEATURES — en el orden del flujo real: correlativas → horarios →
+          plan completo → finales → minors → compartir. */}
       <div id="features">
         <section className={s.feature}>
           <div className={cx(s.wrap, s.featureGrid)}>
             <FeatureText
-              eyebrow="01 — Optimizador de plan"
+              eyebrow="01 — Correlativas"
+              icon={ICON.corr}
+              title="El árbol de correlativas, resuelto de un vistazo"
+            >
+              Cada materia muestra de qué depende y qué desbloquea. Los nodos
+              disponibles se distinguen al toque de los que todavía tenés que
+              esperar.
+            </FeatureText>
+            <div className={s.featureVisual}>
+              <CorrVisual />
+            </div>
+          </div>
+        </section>
+
+        <section className={s.feature}>
+          <div className={cx(s.wrap, s.featureGrid, s.reverse)}>
+            <FeatureText
+              eyebrow="02 — Combinador de horarios"
+              icon={ICON.week}
+              title="Armá un cuatrimestre y mirá cómo queda la semana"
+            >
+              Elegís las materias y las comisiones, y el calendario semanal se
+              arma solo — con los cruces de horario resueltos antes de que
+              existan.
+            </FeatureText>
+            <div className={s.featureVisual}>
+              <WeekVisual />
+            </div>
+          </div>
+        </section>
+
+        <section className={s.feature}>
+          <div className={cx(s.wrap, s.featureGrid)}>
+            <FeatureText
+              eyebrow="03 — Optimizador de plan"
               icon={ICON.optim}
               title="Un optimizador ordena toda tu carrera"
               extra={
@@ -532,40 +600,6 @@ export default function PlannerIntro() {
             </FeatureText>
             <div className={s.featureVisual}>
               <PlanVisual />
-            </div>
-          </div>
-        </section>
-
-        <section className={s.feature}>
-          <div className={cx(s.wrap, s.featureGrid, s.reverse)}>
-            <FeatureText
-              eyebrow="02 — Correlativas"
-              icon={ICON.corr}
-              title="El árbol de correlativas, resuelto de un vistazo"
-            >
-              Cada materia muestra de qué depende y qué desbloquea. Los nodos
-              disponibles se distinguen al toque de los que todavía tenés que
-              esperar.
-            </FeatureText>
-            <div className={s.featureVisual}>
-              <CorrVisual />
-            </div>
-          </div>
-        </section>
-
-        <section className={s.feature}>
-          <div className={cx(s.wrap, s.featureGrid)}>
-            <FeatureText
-              eyebrow="03 — Combinador de horarios"
-              icon={ICON.week}
-              title="Armá un cuatrimestre y mirá cómo queda la semana"
-            >
-              Elegís las materias y las comisiones, y el calendario semanal se
-              arma solo — con los cruces de horario resueltos antes de que
-              existan.
-            </FeatureText>
-            <div className={s.featureVisual}>
-              <WeekVisual />
             </div>
           </div>
         </section>
@@ -628,11 +662,10 @@ export default function PlannerIntro() {
           <div className={s.ctaCard}>
             <div className={s.ctaGlow} aria-hidden="true" />
             <div className={s.ctaCopy}>
-              <span className={cx(s.ctaEyebrow, s.mono)}>Todo en una vista</span>
+              <span className={cx(s.ctaEyebrow, s.mono)}>Listo para armarlo</span>
               <h2 className={s.ctaTitle}>Armá tu cursada en minutos</h2>
               <p className={s.ctaDek}>
-                Correlativas, horarios, minors y finales, cuatrimestre por
-                cuatrimestre. Sin instalar nada.
+                Sin cuenta ni instalar nada — empezás marcando tus aprobadas.
               </p>
             </div>
             <Link href={APP_HREF} className={cx(s.btn, s.btnPrimary, s.btnLg)}>

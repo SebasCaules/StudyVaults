@@ -10,12 +10,17 @@ import type { ViewKey } from "@/lib/planner/types";
 // créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
 const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
 
-const VIEWS: { view: ViewKey; label: string }[] = [
-  { view: "cuatri", label: "Plan por cuatrimestre" },
+// Dos grupos: el FLUJO real (numerado, en orden de uso) y las utilidades de
+// consulta (sin número — no son pasos). "Mis materias" es la puerta de
+// entrada: ahí se marca lo aprobado y el resto se recalcula.
+const FLOW_VIEWS: { view: ViewKey; label: string }[] = [
+  { view: "cuatri", label: "Mis materias" },
   { view: "elect", label: "Electivas" },
   { view: "combo", label: "Combinador de horarios" },
-  { view: "finales", label: "Combinador de finales" },
   { view: "plan", label: "Plan de cursada" },
+  { view: "finales", label: "Combinador de finales" },
+];
+const REF_VIEWS: { view: ViewKey; label: string }[] = [
   { view: "grafo", label: "Correlativas" },
   { view: "ref", label: "Referencias" },
 ];
@@ -72,11 +77,14 @@ export default function Sidebar() {
   const ec = useMemo(() => electiveCredits(approved), [approved]);
 
   // Sidebar modular: cada vista muestra solo los controles que consume.
-  //  · búsqueda + filtros → "Plan por cuatrimestre" y "Electivas".
+  //  · búsqueda → "Mis materias" y "Electivas" (buscar un código para tildar).
+  //  · checkboxes de filtro → solo "Electivas" (en "Mis materias" querés VER
+  //    todas las obligatorias para marcarlas, no filtrarlas).
   //  · áreas/minors + gauge de electivas → solo "Electivas".
-  //  · el resto de las vistas (combinador/plan/correlativas/referencias) tienen
-  //    su propia búsqueda interna, así que el rail queda solo con la navegación.
-  const showFilters = view === "cuatri" || view === "elect";
+  //  · el resto de las vistas tienen su propia búsqueda interna, así que el
+  //    rail queda solo con la navegación.
+  const showSearch = view === "cuatri" || view === "elect";
+  const showFilters = view === "elect";
   const showElect = view === "elect";
 
   return (
@@ -107,7 +115,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {showFilters && (
+      {showSearch && (
         <div className="field">
           <svg
             className="field__ic"
@@ -132,7 +140,8 @@ export default function Sidebar() {
       )}
 
       <nav className="views">
-        {VIEWS.map((v, i) => (
+        <span className="views__h">Tu plan</span>
+        {FLOW_VIEWS.map((v, i) => (
           <button
             key={v.view}
             className={"view" + (view === v.view ? " is-active" : "")}
@@ -141,6 +150,16 @@ export default function Sidebar() {
             <span className="view__ix" aria-hidden="true">
               {String(i + 1).padStart(2, "0")}
             </span>
+            <span className="view__lb">{v.label}</span>
+          </button>
+        ))}
+        <span className="views__h views__h--sep">Consultar</span>
+        {REF_VIEWS.map((v) => (
+          <button
+            key={v.view}
+            className={"view" + (view === v.view ? " is-active" : "")}
+            onClick={() => dispatch({ type: "SET_VIEW", view: v.view })}
+          >
             <span className="view__lb">{v.label}</span>
           </button>
         ))}
@@ -157,7 +176,7 @@ export default function Sidebar() {
                 dispatch({ type: "SET_FILTER", key: "fDisp", value: e.target.checked })
               }
             />
-            <span>Solo disponibles</span>
+            <span>Solo cursables</span>
           </label>
           <label className="chk">
             <input
@@ -227,7 +246,7 @@ export default function Sidebar() {
         </>
       )}
 
-      {showFilters && (
+      {showSearch && approved.size > 0 && (
         <button
           className="reset"
           onClick={() => {

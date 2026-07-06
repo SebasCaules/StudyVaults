@@ -265,6 +265,9 @@ export interface PlannerState {
   fichaCode: string | null; // electiva abierta en el lector full-screen (efímero, sin persistir)
   /** estado del combinador de finales (período, mesas, selección). */
   finales: FinalesState;
+  /** banner de primer uso ("marcá tus aprobadas") cerrado por el usuario —
+   *  persistido para no volver a mostrarlo. */
+  introDismissed: boolean;
   hydrated: boolean;
 }
 
