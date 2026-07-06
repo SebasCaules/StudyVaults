@@ -973,13 +973,16 @@ export default function CombinadorView() {
           ocultas y ofrece encender el switch sin ir a buscarlo al header. */}
       {!comboSolo && hiddenApproved > 0 && (
         <p className="cmb9-hiddenhint">
-          Tus {hiddenApproved} aprobadas no aparecen ·{" "}
+          {hiddenApproved === 1
+            ? "Tu materia aprobada no aparece"
+            : `Tus ${hiddenApproved} aprobadas no aparecen`}{" "}
+          ·{" "}
           <button
             type="button"
             className="cmb9-hiddenhint__btn"
             onClick={() => dispatch({ type: "SET_COMBO_SOLO", value: true })}
           >
-            mostrarlas igual
+            {hiddenApproved === 1 ? "mostrarla igual" : "mostrarlas igual"}
           </button>
         </p>
       )}

@@ -551,10 +551,12 @@
 }
 /* sub-header {año · cuatri}: más tenue que el header de grupo, sin dot, con
    sangría leve; STICKY dentro del scroll de .cmb-list (fondo opaco = el del
-   picker, para que las filas pasen por debajo sin verse a través) */
+   picker, para que las filas pasen por debajo sin verse a través).
+   top:-8px = compensa el padding de .cmb-list: pineado al ras del borde visual,
+   sin que las filas salientes asomen en la franja del padding. */
 .planner .cmb9-subh {
   position: sticky;
-  top: 0;
+  top: -8px;
   z-index: 1;
   display: flex;
   align-items: baseline;
