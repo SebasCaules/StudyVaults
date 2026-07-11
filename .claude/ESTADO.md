@@ -21,6 +21,24 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
+- **REWORK HCI EJECUTADO — 71/73 hallazgos resueltos y verificados** (2026-07-11, olas 0–5 +
+  cierre): 19 carriles de implementación Opus sobre archivos disjuntos + verificación adversarial
+  POR OLA (default refutado, contra el build estático en :8734) + repro final de los 9 P0/P1
+  originales re-ejecutando el síntoma de la auditoría (9/9 RESUELTO; 0 errores de consola en 12
+  superficies). 18 commits locales `6a98b68..2d54805`, **SIN push** (decisión del usuario).
+  Lo grande: búsqueda global reparada e índice ampliado a 821 páginas con filtro de materia;
+  landing resiliente sin WebGL (error.tsx + HeroFallback + gate de three.js); R1 un-solo-modelo
+  (combinar→plan + siembra del combinador + léxico); persistencia validada por clave +
+  PlannerErrorBoundary; tokens AA (--text-secondary-strong, --status-*-text; DESIGN.md sync
+  md5 e6291bb…); perf (cards memoizadas, recomendador diferido); primera corrida del Plan
+  enfocada; mobile sin scroll lateral (tira de nav con scroll propio); drawer por detalle
+  creciente; foco de modales (⌘K/FichaReader). Fixes de overseer entre olas: Escape global del
+  drawer, filtro de áreas «solo», 3 causas de desborde mobile, pills AA del drawer.
+  **Queda**: PRF-003 DIFERIDO (fichas.ts es WIP de otra sesión); POR-009 descartado con racional;
+  residual CON-001 (strings internos de tools inge2/paw en castellano — pase i18n dedicado).
+  OJO: FichaReader.tsx (foco) quedó implementado por OTRA sesión, sin commitear — verificado en
+  el build pero NO es de esta corrida; no commitearlo por ella. Devolución con antes/después:
+  artifact «auditoria-hci-devolucion» (misma URL, capturas del build final).
 - **Auditoría CONCEPTUAL de electivas — COMPLETA** (2026-07-11, Parte 2 del plan): 6 lentes
   (economía espacial / jerarquía vs importancia / arquitectura de tareas / costo de interacción /
   divulgación progresiva / walkthrough con personas) + jefe + verificación adversarial de todos
