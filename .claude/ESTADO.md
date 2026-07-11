@@ -21,6 +21,14 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
+- **Auditoría CONCEPTUAL de electivas — COMPLETA** (2026-07-11, Parte 2 del plan): 6 lentes
+  (economía espacial / jerarquía vs importancia / arquitectura de tareas / costo de interacción /
+  divulgación progresiva / walkthrough con personas) + jefe + verificación adversarial de todos
+  los no-bajos. **14 hallazgos sobreviven** (1 alto: CPT-01 — dos sets de selección desconectados
+  combo vs plan.pool, «combinar» NO agrega al plan; 9 medios, 4 bajos), 1 refutado con experimento
+  de falsificación. Desenfoque raíz: el planner está organizado por piezas del implementador, no
+  por fases del estudiante. **6 reformas R1–R6 en la Parte 2 de `.plans/plan-rework-hci-2026-07.md`**
+  (⚠ R1 toca state.tsx: coordinar con tandas T3/T7 antes de ejecutar).
 - **Auditoría HCI/UX-UI integral — COMPLETA y verificada** (2026-07-10/11): pipeline
   jerárquico (corpus de 132 capturas + axe + perf sobre build de `38fbba6` → 15 workers
   especializados + 6 jefes → 21 verificadores adversariales; 42 agentes Opus). Resultado:
