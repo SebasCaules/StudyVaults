@@ -76,20 +76,6 @@ function comSummary(cm: Comision): string {
   return parts.length ? parts.join(" · ") : comModalidad(cm) || "";
 }
 
-/** Render de un texto multi-párrafo (separado por "\n\n") como <p> apilados. */
-function Prose({ text }: { text: string }) {
-  if (!text) return null;
-  return (
-    <>
-      {text.split("\n\n").map((p, i) => (
-        <p key={i} className="dr-prose">
-          {p}
-        </p>
-      ))}
-    </>
-  );
-}
-
 // ---- descarga del detalle como HTML autocontenido ----
 
 const esc = (s: unknown): string =>
@@ -341,70 +327,10 @@ function FichaSection({ ficha }: { ficha: Ficha }) {
         </div>
       ) : null}
 
-      {ficha.objetivos ? (
-        <div className="dr-ficha__block">
-          <h5>Objetivos de aprendizaje</h5>
-          <Prose text={ficha.objetivos} />
-        </div>
-      ) : null}
-
-      {ficha.contenidosMinimos ? (
-        <div className="dr-ficha__block">
-          <h5>Contenidos mínimos</h5>
-          <Prose text={ficha.contenidosMinimos} />
-        </div>
-      ) : null}
-
-      {ficha.evaluacion ? (
-        <div className="dr-ficha__block dr-eval">
-          <h5>Modalidad de evaluación</h5>
-          <Prose text={ficha.evaluacion} />
-        </div>
-      ) : null}
-
-      {ficha.programa.length ? (
-        <details className="dr-details">
-          <summary>Temario · {ficha.programa.length} unidades</summary>
-          <ul className="dr-units">
-            {ficha.programa.map((u, i) => (
-              <li key={i}>
-                <b>{u.titulo}</b>
-                {u.descripcion ? <span> — {u.descripcion}</span> : null}
-              </li>
-            ))}
-          </ul>
-        </details>
-      ) : null}
-
-      {ficha.bibliografiaObligatoria.length ||
-      ficha.bibliografiaComplementaria.length ? (
-        <details className="dr-details">
-          <summary>Bibliografía</summary>
-          <div className="dr-details__body">
-            {ficha.bibliografiaObligatoria.length ? (
-              <>
-                <h5>Obligatoria</h5>
-                <ul className="dr-biblio">
-                  {ficha.bibliografiaObligatoria.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </>
-            ) : null}
-            {ficha.bibliografiaComplementaria.length ? (
-              <>
-                <h5>Complementaria</h5>
-                <ul className="dr-biblio">
-                  {ficha.bibliografiaComplementaria.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </>
-            ) : null}
-          </div>
-        </details>
-      ) : null}
-
+      {/* La prosa del programa analítico (objetivos, contenidos, evaluación,
+          temario, bibliografía) vive completa en el FichaReader (nivel 3). El
+          drawer se queda en el resumen operativo: identidad, carga horaria y el
+          puente a la ficha. */}
       <div className="dr-ficha__acts">
         <button
           type="button"
@@ -414,7 +340,7 @@ function FichaSection({ ficha }: { ficha: Ficha }) {
             dispatch({ type: "CLOSE_DRAWER" });
           }}
         >
-          Leer ficha completa <IconArrowUpRight size={13} />
+          Leer el programa completo <IconArrowUpRight size={13} />
         </button>
         <a
           className="dr-pdf"
@@ -478,6 +404,9 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
   const avail = isAvailable(m, state.approved);
   const hor = m.horario;
   const inCombo = state.combo.has(code);
+  // guard del puente combinar→plan (mismo que la card de Electivas): una materia
+  // ya aprobada nunca entra al plan, sólo queda en el combinador.
+  const isApproved = state.approved.has(code);
   const coms = hor?.comisiones ?? [];
   const hasComs = coms.length > 0;
 
@@ -574,9 +503,10 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
 
           {/* cuerpo con margen interno: el contenido no toca los bordes. */}
           <div className="dd-body">
-            {/* identidad: código · título serif · meta mono con separadores.
-                La cursabilidad sube a primer nivel (pill junto al código). */}
+            {/* identidad: nombre serif protagonista arriba; código+abbr como
+                metadata mono debajo, en la misma fila que la cursabilidad. */}
             <header className="dd-head">
+              <h3 className="dr-title">{m.nombre}</h3>
               <div className="dd-head__top">
                 <span className={"dr-code " + (ob ? "ob" : "")}>
                   {m.codigo} · {m.abbr}
@@ -599,7 +529,6 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
                   <span className="dd-req">requiere {m.creditosReq} cr</span>
                 ) : null}
               </div>
-              <h3 className="dr-title">{m.nombre}</h3>
               <div className="dd-meta">
                 {metaItems.map((it, i) => (
                   <span className="dd-meta__item" key={i}>
@@ -633,16 +562,21 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
               </div>
               {hasComs ? (
                 <button
-                  className={"mini btn-co " + (inCombo ? "on plan" : "")}
+                  className={"mini btn-co" + (inCombo ? " on plan" : "")}
+                  title={
+                    inCombo
+                      ? isApproved
+                        ? "En el combinador (ya la aprobaste: no entra al plan) · tocá para quitar"
+                        : "En tu plan y en el combinador · tocá para quitar del combinador"
+                      : "Combinar: arma tu semana y la suma a tu plan"
+                  }
                   onClick={() => dispatch({ type: "TOGGLE_COMBO", code })}
                 >
-                  {inCombo ? (
-                    <>
-                      <IconCheck size={13} /> en combinador
-                    </>
-                  ) : (
-                    "al combinador"
-                  )}
+                  {inCombo
+                    ? isApproved
+                      ? "en combinador ✓"
+                      : "en tu plan ✓"
+                    : "combinar"}
                 </button>
               ) : null}
             </div>
@@ -680,6 +614,7 @@ function DrawerModal({ m, code }: { m: MateriaM; code: string }) {
                           <span
                             key={c}
                             className="tag"
+                            title={cm ? `${c} · ${cm.nombre}` : c}
                             style={
                               ok
                                 ? {

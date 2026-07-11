@@ -138,12 +138,14 @@
 .planner .dd-head {
   margin: 0;
 }
-/* fila superior de identidad: código + pill de cursabilidad + "requiere N cr" */
+/* fila de identidad (bajo el título): código+abbr mono + pill de cursabilidad
+   + "requiere N cr" */
 .planner .dd-head__top {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px 12px;
+  margin-top: 11px;
 }
 .planner .dd-body .dr-code {
   display: block;
@@ -185,8 +187,9 @@
   color: var(--muted);
   white-space: nowrap;
 }
+/* nombre = protagonista, primer elemento de la cabecera */
 .planner .dd-body .dr-title {
-  margin: 9px 0 0;
+  margin: 0;
   font-size: clamp(22px, 2.2cqi + 16px, 27px);
   line-height: 1.14;
 }
@@ -315,8 +318,15 @@
 .planner .dd-aside > .dr-ficha:first-child {
   margin-top: 0;
 }
+/* "qué es" = resumen de 1 párrafo; se acota a pocas líneas para que el drawer
+   sea un detalle operativo. La presentación completa vive en la ficha (nivel 3),
+   accesible por «Leer el programa completo». */
 .planner .dd-aside .dr-desc {
   margin-top: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* =========================================================================
