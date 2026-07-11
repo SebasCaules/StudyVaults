@@ -134,12 +134,41 @@ const unitRoots: SheetFigure = {
 </svg>`,
 };
 
-/** Catálogo de figuras por materia (se importa desde los módulos de datos). */
-export const FIG = {
+/* ──────────────────────────────────────────────────────────────────────────
+   Nombre accesible de cada SVG. Los `<svg role="img">` necesitan su PROPIO
+   nombre (axe: svg-img-alt): el `aria-label` del `<figure>` contenedor no cuenta
+   como nombre del svg. Se inyecta un `<title>` (primer hijo del svg) derivado del
+   `alt` de la figura, así el lector de pantalla anuncia el gráfico con contenido.
+   Puro y determinista → seguro en el server render del static export.
+   ────────────────────────────────────────────────────────────────────────── */
+function escapeXml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function withSvgTitle(fig: SheetFigure): SheetFigure {
+  const name = fig.alt;
+  // Ya trae <title> o no hay texto accesible → dejar como está.
+  if (!name || /<title[\s>]/.test(fig.svg)) return fig;
+  const svg = fig.svg.replace(
+    /(<svg\b[^>]*>)/,
+    `$1<title>${escapeXml(name)}</title>`,
+  );
+  return { ...fig, svg };
+}
+
+const RAW = {
   normalBell,
   boxplot,
   expDecay,
   supplyDemand,
   breakEven,
   unitRoots,
-} as const;
+};
+
+/** Catálogo de figuras por materia (se importa desde los módulos de datos). */
+export const FIG: Record<keyof typeof RAW, SheetFigure> = Object.fromEntries(
+  Object.entries(RAW).map(([k, v]) => [k, withSvgTitle(v)]),
+) as Record<keyof typeof RAW, SheetFigure>;

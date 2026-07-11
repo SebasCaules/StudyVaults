@@ -99,6 +99,20 @@ function flushFit() {
   }
 }
 
+/**
+ * Fuerza un ciclo de fit SÍNCRONO contra el layout actual (mide y aplica el zoom
+ * ya, sin esperar al rAF). Se usa justo antes de `window.print()`: la impresión
+ * captura el DOM en el momento, así que el zoom-to-fit debe estar aplicado sobre
+ * la densidad/columnas del papel antes de disparar el diálogo.
+ */
+export function forceFit(): void {
+  if (fitRaf) {
+    cancelAnimationFrame(fitRaf);
+    fitRaf = 0;
+  }
+  flushFit();
+}
+
 /** Alta de una fórmula en el controlador; devuelve la baja. */
 function registerFit(inner: HTMLElement): () => void {
   fitTargets.add(inner);

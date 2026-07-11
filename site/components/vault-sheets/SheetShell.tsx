@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Sheet, SheetEntry, SheetGroup } from "./types";
 import { defaultKind, KIND_META, type EntryKind } from "./types";
-import { Math, FitMath, RichText } from "./SheetMath";
+import { Math, FitMath, RichText, forceFit } from "./SheetMath";
 import { toTex, toMd, downloadText } from "./exporters";
 import { useUrlState, setOrDelete } from "@/lib/url-state/core";
 
@@ -43,6 +43,17 @@ const DENSITY_LABEL: Record<Density, string> = {
   wide: "Amplia",
   book: "Libro",
 };
+/** Qué hace cada densidad (tooltip: reconocer en vez de recordar). */
+const DENSITY_HINT: Record<Density, string> = {
+  compact: "Compacta — más columnas, menos páginas al imprimir",
+  normal: "Normal — equilibrio entre densidad y lectura",
+  wide: "Amplia — más aire entre ítems",
+  book: "Libro — una columna ancha, lectura en pantalla",
+};
+/** Ancla de una unidad para la mini-nav y el scroll interno. */
+function unitAnchor(unit: string): string {
+  return `sheet-u-${unit.replace(/[^\w.-]/g, "-")}`;
+}
 const KIND_ORDER: EntryKind[] = [
   "def",
   "theorem",
@@ -160,6 +171,46 @@ export default function SheetShell({
   const setOpts = (fn: (o: Opts) => Opts) =>
     setAllOpts((prev) => ({ ...prev, [base]: fn(prev[base] ?? baseDefault) }));
 
+  // Viewport angosto: por debajo de ~640px las columnas se apilan a anchos donde
+  // FitMath encoge las fórmulas hasta ilegibles → forzamos 1 columna en pantalla
+  // (independiente de `--sheet-cols`). No afecta impresión (papel A4) ni export.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const sync = () => setNarrow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  // Impresión desacoplada de la pantalla: `window.print()` siempre usa densidad
+  // compacta (menos hojas), sin importar qué densidad se ve. Mientras dura el
+  // ciclo de impresión el documento se renderiza compacto; se restaura al cerrar
+  // el diálogo (afterprint).
+  const [printOptimize, setPrintOptimize] = useState(false);
+  useEffect(() => {
+    const done = () => setPrintOptimize(false);
+    window.addEventListener("afterprint", done);
+    return () => window.removeEventListener("afterprint", done);
+  }, []);
+  useEffect(() => {
+    if (!printOptimize) return;
+    // Dos frames para que React aplique el layout compacto y luego un fit
+    // SÍNCRONO garantiza que el zoom-to-fit ya esté aplicado al disparar el print.
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        forceFit();
+        window.print();
+      });
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [printOptimize]);
+  const doPrint = () => setPrintOptimize(true);
+
   const units = useMemo(() => (sheet ? unitsOf(sheet) : []), [sheet]);
   const kinds = useMemo(() => (sheet ? usedKinds(sheet) : []), [sheet]);
 
@@ -181,7 +232,15 @@ export default function SheetShell({
 
   if (!sheet || !visibleSheet) return null;
 
-  const cols = colCount(opts, sheet.kind);
+  // Columnas para el EXPORT .tex: siguen la selección del usuario (el papel LaTeX
+  // no depende del viewport). Densidad/columnas del DOCUMENTO en pantalla: durante
+  // la impresión se fuerzan a compacto; en pantalla angosta se clampan a 1 columna.
+  const exportCols = colCount(opts, sheet.kind);
+  const effDensity: Density = printOptimize ? "compact" : opts.density;
+  const rawCols = printOptimize
+    ? colCount({ ...opts, density: "compact", cols: "auto" }, sheet.kind)
+    : exportCols;
+  const docCols = narrow && !printOptimize ? 1 : rawCols;
   const showTags = sheet.kind === "conceptos";
 
   return (
@@ -195,7 +254,9 @@ export default function SheetShell({
               <button
                 key={m}
                 role="tab"
+                id={`sheet-tab-${m}`}
                 aria-selected={m === mode}
+                aria-controls="sheet-tabpanel"
                 className={`sheet-seg__btn${m === mode ? " is-active" : ""}`}
                 onClick={() => setMode(m)}
               >
@@ -210,14 +271,15 @@ export default function SheetShell({
         <div className="sheet-actions">
           <button
             className="sheet-btn sheet-btn--primary"
-            onClick={() => window.print()}
+            title="Imprime siempre en densidad compacta (menos hojas), sin importar la densidad en pantalla"
+            onClick={doPrint}
           >
             <PrintIcon /> Imprimir / PDF
           </button>
           <button
             className="sheet-btn"
             onClick={() =>
-              downloadText(`${base}.tex`, toTex(visibleSheet, cols), "text/x-tex")
+              downloadText(`${base}.tex`, toTex(visibleSheet, exportCols), "text/x-tex")
             }
           >
             <DownIcon /> .tex
@@ -238,14 +300,67 @@ export default function SheetShell({
         setOpts={setOpts}
         units={units}
         kinds={kinds}
+        narrow={narrow}
       />
 
-      <div className="sheet-print-root">
+      {units.length > 1 && (
+        <nav
+          className="sheet-unitnav"
+          data-noprint
+          aria-label="Ir a una unidad"
+          style={{
+            position: "sticky",
+            top: "calc(var(--nav-h) + 8px)",
+            zIndex: 4,
+            display: "flex",
+            gap: "6px",
+            flexWrap: "nowrap",
+            overflowX: "auto",
+            padding: "8px",
+            margin: "0 -8px 14px",
+            borderRadius: "var(--r-ctrl)",
+            background: "color-mix(in srgb, var(--surface-2) 88%, transparent)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          {units.map(({ unit, title }) => {
+            const hidden = opts.hiddenUnits.includes(unit);
+            return (
+              <a
+                key={unit}
+                href={`#${unitAnchor(unit)}`}
+                className="sheet-chip is-active"
+                title={title ? `Unidad ${unit} · ${title}` : `Unidad ${unit}`}
+                aria-disabled={hidden || undefined}
+                style={{
+                  flex: "0 0 auto",
+                  textDecoration: "none",
+                  opacity: hidden ? 0.4 : undefined,
+                }}
+              >
+                U{unit}
+              </a>
+            );
+          })}
+        </nav>
+      )}
+
+      <div
+        className="sheet-print-root"
+        {...(modes.length > 1
+          ? {
+              id: "sheet-tabpanel",
+              role: "tabpanel",
+              tabIndex: 0,
+              "aria-labelledby": `sheet-tab-${mode}`,
+            }
+          : {})}
+      >
         <SheetDoc
           sheet={visibleSheet}
           showTags={showTags}
-          density={opts.density}
-          cols={cols}
+          density={effDensity}
+          cols={docCols}
         />
       </div>
     </div>
@@ -259,11 +374,14 @@ function Controls({
   setOpts,
   units,
   kinds,
+  narrow,
 }: {
   opts: Opts;
   setOpts: (fn: (o: Opts) => Opts) => void;
   units: { unit: string; title?: string }[];
   kinds: EntryKind[];
+  /** Viewport angosto: 3/4 columnas quedan ilegibles → se deshabilitan. */
+  narrow: boolean;
 }) {
   const toggle = (key: "hiddenUnits" | "hiddenKinds", v: string) =>
     setOpts((o) => {
@@ -284,6 +402,8 @@ function Controls({
             <button
               key={d}
               className={`sheet-seg__btn${opts.density === d ? " is-active" : ""}`}
+              title={DENSITY_HINT[d]}
+              aria-label={DENSITY_HINT[d]}
               onClick={() => setOpts((o) => ({ ...o, density: d }))}
             >
               {DENSITY_LABEL[d]}
@@ -295,15 +415,23 @@ function Controls({
       <div className="sheet-opts__row">
         <span className="sheet-opts__label">Columnas</span>
         <div className="sheet-seg sheet-seg--sm">
-          {(["auto", "2", "3", "4"] as Cols[]).map((c) => (
-            <button
-              key={c}
-              className={`sheet-seg__btn${opts.cols === c ? " is-active" : ""}`}
-              onClick={() => setOpts((o) => ({ ...o, cols: c }))}
-            >
-              {c === "auto" ? "Auto" : c}
-            </button>
-          ))}
+          {(["auto", "2", "3", "4"] as Cols[]).map((c) => {
+            // En pantallas angostas 3/4 columnas quedan ilegibles: se deshabilitan
+            // (el documento se fuerza a 1 columna igual).
+            const off = narrow && (c === "3" || c === "4");
+            return (
+              <button
+                key={c}
+                className={`sheet-seg__btn${opts.cols === c ? " is-active" : ""}`}
+                disabled={off}
+                title={off ? "No disponible en pantallas angostas" : undefined}
+                style={off ? { opacity: 0.4, cursor: "not-allowed" } : undefined}
+                onClick={() => setOpts((o) => ({ ...o, cols: c }))}
+              >
+                {c === "auto" ? "Auto" : c}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -313,6 +441,7 @@ function Controls({
           <div className="sheet-chips">
             <button
               className={`sheet-chip sheet-chip--all${allUnitsOn ? " is-active" : ""}`}
+              aria-label="Mostrar todas las unidades"
               onClick={() => setOpts((o) => ({ ...o, hiddenUnits: [] }))}
             >
               Todas
@@ -341,6 +470,7 @@ function Controls({
           <div className="sheet-chips">
             <button
               className={`sheet-chip sheet-chip--all${allKindsOn ? " is-active" : ""}`}
+              aria-label="Mostrar todas las categorías"
               onClick={() => setOpts((o) => ({ ...o, hiddenKinds: [] }))}
             >
               Todo
@@ -415,7 +545,11 @@ function SheetDoc({
             return (
               <Fragment key={gi}>
                 {showUnit && (
-                  <header className="sheet-unit">
+                  <header
+                    className="sheet-unit"
+                    id={unitAnchor(g.unit!)}
+                    style={{ scrollMarginTop: "calc(var(--nav-h) + 56px)" }}
+                  >
                     <span className="sheet-unit__num">{unitNum(g.unit!)}</span>
                     <div className="sheet-unit__titles">
                       <span className="sheet-unit__kicker">Unidad</span>
@@ -520,12 +654,11 @@ function Entry({
         </div>
       )}
       {entry.figure && (
-        <figure
-          className="sheet-figure"
-          aria-label={entry.figure.alt ?? entry.figure.caption ?? undefined}
-        >
+        <figure className="sheet-figure">
           {/* SVG estático e inline: seguro en static export (server render);
-              usa currentColor + tokens de rol, así respeta tema e impresión. */}
+              usa currentColor + tokens de rol, así respeta tema e impresión.
+              El nombre accesible lo lleva el propio <svg role="img"> vía un
+              <title> inyectado desde `alt` (ver data/figures.ts). */}
           <div
             className="sheet-figure__svg"
             dangerouslySetInnerHTML={{ __html: entry.figure.svg }}
