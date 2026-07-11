@@ -1,11 +1,94 @@
 "use client";
 
 import { useMemo, useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { usePlanner } from "./state";
+import { useModalFocus } from "./useModalFocus";
 import { PLAN, AREA_COLOR, credOf, byId } from "@/lib/planner/model";
 import { electiveCredits } from "@/lib/planner/metrics";
 import { MINOR_REQ } from "@/lib/planner/minors";
 import type { ViewKey } from "@/lib/planner/types";
+
+// Triángulo de aviso: mismo trazo que el reset del plan, para que ambas
+// confirmaciones destructivas del planner se vean idénticas.
+const IconWarnTri = ({ size = 21 }: { size?: number }) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.8}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 3.6 21 19.2H3L12 3.6Z" />
+    <path d="M12 10v4" />
+    <path d="M12 17h.01" />
+  </svg>
+);
+
+/** Confirmación de "restablecer materias aprobadas": mismo chrome y manejo de
+ *  foco que el reset del plan (antes era un window.confirm nativo, inconsistente
+ *  con el resto de las confirmaciones del planner). */
+function ResetApprovedConfirm({
+  onCancel,
+  onConfirm,
+}: {
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const panelRef = useModalFocus<HTMLDivElement>();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  if (typeof document === "undefined") return null;
+  return createPortal(
+    <div className="planner" style={{ padding: 0 }}>
+      <div
+        className="mnr-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sb-reset-title"
+      >
+        <div className="mnr-modal__bg" onClick={onCancel} />
+        <div className="pv-reset" ref={panelRef}>
+          <div className="pv-reset__icon">
+            <IconWarnTri />
+          </div>
+          <h3 id="sb-reset-title">¿Restablecer las materias aprobadas?</h3>
+          <p>
+            Todas las materias vuelven a pendiente y se recalcula el resto del
+            planner. Esta acción no se puede deshacer.
+          </p>
+          <div className="pv-reset__acts">
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={onCancel}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="btn btn--go btn--sm"
+              onClick={onConfirm}
+            >
+              Restablecer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 // créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
 const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
@@ -36,6 +119,7 @@ export default function Sidebar() {
 
   // Búsqueda con debounce ~140ms y timer local, como el original.
   const [searchInput, setSearchInput] = useState(search);
+  const [resetOpen, setResetOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Si el estado de búsqueda cambia desde fuera (p. ej. reset), refleja el input.
@@ -247,20 +331,19 @@ export default function Sidebar() {
       )}
 
       {showSearch && approved.size > 0 && (
-        <button
-          className="reset"
-          onClick={() => {
-            if (
-              !window.confirm(
-                "¿Restablecer todas las materias a pendiente? Esta acción no se puede deshacer."
-              )
-            )
-              return;
-            dispatch({ type: "RESET_APPROVED" });
-          }}
-        >
+        <button className="reset" onClick={() => setResetOpen(true)}>
           Restablecer materias aprobadas
         </button>
+      )}
+
+      {resetOpen && (
+        <ResetApprovedConfirm
+          onCancel={() => setResetOpen(false)}
+          onConfirm={() => {
+            dispatch({ type: "RESET_APPROVED" });
+            setResetOpen(false);
+          }}
+        />
       )}
 
       <p className="foot">

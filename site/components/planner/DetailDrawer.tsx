@@ -434,14 +434,17 @@ export default function DetailDrawer() {
   const code = state.drawerCode;
   const m = code ? byId.get(code) : undefined;
 
-  // cierre con Escape (hook siempre montado, antes de cualquier return)
+  // cierre con Escape — SOLO con el drawer abierto: un listener global siempre
+  // montado se come el Escape de los demás modales del planner (su re-suscripción
+  // por deps inestables corre a mitad del dispatch y el handler propio nunca llega).
   useEffect(() => {
+    if (!code) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") dispatch({ type: "CLOSE_DRAWER" });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [dispatch]);
+  }, [code, dispatch]);
 
   // Modal cerrado (sin código o materia inexistente): no renderiza nada.
   if (!code || !m) return null;

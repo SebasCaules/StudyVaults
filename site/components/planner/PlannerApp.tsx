@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { PlannerProvider, usePlanner } from "./state";
+import PlannerErrorBoundary from "./PlannerErrorBoundary";
 import {
   loadPersisted,
   saveApproved,
@@ -286,8 +287,10 @@ function PlannerInner() {
 
 export default function PlannerApp() {
   return (
-    <PlannerProvider>
-      <PlannerInner />
-    </PlannerProvider>
+    <PlannerErrorBoundary>
+      <PlannerProvider>
+        <PlannerInner />
+      </PlannerProvider>
+    </PlannerErrorBoundary>
   );
 }

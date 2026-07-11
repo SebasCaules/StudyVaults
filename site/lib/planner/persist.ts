@@ -81,18 +81,29 @@ function read<T>(key: string): T | null {
   }
 }
 
+/** Como `read`, pero descarta a `null` cualquier valor que no pase el guard de
+ *  forma (JSON válido del tipo equivocado). */
+function readShape<T>(key: string, guard: (x: unknown) => x is T): T | null {
+  const raw = read<unknown>(key);
+  return guard(raw) ? raw : null;
+}
+
 export function loadPersisted(): Persisted {
-  const rawLockPins = read<unknown>(K.lockPins);
+  // Toda clave que HYDRATE convierte a Set/Map se valida por forma antes de
+  // devolverla: un JSON válido pero con el tipo equivocado (schema viejo
+  // cacheado, escritura truncada, extensión) cae a su default en vez de
+  // reventar el `new Set(...)`/`new Map(...)` del reducer. Cada clave se valida
+  // por separado: una corrupta no arrastra a las demás.
   return {
-    approved: read<string[]>(K.approved),
-    finalDone: read<string[]>(K.finalDone),
-    combo: read<string[]>(K.combo),
-    pool: read<string[]>(K.pool),
-    fixed: read<[string, number][]>(K.fixed),
-    lockedIdx: read<number[]>(K.locked),
-    lockPins: isLockPinsArr(rawLockPins) ? rawLockPins : null,
+    approved: readShape(K.approved, isStrArr),
+    finalDone: readShape(K.finalDone, isStrArr),
+    combo: readShape(K.combo, isStrArr),
+    pool: readShape(K.pool, isStrArr),
+    fixed: readShape(K.fixed, (x): x is [string, number][] => isPairArr(x, isNum)),
+    lockedIdx: readShape(K.locked, isNumArr),
+    lockPins: readShape(K.lockPins, isLockPinsArr),
     comboParams: read<ComboParams>(K.comboParams),
-    fixedCom: read<[string, string][]>(K.fixedCom),
+    fixedCom: readShape(K.fixedCom, (x): x is [string, string][] => isPairArr(x, isStr)),
     planOpts: read<PlanOpts>(K.planOpts),
     // mismo validador que el import de archivo: un JSON corrupto en
     // localStorage (p. ej. `mesas` no-iterable) cae a default en vez de
@@ -120,6 +131,17 @@ export function loadPersisted(): Persisted {
       }
     })(),
   };
+}
+
+/** Borra SOLO las claves del planner (no toca `sv-theme` ni nada del portal).
+ *  Recuperación de último recurso para el ErrorBoundary: estado persistido
+ *  corrupto que ni la validación por forma pudo salvar. */
+export function clearPlannerStorage() {
+  try {
+    for (const key of Object.values(K)) localStorage.removeItem(key);
+  } catch {
+    /* almacenamiento no disponible */
+  }
 }
 
 const write = (key: string, val: unknown) => {

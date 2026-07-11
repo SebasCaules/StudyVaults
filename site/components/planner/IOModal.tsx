@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useModalFocus } from "@/components/planner/useModalFocus";
+import { parsePreferences, type Persisted } from "@/lib/planner/persist";
 import {
   IconClose,
   IconCheck,
@@ -17,6 +18,152 @@ import {
   IconFileText,
   IconPrinter,
 } from "@/components/planner/icons";
+
+// Triángulo de aviso para la confirmación destructiva del import (mismo trazo
+// que el reset del plan: es la misma clase de decisión "¿confirmás reemplazar?").
+const IconWarnTri = ({ size = 21 }: { size?: number }) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.8}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 3.6 21 19.2H3L12 3.6Z" />
+    <path d="M12 10v4" />
+    <path d="M12 17h.01" />
+  </svg>
+);
+
+interface ImportSummary {
+  aprobadas: number;
+  electivas: number;
+}
+
+const summarize = (p: Persisted): ImportSummary => ({
+  aprobadas: p.approved?.length ?? 0,
+  electivas: p.pool?.length ?? 0,
+});
+
+/** Confirmación previa al import: reemplazar el plan es destructivo e
+ *  irreversible, así que sigue el mismo patrón (chrome + foco) que el reset. */
+function ImportConfirm({
+  summary,
+  onCancel,
+  onConfirm,
+}: {
+  summary: ImportSummary;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const panelRef = useModalFocus<HTMLDivElement>();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  const partes: string[] = [];
+  if (summary.aprobadas > 0)
+    partes.push(
+      `${summary.aprobadas} ${summary.aprobadas === 1 ? "materia aprobada" : "materias aprobadas"}`,
+    );
+  if (summary.electivas > 0)
+    partes.push(
+      `${summary.electivas} ${summary.electivas === 1 ? "electiva en el plan" : "electivas en el plan"}`,
+    );
+
+  return (
+    <div
+      className="mnr-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="io-import-title"
+    >
+      <div className="mnr-modal__bg" onClick={onCancel} />
+      <div className="pv-reset" ref={panelRef}>
+        <div className="pv-reset__icon">
+          <IconWarnTri />
+        </div>
+        <h3 id="io-import-title">¿Reemplazar tu plan actual?</h3>
+        <p>
+          Importar estas preferencias reemplaza por completo tu plan en este
+          navegador —materias, topes, método y comisiones fijadas—{" "}
+          {partes.length > 0 ? (
+            <>
+              por el del archivo (<b>{partes.join(" · ")}</b>).
+            </>
+          ) : (
+            <>por el del archivo.</>
+          )}{" "}
+          Esta acción no se puede deshacer.
+        </p>
+        <div className="pv-reset__acts">
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={onCancel}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="btn btn--go btn--sm"
+            onClick={onConfirm}
+          >
+            Reemplazar plan
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Acuse tras un import exitoso: sin él, el plan cambia detrás del modal sin
+ *  ninguna señal de que se aplicó. */
+function ImportDone({ onClose }: { onClose: () => void }) {
+  const panelRef = useModalFocus<HTMLDivElement>();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="mnr-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="io-done-title"
+    >
+      <div className="mnr-modal__bg" onClick={onClose} />
+      <div className="pv-reset" ref={panelRef}>
+        <div className="pv-reset__icon">
+          <IconCheck size={20} />
+        </div>
+        <h3 id="io-done-title">Preferencias importadas</h3>
+        <p>Tu plan de cursada quedó reemplazado por el del archivo.</p>
+        <div className="pv-reset__acts">
+          <button
+            type="button"
+            className="btn btn--go btn--sm"
+            onClick={onClose}
+          >
+            Listo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export interface IOCuatri {
   idx: number; // índice de cuatrimestre en el plan
@@ -60,14 +207,62 @@ export default function IOModal({
   const chosen = () => cuatris.map((c) => c.idx).filter((i) => sel.has(i));
   const nada = sel.size === 0;
 
-  // cierre con Escape (igual que MinorsModal)
+  // Import en dos pasos: el archivo se parsea acá para (1) validar y (2) resumir
+  // qué trae; recién con la confirmación explícita se aplica el HYDRATE (vía el
+  // onImportFile del padre, que relee el mismo input y despacha). "done" muestra
+  // el acuse antes de cerrar.
+  const [phase, setPhase] = useState<"idle" | "confirm" | "done">("idle");
+  const [summary, setSummary] = useState<ImportSummary | null>(null);
+
+  // Reconstruye un evento mínimo con el input real (que sigue conteniendo el
+  // archivo) para que `onImportFile` lo relea y limpie `value` como siempre.
+  const forwardToImport = () => {
+    const el = fileRef.current;
+    if (!el) return;
+    onImportFile({
+      target: el,
+      currentTarget: el,
+    } as unknown as React.ChangeEvent<HTMLInputElement>);
+  };
+
+  const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const payload = parsePreferences(String(reader.result ?? ""));
+      if (!payload) {
+        // inválido: deja que el padre surface el error (relee y muestra prefsError)
+        forwardToImport();
+        return;
+      }
+      setSummary(summarize(payload));
+      setPhase("confirm");
+    };
+    reader.onerror = () => forwardToImport();
+    reader.readAsText(file);
+  };
+
+  const confirmImport = () => {
+    forwardToImport();
+    setPhase("done");
+  };
+
+  const cancelImport = () => {
+    if (fileRef.current) fileRef.current.value = ""; // permite reelegir archivo
+    setSummary(null);
+    setPhase("idle");
+  };
+
+  // cierre con Escape (igual que MinorsModal); solo cuando no hay un sub-modal
+  // (confirmación/acuse) encima manejando su propio Escape.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && phase === "idle") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, phase]);
 
   const modal = (
     <div
@@ -185,7 +380,7 @@ export default function IOModal({
                 type="file"
                 accept="application/json,.json"
                 hidden
-                onChange={onImportFile}
+                onChange={onPickFile}
               />
             </div>
             <p className="plan2-io__note">
@@ -206,6 +401,14 @@ export default function IOModal({
   return createPortal(
     <div className="planner" style={{ padding: 0 }}>
       {modal}
+      {phase === "confirm" && summary && (
+        <ImportConfirm
+          summary={summary}
+          onCancel={cancelImport}
+          onConfirm={confirmImport}
+        />
+      )}
+      {phase === "done" && <ImportDone onClose={onClose} />}
     </div>,
     document.body,
   );
