@@ -1239,8 +1239,16 @@ function Recommendations({
         })}
         <span className="plan2-recbar__sep" aria-hidden="true" />
         {[
-          { v: 1, l: "1.º C" },
-          { v: 2, l: "2.º C" },
+          {
+            v: 1,
+            l: "Dicta 1.ºC",
+            t: "Solo electivas que se cursan en 1.º cuatrimestre",
+          },
+          {
+            v: 2,
+            l: "Dicta 2.ºC",
+            t: "Solo electivas que se cursan en 2.º cuatrimestre",
+          },
         ].map((o) => {
           const on = fParity.includes(o.v);
           return (
@@ -1249,6 +1257,8 @@ function Recommendations({
               type="button"
               className={"plan2-fchip" + (on ? " is-on" : "")}
               aria-pressed={on}
+              title={o.t}
+              aria-label={o.t}
               onClick={() => setFParity((a) => toggleIn(a, o.v))}
             >
               {o.l}
@@ -1506,6 +1516,10 @@ export default function PlanView() {
   const [minorsOpen, setMinorsOpen] = useState(false);
   const [recsHidden, setRecsHidden] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  // Primera corrida (0 aprobadas): la proyección de toda la carrera arranca
+  // plegada — el primer render enfoca el próximo paso, no los 14 cuatrimestres.
+  // Se despliega con un click; al marcar ≥1 aprobada deja de aplicar.
+  const [showFullCareer, setShowFullCareer] = useState(false);
 
   // sin límite: el recomendador devuelve TODAS las electivas candidatas, ya
   // rankeadas. Recommendations las agrupa según si alargan o no la carrera.
@@ -1608,6 +1622,12 @@ export default function PlanView() {
   }, []);
 
   const used = R.items.map((it, i) => ({ it, i })).filter((x) => x.it.length);
+
+  // Con 0 aprobadas el plan es la carrera entera: no la hacemos protagonista.
+  // Plegada por default hasta que el usuario dé señal (marca una aprobada o
+  // pide «Ver toda la carrera»). El próximo cuatrimestre real sí se muestra.
+  const careerFolded =
+    used.length > 0 && approved.size === 0 && !showFullCareer;
 
   // Tab default según el tamaño del plan: si usa más de 6 cuatrimestres, abrimos
   // en Roadmap (más compacto que el Calendario para planes largos). Es SOLO el
@@ -1816,7 +1836,7 @@ export default function PlanView() {
   const showSidePlaceholder =
     recOn && recsPending && recs.length === 0 && tab !== "min";
   const showPreviewSlot =
-    used.length > 0 && recs.length > 0 && recOn && tab !== "min";
+    used.length > 0 && !careerFolded && recs.length > 0 && recOn && tab !== "min";
 
   return (
     <section className="view-panel pv">
@@ -1829,7 +1849,7 @@ export default function PlanView() {
         </p>
       </div>
 
-      {used.length > 0 && (
+      {used.length > 0 && !careerFolded && (
         <div className="pv-banner">
           {/* una sola zona: [stat+chips | controles | grad+meter] — sin filas
               apiladas ni divider; los controles absorben el centro del banner */}
@@ -1962,41 +1982,7 @@ export default function PlanView() {
         </div>
       )}
 
-      {/* Aviso de plan gigante: un usuario sin materias aprobadas ve el plan
-          COMPLETO de la carrera. Una línea + CTA a «Mis materias» para achicarlo. */}
-      {used.length > 0 && approved.size === 0 && (
-        <div className="pv-bigplan" role="note">
-          <svg
-            className="pv-bigplan__ic"
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 11v5" strokeLinecap="round" />
-            <circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none" />
-          </svg>
-          <span className="pv-bigplan__txt">
-            Este es el plan completo de la carrera: <b>{flat.length}</b> materias
-            en <b>{used.length}</b> cuatrimestres. Marcá lo que ya aprobaste en
-            «Mis materias» para achicarlo.
-          </span>
-          <button
-            type="button"
-            className="btn btn--go btn--sm pv-bigplan__cta"
-            onClick={() => dispatch({ type: "SET_VIEW", view: "cuatri" })}
-          >
-            Ir a Mis materias
-          </button>
-        </div>
-      )}
-
-
-      {used.length > 0 && (
+      {used.length > 0 && !careerFolded && (
         <div className="pv-tabs">
           <div
             className="pv-tablist"
@@ -2129,7 +2115,55 @@ export default function PlanView() {
         </div>
       )}
 
-      {used.length > 0 ? (
+      {used.length === 0 ? (
+        <div className="plan2-board">
+          <div className="plan2-empty">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.3">
+              <path d="M12 3 2 8l10 5 10-5-10-5Z" />
+              <path d="M6 10.5V16c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-5.5M22 8v5" />
+            </svg>
+            <p>Agregá materias al plan para ver tu camino a recibirte.</p>
+          </div>
+        </div>
+      ) : careerFolded ? (
+        <div className="pv-firstrun">
+          {/* Proyección de toda la carrera reducida a un renglón secundario:
+              el dato existe pero no es el protagonista. */}
+          <div className="pv-firstrun__proj">
+            <span className="pv-firstrun__projtxt">
+              Plan completo de la carrera: <b>{flat.length}</b> materias en{" "}
+              <b>{used.length}</b> cuatrimestres · te recibís en{" "}
+              <b>{cuatriName(gradCu)}</b> · {pct}% de créditos
+            </span>
+            <button
+              type="button"
+              className="pv-firstrun__more"
+              onClick={() => setShowFullCareer(true)}
+            >
+              <IconRoute size={14} /> Ver toda la carrera
+            </button>
+          </div>
+
+          {/* El próximo cuatrimestre real, dentro del fold: el paso concreto. */}
+          <div className="pv-firstrun__next">
+            <span className="pv-firstrun__nextlbl">Tu próximo cuatrimestre</span>
+            <ol className="rmap">
+              <RoadmapStop
+                it={used[0].it}
+                i={used[0].i}
+                start={PL.start}
+                accBefore={R.accBefore}
+                maxCred={PL.maxCred}
+                maxMat={PL.maxMat}
+                previewCode={preview}
+                recOn={recOn}
+                locked={PL.lockedIdx.has(used[0].i)}
+                onUnlock={unlockCuatri}
+              />
+            </ol>
+          </div>
+        </div>
+      ) : (
         tab === "min" ? (
           <MinorsPanel
             used={used}
@@ -2217,21 +2251,11 @@ export default function PlanView() {
             ) : null}
           </div>
         )
-      ) : (
-        <div className="plan2-board">
-          <div className="plan2-empty">
-            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.3">
-              <path d="M12 3 2 8l10 5 10-5-10-5Z" />
-              <path d="M6 10.5V16c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-5.5M22 8v5" />
-            </svg>
-            <p>Agregá materias al plan para ver tu camino a recibirte.</p>
-          </div>
-        </div>
       )}
 
       {/* "Cómo se armó este plan": guarda el selector del método (no es una
           decisión frecuente) + la nota detallada, todo plegado y discreto. */}
-      {used.length > 0 && (
+      {used.length > 0 && !careerFolded && (
         <div className="plan2-opt">
           <details className="plan2-optnote-d">
             <summary>Cómo se armó este plan</summary>
@@ -2265,7 +2289,7 @@ export default function PlanView() {
 
       {/* Observaciones plegadas por default: el contador del summary ya dice
           cuántas hay; el detalle se abre a demanda. */}
-      {warns.length > 0 && (
+      {warns.length > 0 && !careerFolded && (
         <details className="plan2-warns">
           <summary className="plan2-warns__h">
             Observaciones <i>{warns.length}</i>

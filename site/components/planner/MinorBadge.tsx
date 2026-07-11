@@ -26,10 +26,14 @@ export function MinorBadge({
   const style = { ["--minor-color" as string]: minor.color };
   const label = `Minor: ${minor.name}`;
   if (variant === "dot") {
+    // role="img" es obligatorio para que aria-label sea válido en un <span>
+    // (sin rol, aria-label es aria-prohibited-attr y el lector lo descarta: el
+    // minor quedaría comunicado solo por color). Igual que RecRow/CardSignals.
     return (
       <span
         className="minor-dot"
         style={style}
+        role="img"
         title={title ?? minor.name}
         aria-label={label}
       />
