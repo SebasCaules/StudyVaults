@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { usePlanner } from "@/components/planner/state";
+import { memo, useMemo, type Dispatch } from "react";
+import { usePlanner, type Action } from "@/components/planner/state";
 import {
   EstadoControl,
   CheckSingle,
@@ -60,6 +60,106 @@ function CardLegend() {
   );
 }
 
+interface ElectCardProps {
+  m: Materia;
+  /** avance real (cursada o final) — pinta la card como "aprobada". */
+  appr: boolean;
+  /** cursada aprobada que todavía debe el final. */
+  debeFinal: boolean;
+  /** cursable ya (requisitos cumplidos). */
+  avail: boolean;
+  /** en el combinador. */
+  inCombo: boolean;
+  /** tiene horario publicado este cuatrimestre. */
+  hor: boolean;
+  /** tiene ficha (programa analítico) para abrir. */
+  hasFicha: boolean;
+  /** aprobada (no entra al plan aunque se combine). */
+  isApproved: boolean;
+  dispatch: Dispatch<Action>;
+}
+
+/** Card de una electiva. Vive a nivel de módulo (no anidada en el render de la
+ *  vista) y va memoizada: al filtrar/togglear, React reconcilia en vez de
+ *  desmontar y remontar las ~95 cards. Recibe sus datos derivados por props
+ *  primitivas —estables salvo cuando cambian de verdad— para que el memo corte
+ *  el re-render de las cards que no cambiaron. `dispatch` es estable (useReducer). */
+const ElectCard = memo(function ElectCard({
+  m,
+  appr,
+  debeFinal,
+  avail,
+  inCombo,
+  hor,
+  hasFicha,
+  isApproved,
+  dispatch,
+}: ElectCardProps) {
+  return (
+    <article
+      className={"card t-electiva" + (appr ? " appr" : "")}
+      onClick={(e) => {
+        if (!(e.target as HTMLElement).closest("button"))
+          dispatch({ type: "OPEN_DRAWER", code: m.codigo });
+      }}
+    >
+      <div className="card__top">
+        <span className="code">{m.codigo}</span>
+        <span className="card__cred">{m.creditos} cr</span>
+      </div>
+      <h3 className="card__name" title={m.nombre}>{m.nombre}</h3>
+      {/* fila de señales — alto reservado (1 renglón) para que todas las
+          cards midan igual; sin wrap: badges + candado + "falta final". */}
+      <div className="card__meta">
+        <MinorBadges areas={m.areas} variant="logo" />
+        {!appr ? <AvailLock ok={avail} /> : null}
+        {debeFinal ? <span className="card__due">falta final</span> : null}
+      </div>
+      {/* acciones en UNA sola fila: estado · combinar · ficha↗ (a la derecha).
+          La ficha ya no es un renglón full-width extra — inline y compacta. */}
+      <div className="card__acts">
+        {/* tri-estado canónico (pendiente → ✓ cursada → ✓✓ final); el span
+            sólo centra verticalmente el control frente al botón vecino. */}
+        <span style={{ display: "inline-flex", alignItems: "center" }}>
+          <EstadoControl code={m.codigo} />
+        </span>
+        <button
+          className={"mini btn-co" + (inCombo ? " on plan" : "")}
+          disabled={!hor}
+          title={
+            !hor
+              ? "Sin horario publicado este cuatrimestre"
+              : inCombo
+                ? isApproved
+                  ? "En el combinador (ya la aprobaste: no entra al plan) · tocá para quitar"
+                  : "En tu plan y en el combinador · tocá para quitar del combinador"
+                : "Combinar: arma tu semana y la suma a tu plan"
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            if (hor) dispatch({ type: "TOGGLE_COMBO", code: m.codigo });
+          }}
+        >
+          {inCombo
+            ? isApproved
+              ? "en combinador ✓"
+              : "en tu plan ✓"
+            : "combinar"}
+        </button>
+        {hasFicha ? (
+          <button
+            className="card__read"
+            onClick={(e) => { e.stopPropagation(); dispatch({ type: "OPEN_FICHA", code: m.codigo }); }}
+            aria-label={`Leer ficha de ${m.nombre}`}
+          >
+            ficha ↗
+          </button>
+        ) : null}
+      </div>
+    </article>
+  );
+});
+
 export default function ElectivasView() {
   const { state, dispatch } = usePlanner();
   const { approved, finalDone, combo, areasOn, search, fDisp, fHor } = state;
@@ -114,88 +214,27 @@ export default function ElectivasView() {
             )}
           </div>
         ) : (
-          list.map((m) => (
-            <ElectCard key={m.codigo} m={m} />
-          ))
+          list.map((m) => {
+            // "aprobada" visual de la card = cualquier avance real (cursada o
+            // final); el nivel exacto lo marca el EstadoControl de la fila.
+            const estado = estadoOf(m.codigo, approved, finalDone);
+            return (
+              <ElectCard
+                key={m.codigo}
+                m={m}
+                appr={estado !== "pendiente"}
+                debeFinal={estado === "regular" && tieneFinal(m.codigo)}
+                avail={isAvailable(m, approved)}
+                inCombo={combo.has(m.codigo)}
+                hor={hasHorario(m.codigo)}
+                hasFicha={!!FICHAS[m.codigo]}
+                isApproved={approved.has(m.codigo)}
+                dispatch={dispatch}
+              />
+            );
+          })
         )}
       </div>
     </section>
   );
-
-  function ElectCard({ m }: { m: Materia }) {
-    // "aprobada" visual de la card = cualquier avance real (cursada o final);
-    // el nivel exacto lo marca el EstadoControl de la fila de acciones.
-    const estado = estadoOf(m.codigo, approved, finalDone);
-    const appr = estado !== "pendiente";
-    // cursada aprobada que todavía debe el final (mismo microcopy que qrow__due).
-    const debeFinal = estado === "regular" && tieneFinal(m.codigo);
-    const avail = isAvailable(m, approved);
-    const inCombo = combo.has(m.codigo);
-    const hor = hasHorario(m.codigo);
-    // Solo las electivas con programa analítico tienen ficha completa.
-    const hasFicha = !!FICHAS[m.codigo];
-    return (
-      <article
-        className={"card t-electiva" + (appr ? " appr" : "")}
-        onClick={(e) => {
-          if (!(e.target as HTMLElement).closest("button"))
-            dispatch({ type: "OPEN_DRAWER", code: m.codigo });
-        }}
-      >
-        <div className="card__top">
-          <span className="code">{m.codigo}</span>
-          <span className="card__cred">{m.creditos} cr</span>
-        </div>
-        <h3 className="card__name" title={m.nombre}>{m.nombre}</h3>
-        {/* fila de señales — alto reservado (1 renglón) para que todas las
-            cards midan igual; sin wrap: badges + candado + "falta final". */}
-        <div className="card__meta">
-          <MinorBadges areas={m.areas} variant="logo" />
-          {!appr ? <AvailLock ok={avail} /> : null}
-          {debeFinal ? <span className="card__due">falta final</span> : null}
-        </div>
-        {/* acciones en UNA sola fila: estado · combinar · ficha↗ (a la derecha).
-            La ficha ya no es un renglón full-width extra — inline y compacta. */}
-        <div className="card__acts">
-          {/* tri-estado canónico (pendiente → ✓ cursada → ✓✓ final); el span
-              sólo centra verticalmente el control frente al botón vecino. */}
-          <span style={{ display: "inline-flex", alignItems: "center" }}>
-            <EstadoControl code={m.codigo} />
-          </span>
-          <button
-            className={"mini btn-co" + (inCombo ? " on plan" : "")}
-            disabled={!hor}
-            title={
-              !hor
-                ? "Sin horario publicado este cuatrimestre"
-                : inCombo
-                  ? approved.has(m.codigo)
-                    ? "En el combinador (ya la aprobaste: no entra al plan) · tocá para quitar"
-                    : "En tu plan y en el combinador · tocá para quitar del combinador"
-                  : "Combinar: arma tu semana y la suma a tu plan"
-            }
-            onClick={(e) => {
-              e.stopPropagation();
-              if (hor) dispatch({ type: "TOGGLE_COMBO", code: m.codigo });
-            }}
-          >
-            {inCombo
-              ? approved.has(m.codigo)
-                ? "en combinador ✓"
-                : "en tu plan ✓"
-              : "combinar"}
-          </button>
-          {hasFicha ? (
-            <button
-              className="card__read"
-              onClick={(e) => { e.stopPropagation(); dispatch({ type: "OPEN_FICHA", code: m.codigo }); }}
-              aria-label={`Leer ficha de ${m.nombre}`}
-            >
-              ficha ↗
-            </button>
-          ) : null}
-        </div>
-      </article>
-    );
-  }
 }

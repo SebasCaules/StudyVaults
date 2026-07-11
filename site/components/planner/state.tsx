@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useMemo,
   useReducer,
   type Dispatch,
   type ReactNode,
@@ -458,10 +459,13 @@ const PlannerContext = createContext<Ctx | null>(null);
 
 export function PlannerProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
+  // Value memoizado: sin esto el objeto de contexto es nuevo en cada render del
+  // Provider y arrastra a re-renderizar a todo consumidor de usePlanner aunque
+  // el estado no haya cambiado. `dispatch` es estable (useReducer); el value solo
+  // cambia cuando cambia `state`.
+  const value = useMemo(() => ({ state, dispatch }), [state]);
   return (
-    <PlannerContext.Provider value={{ state, dispatch }}>
-      {children}
-    </PlannerContext.Provider>
+    <PlannerContext.Provider value={value}>{children}</PlannerContext.Provider>
   );
 }
 

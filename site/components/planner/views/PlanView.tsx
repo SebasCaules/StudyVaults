@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePlanner } from "@/components/planner/state";
 import {
@@ -1511,27 +1511,47 @@ export default function PlanView() {
   // rankeadas. Recommendations las agrupa según si alargan o no la carrera.
   // Con el recomendador oculto no computamos nada: corre optimizePlan por
   // ~90 candidatas y nadie consume el resultado.
+  //
+  // Fuera del camino crítico del primer paint: el cómputo (optimizePlan × ~90)
+  // corre sobre valores DIFERIDOS. En el primer render `dHidden` arranca en
+  // `true` (initialValue) → recs=[] y el paint no paga la pasada; React reprograma
+  // enseguida un render no-urgente con los valores reales y ahí sí computa. En
+  // cada cambio de perilla del plan la misma pasada queda diferida (no bloquea la
+  // interacción). El resultado es idéntico: mismos inputs, mismo `recommendElectives`.
+  const dHidden = useDeferredValue(recsHidden, true);
+  const dPL = useDeferredValue(PL);
+  const dApproved = useDeferredValue(approved);
+  const dFixedCom = useDeferredValue(state.fixedCom);
   const recs = useMemo(
     () =>
-      recsHidden
+      dHidden
         ? []
-        : recommendElectives(PL, approved, Infinity, state.fixedCom),
+        : recommendElectives(dPL, dApproved, Infinity, dFixedCom),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      recsHidden,
-      PL.pool,
-      PL.fixed,
-      PL.start,
-      PL.maxCred,
-      PL.maxMat,
-      PL.avoid,
-      PL.method,
-      PL.capCredByIdx,
-      PL.capMatByIdx,
-      approved,
-      state.fixedCom,
+      dHidden,
+      dPL.pool,
+      dPL.fixed,
+      dPL.start,
+      dPL.maxCred,
+      dPL.maxMat,
+      dPL.avoid,
+      dPL.method,
+      dPL.capCredByIdx,
+      dPL.capMatByIdx,
+      dApproved,
+      dFixedCom,
     ],
   );
+  // El recomendador está encendido pero su resultado todavía no alcanzó a los
+  // valores actuales (primer paint diferido o recálculo tras mover una perilla):
+  // mostramos un placeholder sobrio en el lado en vez de que el panel aparezca de golpe.
+  const recsPending =
+    !recsHidden &&
+    (dHidden !== recsHidden ||
+      dPL !== PL ||
+      dApproved !== approved ||
+      dFixedCom !== state.fixedCom);
 
   const baseR = useMemo(
     () => optimizePlan(PL, approved, state.fixedCom),
@@ -1791,6 +1811,10 @@ export default function PlanView() {
 
   const recOn = !recsHidden;
   const showSide = recOn && recs.length > 0 && tab !== "min";
+  // Reserva el lado con un placeholder mientras el recomendador diferido computa
+  // (evita el salto solo→split cuando llega el resultado del primer paint).
+  const showSidePlaceholder =
+    recOn && recsPending && recs.length === 0 && tab !== "min";
   const showPreviewSlot =
     used.length > 0 && recs.length > 0 && recOn && tab !== "min";
 
@@ -2113,7 +2137,12 @@ export default function PlanView() {
             onOpenDetail={() => setMinorsOpen(true)}
           />
         ) : (
-          <div className={"plan2-split" + (!showSide ? " plan2-split--solo" : "")}>
+          <div
+            className={
+              "plan2-split" +
+              (!showSide && !showSidePlaceholder ? " plan2-split--solo" : "")
+            }
+          >
             <div className="plan2-split__main">
               {tab === "cal" && (
                 <div className="pv-semgrid">
@@ -2161,7 +2190,7 @@ export default function PlanView() {
               )}
             </div>
 
-            {showSide && (
+            {showSide ? (
               <aside className="plan2-split__side">
                 <Recommendations
                   start={PL.start}
@@ -2172,7 +2201,20 @@ export default function PlanView() {
                   onHide={() => setRecsHidden(true)}
                 />
               </aside>
-            )}
+            ) : showSidePlaceholder ? (
+              <aside className="plan2-split__side" aria-hidden="true">
+                <div className="plan2-recs">
+                  <div className="plan2-recs__h">
+                    <span className="plan2-recs__title">
+                      Recomendaciones de electivas
+                    </span>
+                  </div>
+                  <span className="plan2-recs__sub">
+                    Buscando las electivas que mejor encajan en tu plan…
+                  </span>
+                </div>
+              </aside>
+            ) : null}
           </div>
         )
       ) : (
