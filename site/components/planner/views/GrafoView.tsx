@@ -425,8 +425,30 @@ export default function GrafoView() {
     [activeId, nodeIds, chainOf],
   );
 
+  // ---------- roving tabindex: un solo tab-stop en el grupo de nodos ----------
+  // Sin esto, los ~95 nodos son 95 tab-stops (trampa de tabulación). El nodo
+  // activo lleva tabindex 0; el resto -1, y las flechas mueven el foco entre
+  // vecinos del DAG (izq/der = correlativas) y de la columna (arriba/abajo).
+  const [rovingId, setRovingId] = useState<string | null>(null);
+  const nodeRefs = useRef(new Map<string, SVGGElement>());
+
+  // Ids agrupados por columna (x) y ordenados por y → navegación vertical.
+  const columnIds = useMemo(() => {
+    const byX = new Map<number, string[]>();
+    nodes.forEach((n) => {
+      const key = Math.round(n.x);
+      (byX.get(key) ?? byX.set(key, []).get(key)!).push(n.id);
+    });
+    byX.forEach((ids) =>
+      ids.sort((a, b) => (pos.get(a)?.y ?? 0) - (pos.get(b)?.y ?? 0)),
+    );
+    return byX;
+  }, [nodes, pos]);
+
   // ---------- búsqueda: código / abbr / nombre → primer match ----------
   const [query, setQuery] = useState("");
+  // true cuando el último Enter no encontró ninguna materia → feedback de vacío.
+  const [noMatch, setNoMatch] = useState(false);
 
   // Prioriza prefijo de código o abbr; si no, primer "contiene" (código/abbr/nombre).
   const matchNode = useCallback(
@@ -478,16 +500,53 @@ export default function GrafoView() {
     if (e.key === "Enter") {
       e.preventDefault();
       const id = matchNode(query);
-      if (id) focusNode(id);
+      if (id) {
+        setNoMatch(false);
+        focusNode(id);
+      } else if (query.trim()) {
+        setNoMatch(true);
+      }
     }
   };
+
+  // Vecino según la flecha: izq/der siguen las correlativas (requiere / habilita),
+  // arriba/abajo recorren la columna (cuatrimestre). Reusa adj/radj del resaltado.
+  const neighborOf = useCallback(
+    (from: string, key: string): string | null => {
+      if (key === "ArrowRight") return (adj.get(from) ?? [])[0] ?? null;
+      if (key === "ArrowLeft") return (radj.get(from) ?? [])[0] ?? null;
+      const col = columnIds.get(Math.round(pos.get(from)?.x ?? NaN));
+      if (!col) return null;
+      const i = col.indexOf(from);
+      if (i < 0) return null;
+      return col[key === "ArrowDown" ? i + 1 : i - 1] ?? null;
+    },
+    [adj, radj, columnIds, pos],
+  );
+
+  const focusNodeEl = useCallback((id: string) => {
+    setRovingId(id);
+    nodeRefs.current.get(id)?.focus();
+  }, []);
 
   const onNodeKeyDown = (e: ReactKeyboardEvent<SVGGElement>, code: string) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       dispatch({ type: "OPEN_DRAWER", code });
+      return;
+    }
+    if (e.key.startsWith("Arrow")) {
+      const target = neighborOf(code, e.key);
+      if (target) {
+        e.preventDefault();
+        focusNodeEl(target);
+      }
     }
   };
+
+  // Nodo que porta el único tab-stop del grupo (fallback al primero del layout).
+  const tabStopId =
+    rovingId && nodeIds.has(rovingId) ? rovingId : nodes[0]?.id;
 
   return (
     <section className="view-panel grafo-view" id="panel-grafo">
@@ -527,7 +586,7 @@ export default function GrafoView() {
           </span>
         </div>
         <div className="grafo-toolbar__end">
-          <div className="grafo-search">
+          <div className={`grafo-search${noMatch ? " has-error" : ""}`}>
             <IconSearch size={14} aria-hidden="true" />
             <input
               type="text"
@@ -535,7 +594,10 @@ export default function GrafoView() {
               placeholder="Buscar materia…"
               aria-label="Buscar materia por código, sigla o nombre"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                if (noMatch) setNoMatch(false);
+              }}
               onKeyDown={onSearchKeyDown}
             />
           </div>
@@ -543,6 +605,12 @@ export default function GrafoView() {
             <b>{nodes.length}</b> materias &middot; <b>{edges.length}</b>{" "}
             correlativas
           </div>
+          {noMatch && (
+            <p className="grafo-search__msg" role="status">
+              Ninguna materia coincide con &ldquo;{query.trim()}&rdquo; — probá
+              con la sigla o el código.
+            </p>
+          )}
         </div>
       </div>
 
@@ -655,10 +723,14 @@ export default function GrafoView() {
                 return (
                   <g
                     key={n.id}
+                    ref={(el) => {
+                      if (el) nodeRefs.current.set(n.id, el);
+                      else nodeRefs.current.delete(n.id);
+                    }}
                     className={cls}
                     data-code={n.id}
                     transform={`translate(${n.x} ${n.y})`}
-                    tabIndex={0}
+                    tabIndex={n.id === tabStopId ? 0 : -1}
                     role="button"
                     aria-label={`${n.abbr}, código ${n.id}, ${
                       n.ob ? "obligatoria" : "electiva"
@@ -673,7 +745,10 @@ export default function GrafoView() {
                     onMouseLeave={() =>
                       setHoverId((cur) => (cur === n.id ? null : cur))
                     }
-                    onFocus={() => setHoverId(n.id)}
+                    onFocus={() => {
+                      setHoverId(n.id);
+                      setRovingId(n.id);
+                    }}
                     onBlur={() =>
                       setHoverId((cur) => (cur === n.id ? null : cur))
                     }

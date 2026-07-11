@@ -42,6 +42,16 @@ export const CheckDouble = () => (
   </svg>
 );
 
+// Tilde RELLENA (silueta sólida) para el estado terminal de promoción. Distingue
+// por FORMA — no sólo color — la materia saldada (promociona / no rinde final)
+// de la cursada que todavía debe final (CheckSingle, contorno fino): quedan
+// legibles aun sin percibir el color (daltonismo).
+export const CheckFilled = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+  </svg>
+);
+
 export function EstadoControl({
   code,
   className,
@@ -63,6 +73,21 @@ export function EstadoControl({
     return "pendiente";
   };
 
+  // Retroceso un paso, SIN pasar por "pendiente" desde "final": el escenario del
+  // que vuelve y desaprobó el final (final → regular) es un solo paso, sin borrar
+  // la cursada ni cascadear el plan. Desde "pendiente" no hay nada que deshacer.
+  const prev = (): Estado | null => {
+    if (estado === "pendiente") return null;
+    if (!has2) return "pendiente";
+    if (estado === "final") return "regular";
+    return "pendiente";
+  };
+
+  const goBack = () => {
+    const p = prev();
+    if (p) dispatch({ type: "SET_ESTADO", code, estado: p });
+  };
+
   const stateCls =
     estado === "pendiente"
       ? "st-pending"
@@ -78,8 +103,15 @@ export function EstadoControl({
       : estado === "regular"
         ? has2
           ? "Cursada regular — falta el final"
-          : "Promociona / terminada"
+          : "Promocionada — no rinde final"
         : "Final aprobado";
+
+  // Retroceso disponible en todo estado avanzado: se documenta en el title
+  // (affordance visible) y se expone por clic derecho + tecla Retroceso.
+  const canGoBack = estado !== "pendiente";
+  const title = canGoBack
+    ? `${label} · clic: avanzar · clic derecho o Retroceso: volver atrás`
+    : `${label} · clic para marcar cursada`;
 
   // Tri-estado real para lectores de pantalla: sin avance = false; cursada que
   // todavía debe final = "mixed" (parcial); final/promoción/terminada = true.
@@ -93,16 +125,34 @@ export function EstadoControl({
       role="checkbox"
       aria-checked={ariaChecked}
       aria-label={label}
-      title={label}
+      title={title}
       onClick={(e) => {
         if (stopPropagation) e.stopPropagation();
         dispatch({ type: "SET_ESTADO", code, estado: next() });
       }}
+      onContextMenu={(e) => {
+        if (!canGoBack) return;
+        e.preventDefault();
+        if (stopPropagation) e.stopPropagation();
+        goBack();
+      }}
+      onKeyDown={(e) => {
+        // Retroceso por teclado (secundario): Retroceso / flecha abajo.
+        if (canGoBack && (e.key === "Backspace" || e.key === "ArrowDown")) {
+          e.preventDefault();
+          if (stopPropagation) e.stopPropagation();
+          goBack();
+        }
+      }}
     >
       {estado === "final" ? (
         <CheckDouble />
-      ) : estado !== "pendiente" ? (
-        <CheckSingle />
+      ) : estado === "regular" ? (
+        has2 ? (
+          <CheckSingle />
+        ) : (
+          <CheckFilled />
+        )
       ) : (
         // Affordance de "agregable": un + fantasma señala que el círculo hueco
         // es clickeable (un toque lo marca cursada). Su opacidad la fija cards.css.

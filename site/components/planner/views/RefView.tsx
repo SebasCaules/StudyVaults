@@ -34,6 +34,19 @@ export default function RefView() {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
+      {all.length === 0 ? (
+        <div className="empty" role="status">
+          Ninguna materia coincide con &ldquo;{query.trim()}&rdquo; — probá con la
+          abreviatura, el código o el nombre.
+          <button
+            type="button"
+            className="empty__clear"
+            onClick={() => setQuery("")}
+          >
+            Limpiar filtro
+          </button>
+        </div>
+      ) : (
       <div className="ref-table">
         <div className="ref-row head">
           <span>Abreviatura</span>
@@ -56,6 +69,7 @@ export default function RefView() {
           </div>
         ))}
       </div>
+      )}
     </section>
   );
 }
