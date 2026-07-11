@@ -14,6 +14,82 @@
   flex-direction: column;
   gap: 14px;
 }
+/* el cuerpo (barra de resultado + calendario) puede achicarse dentro del flex
+   → el calendario ancho scrollea en su wrap en vez de desbordar la columna */
+.planner .cmb9-body {
+  min-width: 0;
+}
+
+/* ---------- resumen sticky «en vivo» (visible con el picker abierto) ---------- */
+/* Pineado bajo el navbar del portal: mantiene el resultado a la vista mientras
+   se elige, aunque el picker empuje la grilla fuera del viewport. */
+.planner .cmb9-pickersum {
+  position: sticky;
+  top: calc(var(--nav-h) + 8px);
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  padding: 8px 13px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-1);
+}
+.planner .cmb9-pickersum__lead {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.planner .cmb9-pickersum__lead b {
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.planner .cmb9-pickersum__lead b.ok {
+  color: var(--sage);
+}
+.planner .cmb9-pickersum__lead b.warn {
+  color: var(--brass);
+}
+.planner .cmb9-pickersum__txt {
+  font-family: var(--f-m);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.planner .cmb9-pickersum__meta {
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.planner .cmb9-pickersum__see {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  font-family: var(--f-m);
+  font-size: 11px;
+  color: var(--brass);
+  background: color-mix(in srgb, var(--brass) 10%, var(--panel));
+  border: 1px solid var(--brass);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.planner .cmb9-pickersum__see:hover {
+  background: var(--brass);
+  color: var(--block-ink);
+}
 
 /* ---------- header en filas (título · grilla de materias · preferencias) ---------- */
 .planner .cmb9-header {
@@ -95,11 +171,13 @@
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 7px;
 }
-/* celda de materia: anatomía fija abbr · cr · (selector | vacío) · × sobre un
-   grid interno → el × queda alineado al borde derecho en todas las celdas */
+/* celda de materia: anatomía fija abbr · nombre (elide) · cr · (selector | vacío)
+   · × sobre un grid interno → el × queda alineado al borde derecho en todas las
+   celdas. El nombre toma la columna flexible y trunca; el selector se cabecea a
+   un ancho acotado para no comerse el nombre. */
 .planner .cmb9-mchip {
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
   align-items: center;
   gap: 7px;
   min-height: 34px;
@@ -118,22 +196,32 @@
   color: var(--ink);
   white-space: nowrap;
 }
+/* nombre completo (truncado): el `title` del chip lleva código · nombre entero */
+.planner .cmb9-mchip__name {
+  min-width: 0;
+  font-family: var(--f-b);
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .planner .cmb9-mchip__cr {
   font-family: var(--f-m);
   font-size: 10px;
   color: var(--faint);
   white-space: nowrap;
 }
-/* el CommissionSelect llena la celda flexible; si la materia tiene una sola
-   comisión no se renderiza y la celda queda vacía (el ancho no cambia) */
+/* el CommissionSelect ocupa su columna acotada; si la materia tiene una sola
+   comisión no se renderiza y la columna queda vacía (el × sigue en la última) */
 .planner .cmb9-mchip__com {
-  grid-column: 3;
+  grid-column: 4;
   width: 100%;
-  max-width: 100%;
+  max-width: 100px;
   min-width: 0;
 }
 .planner .cmb9-mchip__x {
-  grid-column: 4;
+  grid-column: 5;
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -775,6 +863,7 @@
   .planner .cmb9-mchip__x,
   .planner .cmb9-addcell,
   .planner .cmb9-hiddenhint__btn,
+  .planner .cmb9-pickersum__see,
   .planner .cmb-conflict__rm {
     transition: none;
   }

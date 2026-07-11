@@ -165,6 +165,9 @@ export default function CombinadorView() {
   const [saveIdx, setSaveIdx] = useState<string | null>(null);
   const dlRef = useRef<HTMLDivElement>(null);
   const saveRef = useRef<HTMLDivElement>(null);
+  // destino de "Ver semana" del resumen sticky: lleva la grilla al viewport
+  // cuando el picker abierto la empujó bajo el pliegue.
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   // ---------- materias combinables ----------
   const pool = useMemo(() => {
@@ -633,9 +636,11 @@ export default function CombinadorView() {
   };
 
   // ---------- sub-render: celda de materia elegida (grilla uniforme) ----------
-  // Anatomía FIJA (grid interno auto auto 1fr auto): barra de color · abbr ·
-  // créditos · selector de comisión (si hay >1; si no la celda queda vacía) · ×.
-  // El × va anclado a la última columna → queda alineado en todas las filas.
+  // Anatomía FIJA (grid interno auto 1fr auto auto auto): barra de color · abbr ·
+  // nombre (elide) · créditos · selector de comisión (si hay >1; si no la columna
+  // queda vacía) · ×. El nombre truncado y el `title` completo evitan que el chip
+  // aislado quede como un acrónimo críptico ('AMI') al revisar o quitar la
+  // selección. El × va anclado a la última columna → alineado en todas las filas.
   const chip = (m: MateriaM, i: number) => {
     const coms = m.horario?.comisiones || [];
     const fx = fixedCom.get(m.codigo);
@@ -643,9 +648,11 @@ export default function CombinadorView() {
       <span
         className="cmb9-mchip"
         key={m.codigo}
+        title={`${m.codigo} · ${m.nombre}`}
         style={{ "--chip-c": PALETTE[i % PALETTE.length] } as React.CSSProperties}
       >
         <span className="cmb9-mchip__abbr">{m.abbr}</span>
+        <span className="cmb9-mchip__name">{m.nombre}</span>
         <span className="cmb9-mchip__cr">{m.creditos}cr</span>
         {coms.length > 1 && (
           <CommissionSelect
@@ -1129,6 +1136,78 @@ export default function CombinadorView() {
     </div>
   );
 
+  // ---------- sub-render: resumen sticky «en vivo» sobre el picker ----------
+  // Con el picker abierto, la barra de resultado y el calendario caen bajo el
+  // pliegue (el picker de ~80 materias los empuja). Esta tira compacta —pineada
+  // al tope— trae el resultado en vivo (cuántas cursadas entran + créditos/días)
+  // arriba del picker: el conteo se actualiza al togglear una materia sin
+  // scrollear (feedback en mobile), y «Ver semana» salta a la grilla en desktop.
+  // Solo aparece con el picker abierto y materias elegidas (si no, la grilla ya
+  // está a la vista y este resumen sería redundante).
+  const pickerSummary = showPicker && selected.length > 0 && (
+    <div className="cmb9-pickersum" role="status" aria-live="polite">
+      {result && total > 0 ? (
+        <>
+          <span className="cmb9-pickersum__lead">
+            <b className={comboParams.allowOverlap ? "warn" : "ok"}>
+              {total}
+              {result.truncated ? "+" : ""}
+            </b>
+            <span className="cmb9-pickersum__txt">
+              {comboParams.allowOverlap
+                ? total === 1
+                  ? "combinación posible"
+                  : "combinaciones posibles"
+                : total === 1
+                  ? "cursada sin superponerse"
+                  : "cursadas sin superponerse"}
+            </span>
+            <span className="cmb9-pickersum__meta">
+              · {cred} cr
+              {insights
+                ? ` · ${insights.dias} ${insights.dias === 1 ? "día" : "días"}`
+                : ""}
+            </span>
+          </span>
+          <button
+            type="button"
+            className="cmb9-pickersum__see"
+            onClick={() =>
+              bodyRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
+          >
+            Ver semana
+            <svg
+              viewBox="0 0 24 24"
+              width="13"
+              height="13"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 5v13M6 12l6 6 6-6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </>
+      ) : (
+        <span className="cmb9-pickersum__lead">
+          <b className="warn">0</b>
+          <span className="cmb9-pickersum__txt">
+            por ahora no entran sin pisarse — ajustá las opciones abajo
+          </span>
+        </span>
+      )}
+    </div>
+  );
+
   // ---------- sub-render: recomendador slim (cualquier materia) ----------
   const recSide = recOpen && (
     <aside
@@ -1362,8 +1441,11 @@ export default function CombinadorView() {
 
       <div className="cmb9">
         {header}
+        {pickerSummary}
         {picker}
-        {body}
+        <div className="cmb9-body" ref={bodyRef}>
+          {body}
+        </div>
       </div>
     </section>
   );

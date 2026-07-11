@@ -11,9 +11,11 @@ import type {
   OptMethod,
   PlannerState,
   PlanStart,
+  ViewKey,
 } from "./types";
 
 const K = {
+  view: "plan_view_v1",
   approved: "plan_aprobadas_v3",
   finalDone: "plan_finales_v1",
   combo: "plan_combo_v3",
@@ -53,6 +55,9 @@ export interface PersistedFinales {
 }
 
 export interface Persisted {
+  /** última vista abierta (retomar donde quedó). null = primera visita → el
+   *  consumidor conserva su default (cuatri). */
+  view: ViewKey | null;
   approved: string[] | null;
   finalDone: string[] | null;
   combo: string[] | null;
@@ -95,6 +100,7 @@ export function loadPersisted(): Persisted {
   // reventar el `new Set(...)`/`new Map(...)` del reducer. Cada clave se valida
   // por separado: una corrupta no arrastra a las demás.
   return {
+    view: readShape(K.view, isViewKey),
     approved: readShape(K.approved, isStrArr),
     finalDone: readShape(K.finalDone, isStrArr),
     combo: readShape(K.combo, isStrArr),
@@ -152,6 +158,7 @@ const write = (key: string, val: unknown) => {
   }
 };
 
+export const saveView = (view: ViewKey) => write(K.view, view);
 export const saveApproved = (s: Set<string>) => write(K.approved, [...s]);
 export const saveFinalDone = (s: Set<string>) => write(K.finalDone, [...s]);
 export const saveCombo = (s: Set<string>) => write(K.combo, [...s]);
@@ -269,6 +276,17 @@ export const serializePreferences = (
   exported?: string,
 ): string => JSON.stringify(buildPreferenceBundle(state, exported), null, 2);
 
+const VIEW_KEYS: readonly ViewKey[] = [
+  "cuatri",
+  "elect",
+  "combo",
+  "plan",
+  "grafo",
+  "finales",
+  "ref",
+];
+const isViewKey = (x: unknown): x is ViewKey =>
+  typeof x === "string" && (VIEW_KEYS as readonly string[]).includes(x);
 const isStrArr = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((v) => typeof v === "string");
 const isPairArr = <B>(x: unknown, second: (v: unknown) => v is B): x is [string, B][] =>
@@ -387,6 +405,10 @@ export function parsePreferences(text: string): Persisted | null {
     : null;
 
   return {
+    // la vista es preferencia de sesión propia, no parte del bundle portable:
+    // importar preferencias no cambia dónde estás parado (el deep-link ?view=
+    // sigue siendo la vía para forzar una vista).
+    view: null,
     approved: isStrArr(b.approved) ? b.approved : null,
     finalDone: isStrArr(b.finalDone) ? b.finalDone : null,
     combo: isStrArr(b.combo) ? b.combo : null,

@@ -18,6 +18,7 @@ import {
   savePlanOpts,
   savePlanPool,
   saveSidebar,
+  saveView,
 } from "@/lib/planner/persist";
 import { readParams, writeParams } from "@/lib/url-state/core";
 import { decodePlannerUrl, encodePlannerUrl } from "@/lib/planner/url-state";
@@ -53,8 +54,16 @@ function PlannerInner() {
   // intención explícita del link pisa lo persistido en esas mismas claves
   // antes de que el effect de escritura de abajo pueda correr).
   useEffect(() => {
-    dispatch({ type: "HYDRATE", payload: loadPersisted() });
-    dispatch({ type: "HYDRATE_URL", payload: decodePlannerUrl(readParams()) });
+    const persisted = loadPersisted();
+    dispatch({ type: "HYDRATE", payload: persisted });
+    const url = decodePlannerUrl(readParams());
+    dispatch({ type: "HYDRATE_URL", payload: url });
+    // CPT-14: sin `?view=` explícito en la URL, retomar la última vista
+    // guardada (post-hidratación, mismo tick que HYDRATE/HYDRATE_URL → sin
+    // flash extra). El deep-link SIEMPRE gana; la primera visita no tiene clave
+    // persistida → se conserva el default (cuatri) que ya trae el estado.
+    if (!url.view && persisted.view)
+      dispatch({ type: "SET_VIEW", view: persisted.view });
   }, [dispatch]);
 
   // ---- F02: Atrás/Adelante cierra y reabre drawer/ficha en vez de salir ----
@@ -152,6 +161,9 @@ function PlannerInner() {
   ]);
 
   // persistir solo después de hidratar (si no, pisa datos del usuario con defaults)
+  useEffect(() => {
+    if (state.hydrated) saveView(state.view);
+  }, [state.view, state.hydrated]);
   useEffect(() => {
     if (state.hydrated) saveApproved(state.approved);
   }, [state.approved, state.hydrated]);
