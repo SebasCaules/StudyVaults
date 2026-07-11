@@ -16,14 +16,17 @@ function CmdBlock({
   cmd,
   copyLabel,
   copiedLabel,
+  regionLabel,
 }: {
   cmd: string;
   copyLabel: string;
   copiedLabel: string;
+  regionLabel: string;
 }) {
   return (
     <div className="vl-cmd">
-      <pre className="vl-cmd__code">{cmd}</pre>
+      {/* Scrolleable en pantallas angostas: focusable y con nombre para AT. */}
+      <pre className="vl-cmd__code" tabIndex={0} role="region" aria-label={regionLabel}>{cmd}</pre>
       <CopyButton
         text={cmd}
         label={copyLabel}
@@ -68,6 +71,7 @@ export default function UseWithClaude({
         degitTab: "degit · fast",
         copy: "copy",
         copied: "copied",
+        cmdLabel: "command",
         note: `You get a folder of ${".md"} notes — an Obsidian vault. No account, no build step.`,
         prompts: [
           `Read index.md and build me a 1-week study plan from this material.`,
@@ -86,6 +90,7 @@ export default function UseWithClaude({
         degitTab: "degit · rápido",
         copy: "copiar",
         copied: "copiado",
+        cmdLabel: "comando",
         note: `Te bajás una carpeta de notas ${".md"} — un vault de Obsidian. Sin cuenta ni build.`,
         prompts: [
           `Leé el index.md y armame un plan de estudio de 1 semana con este material.`,
@@ -118,10 +123,10 @@ export default function UseWithClaude({
             defaultValue="degit"
             panels={{
               degit: (
-                <CmdBlock cmd={degitCmd} copyLabel={t.copy} copiedLabel={t.copied} />
+                <CmdBlock cmd={degitCmd} copyLabel={t.copy} copiedLabel={t.copied} regionLabel={t.cmdLabel} />
               ),
               git: (
-                <CmdBlock cmd={gitCmd} copyLabel={t.copy} copiedLabel={t.copied} />
+                <CmdBlock cmd={gitCmd} copyLabel={t.copy} copiedLabel={t.copied} regionLabel={t.cmdLabel} />
               ),
             }}
           />
@@ -134,7 +139,7 @@ export default function UseWithClaude({
             <span className="vl-claude__step-n">2</span>
             <h3 className="vl-claude__step-title">{t.step2}</h3>
           </div>
-          <CmdBlock cmd={claudeCmd} copyLabel={t.copy} copiedLabel={t.copied} />
+          <CmdBlock cmd={claudeCmd} copyLabel={t.copy} copiedLabel={t.copied} regionLabel={t.cmdLabel} />
 
           <div className="vl-claude__step-head">
             <span className="vl-claude__step-n">3</span>

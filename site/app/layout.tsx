@@ -7,6 +7,7 @@ import Navbar from "@/components/portal/Navbar";
 import ConditionalFooter from "@/components/portal/ConditionalFooter";
 import SearchModal from "@/components/SearchModal";
 import { SITE_URL } from "@/lib/content/slug";
+import { VAULTS } from "@/lib/content/vaults";
 
 // Display/body serif + mono labels (self-hosted by next/font).
 const newsreader = Newsreader({
@@ -37,8 +38,7 @@ export const metadata: Metadata = {
     siteName: "StudyVaults ITBA",
     locale: "es_AR",
     title: "StudyVaults ITBA",
-    description:
-      "Siete materias del ITBA como wiki navegable: teoría, guías y parciales. Más un planificador de electivas.",
+    description: `${VAULTS.length} materias del ITBA como wiki navegable: teoría, guías y parciales. Más un planificador de electivas.`,
   },
 };
 

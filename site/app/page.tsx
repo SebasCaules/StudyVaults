@@ -58,9 +58,9 @@ export default async function Home() {
             </h1>
 
             <p className="home-sub anim" style={d(430)}>
-              Siete materias de Ingeniería Informática del ITBA reescritas como
-              notas atómicas y enlazadas entre sí, más un planificador para armar
-              tu cursada. Todo buscable y navegable.
+              {VAULTS.length} materias de Ingeniería Informática del ITBA
+              reescritas como notas atómicas y enlazadas entre sí, más un
+              planificador para armar tu cursada. Todo buscable y navegable.
             </p>
 
             <div className="home-actions anim" style={d(540)}>
@@ -96,18 +96,18 @@ export default async function Home() {
           </div>
 
           <div className="home-hero__graphic anim" style={d(420)}>
-            <GraphExplorer variant="hero" />
+            <GraphExplorer variant="hero" total={total} />
           </div>
         </div>
       </section>
 
-      {/* 2 · MATERIAS — las 7 + card del planner, revelado como bloque único */}
+      {/* 2 · MATERIAS — las materias + card del planner, revelado como bloque único */}
       <Section container id="materias">
         <Reveal>
           <SectionHeading
             eyebrow="SYS // índice de vaults"
             title="Elegí tu materia."
-            lead="Las siete materias de Ingeniería Informática, cada una como una base de conocimiento independiente. El número junto a cada una es la cantidad de páginas que contiene."
+            lead={`Las ${VAULTS.length} materias de Ingeniería Informática, cada una como una base de conocimiento independiente. El número junto a cada una es la cantidad de páginas que contiene.`}
           />
         </Reveal>
         <Reveal>

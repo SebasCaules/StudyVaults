@@ -14,6 +14,12 @@ export interface NavbarLink {
   label: string;
   href: string;
   external?: boolean;
+  /**
+   * Prefijos de ruta que también marcan este ítem como activo, más allá del
+   * `href`. P. ej. "Materias" (href `/#materias`) queda activo en cualquier
+   * `/[vault]/…`. Sin esto, un link-ancla solo se enciende en la home.
+   */
+  matchPrefixes?: string[];
 }
 
 /**
@@ -164,7 +170,11 @@ export function Navbar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, anchorKey]);
 
-  const isActive = (href: string) => {
+  const isActive = ({ href, matchPrefixes }: NavbarLink) => {
+    // Rutas fuera del `href` que igual encienden el ítem (p. ej. "Materias"
+    // en cualquier /[vault]/…). Precede al chequeo de ancla para que el link
+    // de sección quede activo en toda la wiki, no solo en la home.
+    if (matchPrefixes?.some((p) => pathname.startsWith(p))) return true;
     const [base, anchor] = href.split("#");
     // Anclas in-page (p. ej. "/#materias"): activas solo mientras su sección
     // está a la vista en la home — nunca de forma permanente.
@@ -187,7 +197,7 @@ export function Navbar({
               key={l.href}
               href={l.href}
               external={l.external}
-              active={!l.external && isActive(l.href)}
+              active={!l.external && isActive(l)}
             >
               {l.label}
             </NavLink>
@@ -207,7 +217,11 @@ export function Navbar({
               {cta.label}
             </a>
           ) : (
-            <Link className="btn btn--primary nav__cta" href={cta.href}>
+            <Link
+              className="btn btn--primary nav__cta"
+              href={cta.href}
+              prefetch={false}
+            >
               {cta.label}
             </Link>
           ))}
