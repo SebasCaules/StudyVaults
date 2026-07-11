@@ -428,9 +428,36 @@
   color: var(--text-primary);
   font-size: 17px;
   line-height: 1.7;
+  /* el contenedor abarca toda la columna (para que los bloques anchos tengan
+     ancho útil); el tope de medida se aplica al texto corrido, no al contenedor */
   max-width: none;
+  --measure: 72ch;
 }
 .prose-sv > *:first-child { margin-top: 0; }
+
+/* Tope de medida del texto corrido: pasar de ~72ch fuerza barridos oculares
+   largos y errores de retorno de renglón en la lectura sostenida. Los bloques
+   anchos —tablas, código, fórmulas display, imágenes/figuras, mermaid— NO se
+   listan acá: conservan el ancho completo de la columna. */
+.prose-sv > p,
+.prose-sv > ul,
+.prose-sv > ol,
+.prose-sv > dl,
+.prose-sv > h1,
+.prose-sv > h2,
+.prose-sv > h3,
+.prose-sv > h4,
+.prose-sv > h5,
+.prose-sv > h6,
+.prose-sv > blockquote,
+.prose-sv > hr,
+.prose-sv > details,
+.prose-sv > .footnotes {
+  max-width: var(--measure);
+}
+/* un párrafo cuyo contenido es una imagen (markdown `![]()` la envuelve en <p>)
+   también rompe el tope para no perder ancho útil en diagramas/figuras */
+.prose-sv > p:has(img) { max-width: none; }
 .prose-sv p { margin: 0 0 18px; }
 .prose-sv h1 {
   font-family: var(--font-display);
@@ -614,6 +641,9 @@
   border: 1px solid var(--hairline);
   border-radius: 5px;
   padding: 1px 6px;
+  /* un identificador mono largo (p.ej. AnnotationConfigWebApplicationContext)
+     debe poder partirse: si no, empuja el ancho del documento en mobile */
+  overflow-wrap: anywhere;
 }
 
 /* code blocks (rehype-pretty-code, keepBackground:false) — terminal skeuomórfico
@@ -707,9 +737,13 @@
   color: color-mix(in srgb, var(--code-fg) 62%, var(--code-bg));
 }
 
-/* <pre> suelto (fallback fuera de .wiki-code): conserva el marco propio */
+/* <pre> suelto (fallback fuera de .wiki-code): conserva el marco propio.
+   Affordance de scroll horizontal: halo claro en el borde que se desvanece al
+   llegar al extremo. Las dos capas "local" (del color de fondo) tapan la sombra
+   en cada punta; las dos capas "scroll" fijan la sombra a los bordes visibles.
+   El fondo del terminal es oscuro y fijo, así que el indicio es un halo claro. */
 .prose-sv pre {
-  background: var(--code-bg);
+  background-color: var(--code-bg);
   color: var(--code-fg);
   border: 1px solid var(--border);
   border-radius: var(--r-card);
@@ -718,6 +752,15 @@
   margin: 0 0 20px;
   font-size: 13.5px;
   line-height: 1.6;
+  background-image:
+    linear-gradient(to right, var(--code-bg), transparent 40%),
+    linear-gradient(to left, var(--code-bg), transparent 40%),
+    linear-gradient(to right, color-mix(in srgb, var(--code-fg) 22%, transparent), transparent),
+    linear-gradient(to left, color-mix(in srgb, var(--code-fg) 22%, transparent), transparent);
+  background-position: 0 0, 100% 0, 0 0, 100% 0;
+  background-size: 28px 100%, 28px 100%, 16px 100%, 16px 100%;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
 }
 /* <pre> dentro de la ventana de terminal: sin marco propio, la barra ya lo da */
 .prose-sv .wiki-code pre {
@@ -764,6 +807,24 @@
   vertical-align: top;
 }
 .prose-sv tbody tr:hover { background: var(--row-hover); }
+
+/* Affordance de scroll para los contenedores desbordados de fondo transparente
+   (tablas anchas, fórmulas display, mermaid): misma técnica que en <pre> pero
+   con sombra oscura sobre el fondo de la página. Sin la sombra, la última
+   columna/fórmula se corta al ras del borde sin indicio de que hay más. */
+.prose-sv table,
+.prose-sv .katex-display,
+.prose-sv pre.mermaid[data-processed] {
+  background-image:
+    linear-gradient(to right, var(--background), transparent 40%),
+    linear-gradient(to left, var(--background), transparent 40%),
+    linear-gradient(to right, color-mix(in srgb, var(--text-primary) 16%, transparent), transparent),
+    linear-gradient(to left, color-mix(in srgb, var(--text-primary) 16%, transparent), transparent);
+  background-position: 0 0, 100% 0, 0 0, 100% 0;
+  background-size: 28px 100%, 28px 100%, 16px 100%, 16px 100%;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
+}
 
 /* imágenes / figuras (los SVG de Matplotlib traen fondo claro) */
 .prose-sv img {

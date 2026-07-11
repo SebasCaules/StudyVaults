@@ -10,6 +10,7 @@ export interface Note {
   href: string;
   basename: string; // sin .md
   isIndex: boolean;
+  internal: boolean; // nota interna (meta/borrador): excluida del build y la nav
   title: string;
   type?: string;
   unit?: string;
@@ -40,6 +41,13 @@ function pickFirst(
 function firstH1(body: string): string | undefined {
   const m = body.match(/^#\s+(.+?)\s*$/m);
   return m ? m[1].replace(/[*_`]/g, "").trim() : undefined;
+}
+
+/** Bandera booleana tolerante de frontmatter (true / "true" / 1 / yes / sí). */
+function isFlag(v: unknown): boolean {
+  if (v === true) return true;
+  if (typeof v === "string") return /^(true|1|yes|si|sí)$/i.test(v.trim());
+  return false;
 }
 
 // Algunos .md tienen YAML levemente inválido (p.ej. un valor con ":" y paréntesis
@@ -103,6 +111,7 @@ export function parseNote(
     href: noteHref(vault.id, slug),
     basename,
     isIndex: isIndexPath(vault, relPath),
+    internal: isFlag(fm.internal) || isFlag(fm.draft) || isFlag(fm.borrador),
     title,
     type: pickFirst(fm, ["tipo", "type"]),
     unit,

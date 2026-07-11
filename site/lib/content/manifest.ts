@@ -44,6 +44,9 @@ async function build(): Promise<Manifest> {
     for (const f of files) {
       const raw = await readFile(f.absPath, "utf8");
       const note = parseNote(vault, f.relPath, raw);
+      // Notas marcadas internas (frontmatter internal/draft): fuera del build,
+      // la navegación y la resolución de links.
+      if (note.internal) continue;
       notes.push(note);
       byHref.set(note.href, note);
       byVaultSlug.set(vaultSlugKey(note.vault, note.slug), note);

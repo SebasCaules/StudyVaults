@@ -29,7 +29,14 @@ export async function discoverNoteFiles(
   const cwd = path.join(REPO_ROOT, vault.dir);
   const entries = await fg("**/*.md", {
     cwd,
-    ignore: ["**/CLAUDE.md", "**/.obsidian/**", "**/node_modules/**"],
+    // AUDIT_REPORT.md es un artefacto interno de auditoría (como CLAUDE.md): no
+    // es material de la materia y no debe publicarse ni aparecer en la nav.
+    ignore: [
+      "**/CLAUDE.md",
+      "**/AUDIT_REPORT.md",
+      "**/.obsidian/**",
+      "**/node_modules/**",
+    ],
     dot: false,
   });
   return entries.sort().map((relPath) => ({

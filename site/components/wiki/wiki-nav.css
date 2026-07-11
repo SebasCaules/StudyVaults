@@ -213,3 +213,27 @@
   background: var(--primary);
   vertical-align: middle;
 }
+
+/* ============================================================
+   TOC · scroll-spy: resalte de la sección visible.
+   El estado activo lo setea TableOfContents (IntersectionObserver);
+   acá sólo se pinta. Los estilos base de `.toc__item a` viven en
+   app/globals.css (no se tocan): reforzamos el estado activo con
+   mayor especificidad (`.toc__item a.is-active`) para ganar el cascade.
+   ============================================================ */
+.toc__item a.is-active {
+  color: var(--link);
+  border-left-color: var(--primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   MOBILE · aire para los toggles flotantes de los rieles.
+   A ≤860px ambos rieles (nav izq / TOC der) pasan a drawer y sus
+   toggles quedan FIJOS sobre el inicio del contenido; sin este
+   offset, el toggle izquierdo tapa la primera miga de pan ("Inicio").
+   Bajamos las migas por debajo de la banda de los toggles.
+   ============================================================ */
+@media (max-width: 860px) {
+  .wiki .crumbs { margin-top: 28px; }
+}
