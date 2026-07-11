@@ -23,7 +23,7 @@
 }
 .parcial-howto li { padding-left: 4px; }
 .parcial-howto li::marker {
-  color: var(--vault-tint, var(--accent));
+  color: var(--ink-strong);
   font-family: var(--font-mono);
   font-size: 11px;
 }

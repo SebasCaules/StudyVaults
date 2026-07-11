@@ -61,6 +61,16 @@
   --status-promo: #2f9f8f; /* teal: promociona / sin final */
   --status-warn: #d8b279; /* ámbar: aviso (poco margen de repaso) */
   --status-caution: #d68f85; /* rojo suave: conflicto (se pisan) */
+
+  /* Variante de TEXTO de los estados: los --status-* de arriba se calibran
+     como relleno/borde/ícono (umbral 3:1) y no llegan a AA 4.5:1 como texto
+     sobre las superficies dark. Estos aclaran el tono para rendir ≥4.5:1 sobre
+     --surface-2 en dark; en [data-theme="light"] conmutan a los --status-*
+     profundos (ya AA sobre blanco). Se usan SOLO donde el estado es texto. */
+  --status-go-text: #86d3a2;
+  --status-promo-text: #6fd0c1;
+  --status-warn-text: #e0be86;
+  --status-caution-text: #edb5ad;
 }
 
 /* ============================================================
@@ -76,6 +86,10 @@
 
   --text-primary: var(--hex-white);
   --text-secondary: var(--hex-gray);
+  /* variante AA de --text-secondary: rinde ≥4.5:1 sobre --surface-2/3 dark
+     (el --hex-gray plano queda ~2.6:1 sobre --surface-3). Para texto
+     informativo que sí necesita AA: contadores/índice de navegación. */
+  --text-secondary-strong: color-mix(in srgb, var(--hex-gray) 40%, var(--hex-white));
   --ink-strong: var(--hex-white);
   --border: var(--hex-zinc);
   --on-accent-ink: var(--hex-brown);
@@ -124,6 +138,8 @@
 
   --text-primary: var(--hex-brown);
   --text-secondary: color-mix(in srgb, var(--hex-brown) 60%, var(--hex-white));
+  /* variante AA (≥4.5:1 sobre --surface-3 light; el 60% queda ~4.2:1 ahí) */
+  --text-secondary-strong: color-mix(in srgb, var(--hex-brown) 66%, var(--hex-white));
   --ink-strong: var(--hex-brown);
   --border: color-mix(in srgb, var(--hex-zinc) 14%, var(--hex-white));
   --on-accent-ink: var(--hex-brown);
@@ -167,6 +183,12 @@
   --status-promo: #16745c; /* teal profundo (= formula light) */
   --status-warn: #8a591c; /* ámbar profundo (= method light) */
   --status-caution: #b23a28; /* rojo profundo (= caution light) */
+  /* En light los --status-* profundos ya rinden ≥5:1 como texto sobre blanco:
+     la variante de texto reusa esos mismos valores. */
+  --status-go-text: var(--status-go);
+  --status-promo-text: var(--status-promo);
+  --status-warn-text: var(--status-warn);
+  --status-caution-text: var(--status-caution);
 
   color-scheme: light;
 }

@@ -168,15 +168,15 @@
   width: 14px;
   height: 14px;
 }
+/* Sin relleno tintado: los --status-*-text se calibran AA contra la superficie
+   desnuda; cualquier fill del pill corre el fondo compuesto por debajo de 4.5:1. */
 .planner .dd-avail--go {
-  color: var(--status-go);
+  color: var(--status-go-text);
   border-color: color-mix(in srgb, var(--status-go) 34%, transparent);
-  background: color-mix(in srgb, var(--status-go) 12%, transparent);
 }
 .planner .dd-avail--wait {
-  color: var(--status-warn);
+  color: var(--status-warn-text);
   border-color: color-mix(in srgb, var(--status-warn) 34%, transparent);
-  background: color-mix(in srgb, var(--status-warn) 12%, transparent);
 }
 /* "requiere N cr": nota mono discreta al lado de la cursabilidad */
 .planner .dd-req {

@@ -371,7 +371,7 @@ function PatternCatalog() {
                 </strong>
                 <span
                   className="badge"
-                  style={{ color: catTone(p.category), borderColor: catTone(p.category) }}
+                  style={{ color: "var(--ink-strong)", borderColor: catTone(p.category) }}
                 >
                   {p.category}
                 </span>
@@ -631,7 +631,7 @@ function WhichPattern() {
                     <span
                       className="badge"
                       style={{
-                        color: catTone(p.category),
+                        color: "var(--ink-strong)",
                         borderColor: catTone(p.category),
                       }}
                     >

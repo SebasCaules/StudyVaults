@@ -149,7 +149,7 @@
   text-decoration-color:color-mix(in srgb, var(--ink) 30%, transparent);text-underline-offset:3px}
 .planner .qrow__cr{flex:none;font-family:var(--f-m);font-size:10.5px;color:var(--muted)}
 .planner .qrow__due{flex:none;font-family:var(--f-m);font-size:9.5px;letter-spacing:.03em;
-  color:var(--status-warn)}
+  color:var(--status-warn-text)}
 .planner .qrow .avail-lock svg{width:14px;height:14px}
 
 /* estados: el control ya es la señal fuerte; acá solo se atenúa el texto */
@@ -218,7 +218,7 @@
    qrow__due de CuatriView (rol --status-warn), para leerse igual entre vistas. */
 .planner .card__due{
   flex:none;font-family:var(--f-m);font-size:9.5px;letter-spacing:.03em;
-  color:var(--status-warn);
+  color:var(--status-warn-text);
 }
 
 /* ----- empty state accionable: atajo "Limpiar filtros" -----
@@ -246,7 +246,7 @@
    editar el archivo compartido. El color sale del rol --status-promo (teal),
    consistente con el EstadoControl st-promo y el .promo-tag del plan de finales. */
 .planner .prog-chips .prog-chip--promo{
-  color:var(--status-promo);
+  color:var(--status-promo-text);
   border-color:color-mix(in srgb, var(--status-promo) 40%, transparent);
   background:color-mix(in srgb, var(--status-promo) 13%, transparent);
 }

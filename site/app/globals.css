@@ -141,13 +141,13 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   padding: 2px 8px 4px;
 }
 .wikinav__toollink {
   display: block;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   padding: 6px 10px;
   border-radius: 6px;
   border-left: 2px solid color-mix(in srgb, var(--vault-tint) 50%, transparent);
@@ -178,7 +178,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   cursor: pointer;
   list-style: none;
   padding: 8px 10px;
@@ -201,7 +201,7 @@
 .wikinav__sec[open] .wikinav__caret { transform: rotate(45deg); }
 .wikinav__count {
   font-size: 10px;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   background: var(--surface-3);
   border: 1px solid var(--hairline);
   border-radius: var(--r-pill);
@@ -218,7 +218,7 @@
 .wikinav li { margin: 0; }
 .wikinav__link {
   display: block;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   padding: 5px 10px;
   margin: 1px 0 1px -1px;
   border-left: 2px solid transparent;
@@ -255,7 +255,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   padding: 5px 0 1px 10px;
 }
 .wikinav__groups ul {
@@ -328,13 +328,13 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   margin: 0 0 10px;
 }
 .toc ul { list-style: none; margin: 0; padding: 0; }
 .toc__item a {
   display: block;
-  color: var(--text-secondary);
+  color: var(--text-secondary-strong);
   font-size: 13px;
   line-height: 1.4;
   padding: 4px 0;

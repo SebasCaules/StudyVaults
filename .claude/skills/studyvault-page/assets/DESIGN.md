@@ -318,8 +318,10 @@ Estética visual derivada del template Neuform **"Premium Agency Portal — Tech
 | `--secondary` | `#382519` | Marrón cálido (rol estructural, tema oscuro) |
 | `--text-primary` | `#FFFFFF` | Texto principal (sobre surface o coral) |
 | `--text-secondary` | `#A1A1AA` | Texto secundario / metadata atenuada |
+| `--text-secondary-strong` | dark: `color-mix(in srgb, #A1A1AA 40%, #FFFFFF)` · light: `color-mix(in srgb, #241208 66%, #FFFFFF)` | Variante **AA** de `--text-secondary`: `#A1A1AA` plano queda ~2.6:1 sobre `--surface-3` dark. Para texto informativo que sí necesita ≥4.5:1 (contadores/índice/TOC de navegación, metadata de biblioteca) |
 | `--border` | `#27272A` | Bordes de cards, controls, divisores |
 | `--status-go` / `--status-promo` / `--status-warn` / `--status-caution` | dark: `#46A86E` / `#2F9F8F` / `#D8B279` / `#D68F85` · light: `#2E7D52` / `#16745C` / `#8A591C` / `#B23A28` | Estados semánticos (éxito·verde / promociona·teal / aviso·ámbar / conflicto·rojo), **conmutados por tema** (los de dark no llegan a 3:1 sobre claro; los light están alineados a la paleta de hojas 12.10). Relleno/borde/ícono a baja opacidad, nunca texto sobre superficie |
+| `--status-go-text` / `--status-promo-text` / `--status-warn-text` / `--status-caution-text` | dark: `#86D3A2` / `#6FD0C1` / `#E0BE86` / `#EDB5AD` · light: `= --status-*` (`#2E7D52` / `#16745C` / `#8A591C` / `#B23A28`) | Variante de **texto** de los estados: rinde ≥4.5:1 sobre `--surface-2` dark (los `--status-*` base quedan ~2.7–3.4:1 como texto). Se usa donde el estado **es texto** (chips «falta final», «promociona», «cursable»); relleno/borde siguen con `--status-*`. En light reusa los `--status-*` profundos (ya AA sobre blanco) |
 
 **Roles.** Los tokens de **rol de color se conmutan por tema** (ver 12.9). En **dark** las superficies son un **marrón cálido aclarado y parejo**: cards `--surface = #382519` (`--brown-soft`), canvas `--background ≈ #4C3A30` (`color-mix(in srgb, var(--brown-soft) 90%, #FFFFFF)`) y elevado `≈ #54463E` — la tinta profunda `#241208` se reserva para sombras / on-accent / texto en light. En **light**, un off-white cálido. Los paneles/cards se elevan sobre el canvas con un derivado `--surface-2` + borde 1px `--border`. El **coral `#F47C59` es acento** —CTA, palabra de realce del hero, objeto focal, dots de estado—; el azul `#92CFF2` es acento secundario y focos (oscurecido en light para contraste). **No se inventan colores nuevos**: los neutros de cada tema se derivan vía `color-mix` de las hex base (6 + `--brown-soft`); los `--status-*` y la paleta de hojas (12.10) son los únicos semánticos con hex propio.
 
@@ -416,6 +418,8 @@ Tokens como CSS copy-paste (capa web — permitido aquí, **nunca** en `.md`). E
   --secondary:      #382519;
   --text-primary:   #FFFFFF;
   --text-secondary: #A1A1AA;
+  /* variante AA de --text-secondary (dark; en light: 66% #241208 + #FFFFFF) */
+  --text-secondary-strong: color-mix(in srgb, #A1A1AA 40%, #FFFFFF);
   --border:         #27272A;
   --surface-2:      color-mix(in srgb, var(--brown-soft) 84%, #FFFFFF); /* panel elevado sobre el canvas oscuro */
 
@@ -425,6 +429,14 @@ Tokens como CSS copy-paste (capa web — permitido aquí, **nunca** en `.md`). E
   --status-promo:   #2F9F8F; /* teal: promociona / sin final */
   --status-warn:    #D8B279; /* ámbar: aviso */
   --status-caution: #D68F85; /* rojo: conflicto */
+
+  /* Variante de TEXTO de los estados: ≥4.5:1 sobre --surface-2 dark
+     (los --status-* base sólo rinden como relleno/borde). En light reusan
+     los --status-* profundos. */
+  --status-go-text:      #86D3A2;
+  --status-promo-text:   #6FD0C1;
+  --status-warn-text:    #E0BE86;
+  --status-caution-text: #EDB5AD;
 
   /* Tipografía */
   --font-display: "Newsreader", Georgia, "Times New Roman", serif;

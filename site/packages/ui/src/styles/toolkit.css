@@ -574,7 +574,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--vault-tint, var(--accent-text));
+  color: var(--ink-strong);
   transition: color var(--dur-fast) var(--ease), gap var(--dur-fast) var(--ease);
 }
 .tk__card-arrow {
@@ -742,7 +742,7 @@
   border: 1px solid color-mix(in srgb, var(--k-color) 32%, transparent);
   color: var(--k-color);
 }
-.tk__poster-idx { color: var(--k-color); font-weight: 700; letter-spacing: 0.08em; }
+.tk__poster-idx { color: var(--ink-strong); font-weight: 700; letter-spacing: 0.08em; }
 .tk__poster-idx i { color: var(--text-secondary); font-style: normal; font-weight: 600; opacity: 0.7; }
 .tk__poster-cat {
   display: inline-flex;
@@ -1023,13 +1023,13 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--k-color);
+  color: var(--ink-strong);
 }
 .tk__card-cat-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--k-color);
   flex: 0 0 auto;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--k-color) 22%, transparent);
 }
@@ -1173,7 +1173,7 @@
 .vfin-math .katex-display { margin: 0; text-align: left; }
 .vfin-list { margin: 8px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: var(--text-primary); }
 .vfin-list li { margin: 3px 0; }
-.vfin-list li::marker { color: var(--vault-tint, var(--accent)); }
+.vfin-list li::marker { color: var(--ink-strong); }
 .vfin-note {
   margin: 12px 0;
   padding: 9px 13px;
@@ -1610,7 +1610,7 @@
 }
 .vfin-examrow__arrow {
   margin-left: auto;
-  color: var(--vault-tint, var(--accent-text));
+  color: var(--ink-strong);
   font-weight: 700;
   transition: transform var(--dur-fast) var(--ease);
 }
@@ -1710,7 +1710,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--vault-tint, var(--accent-text));
+  color: var(--ink-strong);
 }
 .vfin-typecard__foot {
   display: flex;
