@@ -15,6 +15,7 @@ import {
   tieneFinal,
   CheckSingle,
   CheckDouble,
+  CheckFilled,
 } from "@/components/planner/EstadoControl";
 import { AvailLock } from "@/components/planner/CardSignals";
 import type { Materia } from "@/lib/planner/types";
@@ -62,7 +63,7 @@ function CuatriLegend() {
               <span className="estado-ctl st-final" aria-hidden="true"><CheckDouble /></span> final aprobado
             </span>
             <span className="cl-row">
-              <span className="estado-ctl st-promo" aria-hidden="true"><CheckSingle /></span> promociona (sin final)
+              <span className="estado-ctl st-promo" aria-hidden="true"><CheckFilled /></span> promocionada — no rinde final
             </span>
           </span>
         </div>

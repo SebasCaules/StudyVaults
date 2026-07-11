@@ -729,11 +729,6 @@ function RoadmapStop({
           <span className="rmap-stop__step" aria-hidden="true">
             {i + 1}
           </span>
-          {!locked && (
-            <span className="rmap-drophint">
-              arrastrá para mover de cuatrimestre
-            </span>
-          )}
         </div>
 
         <div className="rmap-stop__ledger">
@@ -778,11 +773,7 @@ function RoadmapStop({
                 style={
                   { "--blk": PALETTE[k % PALETTE.length] } as React.CSSProperties
                 }
-                title={
-                  locked
-                    ? `${x.m.codigo} · ${x.m.nombre}`
-                    : `${x.m.codigo} · ${x.m.nombre} — arrastrá para mover de cuatrimestre`
-                }
+                title={`${x.m.codigo} · ${x.m.nombre}`}
               >
                 <button
                   type="button"
@@ -1487,7 +1478,17 @@ function PlanPool({ start }: { start: PlanStart }) {
                 ))
               ) : (
                 <div className="muted" style={{ padding: "10px 12px" }}>
-                  Sin resultados
+                  No hay electivas con «{query.trim()}».
+                  <span
+                    style={{
+                      display: "block",
+                      marginTop: 4,
+                      fontSize: "11.5px",
+                      color: "var(--faint)",
+                    }}
+                  >
+                    Probá con el código (p. ej. 72.03) o revisá la ortografía.
+                  </span>
                 </div>
               )}
             </div>
@@ -2001,7 +2002,7 @@ export default function PlanView() {
               tabIndex={tab === "road" ? 0 : -1}
               onClick={() => setTab("road")}
             >
-              <IconRoute size={15} /> Roadmap
+              <IconRoute size={15} /> Plan
             </button>
             <button
               type="button"
@@ -2221,8 +2222,15 @@ export default function PlanView() {
               )}
               {tab === "cal" && (
                 <p className="pv-movehint">
-                  Para mover materias de cuatrimestre usá Roadmap o «Materias del
-                  plan».
+                  Para mover materias de cuatrimestre usá la pestaña Plan o
+                  «Materias del plan».
+                </p>
+              )}
+              {tab === "road" && used.length > 1 && (
+                <p className="rmap-intro">
+                  <IconGrip size={12} />
+                  Arrastrá cualquier materia a otro cuatrimestre para moverla, o
+                  usá el selector de cada tarjeta.
                 </p>
               )}
               {tab === "road" && (

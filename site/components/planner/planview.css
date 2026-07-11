@@ -550,6 +550,29 @@
 .planner .rmap-stop.is-locked {
   opacity: 0.82;
 }
+/* Pista de arrastre: UNA sola vez, en el intro del Roadmap (antes se repetía por
+   tarjeta). El gesto no existe en touch → se oculta ahí, donde prima el selector
+   inline de cada materia. */
+.planner .rmap-intro {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-family: var(--f-m);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.planner .rmap-intro svg {
+  flex: none;
+  opacity: 0.8;
+}
+@media (hover: none), (pointer: coarse) {
+  .planner .rmap-intro {
+    display: none;
+  }
+}
 .planner .pv-sem__head {
   display: flex;
   align-items: center;

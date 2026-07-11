@@ -1131,7 +1131,21 @@ export default function CombinadorView() {
             ))}
           </div>
         )}
-        {noResults && <p className="cmb-noresults">No hay materias con “{q}”.</p>}
+        {noResults && (
+          <div className="cmb-noresults">
+            No hay materias con “{q}”.
+            <span
+              style={{
+                display: "block",
+                marginTop: 6,
+                fontSize: "12px",
+                color: "var(--faint)",
+              }}
+            >
+              Probá con el código (p. ej. 72.03) o revisá la ortografía.
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
