@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { withBase } from "@/lib/content/slug";
 import { VAULTS } from "@/lib/content/vaults";
+import { useModalFocus } from "@/components/planner/useModalFocus";
 import { readParams, writeParams } from "@/lib/url-state/core";
 
 interface Result {
@@ -22,7 +23,6 @@ export default function SearchModal() {
   const [ready, setReady] = useState<boolean | null>(null); // null=sin cargar
   const [hydrated, setHydrated] = useState(false);
   const pfRef = useRef<Pagefind | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // abrir con cmd/ctrl+K o evento; cerrar con Escape
   useEffect(() => {
@@ -89,7 +89,6 @@ export default function SearchModal() {
   useEffect(() => {
     if (open) {
       loadPagefind();
-      setTimeout(() => inputRef.current?.focus(), 30);
     } else if (hydrated) {
       // Limpiar solo al CERRAR de verdad, no en el primer mount: si no, este
       // effect (open=false inicial) pisaría la query que la hidratación de `?q=`
@@ -133,15 +132,50 @@ export default function SearchModal() {
 
   if (!open) return null;
 
+  // El panel vive en un componente que monta recién al abrir: así el
+  // useModalFocus de adentro corre en cada apertura (foco inicial en el input +
+  // trap de Tab) y restaura el foco al disparador al cerrar.
+  return (
+    <SearchPanel
+      query={query}
+      setQuery={setQuery}
+      results={results}
+      ready={ready}
+      onClose={() => setOpen(false)}
+    />
+  );
+}
+
+function SearchPanel({
+  query,
+  setQuery,
+  results,
+  ready,
+  onClose,
+}: {
+  query: string;
+  setQuery: (v: string) => void;
+  results: Result[];
+  ready: boolean | null;
+  onClose: () => void;
+}) {
+  // Foco accesible del modal: foco inicial en el input + trap de Tab + restore.
+  const panelRef = useModalFocus<HTMLDivElement>();
+
   return (
     <div
       className="search-overlay"
-      onClick={() => setOpen(false)}
+      onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Buscar"
     >
-      <div className="search-panel" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="search-panel"
+        ref={panelRef}
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="search-bar">
           <svg
             viewBox="0 0 24 24"
@@ -155,7 +189,6 @@ export default function SearchModal() {
             <path d="m21 21-4.3-4.3" strokeLinecap="round" />
           </svg>
           <input
-            ref={inputRef}
             className="search-input"
             type="search"
             placeholder={`Buscar en las ${VAULTS.length} materias…`}
