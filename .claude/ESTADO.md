@@ -21,6 +21,17 @@ electivas + hojas + toolkits, en https://sebascaules.github.io/StudyVaults/. La 
 
 ## Hecho (verificado)
 
+- **Auditoría HCI/UX-UI integral — COMPLETA y verificada** (2026-07-10/11): pipeline
+  jerárquico (corpus de 132 capturas + axe + perf sobre build de `38fbba6` → 15 workers
+  especializados + 6 jefes → 21 verificadores adversariales; 42 agentes Opus). Resultado:
+  **59 hallazgos** (2 críticos · 6 altos · 38 medios · 13 bajos), 24 verificados uno a uno,
+  2 refutados. **Críticos confirmados contra producción real**: (1) búsqueda global → 404
+  en TODOS los resultados (doble basePath en `SearchModal.tsx:176` + `slug.ts:12`);
+  (2) sin WebGL la landing entera cae al crash de Next (cero error boundaries en la app).
+  **Plan ejecutable: `.plans/plan-rework-hci-2026-07.md`** — 13 tandas por carriles
+  disjuntos (P0: T1 búsqueda, T2 landing resiliente). Devolución visual con evidencia:
+  artifact "auditoria-hci-devolucion" (los «después» se completan al ejecutar el rework).
+  Ojo: T2/T6 tocan superficie del WIP del grafo 3D (otra sesión) — coordinar.
 - **Recomendadas como fila compartida + modo «Solo combinar»** — `f6a5ae1` + `51807cf`
   (2026-07-05, **pendiente OK visual del usuario; SIN push**): `RecRow.tsx`/`rec-row.css`
   = fuente única de la fila de materia recomendada (dots minor · nombre · señales RecSig ·
