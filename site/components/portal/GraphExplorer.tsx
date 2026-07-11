@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { withBase } from "@/lib/content/slug";
+import HeroFallback from "./HeroFallback";
 import type { GNode, GLink } from "./ForceGraphInner";
 
 // react-force-graph-2d toca `window` al importarse → SOLO cliente. next/dynamic
@@ -52,8 +53,11 @@ type Chip = {
 //     conserva hover/click. Es el MISMO grafo real de notas, solo que acotado.
 export default function GraphExplorer({
   variant = "full",
+  total: totalProp,
 }: {
   variant?: "full" | "hero";
+  /** Conteo canónico de páginas (el del stat del hero); si falta, usa los nodos del grafo. */
+  total?: number;
 }) {
   const router = useRouter();
   const [data, setData] = useState<{ nodes: GNode[]; links: GLink[] } | null>(
@@ -64,15 +68,55 @@ export default function GraphExplorer({
   const [selected, setSelected] = useState<string | null>(null);
   const [light, setLight] = useState(false);
   const [motion, setMotion] = useState(true);
+  // Feature-detect de WebGL: null = sin resolver todavía; false = no hay contexto
+  // (GPU vieja, aceleración off, VM). El grafo 3D solo se monta con `true`.
+  const [webgl, setWebgl] = useState<boolean | null>(null);
+  // Gate de visibilidad: recién montamos la escena (y disparamos el import de
+  // three) cuando la tarjeta entra en viewport. Hasta entonces se ve el fallback.
+  const [inView, setInView] = useState(false);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const readLight = () =>
       document.documentElement.getAttribute("data-theme") === "light";
     setLight(readLight());
     setMotion(!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
+    let ok = false;
+    try {
+      const c = document.createElement("canvas");
+      ok = !!(
+        window.WebGLRenderingContext &&
+        (c.getContext("webgl") || c.getContext("experimental-webgl"))
+      );
+    } catch {
+      ok = false;
+    }
+    setWebgl(ok);
     const onTheme = () => setLight(readLight());
     window.addEventListener("sv:themechange", onTheme);
     return () => window.removeEventListener("sv:themechange", onTheme);
+  }, []);
+
+  // La escena 3D del hero solo importa el bundle three cuando la tarjeta es
+  // visible. En SSR o sin IntersectionObserver, degradá a "visible".
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   useEffect(() => {
@@ -133,6 +177,10 @@ export default function GraphExplorer({
 
   // --- variante HERO: tarjeta compacta al costado del hero de la home ---
   if (variant === "hero") {
+    // La escena 3D se monta solo con WebGL disponible, sin reduced-motion y
+    // cuando la tarjeta ya es visible. En cualquier otro caso se ve el panel
+    // estático (HeroFallback), navegable y sin costo de three.js.
+    const show3D = !!data && webgl === true && motion && inView;
     return (
       <div className="hero-graph">
         <div className="hero-graph__cap" aria-hidden="true">
@@ -141,28 +189,38 @@ export default function GraphExplorer({
             carta del wiki · voronoi 3D
           </span>
           <span className="hero-graph__count">
-            {total > 0 ? `${total} nodos` : "cargando…"}
+            {(totalProp ?? total) > 0
+              ? `${totalProp ?? total} en la carta`
+              : "cargando…"}
           </span>
         </div>
         <div
+          ref={canvasRef}
           className="hero-graph__canvas hero-graph__canvas--3d"
           role="img"
-          aria-label="Carta 3D interactiva del wiki: cada punto es una nota, elevada según sus enlaces; cada materia ocupa su territorio voronoi, sembrado en su nota más conectada."
+          aria-label={
+            show3D
+              ? "Carta 3D interactiva del wiki: cada punto es una nota, elevada según sus enlaces; cada materia ocupa su territorio voronoi, sembrado en su nota más conectada."
+              : "Mapa del wiki por materia: cada materia con su cantidad de notas, enlazada a su vault."
+          }
         >
-          {data && (
+          {show3D ? (
             <ForceGraph3DInner
-              nodes={data.nodes}
-              links={data.links}
+              nodes={data!.nodes}
+              links={data!.links}
               light={light}
               selected={null}
               motion={motion}
               onOpen={(u) => router.push(u)}
             />
+          ) : (
+            <HeroFallback chips={chips} light={light} />
           )}
         </div>
         <p className="hero-graph__hint">
-          Cada punto es una nota (su altura: cuántos enlaces tiene) · movés el
-          cursor y la red se enciende · arrastrá para girar · click la abre
+          {show3D
+            ? "Cada punto es una nota (su altura: cuántos enlaces tiene) · movés el cursor y la red se enciende · arrastrá para girar · click la abre"
+            : "Cada materia del wiki con su cantidad de notas · abrí una para explorar su red"}
         </p>
       </div>
     );
