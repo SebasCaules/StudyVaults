@@ -1035,8 +1035,8 @@ const tools: Tool[] = [
     label: "Snippet cheatsheet",
     icon: "code",
     tone: "def",
-    verb: "Copiar",
-    desc: "Fragmentos de Spring MVC listos para copiar: controllers, validación, formularios y más, con un clic.",
+    verb: "Copy",
+    desc: "Copy-ready Spring MVC fragments: controllers, validation, forms and more, in one click.",
     node: <SnippetTool />,
   },
   {
@@ -1044,8 +1044,8 @@ const tools: Tool[] = [
     label: "Request lifecycle",
     icon: "cycle",
     tone: "def",
-    verb: "Recorrer",
-    desc: "Seguí una petición paso a paso, del navegador al servlet y de vuelta al JSP, para entender cómo viaja por Spring.",
+    verb: "Walk through",
+    desc: "Follow a request step by step, from the browser to the servlet and back to the JSP, to see how it travels through Spring.",
     poster: PosterLifecycle,
     node: <LifecycleTool />,
   },
@@ -1054,8 +1054,8 @@ const tools: Tool[] = [
     label: "EL & JSTL reference",
     icon: "braces",
     tone: "example",
-    verb: "Consultar",
-    desc: "Referencia rápida de Expression Language y etiquetas JSTL: la sintaxis que siempre se olvida, a mano.",
+    verb: "Look up",
+    desc: "Quick reference for Expression Language and JSTL tags: the syntax you always forget, close at hand.",
     node: <ReferenceTool />,
   },
 ];
@@ -1063,6 +1063,7 @@ const tools: Tool[] = [
 export default function PawTools() {
   return (
     <ToolkitShell
+      en
       launcher={{
         code: "SYS.04",
         kicker: "Spring MVC · JSP",

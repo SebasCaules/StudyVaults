@@ -482,7 +482,7 @@ export default function PlannerIntro() {
               horarios y finales, sin choques y antes de anotarte.
             </p>
             <div className={s.heroCtas}>
-              <Link href={APP_HREF} className={cx(s.btn, s.btnPrimary)}>
+              <Link href={APP_HREF} className={cx(s.btn, s.btnPrimary)} prefetch={false}>
                 Abrir planificador
                 <span className={s.btnIcon}>{arrow}</span>
               </Link>
@@ -668,7 +668,7 @@ export default function PlannerIntro() {
                 Sin cuenta ni instalar nada — empezás marcando tus aprobadas.
               </p>
             </div>
-            <Link href={APP_HREF} className={cx(s.btn, s.btnPrimary, s.btnLg)}>
+            <Link href={APP_HREF} className={cx(s.btn, s.btnPrimary, s.btnLg)} prefetch={false}>
               Abrir planificador
               <span className={s.btnIcon}>{arrow}</span>
             </Link>

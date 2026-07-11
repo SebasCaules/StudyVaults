@@ -23,11 +23,18 @@ const FolderIcon = (
 export default function VaultLibrary({
   vault,
   lib,
+  en = false,
 }: {
   vault: VaultId;
   lib: VaultLibraryData;
+  /** Vault en inglés (cfg.lang === "en"): rotula el pie en inglés. */
+  en?: boolean;
 }) {
   const total = lib.folders.reduce((n, f) => n + f.items.length, 0);
+  const nFolders = lib.folders.length;
+  const foot = en
+    ? `${total} ${total === 1 ? "file" : "files"} · ${nFolders} ${nFolders === 1 ? "folder" : "folders"}`
+    : `${total} ${total === 1 ? "archivo" : "archivos"} · ${nFolders} ${nFolders === 1 ? "carpeta" : "carpetas"}`;
 
   return (
     <div className="lib">
@@ -77,9 +84,7 @@ export default function VaultLibrary({
         ))}
       </div>
 
-      <p className="lib__foot">
-        {total} archivos · {lib.folders.length} carpetas
-      </p>
+      <p className="lib__foot">{foot}</p>
     </div>
   );
 }

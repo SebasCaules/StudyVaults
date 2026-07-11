@@ -829,7 +829,7 @@ html.parcial-focus .parcial-toolbar {
     background var(--dur-fast) var(--ease);
 }
 .parcial-cites-remove:hover {
-  color: var(--danger, #dc2626);
+  color: var(--status-caution);
   background: var(--row-hover);
 }
 
@@ -1309,14 +1309,14 @@ html.parcial-focus .parcial-toolbar {
     background var(--dur-fast) var(--ease);
 }
 .parcial-func-remove:hover {
-  color: var(--danger, #dc2626);
+  color: var(--status-caution);
   background: var(--row-hover);
 }
 .parcial-func-add { display: flex; gap: 8px; margin: 14px 0 0; }
 .parcial-func-add .vtool-input { flex: 1; }
 .parcial-rank-footnote.is-ok {
-  background: color-mix(in srgb, var(--ok, #16a34a) 10%, transparent);
-  border-left-color: var(--ok, #16a34a);
+  background: color-mix(in srgb, var(--status-go) 10%, transparent);
+  border-left-color: var(--status-go);
 }
 
 /* ============================================================

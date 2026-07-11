@@ -74,7 +74,7 @@ export function ToolCard({
     );
   }
   return (
-    <Link href={href} className={classes} {...rest}>
+    <Link href={href} className={classes} prefetch={false} {...rest}>
       {body}
     </Link>
   );

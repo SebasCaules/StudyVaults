@@ -220,7 +220,7 @@ export default function EquilibrioTool() {
             y={plot.pad}
             width={plot.xOf(plot.qStar) - plot.pad}
             height={plot.h - plot.pad * 2}
-            fill="var(--coral, #e2725b)"
+            fill="var(--status-caution)"
             opacity={0.1}
           />
           {/* zona de ganancia (q > q*) */}
@@ -229,7 +229,7 @@ export default function EquilibrioTool() {
             y={plot.pad}
             width={plot.w - plot.pad - plot.xOf(plot.qStar)}
             height={plot.h - plot.pad * 2}
-            fill="var(--acc, #3fb950)"
+            fill="var(--status-go)"
             opacity={0.1}
           />
 
@@ -257,7 +257,7 @@ export default function EquilibrioTool() {
             y1={plot.yOf(plot.ct(0))}
             x2={plot.xOf(plot.qMax)}
             y2={plot.yOf(plot.ct(plot.qMax))}
-            stroke="var(--coral, #e2725b)"
+            stroke="var(--status-caution)"
             strokeWidth={2}
           />
           {/* ingreso total: p·q */}
@@ -266,7 +266,7 @@ export default function EquilibrioTool() {
             y1={plot.yOf(plot.it(0))}
             x2={plot.xOf(plot.qMax)}
             y2={plot.yOf(plot.it(plot.qMax))}
-            stroke="var(--acc, #3fb950)"
+            stroke="var(--status-go)"
             strokeWidth={2}
           />
 
@@ -302,7 +302,7 @@ export default function EquilibrioTool() {
             y={plot.yOf(plot.it(plot.qMax)) - 6}
             textAnchor="end"
             fontSize={11}
-            fill="var(--acc, #3fb950)"
+            fill="var(--status-go)"
           >
             IT = p·q
           </text>
@@ -311,7 +311,7 @@ export default function EquilibrioTool() {
             y={plot.yOf(plot.ct(plot.qMax)) + 14}
             textAnchor="end"
             fontSize={11}
-            fill="var(--coral, #e2725b)"
+            fill="var(--status-caution)"
           >
             CT = CF + cv·q
           </text>

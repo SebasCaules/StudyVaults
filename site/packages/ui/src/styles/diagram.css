@@ -6,9 +6,6 @@
    ============================================================ */
 
 .diagram-editor {
-  /* fuente sans local: las etiquetas de nodo se leen mejor sin serif */
-  --de-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-card);
@@ -47,7 +44,7 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-ctrl);
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
@@ -109,7 +106,7 @@
   background: var(--surface-2);
 }
 .de-trace-title {
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 12.5px;
   font-weight: 700;
   color: var(--ink-strong);
@@ -121,7 +118,7 @@
   border: 1px solid var(--hairline-strong);
   border-radius: var(--r-ctrl);
   cursor: pointer;
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-secondary);
   padding: 3px 8px;
@@ -174,7 +171,7 @@
   color: var(--danger, #DC2626);
 }
 .de-trace-label {
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--text-primary);
   line-height: 1.3;
@@ -188,7 +185,7 @@
 }
 .de-trace-empty {
   padding: 18px 16px;
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-style: italic;
   color: var(--text-secondary);
@@ -204,7 +201,7 @@
   font-size: 11.5px;
   color: var(--text-secondary);
   min-height: 22px;
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
 }
 .de-hint kbd {
   font-family: var(--font-mono);
@@ -300,7 +297,7 @@
 /* node labels */
 .de-node-label-host { pointer-events: none; overflow: visible; }
 .de-node-label-text {
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 12.5px;
   font-weight: 600;
   line-height: 1.2;
@@ -323,7 +320,7 @@
   width: 100%;
   height: 32px;
   padding: 0 8px;
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 12.5px;
   font-weight: 600;
   color: var(--ink-strong);
@@ -340,7 +337,7 @@
 .de-edge { color: var(--text-secondary); cursor: pointer; }
 .de-edge .de-edge-line { stroke: currentColor; stroke-width: 1.6; fill: none; }
 .de-edge.is-selected .de-edge-line { stroke: var(--accent); stroke-width: 2.5; }
-.de-edge-label { font-family: var(--de-sans); font-size: 11px; fill: var(--text-secondary); pointer-events: none; }
+.de-edge-label { font-family: var(--font-mono); font-size: 11px; fill: var(--text-secondary); pointer-events: none; }
 .de-edge-hit { stroke: transparent; stroke-width: 16; fill: none; }
 
 /* edge waypoint handles (selected edge): solid = existing bend, hollow = add */
@@ -461,7 +458,7 @@
   background: transparent;
   border: 0;
   padding: 6px 10px;
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 14px;
   color: var(--text-primary);
   cursor: pointer;
@@ -569,7 +566,7 @@
   background: var(--surface-3);
   border: 1px solid var(--hairline-strong);
   border-radius: var(--r-ctrl);
-  font-family: var(--de-sans);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
@@ -627,5 +624,5 @@
   border-left-color: var(--accent);
   transform: translateX(2px);
 }
-.de-preset-name { font-family: var(--de-sans); font-size: 13px; font-weight: 600; color: var(--ink-strong); }
-.de-preset-desc { font-family: var(--de-sans); font-size: 11px; color: var(--text-secondary); }
+.de-preset-name { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--ink-strong); }
+.de-preset-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }

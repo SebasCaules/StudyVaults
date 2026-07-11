@@ -67,7 +67,7 @@ export function Footer({
                   {l.label}
                 </a>
               ) : (
-                <Link key={l.href} href={l.href}>
+                <Link key={l.href} href={l.href} prefetch={false}>
                   {l.label}
                 </Link>
               ),

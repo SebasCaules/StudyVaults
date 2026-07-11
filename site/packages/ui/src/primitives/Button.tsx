@@ -22,6 +22,13 @@ interface CommonProps {
   /** Renderiza un <a> externo (target _blank) en vez de next/link. */
   external?: boolean;
   href?: string;
+  /**
+   * Prefetch de next/link. Pasar `false` cuando el link apunta a una ruta
+   * pesada desde una página de lectura (toolkit/planner): difiere la descarga
+   * del bundle al clic en vez de bajarlo en segundo plano. Solo aplica a la
+   * rama <Link> interna (ignorado en `external`).
+   */
+  prefetch?: boolean;
   children: ReactNode;
   className?: string;
 }
@@ -50,6 +57,7 @@ export function Button({
   pill,
   external,
   href,
+  prefetch,
   disabled,
   className,
   children,
@@ -92,7 +100,12 @@ export function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>
+      <Link
+        href={href}
+        prefetch={prefetch}
+        className={classes}
+        {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
         {children}
       </Link>
     );

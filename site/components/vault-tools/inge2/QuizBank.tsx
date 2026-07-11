@@ -508,7 +508,7 @@ function RunScreen(props: {
               let weight: number | undefined;
               if (revealed) {
                 if (isCorrect) {
-                  color = "var(--accent)";
+                  color = "var(--status-go)";
                   weight = 600;
                 } else if (isPicked) {
                   color = "var(--text-secondary)";
@@ -530,7 +530,7 @@ function RunScreen(props: {
                     borderRadius: 8,
                     border: "1px solid var(--hairline)",
                     background:
-                      revealed && isCorrect ? "color-mix(in srgb, var(--accent) 10%, transparent)" : "transparent",
+                      revealed && isCorrect ? "color-mix(in srgb, var(--status-go) 12%, transparent)" : "transparent",
                   }}
                 >
                   <input
@@ -573,7 +573,12 @@ function RunScreen(props: {
         ) : (
           <>
             <SubPanel style={{ marginTop: 14 }}>
-              <span className="vtool-eyebrow">{sameSetReveal(picked, q.correct)}</span>
+              <span
+                className="vtool-eyebrow"
+                style={{ color: sameSet(picked, q.correct) ? "var(--status-go)" : "var(--status-caution)" }}
+              >
+                {sameSet(picked, q.correct) ? "Correcto" : "Incorrecto"}
+              </span>
               <Note style={{ marginTop: 6 }}>{q.explanation}</Note>
               {q.wiki && (
                 <div className="vtool-row" style={{ marginTop: 10 }}>
@@ -593,11 +598,6 @@ function RunScreen(props: {
       </SubPanel>
     </div>
   );
-}
-
-/** Etiqueta corta del resultado de la pregunta recién respondida. */
-function sameSetReveal(picked: number[], correct: number[]): string {
-  return sameSet(picked, correct) ? "Correcto" : "Incorrecto";
 }
 
 /* ════════════════════════════ RESULTS ══════════════════════════════════ */
@@ -698,7 +698,7 @@ function ResultsScreen(props: {
                   <Badge>{UNITS[q.unit].label}</Badge>
                   <Badge variant="status">{DIFF_LABEL[q.difficulty]}</Badge>
                 </div>
-                <p style={{ color: "var(--accent)", fontSize: 13, margin: "0 0 6px" }}>
+                <p style={{ color: "var(--status-go)", fontSize: 13, margin: "0 0 6px" }}>
                   Correcta: {q.correct.map((i) => q.options[i]).join(" · ")}
                 </p>
                 <Note style={{ marginTop: 0 }}>{q.explanation}</Note>

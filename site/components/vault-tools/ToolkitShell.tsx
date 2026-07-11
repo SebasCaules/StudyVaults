@@ -115,11 +115,14 @@ export default function ToolkitShell({
   intro,
   tools,
   launcher,
+  en = false,
 }: {
   intro?: ReactNode;
   tools: Tool[];
   /** Identidad bespoke del launcher. Si se omite, cae al launcher clásico. */
   launcher?: LauncherIdentity;
+  /** Vault en inglés (cfg.lang === "en"): rotula el chrome del runner en inglés. */
+  en?: boolean;
 }) {
   const base = useId();
   // `tool` en la URL = key de la herramienta activa (ausente = grilla). Deep-link:
@@ -311,7 +314,7 @@ export default function ToolkitShell({
           <span className="tk__back-arrow" aria-hidden="true">
             ←
           </span>
-          Herramientas
+          {en ? "Tools" : "Herramientas"}
         </button>
 
         <span className="tk__crumb" aria-hidden="true">
@@ -321,7 +324,7 @@ export default function ToolkitShell({
           <span className="tk__crumb-label">{activeTool.label}</span>
         </span>
 
-        <nav className="tk__jump" aria-label="Cambiar de herramienta">
+        <nav className="tk__jump" aria-label={en ? "Switch tool" : "Cambiar de herramienta"}>
           {tools.map((t) => (
             <button
               key={t.key}
