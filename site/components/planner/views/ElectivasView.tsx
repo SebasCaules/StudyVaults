@@ -8,7 +8,8 @@ import {
   CheckDouble,
 } from "@/components/planner/EstadoControl";
 import { estadoOf, tieneFinal } from "@/lib/planner/estado";
-import { PLAN, hasHorario } from "@/lib/planner/model";
+import { PLAN, hasHorario, byId } from "@/lib/planner/model";
+import { isAsync } from "@/lib/planner/time";
 import { isAvailable } from "@/lib/planner/metrics";
 import { FICHAS } from "@/lib/planner/fichas";
 import { MinorBadge, MinorBadges } from "@/components/planner/MinorBadge";
@@ -60,6 +61,30 @@ function CardLegend() {
   );
 }
 
+/** Día completo → sigla de 2 letras (espejo del preview del drawer). */
+const DAY_AB: Record<string, string> = {
+  lunes: "Lu", martes: "Ma", "miércoles": "Mi", miercoles: "Mi",
+  jueves: "Ju", viernes: "Vi", "sábado": "Sá", sabado: "Sá", domingo: "Do",
+};
+const dayAb = (d: string) => DAY_AB[d.trim().toLowerCase()] ?? d.slice(0, 2);
+/** Hora compacta: "18:00" → "18"; conserva los minutos no redondos ("18:30"). */
+const fmtH = (h: string) => (h.endsWith(":00") ? h.slice(0, h.indexOf(":")) : h);
+
+/** Resumen mono de horario para estampar en la card (CPT-12): franjas de la
+ *  única comisión («Lu 18–21 · Ju 18–21»), o «N comisiones» si hay varias —
+ *  así el choque de días se ve escaneando la grilla, sin abrir el drawer.
+ *  "" cuando la materia no tiene horario publicado (la card muestra el motivo). */
+function horarioMeta(code: string): string {
+  const coms = byId.get(code)?.horario?.comisiones ?? [];
+  if (!coms.length) return "";
+  if (coms.length > 1) return `${coms.length} comisiones`;
+  const slots = coms[0].slots.filter((s) => !isAsync(s));
+  if (!slots.length) return "asincrónico";
+  return slots
+    .map((s) => `${dayAb(s.dia)} ${fmtH(s.desde)}–${fmtH(s.hasta)}`)
+    .join(" · ");
+}
+
 interface ElectCardProps {
   m: Materia;
   /** avance real (cursada o final) — pinta la card como "aprobada". */
@@ -72,6 +97,8 @@ interface ElectCardProps {
   inCombo: boolean;
   /** tiene horario publicado este cuatrimestre. */
   hor: boolean;
+  /** resumen mono del horario para la card (franjas o «N comisiones»); "" si no hay. */
+  horMeta: string;
   /** tiene ficha (programa analítico) para abrir. */
   hasFicha: boolean;
   /** aprobada (no entra al plan aunque se combine). */
@@ -91,10 +118,12 @@ const ElectCard = memo(function ElectCard({
   avail,
   inCombo,
   hor,
+  horMeta,
   hasFicha,
   isApproved,
   dispatch,
 }: ElectCardProps) {
+  const horId = "elhor-" + m.codigo;
   return (
     <article
       className={"card t-electiva" + (appr ? " appr" : "")}
@@ -109,11 +138,19 @@ const ElectCard = memo(function ElectCard({
       </div>
       <h3 className="card__name" title={m.nombre}>{m.nombre}</h3>
       {/* fila de señales — alto reservado (1 renglón) para que todas las
-          cards midan igual; sin wrap: badges + candado + "falta final". */}
+          cards midan igual; sin wrap: badges + candado + "falta final" +
+          horario (franjas o motivo "sin horario"), truncado con title. */}
       <div className="card__meta">
         <MinorBadges areas={m.areas} variant="logo" />
         {!appr ? <AvailLock ok={avail} /> : null}
         {debeFinal ? <span className="card__due">falta final</span> : null}
+        <span
+          className={"card__hor" + (hor ? "" : " card__hor--none")}
+          id={horId}
+          title={hor ? horMeta : "Sin horario publicado este cuatrimestre"}
+        >
+          {hor ? horMeta : "sin horario"}
+        </span>
       </div>
       {/* acciones en UNA sola fila: estado · combinar · ficha↗ (a la derecha).
           La ficha ya no es un renglón full-width extra — inline y compacta. */}
@@ -123,9 +160,16 @@ const ElectCard = memo(function ElectCard({
         <span style={{ display: "inline-flex", alignItems: "center" }}>
           <EstadoControl code={m.codigo} />
         </span>
+        {/* combinar = acción que avanza el flujo → énfasis primario (borde de
+            acento) cuando está operable. Sin horario NO se deshabilita mudo:
+            queda operable-o-explicado (aria-disabled + aria-describedby apunta
+            al motivo visible "sin horario" del meta), focusable por teclado. */}
         <button
-          className={"mini btn-co" + (inCombo ? " on plan" : "")}
-          disabled={!hor}
+          className={
+            "mini btn-co" + (inCombo ? " on plan" : hor ? "" : " is-off")
+          }
+          aria-disabled={hor ? undefined : true}
+          aria-describedby={hor ? undefined : horId}
           title={
             !hor
               ? "Sin horario publicado este cuatrimestre"
@@ -227,6 +271,7 @@ export default function ElectivasView() {
                 avail={isAvailable(m, approved)}
                 inCombo={combo.has(m.codigo)}
                 hor={hasHorario(m.codigo)}
+                horMeta={horarioMeta(m.codigo)}
                 hasFicha={!!FICHAS[m.codigo]}
                 isApproved={approved.has(m.codigo)}
                 dispatch={dispatch}
