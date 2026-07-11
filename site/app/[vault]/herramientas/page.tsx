@@ -60,11 +60,15 @@ export default async function ToolkitPage({
       toc={[]}
       wide
     >
-      <header className="wiki__head">
+      <header
+        className="wiki__head"
+        data-pagefind-body
+        data-pagefind-filter={`materia:${cfg.short}`}
+      >
         <Eyebrow>
           {cfg.code} // {en ? "Study toolkit" : "Herramientas de estudio"}
         </Eyebrow>
-        <h1 className="wiki__title">
+        <h1 className="wiki__title" data-pagefind-meta="title">
           {en ? "Study toolkit" : "Herramientas de estudio"}
         </h1>
         <p className="wiki__blurb">

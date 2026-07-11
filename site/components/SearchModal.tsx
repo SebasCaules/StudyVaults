@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { withBase } from "@/lib/content/slug";
+import { VAULTS } from "@/lib/content/vaults";
 import { readParams, writeParams } from "@/lib/url-state/core";
 
 interface Result {
@@ -157,7 +158,7 @@ export default function SearchModal() {
             ref={inputRef}
             className="search-input"
             type="search"
-            placeholder="Buscar en las 7 materias…"
+            placeholder={`Buscar en las ${VAULTS.length} materias…`}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -173,7 +174,7 @@ export default function SearchModal() {
             </p>
           )}
           {results.map((r) => (
-            <a key={r.url} className="search-result" href={withBase(r.url)}>
+            <a key={r.url} className="search-result" href={r.url}>
               <span className="search-result__title">
                 {r.title}
                 {r.materia && (

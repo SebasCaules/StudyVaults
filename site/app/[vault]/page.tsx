@@ -79,14 +79,20 @@ export default async function VaultPage({
       breadcrumbs={crumbs}
       toc={toc}
     >
-      <header className="wiki__head vl-head">
+      <header
+        className="wiki__head vl-head"
+        data-pagefind-body
+        data-pagefind-filter={`materia:${cfg.short}`}
+      >
         <Eyebrow>
           {cfg.code} // {en ? "Subject" : "Materia"}
         </Eyebrow>
-        <h1 className="wiki__title">{cfg.name}</h1>
+        <h1 className="wiki__title" data-pagefind-meta="title">
+          {cfg.name}
+        </h1>
         <p className="wiki__blurb">{cfg.blurb}</p>
 
-        <div className="vl-head__meta">
+        <div className="vl-head__meta" data-pagefind-ignore>
           <span className="vl-head__stat">
             <b>{count}</b> {en ? "pages" : "páginas"}
           </span>
@@ -108,7 +114,7 @@ export default async function VaultPage({
           )}
         </div>
 
-        <div className="vl-head__actions">
+        <div className="vl-head__actions" data-pagefind-ignore>
           <Button variant="primary" href="#contenido">
             {en ? "Browse content ↓" : "Explorar contenido ↓"}
           </Button>

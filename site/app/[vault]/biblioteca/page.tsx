@@ -60,11 +60,15 @@ export default async function LibraryPage({
       toc={[]}
       wide
     >
-      <header className="wiki__head">
+      <header
+        className="wiki__head"
+        data-pagefind-body
+        data-pagefind-filter={`materia:${cfg.short}`}
+      >
         <Eyebrow>
           {cfg.code} // {en ? "PDF library" : "Biblioteca de PDF"}
         </Eyebrow>
-        <h1 className="wiki__title">
+        <h1 className="wiki__title" data-pagefind-meta="title">
           {en ? "PDF library" : "Biblioteca de PDFs"}
         </h1>
         <p className="wiki__blurb">
@@ -73,7 +77,7 @@ export default async function LibraryPage({
             : `Material de estudio imprimible de ${cfg.short}, ordenado en carpetas como un drive.`}
         </p>
       </header>
-      <VaultLibrary vault={cfg.id} lib={lib} />
+      <VaultLibrary vault={cfg.id} lib={lib} en={en} />
     </WikiLayout>
   );
 }
