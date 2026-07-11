@@ -203,6 +203,7 @@
 }
 .planner .card-grid--el .mini{
   flex:0 0 auto;padding:5px 10px;border-radius:6px;font-size:11.5px;
+  white-space:nowrap;   /* el estado activo «en tu plan ✓» no debe partirse */
 }
 .planner .card-grid--el .card__read{
   width:auto;margin:0 0 0 auto;padding:5px 8px;

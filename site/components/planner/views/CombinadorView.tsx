@@ -18,6 +18,7 @@ import { comModalidad, isAsync, slotsConflict, toMin } from "@/lib/planner/time"
 import { generateCombos } from "@/lib/planner/combos";
 import {
   optimizePlan,
+  nextCuatriCodes,
   cuatriAt,
   cuatriLabel,
   cuatriName,
@@ -140,7 +141,7 @@ function InfoTip({ text, label }: { text: string; label?: string }) {
 /**
  * Armá tu cuatrimestre — combinador con el rediseño del Módulo E: un header
  * compacto (chips de materia + preferencias de cursada) con el cluster de
- * acciones fijo a la derecha (Sugeridas · Descargar · Guardar preferencia), y
+ * acciones fijo a la derecha (Sugeridas · Descargar · Sumar a mi plan), y
  * el calendario semanal a todo el ancho como protagonista. El recomendador es
  * un panel slim, colapsable, pegado al borde derecho del calendario: sugiere
  * CUALQUIER materia (obligatoria o electiva) que todavía te entre en la semana,
@@ -157,6 +158,8 @@ export default function CombinadorView() {
   const [recOpen, setRecOpen] = useState(true);
   const [dlOpen, setDlOpen] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
+  // confirmación liviana de la re-siembra (pisa la selección actual del combo)
+  const [reseedAsk, setReseedAsk] = useState(false);
   // destino al guardar: null = sin tocar (defaultea al PRÓXIMO cuatrimestre —
   // la cursada que armás acá es para ese); "" = Auto elegido explícitamente.
   const [saveIdx, setSaveIdx] = useState<string | null>(null);
@@ -474,6 +477,49 @@ export default function CombinadorView() {
       ? saveIdx
       : (cuatriOptions[0]?.value ?? "");
 
+  // ---------- siembra del combinador desde el plan ----------
+  // Códigos que el plan ubica en el PRÓXIMO cuatrimestre: la cursada que armás
+  // acá es para ese cuatrimestre, así que la selección arranca desde ahí en vez
+  // de vacía. Mismo dep-set que `cuatriOptions` (lo que lee optimizePlan).
+  const nextSeed = useMemo(
+    () => nextCuatriCodes(PL, state.approved, state.fixedCom),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      PL.pool,
+      PL.fixed,
+      PL.start,
+      PL.maxCred,
+      PL.maxMat,
+      PL.avoid,
+      PL.method,
+      PL.capCredByIdx,
+      PL.capMatByIdx,
+      PL.lockedIdx,
+      state.approved,
+      state.fixedCom,
+    ],
+  );
+
+  // Siembra automática una sola vez por montaje (post-hidratación, static-export
+  // safe): si el combinador arranca vacío y el plan tiene materias, precargamos
+  // el próximo cuatrimestre. El ref evita re-sembrar cuando el usuario vacía la
+  // selección a propósito (Vaciar dejaría el combo vacío y re-dispararía).
+  const seededRef = useRef(false);
+  useEffect(() => {
+    if (!state.hydrated || seededRef.current) return;
+    seededRef.current = true;
+    if (combo.size === 0 && nextSeed.length > 0)
+      dispatch({ type: "SEED_COMBO", codes: nextSeed });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.hydrated]);
+
+  // Re-siembra a demanda: pisa la selección actual con el próximo cuatrimestre
+  // del plan. Con materias ya elegidas pide confirmación liviana antes de pisar.
+  const reseedFromPlan = () => {
+    if (nextSeed.length > 0) dispatch({ type: "SEED_COMBO", codes: nextSeed });
+    setReseedAsk(false);
+  };
+
   const noResults =
     filtered.obs.length === 0 &&
     filtered.els.length === 0 &&
@@ -529,7 +575,7 @@ export default function CombinadorView() {
     setDlOpen(false);
   };
 
-  // Guardar preferencia: transfiere la combinación elegida al Plan de cursada,
+  // Sumar a mi plan: transfiere la combinación elegida al Plan de cursada,
   // fijándola en el cuatrimestre elegido (idx) o en "Auto" (el optimizador la
   // ubica). Además FIJA la comisión de cada materia tal como quedó en la opción
   // guardada: sin esto el plan re-elige comisiones y el calendario no reproduce
@@ -654,6 +700,39 @@ export default function CombinadorView() {
               </button>
             </>
           )}
+          {/* Re-sembrar la selección con el próximo cuatrimestre del plan. Con
+              materias ya elegidas, pisa la selección → confirmación liviana. */}
+          {nextSeed.length > 0 &&
+            (reseedAsk ? (
+              <span className="cmb9-mats__count">
+                ¿Reemplazar por tu próximo cuatrimestre?
+                <button
+                  type="button"
+                  className="cmb9-clear"
+                  onClick={reseedFromPlan}
+                >
+                  Sí
+                </button>
+                <button
+                  type="button"
+                  className="cmb9-clear"
+                  onClick={() => setReseedAsk(false)}
+                >
+                  No
+                </button>
+              </span>
+            ) : (
+              <button
+                type="button"
+                className="cmb9-clear"
+                title="Sembrá el combinador con las materias del próximo cuatrimestre de tu plan"
+                onClick={() =>
+                  selected.length > 0 ? setReseedAsk(true) : reseedFromPlan()
+                }
+              >
+                Usar mi próximo cuatrimestre
+              </button>
+            ))}
         </div>
 
         {/* Cluster de acciones — SIEMPRE montado: el switch de modo tiene que
@@ -776,7 +855,7 @@ export default function CombinadorView() {
           </div>
           )}
 
-          {/* «Guardar preferencia» alimenta el Plan de cursada; en modo libre
+          {/* «Sumar a mi plan» alimenta el Plan de cursada; en modo libre
               (comboSolo) la combinación puede incluir aprobadas → no se ofrece. */}
           {canExport && !comboSolo && (
             <div className="cmb9-save" ref={saveRef}>
@@ -785,7 +864,7 @@ export default function CombinadorView() {
                 className="cmb9-hbtn cmb9-hbtn--primary"
                 aria-haspopup="menu"
                 aria-expanded={saveOpen}
-                title="Guardá estas materias y comisiones en tu Plan de cursada"
+                title="Sumá estas materias y comisiones a tu Plan de cursada"
                 onClick={() => {
                   setDlOpen(false);
                   setSaveOpen((o) => !o);
@@ -803,13 +882,13 @@ export default function CombinadorView() {
                   <path d="M5 4h11l3 3v13H5V4Z" />
                   <path d="M8 4v6h8V4M8 14h8" />
                 </svg>
-                Guardar preferencia
+                Sumar a mi plan
               </button>
               {saveOpen && (
                 <div
                   className="cmb9-savemenu"
                   role="menu"
-                  aria-label="Guardar esta cursada en tu plan"
+                  aria-label="Sumar esta cursada a tu plan"
                 >
                   <p className="cmb9-savemenu__lead">
                     Sumá esta cursada a tu <b>Plan de cursada</b>, con estas
@@ -820,7 +899,7 @@ export default function CombinadorView() {
                     <span className="cmb9-savemenu__lbl">
                       Fijar en el cuatrimestre
                       <InfoTip
-                        label="Qué hace Auto al guardar"
+                        label="Qué hace Auto al sumar"
                         text="«Auto» deja que el plan la ubique en el mejor cuatrimestre según tu método. O fijala vos en uno puntual. Los cuatrimestres finalizados (candado) no se ofrecen."
                       />
                     </span>
@@ -851,7 +930,12 @@ export default function CombinadorView() {
                       <path d="M5 4h11l3 3v13H5V4Z" />
                       <path d="M8 4v6h8V4M8 14h8" />
                     </svg>
-                    Guardar en el plan
+                    {safeSaveIdx === ""
+                      ? "Sumar a mi plan"
+                      : `Sumar y fijar en ${
+                          cuatriOptions.find((o) => o.value === safeSaveIdx)
+                            ?.label ?? "el cuatrimestre"
+                        }`}
                   </button>
                 </div>
               )}
@@ -1271,7 +1355,8 @@ export default function CombinadorView() {
         <h2>Armá tu cuatrimestre</h2>
         <p>
           Elegí materias, ajustá cómo querés cursar y mirá —en vivo— todas las
-          cursadas que entran sin pisarse.
+          cursadas que entran sin pisarse. Lo que sumás acá queda en tu plan de
+          cursada.
         </p>
       </div>
 

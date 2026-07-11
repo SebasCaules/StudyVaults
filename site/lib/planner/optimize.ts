@@ -619,3 +619,16 @@ export function optimizePlan(
   }
   return { items, unplaced: remaining, accBefore: accBefore2, moved };
 }
+
+/** Códigos que el plan ubica en el PRÓXIMO cuatrimestre (índice 0). Puro:
+ *  corre el optimizador con el estado actual y devuelve solo esa lista. Lo usa
+ *  el Combinador para sembrar su selección desde el plan en vez de arrancar
+ *  vacío. */
+export function nextCuatriCodes(
+  PL: PlanState,
+  approved: Set<string>,
+  fixedCom?: Map<string, string>,
+): string[] {
+  const { items } = optimizePlan(PL, approved, fixedCom);
+  return (items[0] ?? []).map((x) => x.m.codigo);
+}

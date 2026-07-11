@@ -93,6 +93,7 @@ export type Action =
   | { type: "SET_VIEW"; view: ViewKey }
   | { type: "SET_ESTADO"; code: string; estado: Estado }
   | { type: "TOGGLE_COMBO"; code: string }
+  | { type: "SEED_COMBO"; codes: string[] }
   | { type: "SET_COMBO_SOLO"; value: boolean }
   | { type: "SET_FIXED_COM"; code: string; comision: string | null }
   | { type: "SET_SEARCH"; value: string }
@@ -239,9 +240,26 @@ export function reducer(s: PlannerState, a: Action): PlannerState {
     }
     case "TOGGLE_COMBO": {
       const combo = new Set(s.combo);
-      combo.has(a.code) ? combo.delete(a.code) : combo.add(a.code);
-      return { ...s, combo };
+      // Quitar del combinador NO toca el pool: el plan es la memoria durable
+      // (se quita desde la UI del Plan). Solo la dirección AGREGAR tiende el
+      // puente al plan.
+      if (combo.has(a.code)) {
+        combo.delete(a.code);
+        return { ...s, combo };
+      }
+      combo.add(a.code);
+      // Puente automático combinar→plan: agregar una materia al combinador la
+      // suma también al pool del plan, salvo que esté aprobada (una aprobada
+      // nunca entra al plan; puede llegar acá vía «Ignorar mi progreso»).
+      if (s.approved.has(a.code)) return { ...s, combo };
+      const pool = new Set(s.plan.pool);
+      pool.add(a.code);
+      return { ...s, combo, plan: { ...s.plan, pool } };
     }
+    case "SEED_COMBO":
+      // Siembra del combinador desde el plan: los códigos vienen de optimizar el
+      // pool actual, así que ya viven en el plan — no se toca el pool.
+      return { ...s, combo: new Set(a.codes) };
     case "SET_COMBO_SOLO":
       return { ...s, comboSolo: a.value };
     case "SET_FIXED_COM": {

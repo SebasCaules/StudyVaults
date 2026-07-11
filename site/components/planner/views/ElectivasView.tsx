@@ -165,13 +165,25 @@ export default function ElectivasView() {
           <button
             className={"mini btn-co" + (inCombo ? " on plan" : "")}
             disabled={!hor}
-            title={!hor ? "Sin horario publicado este cuatrimestre" : undefined}
+            title={
+              !hor
+                ? "Sin horario publicado este cuatrimestre"
+                : inCombo
+                  ? approved.has(m.codigo)
+                    ? "En el combinador (ya la aprobaste: no entra al plan) · tocá para quitar"
+                    : "En tu plan y en el combinador · tocá para quitar del combinador"
+                  : "Combinar: arma tu semana y la suma a tu plan"
+            }
             onClick={(e) => {
               e.stopPropagation();
               if (hor) dispatch({ type: "TOGGLE_COMBO", code: m.codigo });
             }}
           >
-            {inCombo ? "combinar ✓" : "combinar"}
+            {inCombo
+              ? approved.has(m.codigo)
+                ? "en combinador ✓"
+                : "en tu plan ✓"
+              : "combinar"}
           </button>
           {hasFicha ? (
             <button
