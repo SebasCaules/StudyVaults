@@ -215,7 +215,10 @@ export default function ElectivasView() {
       (m.codigo + " " + m.nombre + " " + m.abbr).toLowerCase().includes(q);
     let l = PLAN.electivas.filter(passSearch).filter((m) => {
       const a = m.areas || [];
-      return !a.length || a.some((x) => areasOn.has(x));
+      // Sin área asignada: pasan solo cuando no hay filtro de áreas activo —
+      // si el usuario aísla un área, «ver solo esa área» tiene que ser real.
+      if (!a.length) return areasOn.size === PLAN.areas.length;
+      return a.some((x) => areasOn.has(x));
     });
     if (fDisp) l = l.filter((m) => isAvailable(m, approved));
     if (fHor) l = l.filter((m) => hasHorario(m.codigo));

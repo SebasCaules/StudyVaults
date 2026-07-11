@@ -594,6 +594,9 @@
   line-height: 1.5;
   letter-spacing: 0;
   text-transform: none;
+  /* El tip puede vivir dentro de contenedores nowrap (cominfo): sin esto la
+     prosa corre en una sola línea de ~900px y desborda el body aun invisible. */
+  white-space: normal;
   color: var(--ink-soft);
   opacity: 0;
   pointer-events: none;
@@ -844,6 +847,10 @@
 @media (max-width: 860px) {
   .planner .cmb9-row {
     flex-direction: column;
+    /* En columna, el align-items:flex-start de la base haría que el calendario
+       tome el ancho de su contenido (660px) y desborde el body; stretch lo capa
+       al contenedor y el scroll queda DENTRO de .cmbcal-wrap. */
+    align-items: stretch;
   }
   .planner .cmb9-recside {
     flex: none;

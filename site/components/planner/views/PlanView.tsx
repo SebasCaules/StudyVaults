@@ -1640,13 +1640,9 @@ export default function PlanView() {
   const totalCred = flat.reduce((s, x) => s + (x.m.creditos || 0), 0);
   const accNow = approvedCredits(approved);
   const finalCred = accNow + totalCred;
-  const elecPlan = flat
-    .filter((x) => x.m.tipo === "electiva")
-    .reduce((s, x) => s + (x.m.creditos || 0), 0);
   const lastIdx = used.length ? used[used.length - 1].i : 0;
   const gradCu = cuatriAt(PL.start, lastIdx);
   const pct = finalCred > 0 ? Math.round((accNow / finalCred) * 100) : 0;
-  const elecTotal = electiveCredits(approved) + elecPlan;
   // créditos electivos comprometidos (sin el preview) → para el panel de recos
   const elecCommitted =
     electiveCredits(approved) +
@@ -1864,15 +1860,12 @@ export default function PlanView() {
                   <span className="sub">por delante</span>
                 </span>
               </div>
+              {/* El agregado «X/27 electivos» ya vive en el statline del topbar
+                  (persistente en las 7 vistas): no se repite acá. El chip de
+                  materias es específico de este plan y no está en el topbar. */}
               <div className="pv-chips">
                 <span className="pv-chip">
                   <b>{flat.length}</b> materias
-                </span>
-                <span className="pv-chip">
-                  <b>
-                    {elecTotal}/{ELEC_REQ}
-                  </b>{" "}
-                  electivos
                 </span>
               </div>
             </div>
@@ -2178,6 +2171,35 @@ export default function PlanView() {
             }
           >
             <div className="plan2-split__main">
+              {tab === "cal" && (
+                <div className="pv-calnote">
+                  <p className="pv-calnote__txt">
+                    Este es el horario semanal de tu <b>plan comprometido</b>.
+                    Para tantear combinaciones de comisiones de una cursada antes
+                    de fijarlas, armalas en el Combinador.
+                  </p>
+                  <button
+                    type="button"
+                    className="pv-calnote__cta"
+                    onClick={() => dispatch({ type: "SET_VIEW", view: "combo" })}
+                  >
+                    Abrir Combinador
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </button>
+                </div>
+              )}
               {tab === "cal" && (
                 <div className="pv-semgrid">
                   {used.map(({ it, i }) => (

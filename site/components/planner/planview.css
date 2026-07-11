@@ -457,6 +457,57 @@
 }
 
 /* ============================ SEM GRID (Calendario) ======================== */
+/* CPT-06: señaliza el parentesco explorar→comprometer. El Combinador arma una
+   cursada candidata; esta grilla muestra el plan ya comprometido. Un renglón con
+   acceso directo al Combinador conecta ambas superficies sin duplicar la grilla. */
+.planner .pv-calnote {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--brass);
+  border-radius: var(--r);
+  background: var(--panel);
+}
+.planner .pv-calnote__txt {
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.planner .pv-calnote__txt b {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.planner .pv-calnote__cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  background: var(--panel-2);
+  color: var(--ink-soft);
+  font-family: var(--f-b);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.planner .pv-calnote__cta:hover {
+  color: var(--ink);
+  border-color: var(--brass);
+  background: var(--brass-soft);
+}
+.planner .pv-calnote__cta svg {
+  color: var(--brass);
+}
+
 /* auto-FIT (no auto-fill): al ocultar el recomendador el main pasa a 100% y la
    grilla rellena TODO el ancho según la cantidad real de cuatrimestres, sin
    dejar tracks fantasma a la derecha. `grid-auto-rows:1fr` + `height:100%` en la

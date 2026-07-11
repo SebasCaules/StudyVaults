@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import { usePlanner } from "./state";
 import { useModalFocus } from "./useModalFocus";
 import { PLAN, AREA_COLOR, credOf, byId } from "@/lib/planner/model";
-import { electiveCredits } from "@/lib/planner/metrics";
 import { MINOR_REQ } from "@/lib/planner/minors";
 import type { ViewKey } from "@/lib/planner/types";
 
@@ -90,12 +89,11 @@ function ResetApprovedConfirm({
   );
 }
 
-// créditos electivos requeridos por el plan de estudios (misma fuente que PlanView)
-const ELEC_REQ = PLAN.creditosElectivasReq ?? 27;
-
-// Dos grupos: el FLUJO real (numerado, en orden de uso) y las utilidades de
-// consulta (sin número — no son pasos). "Mis materias" es la puerta de
-// entrada: ahí se marca lo aprobado y el resto se recalcula.
+// Navegación por nombre (sin índices 01→05: el trabajo es iterativo y con
+// ramas, no un pipeline secuencial). Se conserva el orden visual de uso.
+// "Mis materias" es la puerta de entrada: ahí se marca lo aprobado y el resto
+// se recalcula. "Referencias" ya no es hermana de nav — baja al pie del rail
+// como acceso secundario (sigue deep-linkeable con ?view=ref).
 const FLOW_VIEWS: { view: ViewKey; label: string }[] = [
   { view: "cuatri", label: "Mis materias" },
   { view: "elect", label: "Electivas" },
@@ -105,7 +103,6 @@ const FLOW_VIEWS: { view: ViewKey; label: string }[] = [
 ];
 const REF_VIEWS: { view: ViewKey; label: string }[] = [
   { view: "grafo", label: "Correlativas" },
-  { view: "ref", label: "Referencias" },
 ];
 
 /**
@@ -158,7 +155,37 @@ export default function Sidebar() {
     return out;
   }, [approved]);
 
-  const ec = useMemo(() => electiveCredits(approved), [approved]);
+  // Filtro de áreas con interacción «solo»: un clic aísla el área (apaga las
+  // otras), un segundo clic sobre la ya-aislada restaura todas — 1 clic en vez
+  // de 3 des-selecciones. ⌘/Ctrl+clic mantiene el toggle aditivo (sumar/quitar
+  // un área sin tocar el resto). Se despacha con TOGGLE_AREA existente: varios
+  // dispatch en un mismo handler los procesa el reducer en orden sobre el
+  // estado acumulado (un solo re-render), así que el resultado es determinista.
+  const onAreaClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    area: string,
+  ) => {
+    if (e.metaKey || e.ctrlKey) {
+      dispatch({ type: "TOGGLE_AREA", area });
+      return;
+    }
+    const isSolo = areasOn.size === 1 && areasOn.has(area);
+    if (isSolo) {
+      // restaurar todas: encender las que estén apagadas
+      PLAN.areas.forEach((a) => {
+        if (!areasOn.has(a)) dispatch({ type: "TOGGLE_AREA", area: a });
+      });
+    } else {
+      // aislar: apagar todas menos `area`, encender `area` si estaba apagada
+      PLAN.areas.forEach((a) => {
+        if (a === area) {
+          if (!areasOn.has(a)) dispatch({ type: "TOGGLE_AREA", area: a });
+        } else if (areasOn.has(a)) {
+          dispatch({ type: "TOGGLE_AREA", area: a });
+        }
+      });
+    }
+  };
 
   // Sidebar modular: cada vista muestra solo los controles que consume.
   //  · búsqueda → "Mis materias" y "Electivas" (buscar un código para tildar).
@@ -225,15 +252,12 @@ export default function Sidebar() {
 
       <nav className="views">
         <span className="views__h">Tu plan</span>
-        {FLOW_VIEWS.map((v, i) => (
+        {FLOW_VIEWS.map((v) => (
           <button
             key={v.view}
             className={"view" + (view === v.view ? " is-active" : "")}
             onClick={() => dispatch({ type: "SET_VIEW", view: v.view })}
           >
-            <span className="view__ix" aria-hidden="true">
-              {String(i + 1).padStart(2, "0")}
-            </span>
             <span className="view__lb">{v.label}</span>
           </button>
         ))}
@@ -276,10 +300,9 @@ export default function Sidebar() {
       )}
 
       {showElect && (
-        <>
-      <section className="block">
-        <div className="block__h"><span>Minors · áreas</span></div>
-        <div className="minors">
+        <section className="block">
+          <div className="block__h"><span>Minors · áreas</span></div>
+          <div className="minors">
           {PLAN.areas.map((a) => {
             const s = minorCred[a] || 0;
             const on = areasOn.has(a);
@@ -289,8 +312,8 @@ export default function Sidebar() {
                 key={a}
                 className={"minrow" + (on ? "" : " off")}
                 aria-pressed={on}
-                title={on ? "Ocultar esta área del filtro" : "Incluir esta área en el filtro"}
-                onClick={() => dispatch({ type: "TOGGLE_AREA", area: a })}
+                title="Clic: ver solo esta área · clic de nuevo: ver todas · ⌘/Ctrl+clic: sumar o quitar del filtro"
+                onClick={(e) => onAreaClick(e, a)}
               >
                 <span className="minrow__top">
                   <span className="swatch" style={{ background: AREA_COLOR[a] }} />
@@ -308,26 +331,8 @@ export default function Sidebar() {
               </button>
             );
           })}
-        </div>
-      </section>
-
-      <section className="block side__gauge">
-        <div className="block__h">
-          <span>Electivas</span>
-        </div>
-        <div className="gauge__read">
-          <b>{ec}</b>
-          <span className="gauge__of">/ {ELEC_REQ} créditos</span>
-          {ec >= ELEC_REQ ? <span className="gauge__done">completo</span> : null}
-        </div>
-        <div className="bar">
-          <div
-            className="bar__fill"
-            style={{ width: Math.min(100, (ec / ELEC_REQ) * 100) + "%" }}
-          />
-        </div>
-      </section>
-        </>
+          </div>
+        </section>
       )}
 
       {showSearch && approved.size > 0 && (
@@ -345,6 +350,15 @@ export default function Sidebar() {
           }}
         />
       )}
+
+      <button
+        type="button"
+        className={"side__util" + (view === "ref" ? " is-active" : "")}
+        aria-current={view === "ref" ? "page" : undefined}
+        onClick={() => dispatch({ type: "SET_VIEW", view: "ref" })}
+      >
+        Referencias de abreviaturas
+      </button>
 
       <p className="foot">
         Horarios del SGA, 2.<sup>do</sup> cuatrimestre 2026. El progreso se guarda

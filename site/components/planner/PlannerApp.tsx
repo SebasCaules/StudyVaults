@@ -224,13 +224,24 @@ function PlannerInner() {
 
   const View = VIEWS[state.view];
 
+  // CPT-03: solo "Mis materias" y "Electivas" cuelgan controles del rail
+  // (búsqueda/filtros/minors). En las otras 5 vistas el rail solo navega, así
+  // que pasa a modo compacto (más angosto) y le devuelve ese ancho al contenido
+  // —la navegación nunca desaparece; colapsar sigue disponible como reclamo total—.
+  const railHasControls = state.view === "cuatri" || state.view === "elect";
+
   // Banner de primer uso: usuario sin nada marcado y que no lo cerró. Se va
   // solo al marcar la primera materia (approved.size > 0) o con la ×.
   const showIntro =
     state.hydrated && state.approved.size === 0 && !state.introDismissed;
 
   return (
-    <div className={`planner${state.sideCollapsed ? " side-collapsed" : ""}`}>
+    <div
+      className={
+        `planner${state.sideCollapsed ? " side-collapsed" : ""}` +
+        (railHasControls ? "" : " rail-nav-only")
+      }
+    >
       <h1 className="sr-only">Planificador de electivas</h1>
       <Topbar />
       {showIntro && (

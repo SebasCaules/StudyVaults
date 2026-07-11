@@ -388,16 +388,11 @@
 }
 
 /* ===================== RESPONSIVE ===================== */
+/* El rail mobile (≤1080) se consolida al FINAL del archivo, tras el restyle del
+   sidebar, para ganar en orden de fuente (misma especificidad). Acá solo
+   colapsamos el grid del shell a una columna. */
 @media (max-width:1080px){
   .planner .shell{grid-template-columns:1fr}
-  .planner .side{position:static;max-height:none;flex-direction:row;flex-wrap:wrap;align-items:stretch}
-  /* bloques de contenido reparten el ancho parejo; toggle/búsqueda comparten
-     la primera fila; reset y nota van a fila completa (no estirados sueltos) */
-  .planner .side>*{flex:1 1 240px}
-  .planner .side .sidetoggle{flex:0 0 auto}
-  .planner .side .field{flex:1 1 260px}
-  .planner .side .reset,.planner .side .foot{flex:1 1 100%}
-  .planner .views{flex-direction:row;flex-wrap:wrap}.planner .view{flex:1;border-bottom:none;border-right:1px solid var(--line)}
 }
 @media (max-width:560px){
   /* la tira inline envuelve sola en varias filas; achico el gap horizontal
@@ -1522,6 +1517,11 @@
 @media (min-width:1081px){
   .planner .topbar{padding-left:clamp(12px,1.4vw,20px)}
   .planner .shell{padding-left:clamp(12px,1.4vw,20px);gap:clamp(16px,1.6vw,24px)}
+  /* CPT-03: en las 5 vistas donde el rail solo navega, se angosta y devuelve el
+     ancho al contenido; la nav sigue clavada a la izquierda (misma posición,
+     sin la tira horizontal que rompía la consistencia espacial). Excluye el
+     estado colapsado (ahí el reclamo del ancho es total, no compacto). */
+  .planner.rail-nav-only:not(.side-collapsed) .shell{grid-template-columns:190px 1fr}
   .planner:not(.side-collapsed) .main{
     border-left:1px solid var(--line-2);
     padding-left:clamp(18px,1.8vw,26px);
@@ -1542,21 +1542,18 @@
 .planner .side .field input:focus{border-color:var(--brass);background:var(--panel);box-shadow:0 0 0 3px var(--brass-soft)}
 .planner .side .field:focus-within .field__ic{color:var(--brass)}
 
-/* — Navegación: índice numerado SIN caja (el héroe, limpio) — */
+/* — Navegación por nombre, sin caja (el héroe, limpio) — */
 .planner .side .views{display:flex;flex-direction:column;gap:1px;border:none;border-radius:0;background:transparent;overflow:visible}
-/* rótulos de grupo del nav: "Tu plan" (flujo numerado) / "Consultar" (utilidades) */
+/* rótulos de grupo del nav: "Tu plan" (flujo) / "Consultar" (utilidades) */
 .planner .side .views__h{display:block;padding-left:11px;margin-bottom:6px;font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--faint)}
 .planner .side .views__h--sep{margin-top:16px}
 .planner .side .view{display:flex;align-items:center;gap:11px;padding:9px 11px;border:none;border-radius:7px;font-size:13.5px;color:var(--muted)}
 .planner .side .view::before{display:none}
-.planner .side .view__ix{flex:none;width:15px;font-family:var(--f-m);font-size:10px;letter-spacing:.04em;color:var(--faint);transition:color .16s}
 .planner .side .view__lb{transition:color .16s}
 .planner .side .view:hover{background:var(--panel-2)}
 .planner .side .view:hover .view__lb{color:var(--ink)}
-.planner .side .view:hover .view__ix{color:var(--muted)}
 .planner .side .view.is-active{background:var(--brass-soft)}
 .planner .side .view.is-active .view__lb{color:var(--ink);font-weight:600}
-.planner .side .view.is-active .view__ix{color:var(--brass)}
 
 /* — Columna izquierda única: TODO el contenido arranca a 11px del borde
      izquierdo (labels, filas de nav, checkboxes, minors, gauge, reset, foot).
@@ -1582,16 +1579,15 @@
 .planner .side .minrow.off{opacity:.4}
 .planner .side .minrow.off:hover{opacity:.7}
 
-/* — Electivas: gauge titular; lectura y "completo" anclados a la izquierda — */
-.planner .side__gauge .gauge__read{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;padding-left:11px}
-.planner .side__gauge .gauge__read b{font-family:var(--f-d);font-weight:500;font-size:34px;line-height:1;letter-spacing:-.025em;color:var(--ink)}
-.planner .side__gauge .gauge__of{font-family:var(--f-m);font-size:11px;color:var(--muted)}
-.planner .side__gauge .gauge__done{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--sage)}
-.planner .side__gauge .bar{height:5px;border-radius:4px;margin-left:11px;width:calc(100% - 11px)}
-
 /* — Reset: texto fantasma discreto, anclado a la izquierda — */
 .planner .side .reset{align-self:flex-start;padding:7px 0 7px 11px;border:none;background:transparent;color:var(--faint);font-size:12px}
 .planner .side .reset:hover{color:var(--oxblood);border:none}
+
+/* — Referencias: acceso secundario al pie del rail (link de utilidad, no un
+     ítem de nav hermano). Sigue deep-linkeable con ?view=ref. — */
+.planner .side__util{align-self:flex-start;padding:7px 0 7px 11px;border:none;background:transparent;color:var(--faint);font-family:var(--f-b);font-size:12px;text-align:left;cursor:pointer;transition:color .15s}
+.planner .side__util:hover{color:var(--ink-soft)}
+.planner .side__util.is-active{color:var(--brass)}
 
 /* — Footer: nota mínima, anclada a la izquierda — */
 .planner .side .foot{font-family:var(--f-m);font-size:9.5px;letter-spacing:.02em;color:var(--faint);padding-top:2px;padding-left:11px}
@@ -1608,6 +1604,67 @@
   .planner .side>*:nth-child(7){animation-delay:.26s}
 }
 @keyframes side-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* =========================================================================
+   MOBILE — rail compacto (PLN-A04 / ACC-03 / ACC-07 / ACC-08)
+   Antes: a ≤1080 el rail pasaba a fila con cada bloque `flex:1 1 240px`, así que
+   a ~390px todo se apilaba vertical y enterraba la vista bajo ~515px de rail.
+   Ahora la navegación es una TIRA HORIZONTAL de una sola línea (scrolleable) y
+   el resto de los controles fluye compacto — la vista asoma apenas debajo de un
+   nav corto. Va tras el restyle del sidebar para ganar en orden de fuente.
+   ========================================================================= */
+@media (max-width:1080px){
+  /* rail estático que fluye (no sticky con scroll interno como en desktop).
+     min-width:0 en .side y .views: sin él, el min-content de la tira nowrap
+     (~927px) revienta el track del grid y fuerza scroll horizontal del body. */
+  .planner .side{
+    position:static;max-height:none;overflow:visible;min-width:0;
+    flex-direction:column;gap:16px;padding-right:0;scrollbar-gutter:auto;
+  }
+  .planner .side>*{flex:0 0 auto}
+
+  /* navegación: una sola línea horizontal, scroll propio (NO empuja el body) */
+  .planner .side .views{
+    min-width:0;
+    flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:6px;
+    overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding-bottom:6px;margin:0 -2px;
+    border-bottom:1px solid var(--line);
+  }
+  .planner .side .views::-webkit-scrollbar{display:none}
+  .planner .side .views__h{
+    flex:none;align-self:center;margin:0;padding:0 2px 0 9px;white-space:nowrap;
+  }
+  .planner .side .views__h--sep{margin:0;padding-left:6px}
+  .planner .side .view{flex:none;white-space:nowrap;padding:9px 13px}
+}
+
+@media (max-width:640px){
+  /* ACC-08: ningún hijo del planner fuerza scroll horizontal del body a ~640px
+     (proxy de zoom 200%, WCAG 1.4.10 reflow) — el nav scrollea dentro de sí. */
+  .planner .shell,.planner .main{min-width:0;max-width:100%}
+
+  /* ACC-03: el hit-target del toggle de estado llega a 44×44 vía pseudo-elemento
+     (el dibujo sigue compacto a 22px). Solo el control real (button), no las
+     muestras decorativas del legend (span). */
+  .planner button.estado-ctl{position:relative}
+  .planner button.estado-ctl::after{
+    content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:44px;height:44px;
+  }
+
+  /* ACC-07: las acciones del plan a ≥44px de alto; el destructivo (Restablecer
+     plan — el único .pv-iconbtn sin label) queda cercado con una divisoria del
+     resto de las acciones no-destructivas. */
+  .planner .pv-iconbtn,.planner .pv-rec-toggle{min-height:44px}
+  .planner .pv-tabs__actions>.pv-iconbtn:not(.pv-iconbtn--label){
+    position:relative;margin-left:15px;margin-right:9px;
+  }
+  .planner .pv-tabs__actions>.pv-iconbtn:not(.pv-iconbtn--label)::before{
+    content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);
+    width:1px;height:22px;background:var(--line);
+  }
+}
 
 /* =========================================================================
    PLAN DE CURSADA v3 — integración (overseer-owned)
@@ -1716,10 +1773,13 @@
 }
 .planner .estado-ctl svg{width:14px;height:14px}
 .planner .estado-ctl.st-pending{color:transparent}
+/* "cursada — debe final": ÁMBAR, unificado con .seg-mid, .qrow__due y las pills
+   "falta final" (rol --status-warn). Mismo estado = mismo color en todo el
+   planner, sea el control o cualquier otra superficie. */
 .planner .estado-ctl.st-regular{
-  --_c:var(--text-secondary);
-  border-color:color-mix(in srgb, var(--text-secondary) 45%, transparent);
-  background:color-mix(in srgb, var(--text-secondary) 14%, var(--surface-2));
+  --_c:var(--status-warn-text);
+  border-color:color-mix(in srgb, var(--status-warn) 55%, transparent);
+  background:color-mix(in srgb, var(--status-warn) 16%, var(--surface-2));
 }
 .planner .estado-ctl.st-final{
   --_c:#fff;
