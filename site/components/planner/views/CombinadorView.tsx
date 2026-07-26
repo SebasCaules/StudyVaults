@@ -34,6 +34,7 @@ import {
   IconCalendar,
   IconFileText,
   IconLayers,
+  IconCompactPage,
 } from "@/components/planner/icons";
 import { CommissionSelect } from "@studyvaults/ui";
 import type { LegendEntry } from "@/components/planner/WeekGrid";
@@ -560,7 +561,11 @@ export default function CombinadorView() {
 
   // ---------- acciones del cluster derecho ----------
   const downloadCombo = (
-    opts: { includeCalendar?: boolean; includeSpecs?: boolean },
+    opts: {
+      includeCalendar?: boolean;
+      includeSpecs?: boolean;
+      compact?: boolean;
+    },
     filename: string,
   ) => {
     const placed = ranked[safeIdx];
@@ -829,6 +834,23 @@ export default function CombinadorView() {
                   <span>
                     Solo calendario
                     <small>Grilla semanal, sin listado</small>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="cmb9-dlitem"
+                  onClick={() =>
+                    downloadCombo(
+                      { includeSpecs: false, compact: true },
+                      "cursada-compacta.html",
+                    )
+                  }
+                >
+                  <IconCompactPage size={16} />
+                  <span>
+                    Compacto · 1 carilla
+                    <small>Grilla, materias y evaluaciones en una página</small>
                   </span>
                 </button>
                 <button

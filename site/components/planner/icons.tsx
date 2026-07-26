@@ -213,6 +213,16 @@ export const IconPrinter = (p: IconProps) => (
   </Svg>
 );
 
+/** Hoja con dos flechas hacia el centro: "todo comprimido en una carilla". */
+export const IconCompactPage = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="4" y="3" width="16" height="18" rx="2" />
+    <path d="M7.5 12h9" />
+    <path d="M9.5 8 12 10.5 14.5 8" />
+    <path d="M9.5 16 12 13.5 14.5 16" />
+  </Svg>
+);
+
 export const IconFileText = (p: IconProps) => (
   <Svg {...p}>
     <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />

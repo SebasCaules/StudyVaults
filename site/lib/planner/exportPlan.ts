@@ -65,14 +65,36 @@ function dedupBy<T>(xs: T[], key: (x: T) => string): T[] {
   return out;
 }
 
-// Tinte literal (rgba sobre papel claro) a partir del hex de la materia. No
-// usamos color-mix para que imprima bien en cualquier visor.
-function tint(hex: string, alpha: number): string {
+// Colores de los bloques: SIEMPRE opacos (hex literal, sin rgba/color-mix). Los
+// bloques usaban `rgba(color, .16)` y al imprimir salían lavados o directamente
+// en blanco (los visores que descartan la transparencia). Acá el relleno ya
+// viene mezclado, así que el papel imprime el mismo sólido que se ve en pantalla.
+function rgbOf(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
+
+function hexOf(r: number, g: number, b: number): string {
+  return (
+    "#" +
+    [r, g, b]
+      .map((v) =>
+        Math.round(Math.max(0, Math.min(255, v)))
+          .toString(16)
+          .padStart(2, "0"),
+      )
+      .join("")
+  );
+}
+
+/** Oscurece `hex` mezclándolo con negro en proporción `k` (0–1). Opaco. */
+function darken(hex: string, k: number): string {
+  const [r, g, b] = rgbOf(hex);
+  return hexOf(r * (1 - k), g * (1 - k), b * (1 - k));
 }
 
 // Bloques de la grilla semanal de un cuatrimestre (port de PlanView →
@@ -106,6 +128,49 @@ function computeCuatriBlocks(it: PlacedMateria[]): {
     a.conf = blocks.some((b) => b !== a && slotsConflict(a, b));
   });
   return { blocks, asyncs };
+}
+
+/** Reparte los bloques de un día en carriles verticales: los que se pisan van
+ *  lado a lado en vez de apilados. Con relleno sólido, apilarlos escondía por
+ *  completo al de abajo — que es justo la superposición que hay que ver. */
+function layoutLanes(
+  dayBlocks: WeekBlock[],
+): { b: WeekBlock; lane: number; lanes: number }[] {
+  const sorted = dayBlocks
+    .slice()
+    .sort(
+      (a, b) => toMin(a.desde) - toMin(b.desde) || toMin(a.hasta) - toMin(b.hasta),
+    );
+  const out: { b: WeekBlock; lane: number; lanes: number }[] = [];
+  let cluster: { b: WeekBlock; lane: number; lanes: number }[] = [];
+  let laneEnds: number[] = [];
+  let clusterEnd = -Infinity;
+  // Un "cluster" es un grupo de bloques encadenados por superposición: el ancho
+  // se reparte dentro del cluster, no en todo el día.
+  const flush = () => {
+    const n = Math.max(1, laneEnds.length);
+    cluster.forEach((x) => (x.lanes = n));
+    out.push(...cluster);
+    cluster = [];
+    laneEnds = [];
+    clusterEnd = -Infinity;
+  };
+  for (const b of sorted) {
+    const desde = toMin(b.desde);
+    const hasta = toMin(b.hasta);
+    if (desde >= clusterEnd) flush();
+    let lane = laneEnds.findIndex((end) => end <= desde);
+    if (lane === -1) {
+      lane = laneEnds.length;
+      laneEnds.push(hasta);
+    } else {
+      laneEnds[lane] = hasta;
+    }
+    cluster.push({ b, lane, lanes: 1 });
+    clusterEnd = Math.max(clusterEnd, hasta);
+  }
+  flush();
+  return out;
 }
 
 // Grilla semanal autocontenida (lun–vie × horas) con bloques posicionados,
@@ -150,13 +215,20 @@ function weekGridHTML(blocks: WeekBlock[]): string {
     const dayBlocks = blocks.filter((b) => b.dia === d);
     const free =
       dayBlocks.length === 0 ? `<span class="cg-free">libre</span>` : "";
-    const blks = dayBlocks
-      .map((b) => {
+    const blks = layoutLanes(dayBlocks)
+      .map(({ b, lane, lanes }) => {
         const top = (toMin(b.desde) - minM) * PX;
         const h = (toMin(b.hasta) - toMin(b.desde)) * PX;
+        // Con dos o más carriles el bloque se angosta y el aula ya no entra.
         const room =
-          b.sala && h > 42 ? `<span class="cg-blk__room">${esc(b.sala)}</span>` : "";
-        return `<div class="cg-blk${b.conf ? " is-conf" : ""}" style="top:${top}px;height:${h}px;background:${tint(b.color, 0.16)};border-color:${tint(b.color, 0.42)};border-left-color:${b.color}">
+          b.sala && h > 42 && lanes === 1
+            ? `<span class="cg-blk__room">${esc(b.sala)}</span>`
+            : "";
+        const w = 100 / lanes;
+        const pos = `top:${top}px;height:${h}px;left:calc(${lane * w}% + 3px);width:calc(${w}% - 6px)`;
+        // Relleno sólido con el color de la materia + bordes del mismo tono
+        // oscurecido: nada de alpha, para que el bloque imprima lleno.
+        return `<div class="cg-blk${lanes > 1 ? " is-narrow" : ""}${b.conf ? " is-conf" : ""}" style="${pos};background:${b.color};border-color:${darken(b.color, 0.3)};border-left-color:${darken(b.color, 0.48)}">
           <span class="cg-blk__abbr">${esc(b.abbr)}</span>
           <span class="cg-blk__time">${esc(b.desde)}–${esc(b.hasta)}</span>
           ${room}
@@ -407,34 +479,56 @@ function extractInstancias(ficha: Ficha): { chips: string[]; cuando: string } {
   };
 }
 
+/** Una fila del calendario de evaluaciones, ya resuelta. Compartida por la tabla
+ *  del documento normal y por la lista angosta del documento compacto. */
+interface EvalRow {
+  abbr: string;
+  nombre: string;
+  chips: string[];
+  cuando: string;
+  /** true cuando la materia todavía no tiene programa analítico cargado. */
+  soon: boolean;
+}
+
+/** Instancias de evaluación por materia (dedup por código, orden por código). */
+function evalRows(placed: PlacedMateria[]): EvalRow[] {
+  const seen = new Set<string>();
+  return placed
+    .filter((x) => (seen.has(x.m.codigo) ? false : (seen.add(x.m.codigo), true)))
+    .sort((a, b) => a.m.codigo.localeCompare(b.m.codigo))
+    .map((x) => {
+      const ficha: Ficha | undefined = FICHAS[x.m.codigo];
+      if (!ficha)
+        return {
+          abbr: x.m.abbr,
+          nombre: x.m.nombre,
+          chips: [],
+          cuando: "",
+          soon: true,
+        };
+      const { chips, cuando } = extractInstancias(ficha);
+      return { abbr: x.m.abbr, nombre: x.m.nombre, chips, cuando, soon: false };
+    });
+}
+
 /** Calendario de evaluaciones COMBINADO: una fila por materia (ordenadas por
  *  código) con sus instancias de evaluación y, si el texto lo explicita, cuándo.
  *  Vista única para todo el cuatrimestre — no se repite el detalle por materia. */
 function combinedEvaluacionesHTML(placed: PlacedMateria[]): string {
-  const seen = new Set<string>();
-  const uniq = placed
-    .filter((x) => (seen.has(x.m.codigo) ? false : (seen.add(x.m.codigo), true)))
-    .sort((a, b) => a.m.codigo.localeCompare(b.m.codigo));
-  if (!uniq.length) return "";
+  const rows = evalRows(placed);
+  if (!rows.length) return "";
 
-  const rows = uniq
-    .map((x) => {
-      const ficha: Ficha | undefined = FICHAS[x.m.codigo];
-      if (!ficha) {
-        return `<tr>
-          <td class="ec-mat"><b>${esc(x.m.abbr)}</b> <span>${esc(x.m.nombre)}</span></td>
-          <td class="ec-ins"><span class="ec-soon">Programa próximamente</span></td>
-          <td class="ec-when">—</td>
-        </tr>`;
-      }
-      const { chips, cuando } = extractInstancias(ficha);
-      const insHTML = chips.length
-        ? chips.map((c) => `<span class="ec-chip">${esc(c)}</span>`).join("")
-        : `<span class="ec-soon">Ver programa de la materia</span>`;
+  const body = rows
+    .map((r) => {
+      const insHTML = r.soon
+        ? `<span class="ec-soon">Programa próximamente</span>`
+        : r.chips.length
+          ? r.chips.map((c) => `<span class="ec-chip">${esc(c)}</span>`).join("")
+          : `<span class="ec-soon">Ver programa de la materia</span>`;
       return `<tr>
-        <td class="ec-mat"><b>${esc(x.m.abbr)}</b> <span>${esc(x.m.nombre)}</span></td>
+        <td class="ec-mat"><b>${esc(r.abbr)}</b> <span>${esc(r.nombre)}</span></td>
         <td class="ec-ins">${insHTML}</td>
-        <td class="ec-when">${cuando ? esc(cuando) : "—"}</td>
+        <td class="ec-when">${r.cuando ? esc(r.cuando) : "—"}</td>
       </tr>`;
     })
     .join("");
@@ -444,9 +538,33 @@ function combinedEvaluacionesHTML(placed: PlacedMateria[]): string {
     <p class="evalcal__note">Instancias de evaluación de todas las materias del cuatrimestre. Las fechas exactas las fija cada cátedra al inicio de la cursada.</p>
     <table class="evalcal__t">
       <thead><tr><th>Materia</th><th>Instancias</th><th>Cuándo</th></tr></thead>
-      <tbody>${rows}</tbody>
+      <tbody>${body}</tbody>
     </table>
   </section>`;
+}
+
+/** Misma información que la tabla de evaluaciones, en lista de una columna: en
+ *  el documento compacto la tabla de 3 columnas no entra en media carilla. */
+function compactEvaluacionesHTML(placed: PlacedMateria[]): string {
+  const rows = evalRows(placed);
+  if (!rows.length) return "";
+  const items = rows
+    .map((r) => {
+      const ins = r.soon
+        ? `<span class="ec-soon">Programa próximamente</span>`
+        : r.chips.length
+          ? r.chips.map((c) => `<span class="ec-chip">${esc(c)}</span>`).join("")
+          : `<span class="ec-soon">Ver programa de la materia</span>`;
+      const when = r.cuando
+        ? `<span class="cpt-ev__when">${esc(r.cuando)}</span>`
+        : "";
+      return `<li class="cpt-ev__li">
+        <span class="cpt-ev__mat"><b>${esc(r.abbr)}</b> <span>${esc(r.nombre)}</span></span>
+        <span class="cpt-ev__ins">${ins}${when}</span>
+      </li>`;
+    })
+    .join("");
+  return `<ul class="cpt-ev">${items}</ul>`;
 }
 
 /** Carga horaria TOTAL del cuatrimestre: suma de las horas informadas por las
@@ -567,6 +685,61 @@ function combinedCuatriSectionsHTML(
   return parts.filter(Boolean).join("\n");
 }
 
+// ---- documento COMPACTO (una sola carilla) ---------------------------------
+
+/** Cuerpo completo del documento compacto: exactamente la misma información que
+ *  "solo calendario" (cabecera + resumen + grilla semanal + asincrónicos +
+ *  materias/comisiones + calendario de evaluaciones), reordenada para entrar en
+ *  una carilla A4: el resumen se pliega a una línea de la cabecera y las dos
+ *  listas de abajo van a dos columnas en vez de apiladas. El ajuste fino de
+ *  altura lo hace `FIT_SCRIPT` al abrir el documento. */
+function compactBodyHTML(
+  placed: PlacedMateria[],
+  titulo: string,
+  periodo: string,
+  generado: string,
+  pie: string,
+): string {
+  const cred = credOf(placed);
+  const { blocks, asyncs } = computeCuatriBlocks(placed);
+  const dias = new Set(blocks.map((b) => b.dia)).size;
+  const calHTML = blocks.length
+    ? weekGridHTML(blocks)
+    : `<p class="cg-empty">Sólo materias sin grilla semanal.</p>`;
+  const stats = [
+    `${placed.length} materia${placed.length === 1 ? "" : "s"}`,
+    `${cred} créditos`,
+    `${dias} día${dias === 1 ? "" : "s"} en el campus`,
+  ].join(" · ");
+
+  return `<header class="doc">
+    <div class="cpt-id">
+      <p class="kick">StudyVaults · ITBA · ${esc(titulo)}</p>
+      <h1>${esc(periodo || titulo)}</h1>
+    </div>
+    <p class="gen"><b>${esc(stats)}</b><br>Generado el ${esc(generado)}</p>
+  </header>
+
+  <section class="cpt-cal">
+    ${calHTML}
+    ${asyncRowHTML(asyncs)}
+  </section>
+
+  <div class="cpt-cols">
+    <section class="cpt-box">
+      <h2 class="cpt-h">Materias y comisiones</h2>
+      <ul class="mlist">${materiaRowsHTML(placed)}</ul>
+    </section>
+    <section class="cpt-box">
+      <h2 class="cpt-h">Calendario de evaluaciones</h2>
+      ${compactEvaluacionesHTML(placed)}
+      <p class="cpt-note">Las fechas exactas las fija cada cátedra al inicio de la cursada.</p>
+    </section>
+  </div>
+
+  <footer class="doc">${esc(pie)}</footer>`;
+}
+
 // ---- estilos compartidos ----------------------------------------------------
 
 const BASE_CSS = `
@@ -632,16 +805,26 @@ const BASE_CSS = `
   .cg-hour span{position:absolute;top:-6px;right:6px;font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;color:var(--muted)}
   .cg-col{position:relative;border-right:1px solid var(--line)}
   .cg-col:last-child{border-right:none}
-  .cg-col.is-free{background:repeating-linear-gradient(135deg,transparent,transparent 9px,#efe6db 9px,#efe6db 10px)}
+  /* Los días sin cursada van lisos: el rayado diagonal ensuciaba la impresión. */
+  .cg-col.is-free{background:transparent}
   .cg-cell{border-top:1px solid var(--line)}
   .cg-cell:first-child{border-top:none}
   .cg-free{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-90deg);font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);opacity:.6}
   .cg-abs{position:absolute;inset:0}
-  .cg-blk{position:absolute;left:3px;right:3px;border-radius:6px;overflow:hidden;border:1px solid;border-left-width:3px;padding:4px 6px;display:flex;flex-direction:column;gap:1px;min-height:0}
-  .cg-blk__abbr{font-family:Georgia,"Times New Roman",serif;font-weight:bold;font-size:12px;line-height:1.12;color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:break-word}
-  .cg-blk__time{font-family:"SFMono-Regular",Menlo,monospace;font-size:9.5px;color:var(--soft);line-height:1.2}
-  .cg-blk__room{font-family:"SFMono-Regular",Menlo,monospace;font-size:8.5px;color:var(--muted);margin-top:auto}
-  .cg-blk.is-conf{border-color:#9c3b2e !important;border-left-color:#9c3b2e !important;box-shadow:0 0 0 1px #9c3b2e}
+  /* Bloques sólidos (el color va inline, opaco): texto casi negro para leer bien
+     sobre cualquiera de los tonos de la paleta, en pantalla y en papel. */
+  /* left/width van inline: los bloques que se superponen se reparten el ancho
+     de la columna en carriles (ver layoutLanes). */
+  .cg-blk{position:absolute;border-radius:6px;overflow:hidden;border:1px solid;border-left-width:3px;padding:4px 6px;display:flex;flex-direction:column;gap:1px;min-height:0}
+  .cg-blk__abbr{font-family:Georgia,"Times New Roman",serif;font-weight:bold;font-size:12px;line-height:1.12;color:#1d1611;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:break-word}
+  .cg-blk__time{font-family:"SFMono-Regular",Menlo,monospace;font-size:9.5px;color:#3a2f28;line-height:1.2}
+  .cg-blk__room{font-family:"SFMono-Regular",Menlo,monospace;font-size:8.5px;color:#3a2f28;margin-top:auto}
+  /* bloque que comparte columna con otro: menos padding y tipografía para que
+     el nombre entre igual en la mitad (o el tercio) del ancho */
+  .cg-blk.is-narrow{padding:3px 4px;border-left-width:2px}
+  .cg-blk.is-narrow .cg-blk__abbr{font-size:10.5px;-webkit-line-clamp:3;line-clamp:3;hyphens:auto}
+  .cg-blk.is-narrow .cg-blk__time{font-size:8.5px}
+  .cg-blk.is-conf{border-color:#8f2f22 !important;border-left-color:#8f2f22 !important;border-width:2px;border-left-width:4px}
   .cg-async{margin-top:11px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
   .cg-async__lbl{font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .cg-async__chip{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:#f6efe7;border:1px solid var(--line);color:var(--soft)}
@@ -733,14 +916,101 @@ const COMBINED_CSS = `
   @media print{ .evalcal__h,.carga__h,.biblio__h{page-break-after:avoid} }
 `;
 
-const PAGE_CSS = `
-  @page{size:A4;margin:14mm}
+// Documento de UNA carilla: el ancho del `.wrap` se fija en los 190mm útiles de
+// un A4 con margen de 10mm — el mismo en pantalla y en papel — para que lo que
+// mide el script de ajuste sea exactamente lo que se va a imprimir.
+const COMPACT_CSS = `
+  body.is-compact .wrap{width:190mm;max-width:190mm;padding:0;margin:0 auto}
+  @media screen{ body.is-compact{padding:18px 12px} }
+  @media print{ body.is-compact .wrap{padding:0} }
+  /* cabecera en una línea: identidad a la izquierda, resumen a la derecha */
+  body.is-compact header.doc{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    border-bottom:1.5px solid var(--ink);padding-bottom:7px;margin-bottom:10px}
+  body.is-compact header.doc .kick{font-size:9px;letter-spacing:.14em;margin:0 0 3px}
+  body.is-compact header.doc h1{font-size:19px;margin:0}
+  body.is-compact header.doc .gen{font-size:10.5px;line-height:1.45;text-align:right;flex:none}
+  body.is-compact header.doc .gen b{color:var(--ink);font-weight:600}
+  /* grilla: mismo tamaño que el documento largo (es lo que se viene a leer) */
+  body.is-compact .cpt-cal{margin:0 0 11px}
+  body.is-compact .cg-async{margin-top:8px;gap:6px}
+  body.is-compact .cg-async__chip{font-size:9.5px;padding:2px 7px}
+  /* dos columnas abajo: materias | evaluaciones */
+  body.is-compact .cpt-cols{display:flex;align-items:flex-start;gap:16px}
+  body.is-compact .cpt-box{flex:1 1 0;min-width:0}
+  body.is-compact .cpt-h{font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--coral);margin:0 0 6px;padding-bottom:5px;border-bottom:1px solid var(--ink)}
+  body.is-compact .mlist .mrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 7px;padding:5px 0}
+  body.is-compact .mrow__abbr{font-size:11.5px;min-width:0}
+  body.is-compact .mrow__name{font-size:11px;flex:1 1 100%;order:3;color:var(--soft);line-height:1.35}
+  body.is-compact .mrow__com{font-size:9.5px;margin-left:auto}
+  body.is-compact .mrow__cr{font-size:10px;min-width:0}
+  body.is-compact .cpt-ev{list-style:none;margin:0;padding:0}
+  body.is-compact .cpt-ev__li{padding:5px 0;border-bottom:1px solid var(--line)}
+  body.is-compact .cpt-ev__li:last-child{border-bottom:none}
+  body.is-compact .cpt-ev__mat{display:block;font-size:11px;line-height:1.3}
+  body.is-compact .cpt-ev__mat b{font-size:11.5px}
+  body.is-compact .cpt-ev__mat span{color:var(--soft)}
+  body.is-compact .cpt-ev__ins{display:block;margin-top:3px}
+  body.is-compact .cpt-ev__when{font-family:"SFMono-Regular",Menlo,monospace;font-size:9.5px;color:var(--soft)}
+  body.is-compact .ec-chip{font-size:9.5px;padding:1px 7px;margin:0 4px 3px 0}
+  body.is-compact .ec-soon{font-size:10px}
+  body.is-compact .cpt-note{font-size:9.5px;color:var(--muted);margin:7px 0 0;line-height:1.4}
+  body.is-compact footer.doc{margin-top:12px;padding-top:8px;font-size:9.5px}
+`;
+
+/** Reglas de página; el documento compacto usa márgenes chicos (10mm) para que
+ *  los 190×277mm útiles coincidan con lo que mide `FIT_SCRIPT`. */
+const pageCSS = (compact: boolean): string => `
+  @page{size:A4;margin:${compact ? "10mm" : "14mm"}}
   @media print{ .wrap{padding:0;max-width:none} body{background:#fff} }
 `;
 
+// Ajuste "que entre en una carilla": si el contenido supera los 277mm útiles del
+// A4, se reduce con `zoom` (escala de layout, no un transform) y se ensancha el
+// wrap en la misma proporción, de modo que el bloque siga ocupando los 190mm de
+// ancho. Si el navegador no soporta `zoom` no se toca nada — el documento sigue
+// siendo válido, sólo puede pasar a una segunda carilla.
+const FIT_SCRIPT = `
+(function(){
+  var MM = 96/25.4, AVAIL = 277*MM, W = 190;
+  var canZoom = (function(){ var d=document.createElement('div'); d.style.zoom='0.5'; return d.style.zoom!==''; })();
+  function fit(){
+    var w = document.querySelector('.wrap');
+    if(!w || !canZoom) return;
+    // Medimos SIEMPRE sin zoom y con el ancho nominal: así el alto es exacto y
+    // el factor sale de una sola pasada (zoom escala todo de forma uniforme, no
+    // recalcula saltos de línea).
+    w.style.zoom = '';
+    w.style.maxWidth = '';
+    w.style.width = '';
+    var h = w.scrollHeight;
+    if(h > AVAIL){
+      var z = Math.max(0.55, (AVAIL/h) * 0.985);
+      // maxWidth:none es obligatorio — si no, la regla del CSS recorta el ancho
+      // ensanchado y el bloque impreso queda angosto y centrado.
+      w.style.maxWidth = 'none';
+      w.style.width = (W/z) + 'mm';
+      w.style.zoom = String(z);
+    }
+  }
+  window.addEventListener('load', fit);
+  window.addEventListener('beforeprint', fit);
+})();
+`;
+
+export interface DocOpts {
+  /** dispara window.print() al cargar. */
+  autoPrint?: boolean;
+  /** documento de una sola carilla (estilos + ajuste de altura). */
+  compact?: boolean;
+}
+
 /** Envuelve el contenido en un documento HTML autocontenido e imprimible. */
-function docPage(title: string, inner: string, autoPrint?: boolean): string {
-  const autoPrintScript = autoPrint
+function docPage(title: string, inner: string, opts: DocOpts = {}): string {
+  // El script de ajuste va primero: su listener de `load` corre antes que el de
+  // impresión, así el print dialog ve el documento ya escalado.
+  const fitScript = opts.compact ? `<script>${FIT_SCRIPT}</script>` : "";
+  const autoPrintScript = opts.autoPrint
     ? `<script>window.addEventListener('load',function(){setTimeout(function(){window.focus();window.print();},250);});</script>`
     : "";
   return `<!doctype html>
@@ -749,10 +1019,10 @@ function docPage(title: string, inner: string, autoPrint?: boolean): string {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
-<style>${BASE_CSS}${SPECS_CSS}${COMBINED_CSS}${PAGE_CSS}</style>
-${autoPrintScript}
+<style>${BASE_CSS}${SPECS_CSS}${COMBINED_CSS}${COMPACT_CSS}${pageCSS(!!opts.compact)}</style>
+${fitScript}${autoPrintScript}
 </head>
-<body>
+<body${opts.compact ? ' class="is-compact"' : ""}>
 <div class="wrap">
 ${inner}
 </div>
@@ -779,6 +1049,10 @@ export interface ExportArgs {
    *    calendario+programa  → ambos true (default)
    *    solo programa        → includeCalendar:false, includeSpecs:true */
   includeCalendar?: boolean;
+  /** documento COMPACTO de una carilla: misma información que "solo calendario"
+   *  pero reordenada para entrar en una sola página. Sólo aplica cuando se
+   *  exporta UN cuatrimestre (con varios se ignora y sale el documento normal). */
+  compact?: boolean;
   /** índices de cuatrimestre a incluir; si se omite, se incluyen todos. */
   cuatris?: number[];
   /** método de optimización usado (ajusta el objetivo que declara el meta-note
@@ -820,6 +1094,19 @@ export function buildPlanHTML(a: ExportArgs): string {
     const dias = new Set(blocks.map((b) => b.dia)).size;
     const includeCalendar = a.includeCalendar !== false;
     const includeSpecs = a.includeSpecs !== false;
+    if (a.compact) {
+      const inner = compactBodyHTML(
+        only.it,
+        "Plan de cursada",
+        cuatriName(cu),
+        a.generado,
+        `Plan de cursada · ${cuatriName(cu)} · studyvaults · ITBA`,
+      );
+      return docPage("Plan de cursada — ITBA", inner, {
+        autoPrint: a.autoPrint,
+        compact: true,
+      });
+    }
     const inner = `<header class="doc">
     <p class="kick">StudyVaults · ITBA</p>
     <h1>Plan de cursada</h1>
@@ -836,7 +1123,7 @@ export function buildPlanHTML(a: ExportArgs): string {
   ${combinedCuatriSectionsHTML(only.it, includeCalendar, includeSpecs, "Semana de cursada")}
 
   <footer class="doc">Plan de cursada · ${esc(cuatriName(cu))} · studyvaults · ITBA</footer>`;
-    return docPage("Plan de cursada — ITBA", inner, a.autoPrint);
+    return docPage("Plan de cursada — ITBA", inner, { autoPrint: a.autoPrint });
   }
 
   const cuatriSection = ({ it, i }: { it: PlacedMateria[]; i: number }) => {
@@ -902,7 +1189,7 @@ export function buildPlanHTML(a: ExportArgs): string {
 
   <footer class="doc">Plan de cursada · ${elecPlan} créditos electivos en este plan · studyvaults</footer>`;
 
-  return docPage("Plan de cursada — ITBA", inner, a.autoPrint);
+  return docPage("Plan de cursada — ITBA", inner, { autoPrint: a.autoPrint });
 }
 
 // ---- export de la COMBINACIÓN elegida (un cuatrimestre) --------------------
@@ -916,6 +1203,8 @@ export interface ComboExportArgs {
   includeCalendar?: boolean;
   /** incluir las especificaciones por materia (default true). Ver ExportArgs. */
   includeSpecs?: boolean;
+  /** documento COMPACTO de una carilla. Ver ExportArgs.compact. */
+  compact?: boolean;
 }
 
 export function buildComboHTML(a: ComboExportArgs): string {
@@ -925,6 +1214,20 @@ export function buildComboHTML(a: ComboExportArgs): string {
   const dias = new Set(blocks.map((b) => b.dia)).size;
   const includeCalendar = a.includeCalendar !== false;
   const includeSpecs = a.includeSpecs !== false;
+
+  if (a.compact) {
+    const inner = compactBodyHTML(
+      placed,
+      "Programa de cursada",
+      a.periodo ?? "",
+      a.generado,
+      "Programa de cursada · studyvaults · ITBA",
+    );
+    return docPage("Programa de cursada — ITBA", inner, {
+      autoPrint: a.autoPrint,
+      compact: true,
+    });
+  }
 
   const inner = `<header class="doc">
     <p class="kick">StudyVaults · ITBA</p>
@@ -942,5 +1245,5 @@ export function buildComboHTML(a: ComboExportArgs): string {
 
   <footer class="doc">Programa de cursada · studyvaults · ITBA</footer>`;
 
-  return docPage("Programa de cursada — ITBA", inner, a.autoPrint);
+  return docPage("Programa de cursada — ITBA", inner, { autoPrint: a.autoPrint });
 }
