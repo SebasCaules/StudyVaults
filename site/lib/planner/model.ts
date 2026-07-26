@@ -15,12 +15,14 @@ export const AREA_COLOR: Record<string, string> = {
   "Arquitectura de Software": "#a497c0",
 };
 
-// Paleta para colorear materias en las grillas (combinador / plan). Tonos medios
-// desaturados y repartidos por la rueda: distinguibles entre sí sin gritar, y
-// legibles con texto oscuro encima tanto en pantalla como sobre papel crema.
+// Paleta para colorear materias en las grillas (combinador / plan): doce tonos
+// primarios, uno cada 30° de la rueda. NO van en orden de rueda — el orden salta
+// de a 150°, así dos materias consecutivas nunca caen en hues vecinos (con 4-6
+// materias por cuatrimestre, que es lo normal, todas quedan bien separadas).
+// El rojo entra recién en la 9.ª para no competir con el marcado de conflicto.
 export const PALETTE = [
-  "#6f8caa", "#c08a5e", "#7fa07a", "#b0819b", "#8b84b0", "#5f9298",
-  "#bfa065", "#9aab6d", "#c08a8a", "#7f9bc4", "#a78f6a", "#8fae9f",
+  "#3358ad", "#d2761b", "#0e93a0", "#c33370", "#2f9448", "#6e4bad",
+  "#c9a208", "#2b7cb8", "#c9372e", "#109171", "#a63aa0", "#85a316",
 ];
 
 // Map codigo → materia con su horario resuelto (espejo de buildModel()).
