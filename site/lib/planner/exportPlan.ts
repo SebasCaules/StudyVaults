@@ -234,10 +234,10 @@ function weekGridHTML(blocks: WeekBlock[]): string {
             : "";
         const w = 100 / lanes;
         const pos = `top:${top}px;height:${h}px;left:calc(${lane * w}% + 3px);width:calc(${w}% - 6px)`;
-        // Relleno suave (el color mezclado con el papel) + borde del mismo tono
-        // más cargado y una barra izquierda a color pleno como acento. Todo
+        // Tres dosis del mismo color mezclado con el papel: relleno apenas
+        // teñido, borde algo más cargado y barra izquierda como acento. Todo
         // opaco: se ve translúcido pero imprime lleno en cualquier visor.
-        return `<div class="cg-blk${lanes > 1 ? " is-narrow" : ""}${b.conf ? " is-conf" : ""}" style="${pos};background:${soften(b.color, 0.42)};border-color:${soften(b.color, 0.72)};border-left-color:${b.color}">
+        return `<div class="cg-blk${lanes > 1 ? " is-narrow" : ""}${b.conf ? " is-conf" : ""}" style="${pos};background:${soften(b.color, 0.28)};border-color:${soften(b.color, 0.58)};border-left-color:${soften(b.color, 0.65)}">
           <span class="cg-blk__abbr">${esc(b.abbr)}</span>
           <span class="cg-blk__time">${esc(b.desde)}–${esc(b.hasta)}</span>
           ${room}
