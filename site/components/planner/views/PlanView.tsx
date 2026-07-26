@@ -48,6 +48,7 @@ import {
   IconRotateCcw,
   IconLayers,
   IconFileText,
+  IconCompactPage,
   IconCheck,
   IconLock,
   IconUnlock,
@@ -351,7 +352,10 @@ function SemCard({
   locked: boolean;
   onFinalize: (idx: number) => void;
   onUnlock: (idx: number) => void;
-  onDownload: (idx: number, scope: "cal" | "both" | "programa") => void;
+  onDownload: (
+    idx: number,
+    scope: "cal" | "compacto" | "both" | "programa",
+  ) => void;
 }) {
   const { state, dispatch } = usePlanner();
   const cu = cuatriAt(start, i);
@@ -528,6 +532,18 @@ function SemCard({
                   }}
                 >
                   <IconCalendar size={15} /> Solo calendario
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="pv-menu__item"
+                  onClick={() => {
+                    onDownload(i, "compacto");
+                    setMenuOpen(false);
+                  }}
+                >
+                  <IconCompactPage size={15} /> Compacto
+                  <span className="sub">1 carilla</span>
                 </button>
                 <button
                   type="button"
@@ -1700,9 +1716,14 @@ export default function PlanView() {
     else openForPrint(html);
   };
 
-  // descarga de UN cuatrimestre desde el menú 3-puntos, con los 3 alcances
-  // (solo calendario / calendario+programa / solo programa) vía exportPlan.
-  const downloadCuatri = (idx: number, scope: "cal" | "both" | "programa") => {
+  // descarga de UN cuatrimestre desde el menú 3-puntos, con los 4 alcances
+  // (solo calendario / compacto de 1 carilla / calendario+programa / solo
+  // programa) vía exportPlan. "compacto" lleva lo mismo que "cal" pero armado
+  // para entrar en una sola página.
+  const downloadCuatri = (
+    idx: number,
+    scope: "cal" | "compacto" | "both" | "programa",
+  ) => {
     if (typeof window === "undefined") return;
     const html = buildPlanHTML({
       result: baseR,
@@ -1715,7 +1736,8 @@ export default function PlanView() {
       autoPrint: true,
       cuatris: [idx],
       includeCalendar: scope !== "programa",
-      includeSpecs: scope !== "cal",
+      includeSpecs: scope !== "cal" && scope !== "compacto",
+      compact: scope === "compacto",
       method: PL.method,
     });
     openForPrint(html);
@@ -1848,30 +1870,16 @@ export default function PlanView() {
 
       {used.length > 0 && !careerFolded && (
         <div className="pv-banner">
-          {/* una sola zona: [stat+chips | controles | grad+meter] — sin filas
-              apiladas ni divider; los controles absorben el centro del banner */}
+          {/* dos zonas con mapping causa→efecto: [parámetros → resultado].
+              Los inputs viven juntos a la izquierda; el egreso + progreso a la
+              derecha, tras el divisor. Cuatrimestres/materias son contexto del
+              egreso (subline), no un stat aparte que compita con él. */}
           <div className="pv-banner__grid">
-            <div className="pv-bcol">
-              <div className="pv-stat">
-                <span className="pv-stat__num">{used.length}</span>
-                <span className="pv-stat__txt">
-                  <span className="lead">
-                    {used.length === 1 ? "cuatrimestre" : "cuatrimestres"}
-                  </span>
-                  <span className="sub">por delante</span>
-                </span>
-              </div>
-              {/* El agregado «X/27 electivos» ya vive en el statline del topbar
-                  (persistente en las 7 vistas): no se repite acá. El chip de
-                  materias es específico de este plan y no está en el topbar. */}
-              <div className="pv-chips">
-                <span className="pv-chip">
-                  <b>{flat.length}</b> materias
-                </span>
-              </div>
-            </div>
-
-            <div className="pv-bctl">
+            <div
+              className="pv-bctl"
+              role="group"
+              aria-label="Parámetros del plan"
+            >
               <div className="pv-field">
                 <label className="pv-field__lbl" htmlFor="pcStart">
                   Empiezo a cursar
@@ -1941,33 +1949,43 @@ export default function PlanView() {
               </div>
             </div>
 
-            <div className="pv-bcol">
+            <div className="pv-result">
               <div className="pv-grad">
-                <IconGraduationCap size={22} />
+                <IconGraduationCap size={24} />
                 <div>
                   <span className="pv-grad__lbl">Te recibís en</span>
                   <span className="pv-grad__val">{cuatriName(gradCu)}</span>
+                  <span className="pv-grad__sub">
+                    {used.length}{" "}
+                    {used.length === 1 ? "cuatrimestre" : "cuatrimestres"} ·{" "}
+                    {flat.length} materias por delante
+                  </span>
                 </div>
               </div>
               <div className="pv-meter">
                 <div className="pv-meter__top">
-                  <span className="pv-meter__lbl">Progreso de créditos</span>
+                  <span className="pv-meter__lbl" id="pvMeterLbl">
+                    Progreso de créditos
+                  </span>
                   <span className="pv-meter__pct">{pct}%</span>
                 </div>
-                <div className="pv-meter__bar">
+                <div
+                  className="pv-meter__bar"
+                  role="progressbar"
+                  aria-labelledby="pvMeterLbl"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={pct}
+                >
                   <i style={{ width: `${pct}%` }} />
                 </div>
                 <div className="pv-meter__foot">
                   <span>
-                    <b>{accNow}</b> aprobados
+                    <b>{accNow}</b> de <b>{finalCred}</b> créditos
                   </span>
                   <span className="pv-meter__sep">·</span>
                   <span>
                     faltan <b>{totalCred}</b>
-                  </span>
-                  <span className="pv-meter__sep">·</span>
-                  <span>
-                    meta <b>{finalCred}</b>
                   </span>
                 </div>
               </div>

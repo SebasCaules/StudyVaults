@@ -13,6 +13,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePlanner } from "@/components/planner/state";
+import { useModalFocus } from "@/components/planner/useModalFocus";
 import { FICHAS } from "@/lib/planner/fichas";
 import { withBase } from "@/lib/content/slug";
 import { ProgramaChips } from "@/components/planner/ProgramaChips";
@@ -36,11 +37,34 @@ function Prose({ text }: { text: string }) {
 }
 
 export default function FichaReader() {
+  const { state } = usePlanner();
+
+  // Lector cerrado: no monta el modal. Al montarse recién en la apertura,
+  // useModalFocus (foco inicial + trap de Tab + restore al disparador) corre en
+  // cada apertura y devuelve el foco al cerrar. Mismo patrón que DetailDrawer.
+  if (state.fichaCode == null) return null;
+  // El portal necesita el DOM (cliente). En SSR no se renderiza.
+  if (typeof document === "undefined") return null;
+
+  // Wrapper `.planner` (display:contents vía .fr-portal) → reestablece las vars
+  // del planner sin caja; montado en body, escapa del stacking context de main.
+  return createPortal(
+    <div className="planner fr-portal">
+      <FichaReaderModal />
+    </div>,
+    document.body,
+  );
+}
+
+function FichaReaderModal() {
   const { state, dispatch } = usePlanner();
   const code = state.fichaCode;
 
   // ref a .fr-doc para resetear el scroll al cambiar de código.
   const docRef = useRef<HTMLDivElement>(null);
+
+  // Foco accesible del modal: foco inicial en el panel + trap de Tab + restore.
+  const panelRef = useModalFocus<HTMLDivElement>();
 
   // Lista ordenada de electivas con ficha disponible (para prev/next).
   const list = Object.keys(FICHAS).sort((a, b) => a.localeCompare(b));
@@ -76,10 +100,9 @@ export default function FichaReader() {
     if (docRef.current) docRef.current.scrollTop = 0;
   }, [code]);
 
-  // Lector cerrado.
+  // code no es null acá (el padre no monta este componente si lo es); la guarda
+  // narrowea el tipo para el resto del render.
   if (code == null) return null;
-  // El portal necesita el DOM (cliente). En SSR no se renderiza (igual está cerrado).
-  if (typeof document === "undefined") return null;
 
   const ficha: Ficha | undefined = FICHAS[code];
   const ch = ficha?.cargaHoraria;
@@ -137,10 +160,21 @@ export default function FichaReader() {
       aria-label="Ficha no disponible"
     >
       <div className="fr-scrim" onClick={close} />
-      <div className="fr-panel">
+      <div className="fr-panel" ref={panelRef} tabIndex={-1}>
         {bar}
         <article className="fr-doc" ref={docRef}>
-          <p className="fr-empty">No hay ficha disponible para esta materia.</p>
+          <div className="fr-empty">
+            <p>No hay ficha disponible para esta materia.</p>
+            <p style={{ marginTop: 8 }}>
+              Usá las flechas de arriba para ver otra electiva, o cerrá el
+              lector y elegí otra materia desde el plan.
+            </p>
+            <p style={{ marginTop: 16 }}>
+              <button type="button" className="fr-pdf" onClick={close}>
+                Cerrar lector
+              </button>
+            </p>
+          </div>
         </article>
       </div>
     </div>
@@ -152,7 +186,7 @@ export default function FichaReader() {
       aria-label={`Ficha de ${ficha.materia}`}
     >
       <div className="fr-scrim" onClick={close} />
-      <div className="fr-panel">
+      <div className="fr-panel" ref={panelRef} tabIndex={-1}>
         {bar}
         <article className="fr-doc" ref={docRef}>
           <div className="fr-head">
@@ -294,10 +328,5 @@ export default function FichaReader() {
     </div>
   );
 
-  // Wrapper `.planner` (display:contents vía .fr-portal) → reestablece las vars
-  // del planner sin caja; montado en body, escapa del stacking context de main.
-  return createPortal(
-    <div className="planner fr-portal">{content}</div>,
-    document.body,
-  );
+  return content;
 }

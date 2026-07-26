@@ -33,61 +33,33 @@
     transparent 55%
   );
 }
-/* una sola zona: [stat+chips | controles | grad+meter]. position:relative para
-   pintar por encima del ::before, igual que hacían las filas viejas. */
+/* dos zonas: [parámetros → resultado]. position:relative para pintar por
+   encima del ::before (cuyo glow brass cae justo sobre el resultado). */
 .planner .pv-banner__grid {
   position: relative;
   display: grid;
-  grid-template-columns: auto minmax(280px, 1fr) clamp(300px, 30%, 380px);
+  grid-template-columns: 1fr clamp(300px, 32%, 380px);
   gap: 16px 28px;
   align-items: center;
 }
-/* columnas laterales: bloques apilados (stat→chips / grad→meter) */
-.planner .pv-bcol {
+/* resultado: egreso (héroe) + progreso, tras un divisor que marca el límite
+   parámetros/resultado sin meter card-en-card */
+.planner .pv-result {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 12px;
   min-width: 0;
-}
-.planner .pv-stat {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-}
-.planner .pv-stat__num {
-  font-family: var(--f-d);
-  font-weight: 500;
-  color: var(--ink);
-  font-size: clamp(2.4rem, 3.6vw + 1rem, 3.4rem);
-  line-height: 0.86;
-  letter-spacing: -0.03em;
-}
-.planner .pv-stat__txt {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-.planner .pv-stat__txt .lead {
-  font-size: clamp(1.15rem, 1.4vw + 1rem, 1.7rem);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-.planner .pv-stat__txt .sub {
-  color: var(--muted);
-  font-size: 1rem;
+  border-left: 1px solid var(--line);
+  padding-left: 28px;
 }
 .planner .pv-grad {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid var(--line);
-  background: var(--panel-2);
-  border-radius: var(--r);
-  padding: 11px 15px;
 }
 .planner .pv-grad > svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   color: var(--brass);
   flex: none;
 }
@@ -95,35 +67,24 @@
   display: block;
   font-family: var(--f-m);
   font-size: 10px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--muted);
 }
 .planner .pv-grad__val {
   display: block;
-  font-weight: 600;
-  font-size: 1.02rem;
+  font-family: var(--f-d);
+  font-weight: 500;
+  font-size: clamp(1.3rem, 0.8vw + 1rem, 1.55rem);
+  line-height: 1.12;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-
-.planner .pv-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.planner .pv-chip {
-  font-family: var(--f-m);
-  font-size: 11px;
+.planner .pv-grad__sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.85rem;
   color: var(--muted);
-  background: var(--panel-2);
-  border: 1px solid var(--line);
-  padding: 5px 10px;
-  border-radius: var(--r);
-}
-.planner .pv-chip b {
-  color: var(--ink);
-  font-weight: 600;
 }
 .planner .pv-meter {
   /* apilado bajo la tarjeta de egreso: llena el ancho de su columna */
@@ -179,8 +140,8 @@
   opacity: 0.5;
 }
 
-/* controles (empiezo / máx mat / máx cr / horario) en la columna central del
-   grid: absorben el hueco que antes quedaba vacío entre el stat y el egreso */
+/* parámetros (empiezo / máx mat / máx cr / superposiciones): una sola fila de
+   campos con labels y alturas de control uniformes (36px), alineados por base */
 .planner .pv-bctl {
   display: flex;
   flex-wrap: wrap;
@@ -207,15 +168,27 @@
 .planner .pv-field .commission-select {
   min-width: 176px;
   max-width: none;
+  height: 36px;
   font-size: 12px;
-  padding: 9px 38px 9px 13px;
+  padding: 0 38px 0 13px;
   background-position: right 14px center;
   background-size: 12px;
 }
-/* NumField (máx cr / máx mat) llega con su propio .plan2-field; lo dejamos fluir
-   y solo alineamos el ancho */
+/* NumField (máx cr / máx mat) llega con su propio .plan2-field: se le unifica
+   el label (mismo uppercase/tracking que .pv-field__lbl) y el alto del input,
+   para que la fila no mezcle dos estilos de campo */
 .planner .pv-field--num .plan2-field {
   gap: 7px;
+}
+.planner .pv-field--num .plan2-field label {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.planner .pv-field--num .plan2-field input {
+  height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* segmentado del método de optimización (lo reusa .plan2-opt, bajo el board) */
@@ -249,11 +222,13 @@
   color: var(--block-ink);
   font-weight: 700;
 }
-/* sin label "Horario" (redundante): el switch se centra con la fila de inputs
-   numéricos en lugar de colgar del borde inferior. */
+/* sin label "Horario" (redundante): el switch ocupa un slot de la misma fila,
+   con el mismo alto de control (36px) para alinear con selects e inputs. */
 .planner .pv-field--sw {
-  gap: 9px;
-  padding-bottom: 6px;
+  justify-content: flex-end;
+}
+.planner .pv-field--sw .cmb-switch {
+  min-height: 36px;
 }
 
 /* ============================ TAB STRIP ==================================== */
@@ -1365,6 +1340,13 @@
 @media (max-width: 980px) {
   .planner .pv-banner__grid {
     grid-template-columns: 1fr;
+  }
+  /* apilado: el divisor parámetros/resultado rota de vertical a horizontal */
+  .planner .pv-result {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
   }
 }
 @media (max-width: 640px) {
