@@ -1068,6 +1068,24 @@
       "creditos_requeridos": 0,
       "correlativas": [],
       "areas": []
+    },
+    {
+      "codigo": "16.68",
+      "nombre": "Señales y Sistemas",
+      "creditos": 3,
+      "creditos_requeridos": 0,
+      "correlativas": [
+        "93.75"
+      ],
+      "areas": []
+    },
+    {
+      "codigo": "25.27",
+      "nombre": "Sistemas Embebidos",
+      "creditos": 3,
+      "creditos_requeridos": 144,
+      "correlativas": [],
+      "areas": []
     }
   ],
   "aristas_correlativas": [
@@ -1386,6 +1404,10 @@
     {
       "from": "93.75",
       "to": "72.88"
+    },
+    {
+      "from": "93.75",
+      "to": "16.68"
     }
   ]
 }

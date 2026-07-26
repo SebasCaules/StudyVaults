@@ -2044,6 +2044,30 @@ window.PLAN = {
    "areas": [],
    "parity": null,
    "tipo": "electiva"
+  },
+  {
+   "codigo": "16.68",
+   "nombre": "Señales y Sistemas",
+   "abbr": "SS",
+   "creditos": 3,
+   "creditosReq": 0,
+   "correlativas": [
+    "93.75"
+   ],
+   "areas": [],
+   "parity": null,
+   "tipo": "electiva"
+  },
+  {
+   "codigo": "25.27",
+   "nombre": "Sistemas Embebidos",
+   "abbr": "SE",
+   "creditos": 3,
+   "creditosReq": 144,
+   "correlativas": [],
+   "areas": [],
+   "parity": null,
+   "tipo": "electiva"
   }
  ],
  "horarios": {
@@ -7485,6 +7509,78 @@ window.PLAN = {
      "cupo": "0 / Ilimitado"
     }
    ]
+  },
+  "16.68": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Sistemas Digitales y Datos",
+   "comisiones": [
+    {
+     "comision": "A",
+     "slots": [
+      {
+       "dia": "Martes",
+       "desde": "16:00",
+       "hasta": "19:00",
+       "aula": "Aula ITBA: 108R · Sede Rectorado Aula externa: Presencial",
+       "sala": "108R",
+       "sede": "Rectorado",
+       "modalidad": "Presencial",
+       "async": false
+      },
+      {
+       "dia": "Miércoles",
+       "desde": "17:00",
+       "hasta": "20:00",
+       "aula": "Aula ITBA: 009R · Sede Rectorado Aula externa: Presencial",
+       "sala": "009R",
+       "sede": "Rectorado",
+       "modalidad": "Presencial",
+       "async": false
+      }
+     ],
+     "profesores": "",
+     "cupo": "38 / 48"
+    }
+   ]
+  },
+  "25.27": {
+   "periodo": "Segundo Cuat.",
+   "anio": "2026",
+   "comienzo": "26/07/2026",
+   "fin": "31/12/2026",
+   "depto": "Sistemas Digitales y Datos",
+   "comisiones": [
+    {
+     "comision": "K",
+     "slots": [
+      {
+       "dia": "Lunes",
+       "desde": "16:00",
+       "hasta": "19:00",
+       "aula": "Aula externa: Laboratorio",
+       "sala": "",
+       "sede": "",
+       "modalidad": "",
+       "async": false
+      },
+      {
+       "dia": "Viernes",
+       "desde": "10:00",
+       "hasta": "13:00",
+       "aula": "Aula externa: Virtual sincrónica",
+       "sala": "",
+       "sede": "",
+       "modalidad": "Virtual",
+       "async": false
+      }
+     ],
+     "profesores": "Jacoby, DanielMagliola, NicolasBergerman, Matías",
+     "cupo": "11 / 30"
+    }
+   ]
   }
  },
  "edges": [
@@ -7975,6 +8071,10 @@ window.PLAN = {
   {
    "from": "93.75",
    "to": "72.88"
+  },
+  {
+   "from": "93.75",
+   "to": "16.68"
   }
  ],
  "aprobadasDefault": [],

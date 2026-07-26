@@ -454,6 +454,67 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "pdf": "/electivas-fichas/16.57.pdf"
   },
+  "16.68": {
+    "codigo": "16.68",
+    "materia": "Señales y Sistemas",
+    "creditos": 6,
+    "departamento": "Ciencias de la Vida",
+    "anio": "2023",
+    "carrera": "Bioingeniería /",
+    "actualizado": "3/7/2024 10:36:54",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 51,
+      "practicas": 51,
+      "laboratorio": 0,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": null
+    },
+    "contenidosMinimos": "Contenidos mínimos: Señales en tiempo continuo. Señales periódicas. Representación y análisis de señales. Convolución. Señal de correlación. Funciones generalizadas. Señales de energía y de potencia. Muestreo. Teorema Nyquist. Cuantización. Reconstrucción de señales. Señales en tiempo discreto. Señales periódicas. Series de Fourier en tiempo discreto. Convolución periódica. Señales de energía y de potencia. Transformada de Fourier en tiempo discreto (DTFT). Transformada Discreta de Fourier (DFT). Transformada Rápida de Fourier (FFT). Sistemas LTI. Respuesta al impulso. Respuesta en frecuencia. Función de transferencia. Diagrama de bode. Ecuaciones en diferencia para sistemas LTI discretos. Clasificación de sistemas (AR, MA, ARMA). Filtros digitales. Diseño de filtros FIR. Diseño de filtros IIR. Aplicaciones. Procesamiento multirate (decimación, interpolación).",
+    "presentacion": "Señales y Sistemas (16.68) es una asignatura del tercer año de la carrera de Bioingeniería. La misma se dicta de forma presencial. A lo largo del curso se busca que los estudiantes adquieran la capacidad de caracterizar señales y sistemas que es posible encontrar en la vida cotidiana (equipo eléctrico, sistema hidráulico, registro de señales biológicas que se quiere estudiar, etc) y obtener un modelo utilizando un lenguaje común, estructurado, como es el lenguaje matemático, teniendo en cuenta las limitaciones y dificultades que surgen al momento de pasar del dominio del tiempo continuo al dominio del tiempo discreto (señales y sistemas digitales). La asignatura funciona como un nexo entre conceptos teóricos/abstractos (el. Matemática V) y las aplicaciones (ej. Procesamiento Digital de Señales y Bioinstrumentación). El desarrollo de la asignatura es progresivo, todos los temas están conectados, y se presentan herramientas para definir, analizar y/o transformar los modelos y obtener información útil (temporal y frecuencial) para el diseño y toma de decisiones. Tiene una fuerte carga de conceptos\n\nteóricos complementados con actividades prácticas, de resolución de problemas de forma manual y también con el apoyo de herramientas de programación (basadas en Python y/o MATLAB).",
+    "objetivos": "Al finalizar el cursado de Señales y Sistemas se espera que los estudiantes\n\n• Adquieran habilidades para el tratamiento de señales y sistemas (continuos y discretos), tanto en el dominio temporal como frecuencial. • Comprendan los fundamentos teóricos y las limitaciones que surgen al momento de pasar del dominio del tiempo continuo al dominio del tiempo discreto. • Reflexionen sobre el vínculo entre las distintas herramientas teóricas (transformaciones matemáticas) previamente estudiadas y su aplicación para el análisis de señales y sistemas. • Adquieran la capacidad de diseñar sistemas tipo filtro en tiempo continuo y discreto. • Profundicen habilidades de comunicación en lenguaje técnico y/o matemático para transmitir información y resultados entre pares.",
+    "programa": [
+      {
+        "titulo": "Señales y Sistemas en tiempo continuo",
+        "descripcion": "Señales y sistemas en Tiempo Continuo. Definiciones y clasificaciones. Filtros Analógicos en Tiempo Continuo. Filtros ideales. Especificaciones y Respuesta en Frecuencia. Señal de convolución, correlación y autocorrelación. Diagrama de Bode."
+      },
+      {
+        "titulo": "Señales y Sistemas en tiempo discreto",
+        "descripcion": "Muestreo y Reconstrucción de Señales. Teorema de Nyquist. Aliasing. Cuantización. Conversión Analógico-Digital y Digital-Analógico. Señales y Sistemas en Tiempo Discreto. Definiciones y clasificaciones. Propiedades. Clasificación de sistemas: AR, MA, ARMA."
+      },
+      {
+        "titulo": "Caracterización de Sistemas Discretos",
+        "descripcion": "Transformada de Fourier en Tiempo Discreto. Definición y Propiedades. Análisis de señales y sistemas. Análisis de señales y sistemas. Funciones de Transferencia. Ecuación en diferencia. Diagramas en Bloque. Relación entre Transformada Z y Transformada de Fourier en Tiempo Discreto."
+      },
+      {
+        "titulo": "Filtros Digitales",
+        "descripcion": "Filtros Digitales. Especificaciones, diseño e implementación. Filtros IIR y FIR. Ubicación de polos y ceros. Filtros FIR de fase lineal. Diseño mediante ventanas. Métodos de invarianza al impulso y transformada bilineal. Procesamiento multirate (decimación, interpolación)."
+      },
+      {
+        "titulo": "Transformada",
+        "descripcion": "Transformada Discreta de Fourier. Definición y Propiedades. Transformada Rápida de Fourier."
+      },
+      {
+        "titulo": "Discreta de Fourier",
+        "descripcion": ""
+      }
+    ],
+    "estrategias": "Durante el curso se propone la realización de clases con contenidos teóricos y prácticos. Las 6 horas de clases semanales se repartirán entre cada uno de acuerdo a lo demandado por cada unidad temática, y también por los docentes y el grupo de estudiantes. Las clases tendrán las siguientes características:\n\n• Clases teóricas: el/los docente/s a cargo realiza la exposición de los temas correspondientes mediante un desarrollo en pizarrón y/o presentación de diapositivas. Los estudiantes tienen la posibilidad de realizar preguntas e intervenciones durante el desarrollo de las clases. El desarrollo teórico se acompaña con ejemplos de índole práctico. • Clases prácticas: el/los docente/s a cargo realiza una introducción teórica sobre el/los temas trabajados en la clase teórica previa, y realiza explicaciones pertinentes a la resolución de actividades y/o problemas. A partir del seguimiento de una guía de actividades para cada clase, se propone la resolución conjunta de actividades ejemplo y se fomenta la resolución individual y/o grupal (2 o 3 integrantes) de actividades durante la clase. Para distintos temas del programa, se introducirán herramientas de software (ej. Python y paquetes específicos) para apoyo a la resolución, análisis y estudio de señales y sistemas.\n\nNo está contemplada la realización de trabajos de laboratorio, por la naturaleza de la asignatura y sus contenidos.",
+    "evaluacion": "Modalidad de evaluación: La evaluación de contenidos y habilidades adquiridas durante el curso se realiza mediante dos instancias distribuidas a lo largo del cronograma:\n\n• Un primer examen que se realiza de forma individual y sincrónica, en el ámbito de clase. El mismo consiste en la presentación de una serie de actividades problemáticas, en las que tienen que aplicar conceptos teóricos, tomar decisiones en base a conceptos clave, y proponer soluciones, realizar gráficos y análisis. El objetivo de la evaluación es determinar la capacidad de los estudiantes para relacionar conceptos teóricos y su implementación práctica, tomar decisiones informadas y resolver situaciones problemáticas. • Un segundo examen grupal (grupos de 2 integrantes) y asincrónico, para el cual tendrán 7 días para resolverlo. Se fomenta la utilización de las herramientas de software trabajadas. En esta evaluación también se propone la resolución de situaciones problemas, de mayor complejidad, que integran los temas estudiados en la primera mitad de la asignatura con los de la segunda mitad. Se propone como una actividad grupal para fomentar el trabajo en equipo y la toma de decisiones en base a consenso. El examen se entrega en forma de informe.\n\nRúbrica con los criterios de evaluación que son compartidos con los estudiantes y serán tenidos en cuenta (CRITERIOS Y NIVELES DE VALORACIÓN):\n\n• Representaciones gráficas DESTACADO: Se coloca título, se nombran los ejes, se indican las unidades de cada uno. Se realiza una breve explicación de lo que se observa en el gráfico y una reflexión sobre su importancia en el contexto de lo que se solicita en la evaluación. A MEJORAR: Las visualizaciones no están del todo conectadas con lo que se solicita en la evaluación o no se explica su utilidad. Faltan algunas de las etiquetas o información necesaria para interpretar cada gráfico. NECESITA REVISIÓN: Los gráficos carecen de la mayoría o todos los elementos necesarios para su interpretación. No se explica su utilidad o los gráficos no se condicen con lo que se explica en el texto.\n\n• Respuestas adecuadas DESTACADO: Se responde de forma clara y concisa lo que se solicita en los distintos puntos de las evaluaciones. Las respuestas son completas. A MEJORAR: Las respuestas, si bien apuntan a lo que se solicita, son incompletas y/o confusas. NECESITA REVISIÓN: Los puntos solicitados carecen de respuestas o no se responde lo que se solicita.\n\n• Justificaciones DESTACADO: Se justifican los pasos realizados cuando esto se solicita. Se justifican las decisiones de diseño que se toman al resolver situaciones problemáticas. En actividades de respuesta abierta se realizan justificaciones a partir de los conceptos teórico/prácticos. A MEJORAR: Las justificaciones realizadas respecto a los pasos realizados y/o decisiones de diseño son incompletas, falta información y/o no se condicen con los conceptos teórico/prácticos estudiados. NECESITA REVISIÓN: No se justifican los pasos realizados ni las decisiones de diseño. Las justificaciones se basan en conceptos erróneos.\n\n• Solvencia conceptual DESTACADO: En las respuestas se observa un correcto y completo manejo de los conceptos vistos en el curso. Correcta aplicación de los conceptos estudiados a lo largo del curso y claridad para transmitirlos. Se relacionan conceptos. A MEJORAR: Se utilizan algunos conceptos de forma incompleta o con dificultades a la hora de relacionarlos. Algunos conceptos parecieran estar confundidos. NECESITA REVISIÓN: No se observa un correcto uso de los conceptos estudiados, no se relacionan adecuadamente y no son utilizados para resolver las situaciones problemáticas.\n\n• Presentación\n\nDESTACADO: Buena ortografía, prolijidad, buena organización y claridad para transmitir ideas. A MEJORAR: La presentación es correcta, con algunos errores de ortografía, se podría mejorar la prolijidad y organización. NECESITA REVISIÓN: Abundan errores de ortografía. Lo que se presenta es desprolijo, desorganizado, poco claro.\n\nRequisitos de aprobación: Para alcanzar la regularidad en la asignatura, se requiere la aprobación de ambos exámenes con al menos el 60% del total de los puntos posibles en cada uno. La nota de los exámenes tienen una escala de 1 a 10, siendo 4 la nota de aprobación. Un 4 equivale a alcanzar el 60% de los puntos posibles de cada evaluación. En caso de no alcanzar el puntaje requerido en alguna de las evaluaciones, se ofrece la posibilidad de recuperar solo una de las dos, en una instancia dedicada al final de cursado.\n\nLa evaluación final también requiere una nota mínima de 4 (60%) para considerarse aprobado.\n\nLa nota de cursada se obtiene mediante el promedio aritmético de las notas de ambas evaluaciones. En caso de haber recuperado alguna, la nota correspondiente se reemplaza por la nota obtenida en la instancia de recuperatorio.",
+    "bibliografiaObligatoria": [
+      "Lathi, B. P. and Green, R.A. (2014) Essentials of Digital Signal Processing, Cambridge University Press; 1 edition.",
+      "Linear Systems and Signals, B. P. Lathi &amp; R. A. Green, Oxford University Press, 3ra edición, 2018"
+    ],
+    "bibliografiaComplementaria": [
+      "Proakis, J.G. y Manolakis, D.G. (2006) Digital Signal Processing: Principles, Algorithms and Applications., PEARSON Prentice Hall, 4ta edición Circuits, Signals, and Systems for Bioengineers, John Semmlow, Academic Press, 3ra edición, 2018 Signals and Systems Using MATLAB, Luis Chaparro &amp; Aydin Akan, Academic Press, 3ra edición, 2018 Signals and Systems: A Primer with MATLAB, M. N. O. Sadiku, W. Hassan Ali &amp; S. M. Musa, CRC Press, 2da edición, 2024 Think DSP: Digital Signal Processing in Python, A. B. Downey, Green Tea Press, 2014 Digital Signal Processing: Principles, Algorithms and Applications. J.G. Proakis &amp; D.G. Manolakis, Pearson Prentice Hall, 5ta edición, 2021 Principles of Linear Systems and Signals. B.P. Lathi, Oxford University Press, 2da edición, 2009. Principles of Signals and Systems, F. J. Taylor, McGraw-Hill, 1ra edición, 1994 Señales y Sistemas, S. S. Haykin &amp; B. Van Veen, Limusa, 1ra edición, 2001. Señales y Sistemas, A.V. Oppenheim, A.S. Willsky y S.H. Nawab, Pearson Education, 2da edición, 1998. The Scientist &amp; Engineer&#39;s Guide to Digital Signal Processing, S W. Smith, 1 edición, 1997",
+      "Ingle, V.K. y Proakis, J.G. (2012) Digital Signal Processing using MATLAB, CENGAGE Learning, 3ra edición.",
+      "Oppenheim, A.V. y Schafer, R.W. (2010) Discrete-Time Signal Processing., PEARSON Prentice Hall, 3ra edición.",
+      "Lathi, B.P. (2009) Principles of Linear Systems and Signals., Oxford University Press, 2da edición.",
+      "Oppenheim, A.V., Willsky, A.S. y Nawab, S.H. (1998) Señales y Sistemas, Pearson Education, 2da edición."
+    ],
+    "pdf": "/electivas-fichas/16.68.pdf"
+  },
   "22.48": {
     "codigo": "22.48",
     "materia": "Procesamiento de Imágenes",
@@ -577,6 +638,68 @@ export const FICHAS: Record<string, Ficha> = {
     ],
     "bibliografiaComplementaria": [],
     "pdf": "/electivas-fichas/23.15.pdf"
+  },
+  "25.27": {
+    "codigo": "25.27",
+    "materia": "Sistemas Embebidos",
+    "creditos": 6,
+    "departamento": "Sistemas Digitales y Datos",
+    "anio": "2023",
+    "carrera": "Ingeniería Electrónica",
+    "actualizado": "11/5/2023 12:32:11",
+    "cargaHoraria": {
+      "total": 102,
+      "teoricas": 38,
+      "practicas": 14,
+      "laboratorio": 50,
+      "semanales": 6,
+      "presencial": 6,
+      "distancia": 0
+    },
+    "contenidosMinimos": "Hardware y software de sistemas embebidos. Arquitectras de microcontroladores. Sistemas basados en microcontroladores. Herramientas de diseño y programación. Periféricos. Dispositivos lógicos programables. Aplicaciones.",
+    "presentacion": "Sistemas Embebidos, se dicta en el cuarto año de la carrera de Ingeniería Electrónica y pertenece al Departamento de Sistemas Digitales y Datos. El objetivo de la asignatura es que el estudiante domine de manera practica los sistemas basados en microcontroladores asi como su programación. Para su correcto entendimiento el alumno debera contar previamente con conocimientos de programacion, matemática discreta, electrónica analógica y digital. Durante la cursada se brindarán clases teoricas explicando el funcionamiento de las distintas partes y periféricos de un Microcontrolador y se afianzarán esos conocimientos con guias de ejercicios y prácticas de laboratorio.",
+    "objetivos": "El objetivo del curso es: Que los estudiantes se introduzcan a la programación de microcontroles en tiempo real, aplicando buenas practicas en la\n\nestructura del código y los recursos del microcontrolador. Manejar y diseñar drivers en la estructura del programa así como el correcto uso de las interrupciones y periféricos del microcontrolador.",
+    "programa": [
+      {
+        "titulo": "Arquitectura de sistemas basados en microprocesadores .",
+        "descripcion": "Arquitectura básica. Buses, Ram, Rom , Entrada/Salida. Decodificacion y Timing."
+      },
+      {
+        "titulo": "Puertos",
+        "descripcion": "Puertos de entrada y salida .Ejemplos de uso y aplicaciones"
+      },
+      {
+        "titulo": "Interrupciones",
+        "descripcion": "Introducción. Interrupción Periódica: Su utilización en la programación en tiempo real. Construcción de drivers. Ejemplos de aplicación."
+      },
+      {
+        "titulo": "Timers",
+        "descripcion": "Input Capture. Aplicaciones: Medición de la duración de pulsos, periodos y frecuencia. Output Compare. Aplicaciones: Generación de señales y PWM. Pulse Acumulador."
+      },
+      {
+        "titulo": "Periféricos de comunicaciones",
+        "descripcion": "Comunicaciones Sincrónicas. SPI Ejemplos de aplicación Drivers. I2C. Comunicaciones Asincrónicas. SCI Aplicaciones. Normas RS232 RS422 RS485.Protocolos CAN,LIN y USB. ."
+      },
+      {
+        "titulo": "Periférico para la Conversión Analógica Digital",
+        "descripcion": "Programación y modos de funcionamiento del conversor A/D Aplicaciones en control e instrumentación,"
+      },
+      {
+        "titulo": "Sistemas Embebidos",
+        "descripcion": "Conceptos Generales sobre RTOS. Tareas ,Semáforos,Colas ,Mailbox. Ejemplos de aplicación. Ports."
+      },
+      {
+        "titulo": "Herramientas de programación",
+        "descripcion": "Ensambladores. Compiladores C. Relación entre lenguaje C y Assembler Entornos de desarrollo."
+      }
+    ],
+    "estrategias": "La materia tiene un alto contenido practico pero requiere que el estudiante tenga claros los conceptos teoricos antes de la practica. Cada semana se dictan dos clases una de 2 hs (teoria) y otra de 4hs (practicas) donde se resuelven con el docente problemas y trabajos de laboratorio. Dado que en las teroricas se imparte mucha informacion tecnica el estudiante dispone de tiempo suficiente para revisar los conceptos y la informacion de manera de estar mejor preparado el dia de la practica.",
+    "evaluacion": "Modalidad de evaluación: Se evalua mediante dos parciales escritos, en los que el alumno deberá resolver ejemplos prácticos y conceptuales del funcionamiento de los microcontroladores. Desarrollo de Trabajos Prácticos con Exposicion oral, en los que se les hará preguntas a los alumnos respecto a como abordaron, diseñaron y ejecutaron la resolución de la problemática planteada en los incisos del TP.\n\nPara el examen final de la materia, los alumnos deberán, proponer, diseñar, desarrollar, y realizar una presentación escrita de un trabajo final funcionando. En el que se implementen todos los conceptos aprendidos durante el cursado de la materia. Durante la presentacion se les realizarán preguntas individuales respecto a cualquier etapa del proyecto.\n\nRequisitos de aprobación: La cursada se aprueba aprobando ambos parciales y todos los TP. El redondeo se realiza de acuerdo con el concepto que tiene la catedra del alumno, la cual surge de la asistencia, participación en clase y presentacion de los Trabajos Prácticos .\n\nEl final de la materia se aprueba obteniendo nota igual o mayor a 4 en el desarrollo y presentación del Trabajo final de la materia.",
+    "bibliografiaObligatoria": [
+      "Kinetis K64F Sub-Family Referenc Manual, NXP Semiconductors, Rev. 7, 2016"
+    ],
+    "bibliografiaComplementaria": [],
+    "pdf": "/electivas-fichas/25.27.pdf"
   },
   "31.08": {
     "codigo": "31.08",

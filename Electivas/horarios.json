@@ -4219,5 +4219,65 @@
     "cupo": "0 / Ilimitado"
    }
   ]
+ },
+ {
+  "codigo": "16.68",
+  "nombre": "Señales y Sistemas",
+  "depto": "Sistemas Digitales y Datos",
+  "periodo": "Segundo Cuat.",
+  "anio": "2026",
+  "comienzo": "26/07/2026",
+  "fin": "31/12/2026",
+  "comisiones": [
+   {
+    "comision": "A",
+    "slots": [
+     {
+      "dia": "Martes",
+      "desde": "16:00",
+      "hasta": "19:00",
+      "aula": "Aula ITBA: 108R · Sede Rectorado Aula externa: Presencial"
+     },
+     {
+      "dia": "Miércoles",
+      "desde": "17:00",
+      "hasta": "20:00",
+      "aula": "Aula ITBA: 009R · Sede Rectorado Aula externa: Presencial"
+     }
+    ],
+    "profesores": "",
+    "cupo": "38 / 48"
+   }
+  ]
+ },
+ {
+  "codigo": "25.27",
+  "nombre": "Sistemas Embebidos",
+  "depto": "Sistemas Digitales y Datos",
+  "periodo": "Segundo Cuat.",
+  "anio": "2026",
+  "comienzo": "26/07/2026",
+  "fin": "31/12/2026",
+  "comisiones": [
+   {
+    "comision": "K",
+    "slots": [
+     {
+      "dia": "Lunes",
+      "desde": "16:00",
+      "hasta": "19:00",
+      "aula": "Aula externa: Laboratorio"
+     },
+     {
+      "dia": "Viernes",
+      "desde": "10:00",
+      "hasta": "13:00",
+      "aula": "Aula externa: Virtual sincrónica"
+     }
+    ],
+    "profesores": "Jacoby, DanielMagliola, NicolasBergerman, Matías",
+    "cupo": "11 / 30"
+   }
+  ]
  }
 ]
