@@ -15,10 +15,12 @@ export const AREA_COLOR: Record<string, string> = {
   "Arquitectura de Software": "#a497c0",
 };
 
-// Paleta para colorear materias en las grillas (combinador / plan).
+// Paleta para colorear materias en las grillas (combinador / plan). Tonos medios
+// desaturados y repartidos por la rueda: distinguibles entre sí sin gritar, y
+// legibles con texto oscuro encima tanto en pantalla como sobre papel crema.
 export const PALETTE = [
-  "#8ba0b8", "#c2a878", "#9bb083", "#c592ab", "#a497c0", "#7fa0bf",
-  "#b9956a", "#8aa17e", "#a9b27e", "#bfa0b0", "#9aa9c4", "#c7b27e",
+  "#6f8caa", "#c08a5e", "#7fa07a", "#b0819b", "#8b84b0", "#5f9298",
+  "#bfa065", "#9aab6d", "#c08a8a", "#7f9bc4", "#a78f6a", "#8fae9f",
 ];
 
 // Map codigo → materia con su horario resuelto (espejo de buildModel()).

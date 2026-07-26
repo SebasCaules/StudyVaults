@@ -91,10 +91,18 @@ function hexOf(r: number, g: number, b: number): string {
   );
 }
 
-/** Oscurece `hex` mezclándolo con negro en proporción `k` (0–1). Opaco. */
-function darken(hex: string, k: number): string {
+/** Color del papel del documento (`--paper`), como RGB. */
+const PAPER: [number, number, number] = [251, 248, 244];
+
+/** Mezcla `hex` con el papel dejando `k` de color (0–1): el resultado se ve
+ *  translúcido pero es opaco, así que imprime igual en cualquier visor. */
+function soften(hex: string, k: number): string {
   const [r, g, b] = rgbOf(hex);
-  return hexOf(r * (1 - k), g * (1 - k), b * (1 - k));
+  return hexOf(
+    r * k + PAPER[0] * (1 - k),
+    g * k + PAPER[1] * (1 - k),
+    b * k + PAPER[2] * (1 - k),
+  );
 }
 
 // Bloques de la grilla semanal de un cuatrimestre (port de PlanView →
@@ -226,9 +234,10 @@ function weekGridHTML(blocks: WeekBlock[]): string {
             : "";
         const w = 100 / lanes;
         const pos = `top:${top}px;height:${h}px;left:calc(${lane * w}% + 3px);width:calc(${w}% - 6px)`;
-        // Relleno sólido con el color de la materia + bordes del mismo tono
-        // oscurecido: nada de alpha, para que el bloque imprima lleno.
-        return `<div class="cg-blk${lanes > 1 ? " is-narrow" : ""}${b.conf ? " is-conf" : ""}" style="${pos};background:${b.color};border-color:${darken(b.color, 0.3)};border-left-color:${darken(b.color, 0.48)}">
+        // Relleno suave (el color mezclado con el papel) + borde del mismo tono
+        // más cargado y una barra izquierda a color pleno como acento. Todo
+        // opaco: se ve translúcido pero imprime lleno en cualquier visor.
+        return `<div class="cg-blk${lanes > 1 ? " is-narrow" : ""}${b.conf ? " is-conf" : ""}" style="${pos};background:${soften(b.color, 0.42)};border-color:${soften(b.color, 0.72)};border-left-color:${b.color}">
           <span class="cg-blk__abbr">${esc(b.abbr)}</span>
           <span class="cg-blk__time">${esc(b.desde)}–${esc(b.hasta)}</span>
           ${room}
@@ -824,7 +833,7 @@ const BASE_CSS = `
   .cg-blk.is-narrow{padding:3px 4px;border-left-width:2px}
   .cg-blk.is-narrow .cg-blk__abbr{font-size:10.5px;-webkit-line-clamp:3;line-clamp:3;hyphens:auto}
   .cg-blk.is-narrow .cg-blk__time{font-size:8.5px}
-  .cg-blk.is-conf{border-color:#8f2f22 !important;border-left-color:#8f2f22 !important;border-width:2px;border-left-width:4px}
+  .cg-blk.is-conf{border-color:#a85644 !important;border-left-color:#a85644 !important;border-width:2px;border-left-width:4px}
   .cg-async{margin-top:11px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
   .cg-async__lbl{font-family:"SFMono-Regular",Menlo,monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .cg-async__chip{font-family:"SFMono-Regular",Menlo,monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:#f6efe7;border:1px solid var(--line);color:var(--soft)}
